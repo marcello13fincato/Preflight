@@ -1,11 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function AuditPage() {
   const [text, setText] = useState("");
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  // numero di audit gratuiti già utilizzati (persistito in localStorage)
+  const [used, setUsed] = useState<number>(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const val = Number(localStorage.getItem("audit_used") || 0);
+    setUsed(val);
+  }, []);
+
 
   const analyze = async () => {
     console.log("CLICK Analizza post");
@@ -18,7 +27,15 @@ export default function AuditPage() {
 
     setLoading(true);
     setResult("");
-
+    // leggere sempre da storage per evitare valori obsoleti
+    const currentUsed = Number(localStorage.getItem("audit_used") || 0);
+    console.log("audit count before analyze", currentUsed);
+    if (currentUsed >= 3) {
+      setLoading(false);
+      setResult("🔒 Hai finito i 3 audit gratuiti. Iscriviti per audit illimitati e Assistente alla vendita su Linkedin.");
+      return;
+    }
+    
     try {
       const res = await fetch("/api/audit", {
         method: "POST",
@@ -44,6 +61,10 @@ export default function AuditPage() {
       }
 
       setResult(out);
+      // Aggiorna il contatore degli audit usati (chiave stringa corretta)
+      const next = currentUsed + 1;
+      localStorage.setItem("audit_used", String(next));
+      setUsed(next);
     } catch (err: any) {
       setResult(`❌ Errore di rete: ${err?.message || "sconosciuto"}`);
     } finally {
@@ -61,20 +82,24 @@ export default function AuditPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-xl rounded-3xl border border-slate-800 bg-white/5 p-7 shadow-2xl">
-        <a href="/" className="text-slate-300 text-sm hover:text-white">
+    <main className="min-h-screen bg-background text-text-primary flex items-center justify-center p-6">
+      <div className="w-full max-w-xl rounded-3xl border border-border bg-background-alt p-8 shadow-premium transition-shadow duration-200 ease">
+        <a href="/" className="text-text-secondary text-sm hover:text-text-primary transition-colors duration-200 ease">
           ← Home
         </a>
 
-        <h1 className="text-2xl font-bold mt-4">Audit LinkedIn Post</h1>
-        <p className="text-slate-300 mt-2 text-sm">
+        <h1 className="text-3xl font-bold mt-4">Audit LinkedIn Post</h1>
+        <p className="text-text-secondary mt-2 text-base">
           Incolla un post. Premi “Analizza post”. Ricevi un audit e suggerimenti
           pratici.
         </p>
+        <p className="text-text-primary mt-1 text-sm font-medium bg-primary inline-block px-2 rounded">
+          Audit gratuiti usati: {used} / 3
+        </p>
+
 
         <textarea
-          className="mt-5 w-full min-h-[170px] rounded-2xl border border-slate-800 bg-slate-950/40 p-4 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#0A66C2]/50"
+          className="mt-6 w-full min-h-[180px] rounded-2xl border border-border bg-background p-4 text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
           placeholder="Incolla qui il post LinkedIn…"
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -84,7 +109,7 @@ export default function AuditPage() {
           <button
             onClick={analyze}
             disabled={loading}
-            className="w-full rounded-2xl bg-[#0A66C2] py-3 font-semibold hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full rounded-2xl bg-primary py-4 font-semibold text-text-primary transition duration-200 ease hover:bg-primary-hover hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
           >
             {loading ? "Analisi in corso…" : "Analizza post"}
           </button>
@@ -95,25 +120,25 @@ export default function AuditPage() {
               setResult("");
             }}
             disabled={loading}
-            className="rounded-2xl border border-slate-700 px-4 py-3 text-sm text-slate-200 hover:bg-white/5 disabled:opacity-60 disabled:cursor-not-allowed"
+            className="rounded-2xl border border-border px-4 py-3 text-sm text-text-primary hover:bg-background-alt transition duration-200 ease disabled:opacity-60 disabled:cursor-not-allowed"
           >
             Pulisci
           </button>
         </div>
 
         {result && (
-          <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <div className="mt-6 rounded-2xl border border-border bg-background p-5">
             <div className="flex items-center justify-between gap-3">
-              <div className="font-semibold">Risultato</div>
+              <div className="font-semibold text-white">Risultato</div>
               <button
                 onClick={copyResult}
-                className="text-xs rounded-xl border border-slate-700 px-3 py-1.5 text-slate-200 hover:bg-white/5"
+                className="text-xs rounded-xl border border-slate-500 px-3 py-1.5 text-white hover:bg-slate-600"
               >
                 Copia
               </button>
             </div>
 
-            <pre className="mt-3 whitespace-pre-wrap text-sm text-slate-100 leading-relaxed">
+            <pre className="mt-3 whitespace-pre-wrap text-base text-text-primary leading-relaxed font-sans">
               {result}
             </pre>
           </div>

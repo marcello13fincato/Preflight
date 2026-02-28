@@ -9,7 +9,7 @@ export default function AuthCallback() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6">
-      <div className="text-slate-300">Accesso in corso…</div>
+      <div className="text-text-secondary">Accesso in corso…</div>
     </main>
   );
 }
