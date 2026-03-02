@@ -42,7 +42,7 @@ export default function Pricing() {
               <a
                 href={plan.ctaHref}
                 className={`mt-7 inline-block rounded-xl ${
-                  plan.name === "Pro" ? "bg-primary text-white" : "border border-primary text-primary"
+                  plan.name === "Pro" ? "btn-primary text-white" : "btn-secondary"
                 } px-5 py-3 font-semibold hover:bg-primary-dark transition-colors duration-200 ease`}
               >
                 {plan.ctaLabel}

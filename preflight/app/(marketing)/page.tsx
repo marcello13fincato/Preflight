@@ -35,8 +35,8 @@ export default function Home() {
           </svg>
         </div>
         <div className="relative container mx-auto px-6 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight max-w-3xl mx-auto">
-            Trasforma i tuoi post LinkedIn in conversazioni e clienti.
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight max-w-3xl mx-auto text-app">
+            Trasforma i tuoi post <span className="text-primary font-bold">LinkedIn</span> in <span className="text-primary font-bold">conversazioni</span> e clienti.
           </h1>
           <p className="mt-4 max-w-2xl text-lg mx-auto">
             Se pubblichi e non succede nulla, non è “colpa dell’algoritmo”. È quasi sempre chiarezza, prova e CTA. Preflight analizza il tuo testo con un framework da consulente e ti consegna una riscrittura completa pronta da pubblicare.
@@ -58,9 +58,9 @@ export default function Home() {
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-            <span className="bg-surface/20 px-3 py-1 rounded-full">Nessun login</span>
-            <span className="bg-surface/20 px-3 py-1 rounded-full">Risultato in 8–12 secondi</span>
-            <span className="bg-surface/20 px-3 py-1 rounded-full">
+            <span className="bg-soft px-3 py-1 rounded-full text-primary">Nessun login</span>
+            <span className="bg-soft px-3 py-1 rounded-full text-primary">Risultato in 8–12 secondi</span>
+            <span className="bg-soft px-3 py-1 rounded-full text-primary">
               Riscrittura completa + varianti
             </span>
           </div>
@@ -84,8 +84,8 @@ export default function Home() {
       </section>
 
       {/* recognition section */}
-      <section className="py-16 bg-soft">
-        <Container>
+      <section className="py-16 bg-soft border-t border-app">
+        <Container className="text-app">
           <h2 className="text-3xl font-bold text-center flex items-center justify-center">
             <IconSparkles className="w-6 h-6 text-primary mr-2" />
             Se ti riconosci qui, Preflight è per te.
