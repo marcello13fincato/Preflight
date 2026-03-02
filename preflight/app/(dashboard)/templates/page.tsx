@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import Card from "../../../components/shared/Card";
 import CopyButton from "../../../components/shared/CopyButton";
