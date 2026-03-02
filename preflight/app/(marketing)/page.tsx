@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Zap, Edit3, List, ChevronRight } from "lucide-react";
+import { IconArrowRight, IconZap, IconEdit3, IconList } from "@/components/shared/icons";
 
 export default function Home() {
   return (
@@ -62,7 +62,7 @@ export default function Home() {
 
           <div className="mt-12 grid gap-8 md:grid-cols-3">
             <div className="flex flex-col items-center text-center p-6 bg-background-alt rounded-2xl shadow-sm">
-              <Zap className="w-10 h-10 text-primary" />
+              <IconZap className="w-10 h-10 text-primary" />
               <h3 className="mt-4 font-semibold">Diagnosi (con numeri)</h3>
               <p className="mt-2 text-text-secondary">
                 Misuriamo Hook, chiarezza, credibilità, struttura e CTA. Ti diamo un
@@ -71,7 +71,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col items-center text-center p-6 bg-background-alt rounded-2xl shadow-sm">
-              <Edit3 className="w-10 h-10 text-primary" />
+              <IconEdit3 className="w-10 h-10 text-primary" />
               <h3 className="mt-4 font-semibold">Riscrittura completa</h3>
               <p className="mt-2 text-text-secondary">
                 Ricevi 1 versione “pronta da pubblicare” + varianti di hook, CTA e
@@ -80,7 +80,7 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col items-center text-center p-6 bg-background-alt rounded-2xl shadow-sm">
-              <List className="w-10 h-10 text-primary" />
+              <IconList className="w-10 h-10 text-primary" />
               <h3 className="mt-4 font-semibold">Piano d’azione</h3>
               <p className="mt-2 text-text-secondary">
                 Top 3 interventi prioritari + suggerimenti su cosa pubblicare dopo per
@@ -117,14 +117,14 @@ export default function Home() {
           <h2 className="text-3xl font-bold text-center">Come funziona in pratica</h2>
           <div className="mt-10 space-y-8">
             <div className="flex items-start gap-4">
-              <ChevronRight className="w-6 h-6 text-primary mt-1" />
+              <IconArrowRight className="w-6 h-6 text-primary mt-1" />
               <div>
                 <div className="font-semibold">Incolla il testo</div>
                 <div className="text-text-secondary text-sm">Post pronto o bozza.</div>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <ChevronRight className="w-6 h-6 text-primary mt-1" />
+              <IconArrowRight className="w-6 h-6 text-primary mt-1" />
               <div>
                 <div className="font-semibold">Ricevi analisi + grafici</div>
                 <div className="text-text-secondary text-sm">
@@ -133,7 +133,7 @@ export default function Home() {
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <ChevronRight className="w-6 h-6 text-primary mt-1" />
+              <IconArrowRight className="w-6 h-6 text-primary mt-1" />
               <div>
                 <div className="font-semibold">Copia la riscrittura</div>
                 <div className="text-text-secondary text-sm">

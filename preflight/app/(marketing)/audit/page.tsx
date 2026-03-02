@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { mockAudit, AuditResult } from "../../../lib/mock/audit";
 import Card from "../../../components/shared/Card";
 import Link from "next/link";
@@ -13,17 +13,16 @@ import VariantsList from "../../../components/audit/VariantsList";
 
 export default function AuditPage() {
   const [text, setText] = useState("");
-  const [used, setUsed] = useState(0);
+  const [used, setUsed] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    return Number(localStorage.getItem("audit_used") || 0);
+  });
   const [step, setStep] = useState<"input" | "analyzing" | "result">("input");
   const [result, setResult] = useState<AuditResult | null>(null);
   const [objective, setObjective] = useState("Generare conversazioni");
   const [tone, setTone] = useState("Diretto");
   const [selectedRewriteIdx, setSelectedRewriteIdx] = useState(0);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    setUsed(Number(localStorage.getItem("audit_used") || 0));
-  }, []);
 
   const analyze = async () => {
     if (!text.trim()) return;

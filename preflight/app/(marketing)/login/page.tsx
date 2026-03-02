@@ -1,18 +1,22 @@
+import Link from "next/link";
+
 export default function Login() {
   return (
     <main className="min-h-screen bg-background text-text-primary flex items-center justify-center p-6">
       <div className="w-full max-w-md rounded-3xl border border-border bg-background-alt p-7 shadow-premium text-center">
-        <a href="/" className="text-text-secondary text-sm hover:text-text-primary transition-colors duration-200 ease">← Home</a>
+        <Link href="/" className="text-text-secondary text-sm hover:text-text-primary transition-colors duration-200 ease">
+          ← Home
+        </Link>
         <h1 className="text-2xl font-bold mt-4">Accesso (mock)</h1>
         <p className="text-text-secondary mt-2">
-          Questa è una pagina finta. In produzione aggiungeremo l'autenticazione.
+          Questa è una pagina finta. In produzione aggiungeremo l&apos;autenticazione.
         </p>
-        <a
+        <Link
           href="/dashboard"
           className="mt-8 inline-block rounded-full bg-primary px-6 py-3 text-text-primary font-semibold hover:bg-primary-hover transition"
         >
           Vai alla dashboard
-        </a>
+        </Link>
       </div>
     </main>
   );
