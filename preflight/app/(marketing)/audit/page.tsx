@@ -138,6 +138,15 @@ export default function AuditPage() {
         {step === "result" && (
           <div className="mt-8 space-y-6">
             {result ? (
+              <div>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  <span className="inline-block px-3 py-1 text-xs font-semibold bg-primary/20 text-primary rounded-full">
+                    {objective}
+                  </span>
+                  <span className="inline-block px-3 py-1 text-xs font-semibold bg-accent/20 text-accent rounded-full">
+                    {tone}
+                  </span>
+                </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* left column */}
                 <div className="space-y-6">
@@ -208,9 +217,29 @@ export default function AuditPage() {
                         </button>
                       ))}
                     </div>
-                    <RewriteCard text={
-                      result.rewriteVariants[selectedRewriteIdx].text
-                    } />
+                    <RewriteCard
+                      text={
+                        (() => {
+                          let t = result.rewriteVariants[selectedRewriteIdx].text;
+                          if (objective === "Ottenere clienti") {
+                            t += "\n\n[Obiettivo: clienti]";
+                          } else if (objective === "Crescere autorevolezza") {
+                            t += "\n\n[Obiettivo: autorevolezza]";
+                          }
+                          if (tone === "Narrativo") {
+                            t = "📝 " + t;
+                          } else if (tone === "Tecnico") {
+                            t = "🔧 " + t;
+                          } else if (tone === "Provocatorio") {
+                            t = "⚡ " + t;
+                          }
+                          return t;
+                        })()
+                      }
+                      className={
+                        tone === "Provocatorio" ? "border-accent" : ""
+                      }
+                    />
                   </Card>
 
                   <Card>
@@ -243,6 +272,7 @@ export default function AuditPage() {
                   </Card>
                 </div>
               </div>
+            </div>
             ) : (
               <Card>
                 <p className="text-text-secondary">

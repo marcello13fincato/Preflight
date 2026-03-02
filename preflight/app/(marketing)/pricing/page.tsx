@@ -1,4 +1,6 @@
 import { plans } from "../../../lib/plans";
+import Container from "@/components/shared/Container";
+import Section from "@/components/shared/Section";
 
 export default function Pricing() {
   return (
@@ -49,6 +51,29 @@ export default function Pricing() {
           ))}
         </div>
       </div>
+
+      <Section className="bg-background-alt">
+        <Container>
+          <h2 className="text-3xl font-bold text-center">Quanto vale 1 post che genera conversazioni?</h2>
+          <p className="mt-4 text-text-secondary text-center max-w-2xl mx-auto">
+            Se anche solo 1 conversazione porta un’opportunità, il piano si ripaga da solo.
+          </p>
+        </Container>
+      </Section>
+
+      <Section>
+        <Container>
+          <h2 className="text-2xl font-semibold">FAQ</h2>
+          <dl className="mt-4 space-y-4">
+            <dt className="font-semibold">Come faccio a pagare?</dt>
+            <dd className="text-text-secondary">Carte, bonifico o altri metodi saranno supportati in produzione.</dd>
+            <dt className="font-semibold">Posso cancellare il piano Pro?</dt>
+            <dd className="text-text-secondary">Sì, è possibile cancellare in qualsiasi momento senza penali.</dd>
+            <dt className="font-semibold">Cosa succede ai miei dati?</dt>
+            <dd className="text-text-secondary">Non conserviamo post pubblicati e non accediamo al tuo profilo LinkedIn.</dd>
+          </dl>
+        </Container>
+      </Section>
     </main>
   );
 }

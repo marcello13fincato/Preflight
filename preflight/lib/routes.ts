@@ -1,6 +1,6 @@
 export const marketingNav = [
   { label: "Come funziona", href: "/how-it-works" },
-  { label: "Esempi", href: "/examples" },
+  { label: "Perché", href: "/perche" },
   { label: "Prezzi", href: "/pricing" },
 ];
 

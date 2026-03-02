@@ -5,7 +5,7 @@ import { marketingNav, marketingCTA } from "../../lib/routes";
 
 export default function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-background shadow-sm">
+    <header className="sticky top-0 z-50 bg-background/90 backdrop-blur-sm border-b border-border shadow-sm">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         <Link href="/" className="font-bold text-xl text-text-primary">
           Preflight

@@ -1,27 +1,49 @@
+import Container from "@/components/shared/Container";
+import Section from "@/components/shared/Section";
+import MockPanel from "@/components/shared/MockPanel";
+
 export default function HowItWorks() {
   return (
     <main className="min-h-screen">
-      <h1 className="text-4xl font-bold text-text-primary">Come funziona Preflight</h1>
-      <p className="mt-4 text-text-secondary max-w-2xl">
-        Un processo semplice che trasforma il tuo testo in opportunità reali. Ecco come otteniamo risultati in pochi secondi:
-      </p>
-      <ol className="mt-6 space-y-6 list-decimal list-inside text-text-primary">
-        <li>
-          <strong>1. Inserisci il tuo post</strong> (nuovo o già pubblicato) nella nostra interfaccia.
-        </li>
-        <li>
-          <strong>2. Analisi automatica</strong> con un modello addestrato su milioni di copy ad alto engagement.
-          Valutiamo tono, struttura, chiarezza dell’offerta, proof e forza della CTA.
-        </li>
-        <li>
-          <strong>3. Ricevi un report</strong> con punteggio, le tre correzioni più urgenti e una riscrittura pronta da copiare
-          su LinkedIn.
-        </li>
-      </ol>
-      <p className="mt-6 text-text-secondary">
-        Tutto senza login, senza accesso al tuo profilo LinkedIn e senza inviare dati a servizi esterni.
-        La tua privacy è sacra; analizziamo solo il testo per darti consigli concreti che aumentano commenti, lead e chiamate.
-      </p>
+      <Section className="pt-24">
+        <Container>
+          <h1 className="text-4xl font-bold text-text-primary">Non è magia. È metodo.</h1>
+          <p className="mt-4 text-text-secondary max-w-2xl">
+            Un audit in 40 controlli e una riscrittura pronta: ecco come operiamo dietro le quinte.
+          </p>
+        </Container>
+      </Section>
+
+      <Section className="bg-background-alt">
+        <Container>
+          <h2 className="text-3xl font-bold text-center">Un audit in 40 controlli</h2>
+          <p className="mt-4 text-text-secondary text-center max-w-2xl mx-auto">
+            Ogni post passa attraverso un framework che valuta Hook, Chiarezza, Prova, Struttura, Tono e CTA. Nulla è lasciato al caso.
+          </p>
+        </Container>
+      </Section>
+
+      <Section>
+        <Container>
+          <h2 className="text-3xl font-bold text-center">Dall’analisi alla riscrittura</h2>
+          <ul className="mt-6 space-y-4 max-w-2xl mx-auto text-text-primary">
+            <li>Punteggio totale</li>
+            <li>Punti critici</li>
+            <li>Riscrittura completa</li>
+            <li>Varianti hook/CTA</li>
+          </ul>
+        </Container>
+      </Section>
+
+      <Section className="py-24">
+        <Container className="text-center">
+          <MockPanel title="Esempio report" className="max-w-md mx-auto">
+            <p className="text-sm text-text-secondary">
+              Punteggio totale, breakdown per sezione e suggerimenti specifici. + versione ottimizzata del post.
+            </p>
+          </MockPanel>
+        </Container>
+      </Section>
     </main>
   );
 }
