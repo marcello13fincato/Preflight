@@ -6,7 +6,7 @@ export default function Pricing() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-5xl px-6 py-14">
-        <h1 className="mt-10 text-4xl font-bold text-main">Prezzi</h1>
+        <h1 className="mt-10 text-4xl font-bold text-app">Prezzi</h1>
         <p className="mt-3 text-muted max-w-2xl">
           Free per provare. Pro per usare davvero la piattaforma: storico, piano settimanale e audit illimitati.
         </p>
@@ -16,23 +16,23 @@ export default function Pricing() {
             <div
               key={plan.name}
               className={`rounded-3xl border ${
-                plan.name === "Pro" ? "border-primary bg-surface" : "border-border-color bg-surface"
+                plan.name === "Pro" ? "border-primary bg-surface" : "border-app bg-surface"
               } p-8 shadow-premium transition-shadow duration-200 ease hover:shadow-lg`}
             >
               <div
                 className={`text-sm ${
-                  plan.name === "Pro" ? "text-main" : "text-muted"
+                  plan.name === "Pro" ? "text-app" : "text-muted"
                 }`}
               >
                 {plan.name}
               </div>
-              <div className="text-4xl font-bold mt-2 text-main">
+              <div className="text-4xl font-bold mt-2 text-app">
                 {plan.price}
                 {plan.period && <span className="text-lg font-medium">{plan.period}</span>}
               </div>
               <ul
                 className={`mt-6 space-y-2 ${
-                  plan.name === "Pro" ? "text-main" : "text-muted"
+                  plan.name === "Pro" ? "text-app" : "text-muted"
                 }`}
               >
                 {plan.features.map((f) => (

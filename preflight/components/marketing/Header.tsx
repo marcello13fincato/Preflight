@@ -5,12 +5,12 @@ import { marketingNav, marketingCTA } from "../../lib/routes";
 
 export default function MarketingHeader() {
   return (
-    <header className="sticky top-0 z-50 bg-main text-main backdrop-blur-md border-b border-border-color shadow-sm transition-colors duration-200 ease">
+    <header className="sticky top-0 z-50 bg-app text-app backdrop-blur-md border-b border-app shadow-sm transition-colors duration-200 ease">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="font-bold text-xl text-main">
+        <Link href="/" className="font-bold text-xl text-app">
           Preflight
         </Link>
-        <nav className="hidden md:flex items-center gap-8 text-sm text-main">
+        <nav className="hidden md:flex items-center gap-8 text-sm text-app">
           {marketingNav.map((item) => (
             <Link
               key={item.href}

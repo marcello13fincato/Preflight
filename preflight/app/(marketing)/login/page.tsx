@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function Login() {
   return (
-    <main className="min-h-screen bg-main text-main flex items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-3xl border border-border-color bg-surface p-7 shadow-premium text-center">
-        <Link href="/" className="text-muted text-sm hover:text-main transition-colors duration-200 ease">
+    <main className="min-h-screen bg-app text-app flex items-center justify-center p-6">
+      <div className="w-full max-w-md rounded-3xl border border-app bg-surface p-7 shadow-premium text-center">
+        <Link href="/" className="text-muted text-sm hover:text-app transition-colors duration-200 ease">
           ← Home
         </Link>
         <h1 className="text-2xl font-bold mt-4">Accesso (mock)</h1>

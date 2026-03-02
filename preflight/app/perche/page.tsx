@@ -77,7 +77,7 @@ export default function PerchePage() {
       <Section className="bg-surface">
         <Container>
           <h2 className="text-3xl font-bold text-center">Cosa misura Preflight</h2>
-          <ul className="mt-6 max-w-3xl mx-auto space-y-4 text-main">
+          <ul className="mt-6 max-w-3xl mx-auto space-y-4 text-app">
             <li className="flex items-center gap-2">
               <span className="bg-soft rounded-full p-1">
                 <IconCheck className="w-4 h-4 text-primary" />
@@ -120,7 +120,7 @@ export default function PerchePage() {
           </p>
           <Link
             href="/audit"
-            className="mt-8 inline-block rounded-xl bg-white text-primary px-8 py-4 font-semibold shadow-lg hover:bg-white/90 transition"
+            className="mt-8 inline-block rounded-xl bg-surface text-primary px-8 py-4 font-semibold shadow-lg hover:bg-soft2 transition"
           >
             Fai l’audit gratis
           </Link>

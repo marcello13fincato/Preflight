@@ -9,7 +9,7 @@ export default function AuthCallback() {
     router.replace("/dashboard");
   }, [router]);
   return (
-    <main className="min-h-screen bg-main text-main flex items-center justify-center p-6">
+    <main className="min-h-screen bg-app text-app flex items-center justify-center p-6">
       <div>Reindirizzamento...</div>
     </main>
   );

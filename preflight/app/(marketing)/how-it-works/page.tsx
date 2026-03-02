@@ -7,7 +7,7 @@ export default function HowItWorks() {
     <main className="min-h-screen">
       <Section className="pt-24">
         <Container>
-          <h1 className="text-4xl font-bold text-main">Non è magia. È metodo.</h1>
+          <h1 className="text-4xl font-bold text-app">Non è magia. È metodo.</h1>
           <p className="mt-4 text-muted max-w-2xl">
             Un audit in 40 controlli e una riscrittura pronta: ecco come operiamo dietro le quinte.
           </p>
@@ -26,7 +26,7 @@ export default function HowItWorks() {
       <Section>
         <Container>
           <h2 className="text-3xl font-bold text-center">Dall’analisi alla riscrittura</h2>
-          <ul className="mt-6 space-y-4 max-w-2xl mx-auto text-main">
+          <ul className="mt-6 space-y-4 max-w-2xl mx-auto text-app">
             <li>Punteggio totale</li>
             <li>Punti critici</li>
             <li>Riscrittura completa</li>

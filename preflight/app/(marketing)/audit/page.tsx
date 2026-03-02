@@ -52,9 +52,9 @@ export default function AuditPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 bg-main">
+    <main className="min-h-screen flex items-center justify-center p-6 bg-app">
       <div className="w-full max-w-4xl">
-        <Link href="/" className="text-muted text-sm hover:text-main">
+        <Link href="/" className="text-muted text-sm hover:text-app">
           ← Torna alla home
         </Link>
 
@@ -67,7 +67,7 @@ export default function AuditPage() {
             <label className="block mt-4 text-sm font-medium">
               Testo del post
               <textarea
-                className="mt-1 w-full min-h-[160px] rounded-lg border border-border-color bg-main p-4 text-main placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 w-full min-h-[160px] rounded-lg border border-app bg-app p-4 text-app placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
@@ -79,7 +79,7 @@ export default function AuditPage() {
                 <select
                   value={objective}
                   onChange={(e) => setObjective(e.target.value)}
-                  className="mt-1 w-full rounded border border-border-color bg-main p-2"
+                  className="mt-1 w-full rounded border border-app bg-app p-2"
                 >
                   <option>Generare conversazioni</option>
                   <option>Ottenere clienti</option>
@@ -92,7 +92,7 @@ export default function AuditPage() {
                 <select
                   value={tone}
                   onChange={(e) => setTone(e.target.value)}
-                  className="mt-1 w-full rounded border border-border-color bg-main p-2"
+                  className="mt-1 w-full rounded border border-app bg-app p-2"
                 >
                   <option>Diretto</option>
                   <option>Narrativo</option>
@@ -112,7 +112,7 @@ export default function AuditPage() {
               </button>
               <button
                 onClick={reset}
-                className="rounded-full border border-border-color px-4 py-3 text-sm text-main hover:bg-surface transition"
+                className="rounded-full border border-app px-4 py-3 text-sm text-app hover:bg-surface transition"
               >
                 Pulisci
               </button>
@@ -235,8 +235,8 @@ export default function AuditPage() {
                           onClick={() => setSelectedRewriteIdx(idx)}
                           className={`px-3 py-1 text-xs rounded-full border ${
                             selectedRewriteIdx === idx
-                              ? "bg-primary text-main"
-                              : "border-border-color"
+                              ? "bg-primary text-app"
+                              : "border-app"
                           }`}
                         >
                           {v.label}
@@ -313,7 +313,7 @@ export default function AuditPage() {
             <div className="flex gap-3">
               <button
                 onClick={reset}
-                className="flex-1 rounded-full border border-border-color py-3 text-main hover:bg-surface transition"
+                className="flex-1 rounded-full border border-app py-3 text-app hover:bg-surface transition"
               >
                 Nuovo audit
               </button>

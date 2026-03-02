@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* hero */}
-      <section className="relative bg-gradient-to-r from-primary to-primary-hover text-white py-32">
+      <section className="relative hero-gradient bg-app text-app py-32">
         <div className="absolute inset-0 overflow-hidden opacity-10">
           {/* subtle pattern */}
           <svg
@@ -58,9 +58,9 @@ export default function Home() {
           </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-            <span className="bg-white/20 px-3 py-1 rounded-full">Nessun login</span>
-            <span className="bg-white/20 px-3 py-1 rounded-full">Risultato in 8–12 secondi</span>
-            <span className="bg-white/20 px-3 py-1 rounded-full">
+            <span className="bg-surface/20 px-3 py-1 rounded-full">Nessun login</span>
+            <span className="bg-surface/20 px-3 py-1 rounded-full">Risultato in 8–12 secondi</span>
+            <span className="bg-surface/20 px-3 py-1 rounded-full">
               Riscrittura completa + varianti
             </span>
           </div>
@@ -90,36 +90,36 @@ export default function Home() {
             <IconSparkles className="w-6 h-6 text-primary mr-2" />
             Se ti riconosci qui, Preflight è per te.
           </h2>
-          <ul className="mt-8 max-w-2xl mx-auto space-y-4 text-main">
+          <ul className="mt-8 max-w-2xl mx-auto space-y-4 text-app">
             <li className="flex items-start gap-2">
               <span className="bg-soft rounded-full p-2">
                 <IconCheck className="w-4 h-4 text-primary" />
               </span>
-              <span className="text-main">
+              <span className="text-app">
                 <strong>Pubblico ma non succede nulla</strong> (pochi commenti, zero DM).
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
-              <span className="text-main">
+              <span className="text-app">
                 <strong>La gente non capisce cosa vendo</strong> dopo 5 secondi sul post.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
-              <span className="text-main">
+              <span className="text-app">
                 <strong>Ho idee, ma il testo non regge</strong>: hook debole, struttura piatta.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
-              <span className="text-main">
+              <span className="text-app">
                 <strong>Mi manca prova</strong>: esempi, numeri, contesto, credibilità.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
-              <span className="text-main">
+              <span className="text-app">
                 <strong>Non so come chiudere</strong>: CTA confusa o assente.
               </span>
             </li>
@@ -201,25 +201,25 @@ export default function Home() {
                 <div className="flex justify-between text-sm">
                   <span>Hook</span><span>40%</span>
                 </div>
-                <div className="h-2 bg-main border border-border-color rounded-full">
+                <div className="h-2 bg-app border border-app rounded-full">
                   <div className="h-full bg-primary w-2/5"></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Chiarezza</span><span>60%</span>
                 </div>
-                <div className="h-2 bg-main border border-border-color rounded-full">
+                <div className="h-2 bg-app border border-app rounded-full">
                   <div className="h-full bg-primary w-3/5"></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Prova</span><span>30%</span>
                 </div>
-                <div className="h-2 bg-main border border-border-color rounded-full">
+                <div className="h-2 bg-app border border-app rounded-full">
                   <div className="h-full bg-primary w-3/10"></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>CTA</span><span>50%</span>
                 </div>
-                <div className="h-2 bg-main border border-border-color rounded-full">
+                <div className="h-2 bg-app border border-app rounded-full">
                   <div className="h-full bg-primary w-1/2"></div>
                 </div>
                 <div className="mt-2 text-xs">
@@ -240,7 +240,7 @@ export default function Home() {
           </p>
           <Link
             href="/audit"
-            className="mt-8 inline-block rounded-xl bg-white text-primary px-8 py-4 font-semibold shadow-lg hover:bg-white/90 transition"
+            className="mt-8 inline-block rounded-xl bg-surface text-primary px-8 py-4 font-semibold shadow-lg hover:bg-soft2 transition"
           >
             Fai l’audit gratis
           </Link>
