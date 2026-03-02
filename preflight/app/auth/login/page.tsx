@@ -3,12 +3,20 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [hasEmailProvider, setHasEmailProvider] = useState(false);
+
+  useEffect(() => {
+    // detect email provider availability via env exposed flag
+    setHasEmailProvider(Boolean(process.env.NEXT_PUBLIC_EMAIL_ENABLED));
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -54,6 +62,27 @@ export default function LoginPage() {
             <button type="submit" className="btn-primary w-full">Accedi</button>
           </div>
         </form>
+            {hasEmailProvider && (
+              <div className="mt-6">
+                <hr className="my-4" />
+                <h3 className="text-sm font-medium mb-2">Accedi con email (magic link)</h3>
+                <div className="flex gap-2">
+                  <input
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="tuo@email.com"
+                    className="input flex-1"
+                  />
+                  <button
+                    onClick={() => signIn("email", { email, redirect: false } as any)}
+                    className="btn-primary"
+                  >
+                    Invia link
+                  </button>
+                </div>
+                <p className="text-xs text-muted mt-2">Riceverai un link via email per accedere.</p>
+              </div>
+            )}
       </div>
     </div>
   );
