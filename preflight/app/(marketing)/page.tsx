@@ -13,6 +13,7 @@ import StatBlock from "@/components/shared/StatBlock";
 import GradientBand from "@/components/shared/GradientBand";
 import Stepper from "@/components/shared/Stepper";
 import MockPanel from "@/components/shared/MockPanel";
+import Card from "@/components/shared/Card";
 
 export default function Home() {
   return (
@@ -126,6 +127,48 @@ export default function Home() {
           </ul>
         </Container>
       </section>
+
+      {/* dashboard preview */}
+      <Section>
+        <Container>
+          <h2 className="text-2xl font-semibold text-center">La tua Dashboard</h2>
+          <p className="mt-2 text-center text-muted max-w-2xl mx-auto">
+            Vedi audit recenti, punteggi e suggerimenti in un unico posto. Prova con questi esempi.
+          </p>
+
+          <div className="mt-6 grid gap-6 md:grid-cols-2">
+            <Card>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">Come aumentare le conversioni con copy mirati</h3>
+                  <div className="text-sm text-muted mt-1">20 Feb 2026</div>
+                </div>
+                <div className="ml-4 flex flex-col items-end">
+                  <div className="rounded-md bg-soft px-3 py-1 text-sm font-medium text-primary">Punteggio 82</div>
+                </div>
+              </div>
+              <p className="mt-4 text-muted">Audit rapido: headline, CTA e struttura migliorate per aumentare il CTR.</p>
+            </Card>
+
+            <Card>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">Checklist SEO per pagine prodotto</h3>
+                  <div className="text-sm text-muted mt-1">15 Gen 2026</div>
+                </div>
+                <div className="ml-4 flex flex-col items-end">
+                  <div className="rounded-md bg-soft px-3 py-1 text-sm font-medium text-primary">Punteggio 74</div>
+                </div>
+              </div>
+              <p className="mt-4 text-muted">Suggerimenti pratici su meta, struttura e velocità per aumentare il traffico organico.</p>
+            </Card>
+          </div>
+
+          <div className="mt-6 text-center">
+            <a href="/dashboard" className="inline-block btn-primary rounded-xl px-6 py-3">Vai alla Dashboard</a>
+          </div>
+        </Container>
+      </Section>
 
       {/* cosa facciamo */}
       <Section>
