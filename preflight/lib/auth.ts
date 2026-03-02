@@ -1,6 +1,8 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import EmailProvider from "next-auth/providers/email";
 import { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "./prisma";
 
 const providers = [
   CredentialsProvider({
@@ -21,7 +23,7 @@ const providers = [
         credentials.username === expectedUser &&
         credentials.password === expectedPass
       ) {
-        return user;
+        return user as any;
       }
       return null;
     },
@@ -39,6 +41,7 @@ if (process.env.EMAIL_SERVER && process.env.EMAIL_FROM) {
 }
 
 export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma) as any,
   providers,
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET || "dev-secret",
