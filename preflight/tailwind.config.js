@@ -8,15 +8,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#0A66C2',
-        'primary-hover': '#004182',
-        background: '#002845',
-        'background-alt': '#003d66',
-        'text-primary': '#ffffff',
-        'text-secondary': '#d1d5db',
-        border: '#374151',
-        success: '#3DC073',
-        accent: '#0A98FF',
+        // use CSS variables defined in globals.css for flexibility and theme tokens
+        primary: 'var(--color-primary)',
+        'primary-hover': 'var(--color-primary-hover)',
+        background: 'var(--color-background)',
+        'background-alt': 'var(--color-background-alt)',
+        'text-primary': 'var(--color-text-primary)',
+        'text-secondary': 'var(--color-text-secondary)',
+        border: 'var(--color-border)',
+        success: 'var(--color-success)',
+        accent: 'var(--color-accent)',
       },
       boxShadow: {
         premium: '0 10px 25px -5px rgba(0,0,0,0.3)',

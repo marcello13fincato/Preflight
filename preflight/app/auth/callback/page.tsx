@@ -1,29 +1,17 @@
 "use client";
-
+// Mock callback page - simply redirect to dashboard
 import { useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/navigation";
 
 export default function AuthCallback() {
+  const router = useRouter();
   useEffect(() => {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-    (async () => {
-      // Se c'è una sessione, bene. Se no, aspettiamo comunque un attimo.
-      await supabase.auth.getSession();
-
-      // Piccola attesa per evitare race condition
-      await new Promise((r) => setTimeout(r, 400));
-
-      // Vai in dashboard
-      window.location.replace("/dashboard");
-    })();
-  }, []);
-
+    router.replace("/dashboard");
+  }, [router]);
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center p-6">
-      <div className="text-slate-300 text-sm">Accesso in corso…</div>
+    <main className="min-h-screen bg-background text-text-primary flex items-center justify-center p-6">
+      <div>Reindirizzamento...</div>
     </main>
   );
 }
+
