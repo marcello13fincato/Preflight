@@ -5,6 +5,7 @@ import {
   IconEdit3,
   IconList,
   IconCheck,
+  IconSparkles,
 } from "@/components/shared/icons";
 import Container from "@/components/shared/Container";
 import Section from "@/components/shared/Section";
@@ -44,13 +45,13 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/audit"
-              className="rounded-xl bg-white text-primary px-8 py-4 font-semibold shadow-lg hover:bg-white/90 transition"
+              className="rounded-xl bg-primary text-white px-8 py-4 font-semibold shadow-lg hover:bg-primary-dark transition"
             >
               Fai l’audit gratis
             </Link>
             <Link
               href="/perche"
-              className="rounded-xl border border-white px-8 py-4 text-white hover:bg-white/20 transition"
+              className="rounded-xl border border-primary text-primary px-8 py-4 hover:bg-soft transition"
             >
               Perché funziona
             </Link>
@@ -83,39 +84,42 @@ export default function Home() {
       </section>
 
       {/* recognition section */}
-      <section className="py-16">
+      <section className="py-16 bg-soft">
         <Container>
-          <h2 className="text-3xl font-bold text-center">
+          <h2 className="text-3xl font-bold text-center flex items-center justify-center">
+            <IconSparkles className="w-6 h-6 text-primary mr-2" />
             Se ti riconosci qui, Preflight è per te.
           </h2>
-          <ul className="mt-8 max-w-2xl mx-auto space-y-4 text-text-primary">
+          <ul className="mt-8 max-w-2xl mx-auto space-y-4 text-main">
             <li className="flex items-start gap-2">
-              <IconCheck className="w-6 h-6 text-success mt-1" />
-              <span className="text-text-primary">
+              <span className="bg-soft rounded-full p-2">
+                <IconCheck className="w-4 h-4 text-primary" />
+              </span>
+              <span className="text-main">
                 <strong>Pubblico ma non succede nulla</strong> (pochi commenti, zero DM).
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-6 h-6 text-success mt-1" />
-              <span className="text-text-primary">
+              <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
+              <span className="text-main">
                 <strong>La gente non capisce cosa vendo</strong> dopo 5 secondi sul post.
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-6 h-6 text-success mt-1" />
-              <span className="text-text-primary">
+              <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
+              <span className="text-main">
                 <strong>Ho idee, ma il testo non regge</strong>: hook debole, struttura piatta.
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-6 h-6 text-success mt-1" />
-              <span className="text-text-primary">
+              <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
+              <span className="text-main">
                 <strong>Mi manca prova</strong>: esempi, numeri, contesto, credibilità.
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <IconCheck className="w-6 h-6 text-success mt-1" />
-              <span className="text-text-primary">
+              <span className="bg-soft rounded-full p-2"><IconCheck className="w-4 h-4 text-primary" /></span>
+              <span className="text-main">
                 <strong>Non so come chiudere</strong>: CTA confusa o assente.
               </span>
             </li>
@@ -127,28 +131,28 @@ export default function Home() {
       <Section>
         <Container>
           <h2 className="text-3xl font-bold text-center">Cosa fa Preflight (davvero)</h2>
-          <p className="mt-4 text-center text-text-secondary max-w-2xl mx-auto">
+          <p className="mt-4 text-center text-muted max-w-2xl mx-auto">
             Non ti diamo consigli generici. Ti diamo un report: punteggi, motivazioni e una riscrittura completa.
           </p>
           <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <div className="flex flex-col items-center text-center p-6 bg-background-alt rounded-2xl shadow-sm">
+            <div className="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm">
               <IconZap className="w-10 h-10 text-primary" />
               <h3 className="mt-4 font-semibold">Diagnosi con numeri</h3>
-              <p className="mt-2 text-text-secondary">
+              <p className="mt-2 text-muted">
                 Hook, chiarezza, credibilità, struttura e CTA: punteggio per sezione + motivazione.
               </p>
             </div>
-            <div className="flex flex-col items-center text-center p-6 bg-background-alt rounded-2xl shadow-sm">
+            <div className="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm">
               <IconEdit3 className="w-10 h-10 text-primary" />
               <h3 className="mt-4 font-semibold">Riscrittura completa</h3>
-              <p className="mt-2 text-text-secondary">
+              <p className="mt-2 text-muted">
                 Una versione pronta da pubblicare + alternative (più corta / più diretta).
               </p>
             </div>
-            <div className="flex flex-col items-center text-center p-6 bg-background-alt rounded-2xl shadow-sm">
+            <div className="flex flex-col items-center text-center p-6 bg-surface rounded-2xl shadow-sm">
               <IconList className="w-10 h-10 text-primary" />
               <h3 className="mt-4 font-semibold">Piano d’azione</h3>
-              <p className="mt-2 text-text-secondary">
+              <p className="mt-2 text-muted">
                 Top 3 fix prioritari + prossima mossa: cosa pubblicare dopo.
               </p>
             </div>
@@ -157,7 +161,7 @@ export default function Home() {
       </Section>
 
       {/* how it works */}
-      <Section className="bg-background-alt">
+      <Section className="bg-surface">
         <Container>
           <h2 className="text-3xl font-bold text-center">Come funziona in pratica</h2>
           <div className="mt-10">
@@ -185,10 +189,10 @@ export default function Home() {
       </Section>
 
       {/* perche section */}
-      <Section>
+      <Section className="bg-gradient-light">
         <Container>
           <h2 className="text-3xl font-bold text-center">Perché funziona (anche quando tu non ci sei)</h2>
-          <p className="mt-4 text-text-secondary max-w-3xl mx-auto text-center">
+          <p className="mt-4 text-muted max-w-3xl mx-auto text-center">
             LinkedIn lavora mentre sei in call, mentre dormi, mentre fai altro. Ma solo se il testo è chiaro e orientato a chi legge. Preflight fa il lavoro che di solito fai “a intuito”: misura, corregge, e ti dà una versione migliore.
           </p>
           <div className="mt-8 flex justify-center">
@@ -197,25 +201,25 @@ export default function Home() {
                 <div className="flex justify-between text-sm">
                   <span>Hook</span><span>40%</span>
                 </div>
-                <div className="h-2 bg-background border border-border rounded-full">
+                <div className="h-2 bg-main border border-border-color rounded-full">
                   <div className="h-full bg-primary w-2/5"></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Chiarezza</span><span>60%</span>
                 </div>
-                <div className="h-2 bg-background border border-border rounded-full">
+                <div className="h-2 bg-main border border-border-color rounded-full">
                   <div className="h-full bg-primary w-3/5"></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Prova</span><span>30%</span>
                 </div>
-                <div className="h-2 bg-background border border-border rounded-full">
+                <div className="h-2 bg-main border border-border-color rounded-full">
                   <div className="h-full bg-primary w-3/10"></div>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>CTA</span><span>50%</span>
                 </div>
-                <div className="h-2 bg-background border border-border rounded-full">
+                <div className="h-2 bg-main border border-border-color rounded-full">
                   <div className="h-full bg-primary w-1/2"></div>
                 </div>
                 <div className="mt-2 text-xs">

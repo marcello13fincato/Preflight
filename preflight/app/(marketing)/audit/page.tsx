@@ -10,6 +10,7 @@ import MetricCard from "../../../components/audit/MetricCard";
 import PriorityFixCard from "../../../components/audit/PriorityFixCard";
 import RewriteCard from "../../../components/audit/RewriteCard";
 import VariantsList from "../../../components/audit/VariantsList";
+import { IconCheck } from "../../../components/shared/icons";
 
 export default function AuditPage() {
   const [text, setText] = useState("");
@@ -51,22 +52,22 @@ export default function AuditPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center p-6 bg-background">
+    <main className="min-h-screen flex items-center justify-center p-6 bg-main">
       <div className="w-full max-w-4xl">
-        <Link href="/" className="text-text-secondary text-sm hover:text-text-primary">
+        <Link href="/" className="text-muted text-sm hover:text-main">
           ← Torna alla home
         </Link>
 
         {step === "input" && (
           <Card className="mt-4">
             <h1 className="text-2xl font-bold">Incolla il tuo post LinkedIn</h1>
-            <p className="text-text-secondary mt-1 text-sm">
+            <p className="text-muted mt-1 text-sm">
               Ti restituiamo punteggi, grafici e una riscrittura completa. Nessun login.
             </p>
             <label className="block mt-4 text-sm font-medium">
               Testo del post
               <textarea
-                className="mt-1 w-full min-h-[160px] rounded-lg border border-border bg-background p-4 text-text-primary placeholder:text-text-secondary focus:outline-none focus:ring-2 focus:ring-primary"
+                className="mt-1 w-full min-h-[160px] rounded-lg border border-border-color bg-main p-4 text-main placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
               />
@@ -78,7 +79,7 @@ export default function AuditPage() {
                 <select
                   value={objective}
                   onChange={(e) => setObjective(e.target.value)}
-                  className="mt-1 w-full rounded border border-border bg-background p-2"
+                  className="mt-1 w-full rounded border border-border-color bg-main p-2"
                 >
                   <option>Generare conversazioni</option>
                   <option>Ottenere clienti</option>
@@ -91,7 +92,7 @@ export default function AuditPage() {
                 <select
                   value={tone}
                   onChange={(e) => setTone(e.target.value)}
-                  className="mt-1 w-full rounded border border-border bg-background p-2"
+                  className="mt-1 w-full rounded border border-border-color bg-main p-2"
                 >
                   <option>Diretto</option>
                   <option>Narrativo</option>
@@ -105,18 +106,18 @@ export default function AuditPage() {
               <button
                 onClick={analyze}
                 disabled={!text.trim()}
-                className="flex-1 rounded-full bg-primary py-3 font-semibold text-text-primary hover:bg-primary-hover transition disabled:opacity-60"
+                className="flex-1 rounded-full bg-primary py-3 font-semibold text-white hover:bg-primary-dark transition disabled:opacity-60"
               >
                 Analizza post
               </button>
               <button
                 onClick={reset}
-                className="rounded-full border border-border px-4 py-3 text-sm text-text-primary hover:bg-background-alt transition"
+                className="rounded-full border border-border-color px-4 py-3 text-sm text-main hover:bg-surface transition"
               >
                 Pulisci
               </button>
             </div>
-            <p className="mt-2 text-sm text-text-secondary">
+            <p className="mt-2 text-sm text-muted">
               Audit gratuiti usati: {used} / 3
             </p>
           </Card>
@@ -125,12 +126,37 @@ export default function AuditPage() {
         {step === "analyzing" && (
           <Card className="mt-8">
             <h2 className="text-xl font-semibold mb-4">Analizzo il tuo post…</h2>
-            <ul className="space-y-2 text-text-secondary">
-              <li>Valuto Hook e attenzione iniziale</li>
-              <li>Misuro chiarezza e scannabilità</li>
-              <li>Controllo credibilità e prove</li>
-              <li>Verifico CTA e conversione</li>
-              <li>Genero riscrittura completa + varianti</li>
+            <ul className="space-y-2 text-muted">
+              <li className="flex items-start gap-2">
+                <span className="bg-soft rounded-full p-1">
+                  <IconCheck className="w-4 h-4 text-primary" />
+                </span>
+                Valuto Hook e attenzione iniziale
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="bg-soft rounded-full p-1">
+                  <IconCheck className="w-4 h-4 text-primary" />
+                </span>
+                Misuro chiarezza e scannabilità
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="bg-soft rounded-full p-1">
+                  <IconCheck className="w-4 h-4 text-primary" />
+                </span>
+                Controllo credibilità e prove
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="bg-soft rounded-full p-1">
+                  <IconCheck className="w-4 h-4 text-primary" />
+                </span>
+                Verifico CTA e conversione
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="bg-soft rounded-full p-1">
+                  <IconCheck className="w-4 h-4 text-primary" />
+                </span>
+                Genero riscrittura completa + varianti
+              </li>
             </ul>
           </Card>
         )}
@@ -209,8 +235,8 @@ export default function AuditPage() {
                           onClick={() => setSelectedRewriteIdx(idx)}
                           className={`px-3 py-1 text-xs rounded-full border ${
                             selectedRewriteIdx === idx
-                              ? "bg-primary text-text-primary"
-                              : "border-border"
+                              ? "bg-primary text-main"
+                              : "border-border-color"
                           }`}
                         >
                           {v.label}
@@ -264,7 +290,7 @@ export default function AuditPage() {
 
                   <Card>
                     <h3 className="font-semibold mb-2">Prossima mossa (per vendere di più)</h3>
-                    <ul className="list-disc list-inside text-text-secondary space-y-1">
+                    <ul className="list-disc list-inside text-muted space-y-1">
                       {result.nextMoves.map((m, i) => (
                         <li key={i}>{m}</li>
                       ))}
@@ -275,7 +301,7 @@ export default function AuditPage() {
             </div>
             ) : (
               <Card>
-                <p className="text-text-secondary">
+                <p className="text-muted">
                   Hai usato tutti e 3 gli audit gratuiti. <br />
                   <a href="/pricing" className="text-primary underline">
                     Passa a Pro per continuare
@@ -287,7 +313,7 @@ export default function AuditPage() {
             <div className="flex gap-3">
               <button
                 onClick={reset}
-                className="flex-1 rounded-full border border-border py-3 text-text-primary hover:bg-background-alt transition"
+                className="flex-1 rounded-full border border-border-color py-3 text-main hover:bg-surface transition"
               >
                 Nuovo audit
               </button>

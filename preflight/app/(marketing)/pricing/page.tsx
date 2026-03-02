@@ -6,8 +6,8 @@ export default function Pricing() {
   return (
     <main className="min-h-screen">
       <div className="mx-auto max-w-5xl px-6 py-14">
-        <h1 className="mt-10 text-4xl font-bold text-text-primary">Prezzi</h1>
-        <p className="mt-3 text-text-secondary max-w-2xl">
+        <h1 className="mt-10 text-4xl font-bold text-main">Prezzi</h1>
+        <p className="mt-3 text-muted max-w-2xl">
           Free per provare. Pro per usare davvero la piattaforma: storico, piano settimanale e audit illimitati.
         </p>
 
@@ -16,23 +16,23 @@ export default function Pricing() {
             <div
               key={plan.name}
               className={`rounded-3xl border ${
-                plan.name === "Pro" ? "border-primary bg-background-alt" : "border-border bg-background-alt"
+                plan.name === "Pro" ? "border-primary bg-surface" : "border-border-color bg-surface"
               } p-8 shadow-premium transition-shadow duration-200 ease hover:shadow-lg`}
             >
               <div
                 className={`text-sm ${
-                  plan.name === "Pro" ? "text-text-primary" : "text-text-secondary"
+                  plan.name === "Pro" ? "text-main" : "text-muted"
                 }`}
               >
                 {plan.name}
               </div>
-              <div className="text-4xl font-bold mt-2 text-text-primary">
+              <div className="text-4xl font-bold mt-2 text-main">
                 {plan.price}
                 {plan.period && <span className="text-lg font-medium">{plan.period}</span>}
               </div>
               <ul
                 className={`mt-6 space-y-2 ${
-                  plan.name === "Pro" ? "text-text-primary" : "text-text-secondary"
+                  plan.name === "Pro" ? "text-main" : "text-muted"
                 }`}
               >
                 {plan.features.map((f) => (
@@ -42,8 +42,8 @@ export default function Pricing() {
               <a
                 href={plan.ctaHref}
                 className={`mt-7 inline-block rounded-xl ${
-                  plan.name === "Pro" ? "bg-primary text-text-primary" : "border border-border text-text-primary"
-                } px-5 py-3 font-semibold hover:bg-primary-hover transition-colors duration-200 ease`}
+                  plan.name === "Pro" ? "bg-primary text-white" : "border border-primary text-primary"
+                } px-5 py-3 font-semibold hover:bg-primary-dark transition-colors duration-200 ease`}
               >
                 {plan.ctaLabel}
               </a>
@@ -52,10 +52,10 @@ export default function Pricing() {
         </div>
       </div>
 
-      <Section className="bg-background-alt">
+      <Section className="bg-soft">
         <Container>
           <h2 className="text-3xl font-bold text-center">Quanto vale 1 post che genera conversazioni?</h2>
-          <p className="mt-4 text-text-secondary text-center max-w-2xl mx-auto">
+          <p className="mt-4 text-muted text-center max-w-2xl mx-auto">
             Se anche solo 1 conversazione porta un’opportunità, il piano si ripaga da solo.
           </p>
         </Container>
@@ -66,11 +66,11 @@ export default function Pricing() {
           <h2 className="text-2xl font-semibold">FAQ</h2>
           <dl className="mt-4 space-y-4">
             <dt className="font-semibold">Come faccio a pagare?</dt>
-            <dd className="text-text-secondary">Carte, bonifico o altri metodi saranno supportati in produzione.</dd>
+            <dd className="text-muted">Carte, bonifico o altri metodi saranno supportati in produzione.</dd>
             <dt className="font-semibold">Posso cancellare il piano Pro?</dt>
-            <dd className="text-text-secondary">Sì, è possibile cancellare in qualsiasi momento senza penali.</dd>
+            <dd className="text-muted">Sì, è possibile cancellare in qualsiasi momento senza penali.</dd>
             <dt className="font-semibold">Cosa succede ai miei dati?</dt>
-            <dd className="text-text-secondary">Non conserviamo post pubblicati e non accediamo al tuo profilo LinkedIn.</dd>
+            <dd className="text-muted">Non conserviamo post pubblicati e non accediamo al tuo profilo LinkedIn.</dd>
           </dl>
         </Container>
       </Section>

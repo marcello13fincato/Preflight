@@ -1,4 +1,11 @@
 import Link from "next/link";
+import {
+  IconZap,
+  IconChart,
+  IconSparkles,
+  IconArrowRight,
+  IconCheck,
+} from "@/components/shared/icons";
 import Container from "@/components/shared/Container";
 import Section from "@/components/shared/Section";
 import StatBlock from "@/components/shared/StatBlock";
@@ -24,30 +31,42 @@ export default function PerchePage() {
         </Container>
       </Section>
 
-      <Section>
+      <Section className="bg-soft">
         <Container>
           <div className="grid gap-8 md:grid-cols-2">
             <div>
-              <h2 className="text-2xl font-semibold">Perdi opportunità senza accorgertene</h2>
-              <p className="text-text-secondary mt-2">
+              <h2 className="text-2xl font-semibold flex items-center">
+                <IconZap className="w-6 h-6 text-primary mr-2" />
+                Perdi opportunità senza accorgertene
+              </h2>
+              <p className="text-muted mt-2">
                 Non è che il contenuto è scarso. È che non arriva.
               </p>
             </div>
             <div className="">
-              <h2 className="text-2xl font-semibold">La chiarezza batte la competenza</h2>
-              <p className="text-text-secondary mt-2">
+              <h2 className="text-2xl font-semibold flex items-center">
+                <IconChart className="w-6 h-6 text-primary mr-2" />
+                La chiarezza batte la competenza
+              </h2>
+              <p className="text-muted mt-2">
                 Se non si capisce subito, non conta quanto sei bravo.
               </p>
             </div>
             <div className="">
-              <h2 className="text-2xl font-semibold">La prova crea fiducia</h2>
-              <p className="text-text-secondary mt-2">
+              <h2 className="text-2xl font-semibold flex items-center">
+                <IconSparkles className="w-6 h-6 text-primary mr-2" />
+                La prova crea fiducia
+              </h2>
+              <p className="text-muted mt-2">
                 Numeri, esempi, contesto: la credibilità si costruisce così.
               </p>
             </div>
             <div className="">
-              <h2 className="text-2xl font-semibold">La CTA guida l’azione</h2>
-              <p className="text-text-secondary mt-2">
+              <h2 className="text-2xl font-semibold flex items-center">
+                <IconArrowRight className="w-6 h-6 text-primary mr-2" />
+                La CTA guida l’azione
+              </h2>
+              <p className="text-muted mt-2">
                 Senza una chiusura chiara, chi legge non fa nulla.
               </p>
             </div>
@@ -55,24 +74,39 @@ export default function PerchePage() {
         </Container>
       </Section>
 
-      <Section className="bg-background-alt">
+      <Section className="bg-surface">
         <Container>
           <h2 className="text-3xl font-bold text-center">Cosa misura Preflight</h2>
-          <ul className="mt-6 max-w-3xl mx-auto space-y-4 text-text-primary">
-            <li>
-              <strong>Hook</strong>: fermo lo scroll o no?
+          <ul className="mt-6 max-w-3xl mx-auto space-y-4 text-main">
+            <li className="flex items-center gap-2">
+              <span className="bg-soft rounded-full p-1">
+                <IconCheck className="w-4 h-4 text-primary" />
+              </span>
+              <span><strong>Hook</strong>: fermo lo scroll o no?</span>
             </li>
-            <li>
-              <strong>Chiarezza</strong>: si capisce per chi è?
+            <li className="flex items-center gap-2">
+              <span className="bg-soft rounded-full p-1">
+                <IconCheck className="w-4 h-4 text-primary" />
+              </span>
+              <span><strong>Chiarezza</strong>: si capisce per chi è?</span>
             </li>
-            <li>
-              <strong>Prova</strong>: perché dovrei crederti?
+            <li className="flex items-center gap-2">
+              <span className="bg-soft rounded-full p-1">
+                <IconCheck className="w-4 h-4 text-primary" />
+              </span>
+              <span><strong>Prova</strong>: perché dovrei crederti?</span>
             </li>
-            <li>
-              <strong>Struttura</strong>: si legge in 10 secondi?
+            <li className="flex items-center gap-2">
+              <span className="bg-soft rounded-full p-1">
+                <IconCheck className="w-4 h-4 text-primary" />
+              </span>
+              <span><strong>Struttura</strong>: si legge in 10 secondi?</span>
             </li>
-            <li>
-              <strong>CTA</strong>: cosa deve fare chi legge?
+            <li className="flex items-center gap-2">
+              <span className="bg-soft rounded-full p-1">
+                <IconCheck className="w-4 h-4 text-primary" />
+              </span>
+              <span><strong>CTA</strong>: cosa deve fare chi legge?</span>
             </li>
           </ul>
         </Container>

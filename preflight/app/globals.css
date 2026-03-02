@@ -1,16 +1,18 @@
 @import "tailwindcss";
 
-/* Theme tokens for LinkedIn-blue enterprise feel */
+/* Theme tokens based on LinkedIn design system */
 :root {
-  --color-primary: #0A66C2;
-  --color-primary-hover: #004182;
-  --color-background: #f3f2ef;
-  --color-background-alt: #ffffff;
-  --color-text-primary: #0a0a0a;
-  --color-text-secondary: #4a4a4a;
-  --color-border: #d1d5db;
-  --color-success: #3DC073;
-  --color-accent: #0A98FF;
+  --bg-main: #ffffff;
+  --bg-surface: #ffffff;
+  --bg-soft: #E8F3FF;
+  --primary: #0A66C2;
+  --primary-dark: #004182;
+  --primary-hover: #0B5CAD;
+  --text-main: #0B1220;
+  --text-muted: #5E6A75;
+  --border-color: #E4E9EE;
+  --success: #057642;
+  --warning: #C37B00;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
