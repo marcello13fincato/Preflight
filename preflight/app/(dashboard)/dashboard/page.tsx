@@ -1,3 +1,23 @@
+import Link from "next/link";
+import Card from "../../../components/shared/Card";
+
+const mockPosts = [
+  {
+    id: "1",
+    title: "Come aumentare le conversioni con copy mirati",
+    date: "2026-02-20",
+    score: 82,
+    summary: "Audit rapido del post: headline, CTA e immagine ottimizzate per CTR.",
+  },
+  {
+    id: "2",
+    title: "Checklist SEO per pagine prodotto",
+    date: "2026-01-15",
+    score: 74,
+    summary: "Suggerimenti pratici su meta, struttura e velocità per migliorare il traffico organico.",
+  },
+];
+
 export default function Dashboard() {
   return (
     <main className="min-h-screen bg-app text-app">
@@ -7,11 +27,25 @@ export default function Dashboard() {
           Il tuo quartier generale: storici audit, playbook e suggerimenti per una strategia vincente.
         </p>
 
-        <div className="mt-8 rounded-3xl border border-app bg-surface p-6 shadow-premium">
-          <div className="font-semibold">Prossimo contenuto consigliato</div>
-          <div className="text-muted mt-2">
-            (questa funzionalità sarà pronta appena colleghiamo il tuo account e salviamo lo storico)
-          </div>
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          {mockPosts.map((post) => (
+            <Card key={post.id}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold">{post.title}</h3>
+                  <div className="text-sm text-muted mt-1">{new Date(post.date).toLocaleDateString()}</div>
+                </div>
+                <div className="ml-4 flex flex-col items-end">
+                  <div className="rounded-md bg-soft px-3 py-1 text-sm font-medium text-primary">Punteggio {post.score}</div>
+                  <Link href="/audits" className="mt-3 text-sm link-primary">
+                    Vedi audit
+                  </Link>
+                </div>
+              </div>
+
+              <p className="mt-4 text-muted">{post.summary}</p>
+            </Card>
+          ))}
         </div>
       </div>
     </main>
