@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { marketingNav, marketingCTA } from "../../lib/routes";
 
 export default function MarketingHeader() {
@@ -9,8 +8,7 @@ export default function MarketingHeader() {
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-app">
       <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
         <Link href="/" className="inline-flex items-center gap-3">
-          <Image src="/logo.svg" alt="Preflight" width={96} height={24} className="h-6" />
-          <span className="sr-only">Preflight</span>
+          <span className="text-lg font-extrabold">Preflight</span>
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-sm">
           {marketingNav.map((item) => (
