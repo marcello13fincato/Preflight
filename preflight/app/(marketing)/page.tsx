@@ -18,7 +18,7 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       {/* hero */}
-      <section className="relative hero-gradient bg-app text-app py-32">
+      <section className="relative bg-soft hero-gradient text-app py-32">
         <div className="absolute inset-0 overflow-hidden opacity-10">
           {/* subtle pattern */}
           <svg
@@ -45,13 +45,13 @@ export default function Home() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href="/audit"
-              className="rounded-xl bg-primary text-white px-8 py-4 font-semibold shadow-lg hover:bg-primary-dark transition"
+              className="btn-primary rounded-xl px-8 py-4 font-semibold shadow-lg"
             >
               Fai l’audit gratis
             </Link>
             <Link
               href="/perche"
-              className="rounded-xl border border-primary text-primary px-8 py-4 hover:bg-soft transition"
+              className="rounded-xl border border-app link-primary px-8 py-4 hover:bg-soft transition"
             >
               Perché funziona
             </Link>

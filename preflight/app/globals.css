@@ -1,69 +1,24 @@
 @import "tailwindcss";
 
-/* LinkedIn-inspired color tokens */
-:root {
-  --bg: #FFFFFF;
-  --surface: #FFFFFF;
-  --soft: #E8F3FF;
-  --soft2: #F3F8FF;
-  --border: #E4E9EE;
-
-  --primary: #0A66C2;
-  --primary-dark: #004182;
-  --primary-hover: #0B5CAD;
-
-  --text: #0B1220;
-  --muted: #5E6A75;
-
-  --success: #057642;
-  --warning: #C37B00;
-
-  /* legacy aliases for backwards compatibility */
-  --bg-app: var(--bg);
-  --bg-surface: var(--surface);
-  --bg-soft-alt: var(--soft);
-  --primary-hover-alt: var(--primary-hover);
-  --text-app: var(--text);
-  --text-muted-alt: var(--muted);
-  --border-color: var(--border);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root{
+  --bg:#ffffff;
+  --surface:#ffffff;
+  --soft:#E8F3FF;
+  --soft2:#F3F8FF;
+  --border:#E4E9EE;
+  --primary:#0A66C2;
+  --primaryDark:#004182;
+  --text:#0B1220;
+  --muted:#5E6A75;
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, Helvetica, sans-serif;
-}
+body { background: var(--bg); color: var(--text); }
 
-/* utility helpers */
-.hero-gradient {
-  background: radial-gradient(900px circle at 70% 0%, rgba(10,102,194,0.18), transparent 60%),
-    linear-gradient(180deg, rgba(232,243,255,0.65), rgba(255,255,255,0));
-}
-
-.bg-app { background: var(--bg); }
-.bg-surface { background: var(--surface); }
-.bg-soft { background: var(--soft); }
-.bg-soft2 { background: var(--soft2); }
-
-.text-app { color: var(--text); }
-.text-muted { color: var(--muted); }
-
-.border-app { border-color: var(--border); }
-
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-dark); }
-
-.link-primary { color: var(--primary); }
-.link-primary:hover { color: var(--primary-dark); }
-
-/* dark mode fallback (optional) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #1c1c1e;
-    --text: #f2f2f7;
-    --surface: #2c2c2e;
-    --border: #3a3a3c;
-  }
-}
+.bg-soft{background:var(--soft);}
+.bg-soft2{background:var(--soft2);}
+.border-app{border-color:var(--border);}
+.text-muted{color:var(--muted);}
+.btn-primary{background:var(--primary);color:white;}
+.btn-primary:hover{background:var(--primaryDark);}
+.btn-secondary{border:1px solid var(--border); background:var(--surface); color:var(--text);}
+.link-primary{color:var(--primary);}

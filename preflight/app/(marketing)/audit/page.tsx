@@ -106,7 +106,7 @@ export default function AuditPage() {
               <button
                 onClick={analyze}
                 disabled={!text.trim()}
-                className="flex-1 rounded-full bg-primary py-3 font-semibold text-white hover:bg-primary-dark transition disabled:opacity-60"
+                className="btn-primary flex-1 rounded-full py-3 font-semibold text-white disabled:opacity-60"
               >
                 Analizza post
               </button>
