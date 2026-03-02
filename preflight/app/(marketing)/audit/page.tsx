@@ -126,9 +126,40 @@ export default function AuditPage() {
                 Pulisci
               </button>
             </div>
-            <p className="mt-2 text-sm text-muted">
-              Audit gratuiti usati: {used} / 3
-            </p>
+
+            <div className="mt-3 flex items-center gap-3">
+              {process.env.NEXT_PUBLIC_ADMIN_TOKEN ? (
+                <>
+                  <button
+                    onClick={() => {
+                      if (typeof window === "undefined") return;
+                      localStorage.setItem(
+                        "audit_admin_token",
+                        String(process.env.NEXT_PUBLIC_ADMIN_TOKEN)
+                      );
+                      setIsAdmin(true);
+                      setUsed(0);
+                    }}
+                    className="text-xs rounded-full border border-app px-3 py-1 hover:bg-soft transition"
+                  >
+                    Imposta token admin (dev)
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (typeof window === "undefined") return;
+                      localStorage.removeItem("audit_admin_token");
+                      setIsAdmin(false);
+                      setUsed(Number(localStorage.getItem("audit_used") || 0));
+                    }}
+                    className="text-xs rounded-full border border-app px-3 py-1 hover:bg-soft transition"
+                  >
+                    Rimuovi token
+                  </button>
+                </>
+              ) : null}
+
+              <p className="mt-0 text-sm text-muted">Audit gratuiti usati: {used} / 3</p>
+            </div>
           </Card>
         )}
 
