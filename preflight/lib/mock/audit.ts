@@ -1,32 +1,83 @@
 export interface AuditResult {
   overallScore: number;
-  sections: { name: string; score: number; advice: string }[];
-  topFixes: string[];
-  rewrites: { title: string; before: string; after: string }[];
+  // breakdown per section for charts
+  breakdown: { name: string; score: number }[];
+  // miscellaneous metrics shown as cards
+  metrics: {
+    scannabilita: string;
+    lunghezza: string;
+    densitaIo: number;
+    densitaTu: number;
+    forzaCTA: string;
+  };
+  // prioritized fixes with problem / impact / fix
+  topFixes: { problem: string; impact: string; fix: string }[];
+  // full rewrite and variants
+  mainRewrite: string;
+  rewriteVariants: { label: string; text: string }[];
+  // hook and cta suggestions
+  hookVariants: string[];
+  ctaSuggestions: string[];
+  // next moves ideas
+  nextMoves: string[];
 }
 
 export const mockAudit: AuditResult = {
   overallScore: 78,
-  sections: [
-    { name: "Tono", score: 65, advice: "Il tono è un po' neutro, punta a qualcosa di più deciso." },
-    { name: "Struttura", score: 85, advice: "Ottima gerarchia, ma prova ad accorciare il paragrafo iniziale." },
-    { name: "CTA", score: 50, advice: "La chiamata all'azione non è chiara: cosa vuoi che facciano?" },
+  breakdown: [
+    { name: "Hook", score: 60 },
+    { name: "Chiarezza", score: 75 },
+    { name: "Credibilità", score: 50 },
+    { name: "Struttura", score: 85 },
+    { name: "CTA", score: 65 },
   ],
+  metrics: {
+    scannabilita: "Media",
+    lunghezza: "OK",
+    densitaIo: 42,
+    densitaTu: 58,
+    forzaCTA: "Media",
+  },
   topFixes: [
-    "Mantieni il focus su un unico messaggio",
-    "Inserisci numeri o risultati concreti",
-    "Aggiungi una domanda provocatoria all'inizio",
+    {
+      problem: "Hook debole",
+      impact: "Il post non cattura l'attenzione nei primi secondi",
+      fix: "Riprova con una domanda provocatoria o una promessa forte",
+    },
+    {
+      problem: "Nessuna prova concreta",
+      impact: "Il lettore non crede ai risultati esposti",
+      fix: "Aggiungi numeri, case study o testimonianze",
+    },
+    {
+      problem: "CTA vaga",
+      impact: "La gente non sa cosa fare dopo aver letto",
+      fix: "Specifica un'azione chiara (commenta, DM, visita il link)",
+    },
   ],
-  rewrites: [
-    {
-      title: "Apertura",
-      before: "Ciao a tutti, oggi vorrei condividere un pensiero su...",
-      after: "🎯 Come trasformare un post in discussione? Ecco il metodo...",
-    },
-    {
-      title: "CTA finale",
-      before: "Fatemi sapere cosa ne pensate!",
-      after: "👉 Commenta con il tuo punto di vista e contattami per una consulenza gratuita.",
-    },
+  mainRewrite:
+    "🎯 Scopri come attivare conversazioni reali con un semplice cambiamento di approccio. Inizia leggendo questo post e rispondi nei commenti con la tua esperienza!",
+  rewriteVariants: [
+    { label: "Versione più corta", text: "🎯 Cambia approccio, ottieni conversazioni. Leggi e commenta la tua esperienza!" },
+    { label: "Versione più diretta", text: "🎯 Vuoi conversazioni? Fai questo. Leggi il post e commenta." },
+  ],
+  hookVariants: [
+    "🎯 Vuoi più DM? Prova così…",
+    "❗ Ecco l'errore che uccide i tuoi post LinkedIn",
+    "👉 Scopri perché nessuno commenta i tuoi aggiornamenti",
+    "🤔 Hai mai provato a iniziare con una domanda?",
+    "💡 Cambia queste 3 parole e guarda cosa succede",
+  ],
+  ctaSuggestions: [
+    "Metti like se sei d'accordo",
+    "Commenta con la tua esperienza",
+    "Inviami un DM per una consulenza gratuita",
+    "Condividi se ti è stato utile",
+    "Iscriviti alla newsletter per altri consigli",
+  ],
+  nextMoves: [
+    "Post su come scegliere il giusto target",
+    "Storia di un cliente che ha ottenuto risultati",
+    "Checklist di 5 cose da evitare nei post LinkedIn",
   ],
 };

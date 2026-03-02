@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Preflight - Audit LinkedIn posts",
+  title: "Preflight - Audit post LinkedIn",
   description: "Ottieni feedback intelligenti sui tuoi post LinkedIn per aumentare visibilità e conversioni.",
 };
 
