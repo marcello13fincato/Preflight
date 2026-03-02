@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getServerSession } from "next-auth/next";
 import {
   IconArrowRight,
   IconZap,
@@ -15,7 +16,13 @@ import Stepper from "@/components/shared/Stepper";
 import MockPanel from "@/components/shared/MockPanel";
 import Card from "@/components/shared/Card";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession((await import("../../lib/auth")).default as any);
+  if (session) {
+    const { redirect } = await import("next/navigation");
+    redirect("/dashboard");
+  }
+
   return (
     <main className="min-h-screen">
       {/* hero */}

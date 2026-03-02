@@ -1,5 +1,7 @@
 import "../globals.css";
 import { ReactNode } from "react";
+import Sidebar from "../../components/dashboard/Sidebar";
+import Topbar from "../../components/dashboard/Topbar";
 import { getServerSession } from "next-auth/next";
 import authOptions from "../../lib/auth";
 
@@ -13,17 +15,24 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             <div className="p-8 bg-white rounded shadow">
               <h2 className="text-xl font-medium">Accesso richiesto</h2>
               <p className="mt-4">Devi effettuare il login per visualizzare la dashboard.</p>
-              <a href="/login" className="mt-4 inline-block btn-primary">Vai al login</a>
+              <a href="/auth/login" className="mt-4 inline-block btn-primary">Vai al login</a>
             </div>
           </div>
         </body>
       </html>
     );
   }
+
   return (
     <html>
       <body>
-        {children}
+        <div className="flex">
+          <Sidebar />
+          <div className="flex-1 flex flex-col">
+            <Topbar />
+            <div className="flex-1 p-6 bg-app">{children}</div>
+          </div>
+        </div>
       </body>
     </html>
   );
