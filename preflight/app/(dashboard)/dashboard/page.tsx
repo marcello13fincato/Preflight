@@ -37,7 +37,7 @@ export default function Dashboard() {
                 </div>
                 <div className="ml-4 flex flex-col items-end">
                   <div className="rounded-md bg-soft px-3 py-1 text-sm font-medium text-primary">Punteggio {post.score}</div>
-                  <Link href="/audits" className="mt-3 text-sm link-primary">
+                  <Link href={`/dashboard/audits/${post.id}`} className="mt-3 text-sm link-primary">
                     Vedi audit
                   </Link>
                 </div>
