@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mockAudit, AuditResult } from "../../../lib/mock/audit";
 import Card from "../../../components/shared/Card";
 import Link from "next/link";
@@ -14,10 +14,8 @@ import { IconCheck } from "../../../components/shared/icons";
 
 export default function AuditPage() {
   const [text, setText] = useState("");
-  const [used, setUsed] = useState(() => {
-    if (typeof window === "undefined") return 0;
-    return Number(localStorage.getItem("audit_used") || 0);
-  });
+  const [used, setUsed] = useState<number>(0);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [step, setStep] = useState<"input" | "analyzing" | "result">("input");
   const [result, setResult] = useState<AuditResult | null>(null);
   const [objective, setObjective] = useState("Generare conversazioni");
@@ -28,7 +26,7 @@ export default function AuditPage() {
   const analyze = async () => {
     if (!text.trim()) return;
     const currentUsed = Number(localStorage.getItem("audit_used") || 0);
-    if (currentUsed >= 3) {
+    if (!isAdmin && currentUsed >= 3) {
       setResult(null);
       setStep("result");
       return;
@@ -37,12 +35,23 @@ export default function AuditPage() {
     // simulate delay
     setTimeout(() => {
       setResult(mockAudit);
-      const next = currentUsed + 1;
-      localStorage.setItem("audit_used", String(next));
-      setUsed(next);
+      if (!isAdmin) {
+        const next = currentUsed + 1;
+        localStorage.setItem("audit_used", String(next));
+        setUsed(next);
+      }
       setStep("result");
     }, 1200);
   };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored = Number(localStorage.getItem("audit_used") || 0);
+    setUsed(stored);
+    const adminToken = localStorage.getItem("audit_admin_token");
+    const envToken = process.env.NEXT_PUBLIC_ADMIN_TOKEN;
+    setIsAdmin(Boolean(adminToken && envToken && adminToken === envToken));
+  }, []);
 
   const reset = () => {
     setText("");
