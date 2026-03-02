@@ -1,11 +1,11 @@
-import Card from "../../../../components/shared/Card";
-import GaugeScore from "../../../../components/audit/GaugeScore";
-import ScoreBars from "../../../../components/audit/ScoreBars";
-import MetricCard from "../../../../components/audit/MetricCard";
-import PriorityFixCard from "../../../../components/audit/PriorityFixCard";
-import RewriteCard from "../../../../components/audit/RewriteCard";
-import VariantsList from "../../../../components/audit/VariantsList";
-import { mockAudit } from "../../../../lib/mock/audit";
+import Card from "../../../components/shared/Card";
+import GaugeScore from "../../../components/audit/GaugeScore";
+import ScoreBars from "../../../components/audit/ScoreBars";
+import MetricCard from "../../../components/audit/MetricCard";
+import PriorityFixCard from "../../../components/audit/PriorityFixCard";
+import RewriteCard from "../../../components/audit/RewriteCard";
+import VariantsList from "../../../components/audit/VariantsList";
+import { mockAudit } from "../../../lib/mock/audit";
 import Link from "next/link";
 
 type Props = { params: { id: string } };
