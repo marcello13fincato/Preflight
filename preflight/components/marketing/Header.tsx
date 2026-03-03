@@ -25,8 +25,8 @@ export default function MarketingHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" className="btn-primary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
-            DASHBOARD
+          <Link href="/dashboard" className="btn-secondary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
+            dashboard
           </Link>
           {session ? (
             <div className="flex items-center gap-3">
