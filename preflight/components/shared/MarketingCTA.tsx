@@ -12,9 +12,9 @@ type Props = {
 export default function MarketingCTA({ className = "", hideSecondary = false, hideTertiary = false }: Props) {
   return (
     <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
-      <Link href="/audit" aria-label="Fai l’audit gratuito" className="btn-primary rounded-full px-6 py-3 text-sm font-semibold shadow-sm">Fai l’audit gratuito</Link>
+      <Link href="/audit" aria-label="Fai l’audit gratuito" className="btn-primary px-6 py-3 text-sm font-semibold shadow-sm">Fai l’audit gratuito</Link>
       {!hideSecondary && (
-        <Link href="/login" aria-label="Accedi" className="btn-secondary rounded-full px-5 py-3 text-sm shadow-sm">Accedi</Link>
+        <Link href="/login" aria-label="Accedi" className="btn-secondary px-5 py-3 text-sm shadow-sm">Accedi</Link>
       )}
       {!hideTertiary && (
         <Link href="/dashboard" aria-label="Vai alla dashboard" className="text-sm text-muted underline">Vai alla dashboard</Link>

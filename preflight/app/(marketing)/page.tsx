@@ -52,6 +52,9 @@ export default async function Home() {
           </p>
 
           <div className="mt-8"><MarketingCTA /></div>
+            <div className="mt-8">
+              <img src="/images/hero-illustration.svg" alt="Hero illustration" className="mx-auto max-w-xl opacity-90" />
+            </div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
             <span className="bg-soft px-3 py-1 rounded-full text-primary">Nessun login</span>

@@ -9,12 +9,31 @@ import { IconTarget, IconChart, IconSparkles } from "@/components/shared/icons";
 export default function PercheFunzionaPage() {
   return (
     <main className="min-h-screen">
-      <Section className="pt-28 md:pt-32">
+      <Section className="pt-28 md:pt-32 bg-gradient-to-b from-[rgba(10,102,194,0.04)] to-transparent">
         <Container>
           <div className="pt-8"><BackButton /></div>
-          <h1 className="text-4xl font-bold">Perché Preflight funziona (quando altri strumenti falliscono)</h1>
-          <p className="mt-4 text-muted max-w-3xl">La maggior parte dei post LinkedIn non fallisce per mancanza di competenze. Fallisce perché il messaggio non è immediatamente chiaro per chi legge. Preflight analizza il tuo contenuto come farebbe un consulente e lo trasforma in un post comprensibile, credibile e orientato all’azione.</p>
-          <div className="mt-6"><MarketingCTA /></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              <div>
+                <h1 className="text-4xl font-bold">Perché Preflight funziona (quando altri strumenti falliscono)</h1>
+                <p className="mt-4 text-muted max-w-3xl">La maggior parte dei post LinkedIn non fallisce per mancanza di competenze. Fallisce perché il messaggio non è immediatamente chiaro per chi legge. Preflight analizza il tuo contenuto come farebbe un consulente e lo trasforma in un post comprensibile, credibile e orientato all’azione.</p>
+                <div className="mt-6"><MarketingCTA /></div>
+              </div>
+              <div className="hidden md:block relative">
+                <div className="hero-illustration">
+                  <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="g1" x1="0" x2="1">
+                        <stop offset="0%" stop-color="#0A66C2" stop-opacity="0.12" />
+                        <stop offset="100%" stop-color="#0A66C2" stop-opacity="0.02" />
+                      </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="600" height="400" rx="20" fill="url(#g1)" />
+                    <circle cx="140" cy="120" r="48" fill="#fff" opacity="0.6" />
+                    <path d="M220 260c40-60 120-80 180-40v120H0V240c60-40 140-28 220 20z" fill="#fff" opacity="0.06" />
+                  </svg>
+                </div>
+              </div>
+            </div>
         </Container>
       </Section>
 

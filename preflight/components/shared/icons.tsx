@@ -143,3 +143,6 @@ export function IconCompass({ size = 20, ...props }: IconProps) {
     </svg>
   );
 }
+
+// Ensure consistent stroke width across icons
+export const ICON_STROKE = 2;
