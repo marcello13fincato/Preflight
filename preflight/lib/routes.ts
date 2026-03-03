@@ -5,7 +5,7 @@ export const marketingNav = [
   { label: "Audit", href: "/audit" },
 ];
 
-export const marketingCTA = { label: "Fai l’audit gratis", href: "/audit" };
+export const marketingCTA = { label: "Fai l’audit gratuito", href: "/audit" };
 
 export const dashboardNav = [
   { label: "Audit", href: "/dashboard/audits" },

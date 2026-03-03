@@ -266,6 +266,21 @@ export default function AuditPage() {
                   </Card>
 
                   <Card>
+                    <h3 className="font-semibold mb-2">Vuoi audit illimitati?</h3>
+                    <p className="text-muted">Con Premium puoi analizzare tutti i post che vuoi, tenere lo storico e migliorare nel tempo con un processo ripetibile.</p>
+                    <ul className="mt-3 list-disc list-inside text-muted space-y-1">
+                      <li>Audit illimitati</li>
+                      <li>Analisi più approfondita</li>
+                      <li>Storico e confronti</li>
+                      <li>Suggerimenti continui</li>
+                    </ul>
+                    <div className="mt-4 flex gap-3">
+                      <a href="/pricing" className="btn-primary flex-1 rounded-full py-2 text-white text-center">Passa a Premium</a>
+                      <button onClick={reset} className="rounded-full border border-app px-4 py-2">Continua con la versione gratuita</button>
+                    </div>
+                  </Card>
+
+                  <Card>
                     <h3 className="font-semibold mb-2">
                       Riscrittura completa (pronta da pubblicare)
                     </h3>

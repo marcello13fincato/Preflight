@@ -2,11 +2,13 @@ import Container from "@/components/shared/Container";
 import Section from "@/components/shared/Section";
 import BackButton from "@/components/shared/BackButton";
 import MarketingCTA from "@/components/shared/MarketingCTA";
+import IconBadge from "@/components/shared/IconBadge";
+import { IconTarget, IconChart, IconSparkles, IconCompass } from "@/components/shared/icons";
 
 export default function HowItWorks() {
   return (
     <main className="min-h-screen">
-      <Section className="pt-24">
+      <Section className="pt-28 md:pt-32">
         <Container>
           <div className="pt-8"><BackButton /></div>
           <h1 className="text-4xl font-bold">Come funziona Preflight</h1>
@@ -25,32 +27,47 @@ export default function HowItWorks() {
       <Section>
         <Container>
           <div className="mt-6 grid gap-6 md:grid-cols-1">
-            <div className="p-6 bg-surface rounded-2xl">
-              <h3 className="font-semibold">Incolla il tuo post</h3>
-              <p className="mt-2 text-muted">Può essere una bozza o un contenuto già pronto.</p>
+            <div className="p-6 bg-surface rounded-2xl flex items-start gap-4">
+              <IconBadge><IconTarget className="w-5 h-5" /></IconBadge>
+              <div>
+                <h3 className="font-semibold">Incolla il tuo post</h3>
+                <p className="mt-2 text-muted">Può essere una bozza o un contenuto già pronto.</p>
+              </div>
             </div>
 
-            <div className="p-6 bg-surface rounded-2xl">
-              <h3 className="font-semibold">Analisi immediata</h3>
-              <p className="mt-2 text-muted">Preflight valuta struttura, chiarezza, prova e CTA.</p>
+            <div className="p-6 bg-surface rounded-2xl flex items-start gap-4">
+              <IconBadge><IconChart className="w-5 h-5" /></IconBadge>
+              <div>
+                <h3 className="font-semibold">Analisi immediata</h3>
+                <p className="mt-2 text-muted">Preflight valuta struttura, chiarezza, prova e CTA.</p>
+              </div>
             </div>
 
-            <div className="p-6 bg-surface rounded-2xl">
-              <h3 className="font-semibold">Report visuale</h3>
-              <p className="mt-2 text-muted">Punteggi e suggerimenti prioritari.</p>
+            <div className="p-6 bg-surface rounded-2xl flex items-start gap-4">
+              <IconBadge><IconSparkles className="w-5 h-5" /></IconBadge>
+              <div>
+                <h3 className="font-semibold">Report visuale</h3>
+                <p className="mt-2 text-muted">Punteggi e suggerimenti prioritari.</p>
+              </div>
             </div>
 
             {/* Insert CTA after step 3 */}
             <div className="col-span-full mt-4 text-center"><MarketingCTA /></div>
 
-            <div className="p-6 bg-surface rounded-2xl">
-              <h3 className="font-semibold">Riscrittura completa</h3>
-              <p className="mt-2 text-muted">Una nuova versione pronta copy/paste.</p>
+            <div className="p-6 bg-surface rounded-2xl flex items-start gap-4">
+              <IconBadge><IconCompass className="w-5 h-5" /></IconBadge>
+              <div>
+                <h3 className="font-semibold">Riscrittura completa</h3>
+                <p className="mt-2 text-muted">Una nuova versione pronta copy/paste.</p>
+              </div>
             </div>
 
-            <div className="p-6 bg-surface rounded-2xl">
-              <h3 className="font-semibold">Pubblica con sicurezza</h3>
-              <p className="mt-2 text-muted">Sai cosa aspettarti prima di pubblicare.</p>
+            <div className="p-6 bg-surface rounded-2xl flex items-start gap-4">
+              <IconBadge><IconTarget className="w-5 h-5" /></IconBadge>
+              <div>
+                <h3 className="font-semibold">Pubblica con sicurezza</h3>
+                <p className="mt-2 text-muted">Sai cosa aspettarti prima di pubblicare.</p>
+              </div>
             </div>
           </div>
         </Container>

@@ -1,5 +1,9 @@
 {
   "dependencies": {
     "openai": "^6.25.0"
+  },
+  "devDependencies": {
+    "@types/estree": "^0.0.50",
+    "@types/json-schema": "^7.0.12"
   }
 }
