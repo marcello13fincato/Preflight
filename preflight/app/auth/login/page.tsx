@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
