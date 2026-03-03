@@ -3,7 +3,14 @@
 import { useEffect, useState } from "react";
 import Card from "../../../components/shared/Card";
 
-const DEFAULT_PLAYBOOKS = [
+type Playbook = {
+  id: string;
+  title: string;
+  description: string;
+  steps: string[];
+};
+
+const DEFAULT_PLAYBOOKS: Playbook[] = [
   {
     id: "pb-1",
     title: "Hook + Prova + CTA",
@@ -28,7 +35,7 @@ const DEFAULT_PLAYBOOKS = [
 ];
 
 export default function PlaybookPage() {
-  const [items, setItems] = useState(() => {
+  const [items, setItems] = useState<Playbook[]>(() => {
     if (typeof window === 'undefined') return DEFAULT_PLAYBOOKS;
     try {
       const raw = localStorage.getItem('preflight_playbooks');
@@ -94,7 +101,7 @@ export default function PlaybookPage() {
               </div>
             </div>
             <ol className="mt-4 list-decimal list-inside text-sm space-y-2">
-              {p.steps.map((s, i) => (
+              {p.steps.map((s: string, i: number) => (
                 <li key={i}>{s}</li>
               ))}
             </ol>

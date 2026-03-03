@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import Card from "../../../components/shared/Card";
 import CopyButton from "../../../components/shared/CopyButton";
 
-const DEFAULT_TEMPLATES = [
+type TemplateItem = {
+  id: string;
+  label: string;
+  text: string;
+};
+
+const DEFAULT_TEMPLATES: TemplateItem[] = [
   {
     id: "tpl-1",
     label: "Introduzione diretta",
@@ -18,7 +24,7 @@ const DEFAULT_TEMPLATES = [
 ];
 
 export default function TemplatesPage() {
-  const [items, setItems] = useState(() => {
+  const [items, setItems] = useState<TemplateItem[]>(() => {
     if (typeof window === 'undefined') return DEFAULT_TEMPLATES;
     try {
       const raw = localStorage.getItem('preflight_templates');

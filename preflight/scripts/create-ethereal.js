@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-const nodemailer = require('nodemailer');
 
 (async () => {
   try {
+    const nodemailer = (await import('nodemailer')).default;
     const testAccount = await nodemailer.createTestAccount();
     console.log('=== Ethereal test account (development) ===');
     console.log(`user: ${testAccount.user}`);
