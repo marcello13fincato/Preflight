@@ -11,6 +11,7 @@ export default function HowItWorks() {
           <div className="pt-8"><BackButton /></div>
           <h1 className="text-4xl font-bold">Come funziona Preflight</h1>
           <p className="mt-4 text-muted max-w-2xl">Dal testo grezzo a un post pronto da pubblicare in pochi secondi.</p>
+          <div className="mt-6"><MarketingCTA /></div>
         </Container>
       </Section>
 

@@ -50,20 +50,7 @@ export default async function Home() {
             Se pubblichi e non succede nulla, non è “colpa dell’algoritmo”. È quasi sempre chiarezza, prova e CTA. Preflight analizza il tuo testo con un framework da consulente e ti consegna una riscrittura completa pronta da pubblicare.
           </p>
 
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/audit"
-              className="btn-primary rounded-xl px-8 py-4 font-semibold shadow-lg"
-            >
-              Fai l’audit gratis
-            </Link>
-            <Link
-              href="/perche-funziona"
-              className="rounded-xl border border-app link-primary px-8 py-4 hover:bg-soft transition"
-            >
-              Perché funziona
-            </Link>
-          </div>
+          <div className="mt-8"><MarketingCTA /></div>
 
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
             <span className="bg-soft px-3 py-1 rounded-full text-primary">Nessun login</span>
