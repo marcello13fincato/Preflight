@@ -28,20 +28,20 @@ const DEFAULT_PLAYBOOKS = [
 ];
 
 export default function PlaybookPage() {
-  const [items, setItems] = useState(DEFAULT_PLAYBOOKS);
+  const [items, setItems] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_PLAYBOOKS;
+    try {
+      const raw = localStorage.getItem('preflight_playbooks');
+      return raw ? JSON.parse(raw) : DEFAULT_PLAYBOOKS;
+    } catch {
+      return DEFAULT_PLAYBOOKS;
+    }
+  });
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [stepsText, setStepsText] = useState("");
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem("preflight_playbooks");
-      if (raw) setItems(JSON.parse(raw));
-    } catch (e) {
-      // ignore
-    }
-  }, []);
+  // initial state reads localStorage; no effect needed to load items
 
   useEffect(() => {
     if (typeof window === "undefined") return;

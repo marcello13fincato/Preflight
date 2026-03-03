@@ -3,6 +3,9 @@ import EmailProvider from "next-auth/providers/email";
 import { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "./prisma";
+import type { Adapter } from 'next-auth/adapters';
+
+type SimpleUser = { id: string; name?: string };
 
 const providers = [
   CredentialsProvider({
@@ -12,7 +15,7 @@ const providers = [
       password: { label: "Password", type: "password" },
     },
     async authorize(credentials) {
-      const user = {
+      const user: SimpleUser = {
         id: "1",
         name: process.env.DASHBOARD_USER || "admin",
       };
@@ -23,7 +26,7 @@ const providers = [
         credentials.username === expectedUser &&
         credentials.password === expectedPass
       ) {
-        return user as any;
+        return user;
       }
       return null;
     },
@@ -33,15 +36,16 @@ const providers = [
 // If email server is configured, add Email provider (magic link)
 if (process.env.EMAIL_SERVER && process.env.EMAIL_FROM) {
   providers.push(
+    // EmailProvider returns a provider configuration usable by NextAuth
     EmailProvider({
       server: process.env.EMAIL_SERVER,
       from: process.env.EMAIL_FROM,
-    }) as any
+    })
   );
 }
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as any,
+  adapter: PrismaAdapter(prisma) as unknown as Adapter,
   providers,
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET || "dev-secret",

@@ -11,12 +11,7 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [hasEmailProvider, setHasEmailProvider] = useState(false);
-
-  useEffect(() => {
-    // detect email provider availability via env exposed flag
-    setHasEmailProvider(Boolean(process.env.NEXT_PUBLIC_EMAIL_ENABLED));
-  }, []);
+  const [hasEmailProvider] = useState(() => Boolean(process.env.NEXT_PUBLIC_EMAIL_ENABLED));
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,9 +20,9 @@ export default function LoginPage() {
       redirect: false,
       username,
       password,
-    } as any);
-    if (res && (res as any).error) {
-      setError((res as any).error || "Credenziali non valide");
+    });
+    if (res && 'error' in res && res.error) {
+      setError(res.error || "Credenziali non valide");
       return;
     }
     router.push("/dashboard");
@@ -74,7 +69,7 @@ export default function LoginPage() {
                     className="input flex-1"
                   />
                   <button
-                    onClick={() => signIn("email", { email, redirect: false } as any)}
+                    onClick={() => signIn("email", { email, redirect: false })}
                     className="btn-primary"
                   >
                     Invia link

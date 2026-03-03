@@ -18,17 +18,19 @@ const DEFAULT_TEMPLATES = [
 ];
 
 export default function TemplatesPage() {
-  const [items, setItems] = useState(DEFAULT_TEMPLATES);
+  const [items, setItems] = useState(() => {
+    if (typeof window === 'undefined') return DEFAULT_TEMPLATES;
+    try {
+      const raw = localStorage.getItem('preflight_templates');
+      return raw ? JSON.parse(raw) : DEFAULT_TEMPLATES;
+    } catch {
+      return DEFAULT_TEMPLATES;
+    }
+  });
   const [label, setLabel] = useState("");
   const [text, setText] = useState("");
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem("preflight_templates");
-      if (raw) setItems(JSON.parse(raw));
-    } catch (e) {}
-  }, []);
+  // Initial items read from localStorage in useState initializer
 
   useEffect(() => {
     if (typeof window === "undefined") return;

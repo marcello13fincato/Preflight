@@ -14,8 +14,16 @@ import { IconCheck } from "../../../components/shared/icons";
 
 export default function AuditPage() {
   const [text, setText] = useState("");
-  const [used, setUsed] = useState<number>(0);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [used, setUsed] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    return Number(localStorage.getItem('audit_used') || 0);
+  });
+  const [isAdmin, setIsAdmin] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    const adminToken = localStorage.getItem('audit_admin_token');
+    const envToken = process.env.NEXT_PUBLIC_ADMIN_TOKEN;
+    return Boolean(adminToken && envToken && adminToken === envToken);
+  });
   const [step, setStep] = useState<"input" | "analyzing" | "result">("input");
   const [result, setResult] = useState<AuditResult | null>(null);
   const [objective, setObjective] = useState("Generare conversazioni");
@@ -44,14 +52,7 @@ export default function AuditPage() {
     }, 1200);
   };
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = Number(localStorage.getItem("audit_used") || 0);
-    setUsed(stored);
-    const adminToken = localStorage.getItem("audit_admin_token");
-    const envToken = process.env.NEXT_PUBLIC_ADMIN_TOKEN;
-    setIsAdmin(Boolean(adminToken && envToken && adminToken === envToken));
-  }, []);
+  // initial values loaded from localStorage via useState initializers
 
   const reset = () => {
     setText("");
