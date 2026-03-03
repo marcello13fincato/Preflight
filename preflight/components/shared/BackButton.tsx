@@ -8,7 +8,7 @@ export default function BackButton() {
       onClick={() => router.back()}
       className="text-primary text-sm mb-4 hover:underline"
     >
-      ← Torna indietro
+      ← Torna alla home
     </button>
   );
 }

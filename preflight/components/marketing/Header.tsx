@@ -29,8 +29,8 @@ export default function MarketingHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link href="/dashboard" aria-label="Vai alla dashboard" className="hidden sm:inline-flex btn-secondary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
-            Dashboard
+          <Link href="/audit" className="hidden sm:inline-flex btn-primary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
+            Fai l’audit gratis
           </Link>
 
           {session ? (
@@ -46,9 +46,9 @@ export default function MarketingHeader() {
             </div>
           ) : (
             <Link
-              href="/auth/login"
+              href="/login"
               aria-label="Accedi"
-              className="hidden sm:inline-flex btn-primary rounded-full px-5 py-2 font-semibold shadow-sm"
+              className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm"
             >
               Accedi
             </Link>
@@ -81,8 +81,8 @@ export default function MarketingHeader() {
               </Link>
             ))}
 
-            <Link href="/dashboard" aria-label="Vai alla dashboard" className="block btn-secondary w-full text-center rounded-full px-4 py-2">
-              Dashboard
+            <Link href="/audit" aria-label="Fai l'audit gratis" className="block btn-primary w-full text-center rounded-full px-4 py-2">
+              Fai l’audit gratis
             </Link>
 
             {session ? (
@@ -91,7 +91,7 @@ export default function MarketingHeader() {
                 <button onClick={() => signOut({ callbackUrl: "/" })} className="btn-secondary">Esci</button>
               </div>
             ) : (
-              <Link href="/auth/login" className="block btn-primary w-full text-center rounded-full px-4 py-2">Accedi</Link>
+              <Link href="/login" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Accedi</Link>
             )}
           </div>
         </div>

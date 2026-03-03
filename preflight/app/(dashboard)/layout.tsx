@@ -3,6 +3,7 @@ import Sidebar from "../../components/dashboard/Sidebar";
 import Topbar from "../../components/dashboard/Topbar";
 import getServerAuthSession from "../../lib/getServerAuthSession";
 import Layout from "@/components/shared/Layout";
+import Link from "next/link";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
@@ -27,7 +28,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               <h3 className="mt-4 text-lg font-semibold">Dashboard protetta</h3>
               <p className="mt-2 text-sm text-muted">Per visualizzare gli insights e i consigli è necessario effettuare il login.</p>
               <div className="mt-4 flex justify-center gap-3">
-                <a href="/auth/login" className="btn-primary">Accedi</a>
+                <Link href="/auth/login" className="btn-primary">Accedi</Link>
                 <a href="/" className="btn-secondary">Torna alla home</a>
               </div>
             </div>

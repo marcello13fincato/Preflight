@@ -58,7 +58,7 @@ export default async function Home() {
               Fai l’audit gratis
             </Link>
             <Link
-              href="/perche"
+              href="/perche-funziona"
               className="rounded-xl border border-app link-primary px-8 py-4 hover:bg-soft transition"
             >
               Perché funziona

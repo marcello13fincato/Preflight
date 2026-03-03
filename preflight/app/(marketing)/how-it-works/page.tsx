@@ -1,47 +1,63 @@
 import Container from "@/components/shared/Container";
 import Section from "@/components/shared/Section";
-import MockPanel from "@/components/shared/MockPanel";
+import BackButton from "@/components/shared/BackButton";
+import MarketingCTA from "@/components/shared/MarketingCTA";
 
 export default function HowItWorks() {
   return (
     <main className="min-h-screen">
       <Section className="pt-24">
         <Container>
-          <h1 className="text-4xl font-bold text-app">Non è magia. È <span className="text-primary font-bold">metodo</span>.</h1>
-          <p className="mt-4 text-muted max-w-2xl">
-            Un audit in 40 controlli e una riscrittura pronta: ecco come operiamo dietro le quinte.
-          </p>
+          <div className="pt-8"><BackButton /></div>
+          <h1 className="text-4xl font-bold">Come funziona Preflight</h1>
+          <p className="mt-4 text-muted max-w-2xl">Dal testo grezzo a un post pronto da pubblicare in pochi secondi.</p>
         </Container>
       </Section>
 
       <Section className="bg-soft">
         <Container>
-          <h2 className="text-3xl font-bold text-center">Un audit in 40 controlli</h2>
-          <p className="mt-4 text-muted text-center max-w-2xl mx-auto">
-            Ogni post passa attraverso un framework che valuta Hook, Chiarezza, Prova, Struttura, Tono e CTA. Nulla è lasciato al caso.
-          </p>
+          <h2 className="text-3xl font-bold text-center">Passaggi</h2>
+          <p className="mt-4 text-muted text-center max-w-2xl mx-auto">Segui questi semplici passi per trasformare la tua bozza in un post che genera conversazioni.</p>
         </Container>
       </Section>
 
       <Section>
         <Container>
-          <h2 className="text-3xl font-bold text-center">Dall’analisi alla riscrittura</h2>
-          <ul className="mt-6 space-y-4 max-w-2xl mx-auto text-app">
-            <li>Punteggio totale</li>
-            <li>Punti critici</li>
-            <li>Riscrittura completa</li>
-            <li>Varianti hook/CTA</li>
-          </ul>
+          <div className="mt-6 grid gap-6 md:grid-cols-1">
+            <div className="p-6 bg-surface rounded-2xl">
+              <h3 className="font-semibold">Incolla il tuo post</h3>
+              <p className="mt-2 text-muted">Può essere una bozza o un contenuto già pronto.</p>
+            </div>
+
+            <div className="p-6 bg-surface rounded-2xl">
+              <h3 className="font-semibold">Analisi immediata</h3>
+              <p className="mt-2 text-muted">Preflight valuta struttura, chiarezza, prova e CTA.</p>
+            </div>
+
+            <div className="p-6 bg-surface rounded-2xl">
+              <h3 className="font-semibold">Report visuale</h3>
+              <p className="mt-2 text-muted">Punteggi e suggerimenti prioritari.</p>
+            </div>
+
+            {/* Insert CTA after step 3 */}
+            <div className="col-span-full mt-4 text-center"><MarketingCTA /></div>
+
+            <div className="p-6 bg-surface rounded-2xl">
+              <h3 className="font-semibold">Riscrittura completa</h3>
+              <p className="mt-2 text-muted">Una nuova versione pronta copy/paste.</p>
+            </div>
+
+            <div className="p-6 bg-surface rounded-2xl">
+              <h3 className="font-semibold">Pubblica con sicurezza</h3>
+              <p className="mt-2 text-muted">Sai cosa aspettarti prima di pubblicare.</p>
+            </div>
+          </div>
         </Container>
       </Section>
 
-      <Section className="py-24 bg-gradient-light">
+      <Section className="py-12 bg-soft2">
         <Container className="text-center">
-          <MockPanel title="Esempio report" className="max-w-md mx-auto">
-            <p className="text-sm text-muted">
-              Punteggio totale, breakdown per sezione e suggerimenti specifici. + versione ottimizzata del post.
-            </p>
-          </MockPanel>
+          <MarketingCTA />
         </Container>
       </Section>
     </main>
