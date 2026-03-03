@@ -7,7 +7,7 @@ import type { Adapter } from 'next-auth/adapters';
 
 type SimpleUser = { id: string; name?: string };
 
-const providers = [
+const providers: Array<ReturnType<typeof CredentialsProvider> | ReturnType<typeof EmailProvider>> = [
   CredentialsProvider({
     name: "Credentials",
     credentials: {
