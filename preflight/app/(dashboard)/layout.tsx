@@ -28,9 +28,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
               <h3 className="mt-4 text-lg font-semibold">Dashboard protetta</h3>
               <p className="mt-2 text-sm text-muted">Per visualizzare gli insights e i consigli è necessario effettuare il login.</p>
               <div className="mt-4 flex justify-center gap-3">
-                <Link href="/auth/login" className="btn-primary">Accedi</Link>
-                <a href="/" className="btn-secondary">Torna alla home</a>
-              </div>
+              <Link href="/auth/login" className="btn-primary">Accedi</Link>
+              <Link href="/" className="btn-secondary">Torna alla home</Link>
+            </div>
             </div>
           </div>
         )}

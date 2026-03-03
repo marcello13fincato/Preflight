@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { mockAudit, AuditResult } from "../../../lib/mock/audit";
 import Card from "../../../components/shared/Card";
 import Link from "next/link";
