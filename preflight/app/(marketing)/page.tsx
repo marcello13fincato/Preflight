@@ -15,6 +15,7 @@ import GradientBand from "@/components/shared/GradientBand";
 import Stepper from "@/components/shared/Stepper";
 import MockPanel from "@/components/shared/MockPanel";
 import Card from "@/components/shared/Card";
+import MarketingCTA from "@/components/shared/MarketingCTA";
 
 export default async function Home() {
   const session = await getServerAuthSession();
