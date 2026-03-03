@@ -1,9 +1,8 @@
-import { getServerSession } from "next-auth/next";
-import authOptions from "../../../lib/auth";
+import getServerAuthSession from "../../../lib/getServerAuthSession";
 import Link from "next/link";
 
 export default async function AccountPage() {
-  const session = await getServerSession(authOptions as any);
+  const session = await getServerAuthSession();
   if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center">

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth/next";
+import getServerAuthSession from "../../lib/getServerAuthSession";
 import {
   IconArrowRight,
   IconZap,
@@ -17,7 +17,7 @@ import MockPanel from "@/components/shared/MockPanel";
 import Card from "@/components/shared/Card";
 
 export default async function Home() {
-  const session = await getServerSession((await import("../../lib/auth")).default as any);
+  const session = await getServerAuthSession();
   if (session) {
     const { redirect } = await import("next/navigation");
     redirect("/dashboard");

@@ -34,3 +34,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Project Structure & Conventions
+
+- `app/` — Next.js App Router pages and route groups. Use `app/(marketing)` and `app/(dashboard)` to separate public marketing pages from the authenticated area.
+- `components/` — UI building blocks. Shared components live in `components/shared` and are exported via `components/shared/index.ts`.
+- `lib/` — small helper modules such as `lib/auth.ts`, `lib/prisma.ts`, `lib/routes.ts`, and `lib/apiClient.ts` (API wrapper).
+- `app/globals.css` — design tokens and CSS variables; keep Tailwind tokens in sync in `tailwind.config.js`.
+
+## Tests
+
+- Unit tests: `npm run test:unit` (uses Vitest).
+- End-to-end: `npm run test:e2e` (uses Playwright). Install dev dependencies before running.
+
+If you need me to scaffold example tests or run the test setup, tell me which test runner you'd like me to scaffold first.
