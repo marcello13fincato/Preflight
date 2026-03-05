@@ -24,7 +24,7 @@ export default function LoginPage() {
       setError(res.error || "Credenziali non valide");
       return;
     }
-    router.push("/dashboard");
+    router.push("/app");
   }
 
   return (

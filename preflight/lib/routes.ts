@@ -1,17 +1,18 @@
 export const marketingNav = [
   { label: "Come funziona", href: "/how-it-works" },
-  { label: "Perché funziona", href: "/perche-funziona" },
   { label: "Prezzi", href: "/pricing" },
-  { label: "Audit", href: "/audit" },
 ];
 
-export const marketingCTA = { label: "Fai l’audit gratuito", href: "/audit" };
+export const marketingCTA = { label: "Crea il mio piano clienti (5 min)", href: "/app/onboarding" };
 
 export const dashboardNav = [
-  { label: "Audit", href: "/dashboard/audits" },
-  { label: "Nuovo audit", href: "/audit" },
-  { label: "Playbook", href: "/dashboard/playbook" },
-  { label: "Account", href: "/dashboard/account" },
-  { label: "Template", href: "/dashboard/templates" },
-  { label: "Fatturazione", href: "/dashboard/billing" },
+  { label: "Today", href: "/app" },
+  { label: "Onboarding", href: "/app/onboarding" },
+  { label: "Inbound", href: "/app/inbound" },
+  { label: "Post", href: "/app/post" },
+  { label: "Comments", href: "/app/comments" },
+  { label: "DM", href: "/app/dm" },
+  { label: "Prospect", href: "/app/prospect" },
+  { label: "Pipeline", href: "/app/pipeline" },
+  { label: "Settings", href: "/app/settings" },
 ];

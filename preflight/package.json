@@ -21,10 +21,14 @@
     "nodemailer": "^7.0.13",
     "prisma": "^4.14.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.40.0",
     "@tailwindcss/postcss": "^4",
+    "@types/estree": "^0.0.50",
+    "@types/json-schema": "^7.0.12",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -33,9 +37,6 @@
     "eslint-config-next": "16.1.6",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "vitest": "^4.0.18",
-    "@types/estree": "^0.0.50",
-    "@types/json-schema": "^7.0.12",
-    "@playwright/test": "^1.40.0"
+    "vitest": "^4.0.18"
   }
 }

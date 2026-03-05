@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export default function AuthCallback() {
   const router = useRouter();
   useEffect(() => {
-    router.replace("/dashboard");
+    router.replace("/app");
   }, [router]);
   return (
     <main className="min-h-screen bg-app text-app flex items-center justify-center p-6">

@@ -29,8 +29,8 @@ export default function MarketingHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <Link href="/audit" className="hidden sm:inline-flex btn-primary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
-            Fai l’audit gratis
+          <Link href="/app/onboarding" className="hidden sm:inline-flex btn-primary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
+            Crea il mio piano clienti (5 min)
           </Link>
 
           {session ? (
@@ -45,13 +45,10 @@ export default function MarketingHeader() {
               </button>
             </div>
           ) : (
-            <Link
-              href="/login"
-              aria-label="Accedi"
-              className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm"
-            >
-              Accedi
-            </Link>
+            <>
+              <Link href="/login" aria-label="Accedi" className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm">Accedi</Link>
+              <Link href="/signup" className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm">Signup</Link>
+            </>
           )}
 
           {/* Mobile: hamburger */}
@@ -81,8 +78,8 @@ export default function MarketingHeader() {
               </Link>
             ))}
 
-            <Link href="/audit" aria-label="Fai l'audit gratis" className="block btn-primary w-full text-center rounded-full px-4 py-2">
-              Fai l’audit gratis
+            <Link href="/app/onboarding" className="block btn-primary w-full text-center rounded-full px-4 py-2">
+              Crea il mio piano clienti (5 min)
             </Link>
 
             {session ? (
@@ -91,7 +88,10 @@ export default function MarketingHeader() {
                 <button onClick={() => signOut({ callbackUrl: "/" })} className="btn-secondary">Esci</button>
               </div>
             ) : (
-              <Link href="/login" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Accedi</Link>
+              <div className="grid gap-2">
+                <Link href="/login" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Accedi</Link>
+                <Link href="/signup" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Signup</Link>
+              </div>
             )}
           </div>
         </div>

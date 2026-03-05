@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Preflight - Audit post LinkedIn",
-  description: "Ottieni feedback intelligenti sui tuoi post LinkedIn per aumentare visibilità e conversioni.",
+  title: "Preflight - LinkedIn Sales OS",
+  description: "LinkedIn Sales OS per freelancer e consulenti: piano, assistenti AI e pipeline per ottenere clienti.",
 };
 
 export default function RootLayout({
