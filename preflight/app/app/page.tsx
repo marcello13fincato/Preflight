@@ -17,6 +17,7 @@ export default function AppTodayPage() {
   const day = Math.min(14, Math.max(1, new Date().getDate() % 14 || 1));
   const today = profile.plan?.plan_14_days.find((d) => d.day === day) || profile.plan?.plan_14_days[0];
   const leadsByStatus = repo.lead.listByStatus(userId);
+  const activeConversations = (leadsByStatus["In conversazione"]?.length || 0) + (leadsByStatus["Interessato"]?.length || 0) + (leadsByStatus["Call proposta"]?.length || 0);
 
   const followupLead = repo
     .lead
@@ -36,7 +37,17 @@ export default function AppTodayPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold">Oggi: crea nuove opportunità.</h2>
-        <p className="mt-2 text-muted">15–30 minuti al giorno per generare conversazioni con potenziali clienti.</p>
+        <p className="mt-2 text-muted">Dedica 15–30 minuti per iniziare nuove conversazioni con potenziali clienti.</p>
+      </div>
+
+      <div className="rounded-lg border border-app bg-soft p-4">
+        <div className="text-sm text-muted">Active Conversations</div>
+        <div className="text-3xl font-bold">{activeConversations}</div>
+      </div>
+
+      <div className="rounded-lg border border-app p-4">
+        <div className="text-sm font-semibold">Journey commerciale</div>
+        <div className="mt-2 text-sm">POST → COMMENT → DM → CALL → CLIENT</div>
       </div>
 
       {!profile.onboarding_complete && (
@@ -52,14 +63,14 @@ export default function AppTodayPage() {
           explanation="Qui crei contenuti che fanno capire ai clienti che puoi aiutarli."
           action={today?.inbound || "Genera il tuo piano per vedere l'azione di oggi."}
           ctaHref="/app/inbound"
-          ctaLabel="Genera il contenuto di oggi"
+          ctaLabel="Genera contenuto"
         />
         <TaskCard
           title="CONVERSATIONS"
           explanation="Qui inizi conversazioni con potenziali clienti. Ti suggeriamo cosa scrivere."
           action={today?.outbound || "Apri 2 conversazioni con contatti in target."}
-          ctaHref="/app/prospect"
-          ctaLabel="Scrivi a nuovi contatti"
+          ctaHref="/app/comments"
+          ctaLabel="Apri conversazioni"
         />
         <TaskCard
           title="FOLLOW UPS"
@@ -72,7 +83,7 @@ export default function AppTodayPage() {
 
       <div className="rounded-lg border border-app p-4">
         <h3 className="font-semibold">Assistente rapido</h3>
-        <p className="text-sm text-muted">Incolla testo e salta direttamente nel modulo corretto.</p>
+        <p className="text-sm text-muted">Paste a comment or message and get a reply.</p>
         <div className="mt-3 flex flex-col gap-3">
           <select value={quickType} onChange={(e) => setQuickType(e.target.value)} className="input">
             <option value="post">Post</option>
@@ -86,7 +97,17 @@ export default function AppTodayPage() {
       </div>
 
       <div className="rounded-lg border border-app p-4">
-        <h3 className="font-semibold">Pipeline snapshot</h3>
+        <h3 className="font-semibold">HOW TO USE PREFLIGHT</h3>
+        <ol className="mt-2 space-y-1 text-sm text-muted">
+          <li>1 Publish a post</li>
+          <li>2 Reply to comments</li>
+          <li>3 Move the conversation to DM</li>
+          <li>4 Suggest a call</li>
+        </ol>
+      </div>
+
+      <div className="rounded-lg border border-app p-4">
+        <h3 className="font-semibold">CLIENTS</h3>
         <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
           {Object.entries(leadsByStatus).map(([status, leads]) => (
             <div key={status} className="rounded border border-app p-3 text-sm">
@@ -96,7 +117,7 @@ export default function AppTodayPage() {
           ))}
         </div>
         <p className="mt-3 text-sm">
-          1 follow-up consigliato oggi: {followupLead ? `${followupLead.name} (${followupLead.status})` : "Nessuno"}
+          Conversations to reactivate: {followupLead ? `${followupLead.name} (${followupLead.status})` : "Nessuna"}
         </p>
       </div>
     </div>

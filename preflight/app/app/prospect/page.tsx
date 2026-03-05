@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import JsonOutputCard from "@/components/app/JsonOutputCard";
+import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
@@ -49,12 +49,39 @@ export default function ProspectPage() {
       <div className="rounded-lg border border-app p-4 space-y-3">
         <label className="block text-sm">
           <span className="mb-1 block text-muted">Profilo LinkedIn del contatto</span>
-          <textarea rows={9} className="input w-full" value={pastedProfileText} onChange={(e) => setPastedProfileText(e.target.value)} />
+          <textarea rows={9} className="input w-full" placeholder="Headline, about, ruolo, azienda, ultimi post rilevanti..." value={pastedProfileText} onChange={(e) => setPastedProfileText(e.target.value)} />
         </label>
         <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
       </div>
-      {output && <JsonOutputCard title="Output pronto da usare" value={output} />}
+
+      {output && (
+        <section className="rounded-lg border border-app p-4 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-semibold">Intelligenza cliente</h3>
+            <CopyButton text={`${output.connection_opener}\n\n${output.dm1}`} />
+          </div>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="rounded border border-app p-3 text-sm"><strong>Client Heat Level:</strong> {output.client_heat_level}</div>
+            <div className="rounded border border-app p-3 text-sm"><strong>Priorità:</strong> {output.priority_signal}</div>
+          </div>
+          <ResultCard title="Problemi probabili" text={output.likely_pains.join("\n")} />
+          <ResultCard title="Angoli conversazione" text={output.angles.join("\n")} />
+          <ResultCard title="Messaggio connessione" text={output.connection_opener} />
+          <ResultCard title="Primo DM" text={output.dm1} />
+          <ResultCard title="Domande qualificanti" text={output.smart_questions.join("\n")} />
+          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_action}</div>
+        </section>
+      )}
       <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">Storico</h3><HistoryList userId={userId} type="prospect" /></section>
+    </div>
+  );
+}
+
+function ResultCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded border border-app p-3 text-sm">
+      <div className="font-semibold">{title}</div>
+      <p className="mt-1 whitespace-pre-wrap">{text}</p>
     </div>
   );
 }

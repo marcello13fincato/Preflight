@@ -11,6 +11,8 @@ const nav = [
   { href: "/app/comments", label: "Rispondi ai commenti" },
   { href: "/app/dm", label: "Rispondi ai messaggi" },
   { href: "/app/prospect", label: "Analizza un potenziale cliente" },
+  { href: "/app/opportunity", label: "Trova opportunita" },
+  { href: "/app/simulator", label: "Allenati alle conversazioni" },
   { href: "/app/pipeline", label: "Clienti in corso" },
   { href: "/app/settings", label: "Impostazioni" },
 ];

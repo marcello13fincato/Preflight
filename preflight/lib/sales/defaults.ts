@@ -2,9 +2,11 @@ import type {
   CommentAssistantJson,
   DmAssistantJson,
   OnboardingInput,
+  OpportunityFinderJson,
   PlanJson,
   PostBuilderJson,
   ProspectAnalyzerJson,
+  SimulatorJson,
 } from "./schemas";
 
 export function createDefaultPlan(input: OnboardingInput): PlanJson {
@@ -79,6 +81,8 @@ export const defaultPostBuilder = (objective: string, dmKeyword: string): PostBu
 export const defaultCommentAssistant: CommentAssistantJson = {
   comment_type: "curious",
   strategy: "Riconosci il commento, dai valore sintetico, poi apri un ponte in DM con domanda mirata.",
+  client_heat_level: "Warm",
+  message_risk_warning: "✅ This message opens a good conversation.",
   replies: {
     soft: "Grazie, ottima osservazione. Nel mio caso funziona partire da una domanda chiara per capire priorita e timing.",
     authority: "Concordo sul punto. Dalle conversazioni che vedo ogni settimana, la differenza la fa la qualificazione iniziale in 1 domanda.",
@@ -90,6 +94,8 @@ export const defaultCommentAssistant: CommentAssistantJson = {
 
 export const defaultDmAssistant: DmAssistantJson = {
   best_reply: "Chiaro. Prima di proporti qualcosa, posso farti una domanda rapida su obiettivo e urgenza?",
+  client_heat_level: "Warm",
+  message_risk_warning: "✅ This message opens a good conversation.",
   alternatives: {
     short: "Capito. Qual e il risultato che vuoi ottenere entro 30 giorni?",
     assertive: "Perfetto, allineiamoci su priorita: qual e il costo oggi del problema che hai descritto?",
@@ -127,6 +133,33 @@ export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
     "Che tipo di prospect risponde meglio?",
     "Quale obiezione blocca piu spesso la call?",
   ],
+  client_heat_level: "Cold",
   priority_signal: "medium",
   next_action: "Invia il connection_opener oggi e, dopo accettazione, manda dm1 entro 24 ore.",
+};
+
+export const defaultOpportunityFinder: OpportunityFinderJson = {
+  post_types_to_search: [
+    "Post con richieste di raccomandazioni",
+    "Post con problema operativo aperto",
+    "Post con domanda su tool o consulenti",
+  ],
+  keywords_to_monitor: ["looking for", "any recommendations", "does anyone know"],
+  conversation_opportunities: [
+    "Commenta con una domanda utile e concreta",
+    "Condividi mini-esempio pratico senza vendere",
+    "Invita la persona a continuare in DM",
+  ],
+  next_action: "Scegli 1 keyword, trova 5 post oggi e commenta con approccio consulenziale.",
+};
+
+export const defaultSimulator: SimulatorJson = {
+  prospect_reply: "Interessante. Come lavorate di solito con aziende come la mia?",
+  feedback: [
+    "Buona domanda iniziale",
+    "Messaggio un po' lungo: prova una versione piu breve",
+    "Chiudi con una domanda di qualificazione",
+  ],
+  message_risk_warning: "⚠ This message may sound too salesy.",
+  next_action: "Rispondi in 2 frasi: valore + domanda qualificante.",
 };

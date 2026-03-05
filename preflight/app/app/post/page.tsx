@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import JsonOutputCard from "@/components/app/JsonOutputCard";
+import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
@@ -56,7 +56,7 @@ export default function PostPage() {
       <div className="rounded-lg border border-app p-4 space-y-3">
         <label className="block text-sm">
           <span className="mb-1 block text-muted">Bozza o idea del post</span>
-          <textarea rows={7} className="input w-full" value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
+          <textarea rows={7} className="input w-full" placeholder="Many SaaS companies lose conversions because onboarding is confusing." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
         </label>
         <div className="grid gap-3 md:grid-cols-2">
           <label className="block text-sm">
@@ -77,12 +77,37 @@ export default function PostPage() {
         </button>
       </div>
 
-      {output && <JsonOutputCard title="Output pronto da usare" value={output} />}
+      {output && (
+        <section className="rounded-lg border border-app p-4 space-y-4">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="font-semibold">Post pronto da usare</h3>
+            <CopyButton text={`${output.post_versions.clean}\n\n${output.cta}`} />
+          </div>
+          <ResultCard title="Hooks" text={output.hooks.join("\n")} />
+          <div className="grid gap-3 md:grid-cols-3">
+            <ResultCard title="Versione clean" text={output.post_versions.clean} />
+            <ResultCard title="Versione diretta" text={output.post_versions.direct} />
+            <ResultCard title="Versione autorevole" text={output.post_versions.authority} />
+          </div>
+          <ResultCard title="CTA" text={output.cta} />
+          <ResultCard title="Comment starter" text={output.comment_starter} />
+          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_step}</div>
+        </section>
+      )}
 
       <section className="rounded-lg border border-app p-4">
         <h3 className="font-semibold mb-2">Storico</h3>
         <HistoryList userId={userId} type="post" />
       </section>
+    </div>
+  );
+}
+
+function ResultCard({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded border border-app p-3 text-sm">
+      <div className="font-semibold">{title}</div>
+      <p className="mt-1 whitespace-pre-wrap">{text}</p>
     </div>
   );
 }

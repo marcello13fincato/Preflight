@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const conversationGoalSchema = z.enum([
+  "understand_fit",
+  "continue_conversation",
+  "move_to_dm",
+  "propose_call",
+  "follow_up",
+]);
+
+export const heatLevelSchema = z.enum(["Cold", "Warm", "Hot"]);
+
 export const planSchema = z.object({
   positioning: z.object({
     one_liner: z.string(),
@@ -68,6 +78,8 @@ export const postBuilderSchema = z.object({
 export const commentAssistantSchema = z.object({
   comment_type: z.enum(["lead", "curious", "support", "objection", "negative", "peer"]),
   strategy: z.string(),
+  client_heat_level: heatLevelSchema,
+  message_risk_warning: z.string(),
   replies: z.object({
     soft: z.string(),
     authority: z.string(),
@@ -79,6 +91,8 @@ export const commentAssistantSchema = z.object({
 
 export const dmAssistantSchema = z.object({
   best_reply: z.string(),
+  client_heat_level: heatLevelSchema,
+  message_risk_warning: z.string(),
   alternatives: z.object({
     short: z.string(),
     assertive: z.string(),
@@ -98,7 +112,22 @@ export const prospectAnalyzerSchema = z.object({
   connection_opener: z.string(),
   dm1: z.string(),
   smart_questions: z.tuple([z.string(), z.string(), z.string(), z.string(), z.string()]),
+  client_heat_level: heatLevelSchema,
   priority_signal: z.enum(["high", "medium", "low"]),
+  next_action: z.string(),
+});
+
+export const opportunityFinderSchema = z.object({
+  post_types_to_search: z.array(z.string()),
+  keywords_to_monitor: z.array(z.string()),
+  conversation_opportunities: z.array(z.string()),
+  next_action: z.string(),
+});
+
+export const simulatorSchema = z.object({
+  prospect_reply: z.string(),
+  feedback: z.array(z.string()),
+  message_risk_warning: z.string(),
   next_action: z.string(),
 });
 
@@ -127,7 +156,10 @@ export type PostBuilderJson = z.infer<typeof postBuilderSchema>;
 export type CommentAssistantJson = z.infer<typeof commentAssistantSchema>;
 export type DmAssistantJson = z.infer<typeof dmAssistantSchema>;
 export type ProspectAnalyzerJson = z.infer<typeof prospectAnalyzerSchema>;
+export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
+export type SimulatorJson = z.infer<typeof simulatorSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
+export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 
 export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding";
 
@@ -142,9 +174,11 @@ export type LeadStatus = "Nuovo" | "In conversazione" | "Interessato" | "Call pr
 export type Lead = {
   id: string;
   name: string;
+  company?: string;
   linkedin_url?: string;
   status: LeadStatus;
   notes: string;
+  last_conversation?: string;
   next_action_at?: string;
   created_at: string;
   updated_at: string;
