@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import JourneyBar from "@/components/shared/JourneyBar";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
@@ -26,6 +27,13 @@ const initial: OnboardingInput = {
   goal_primary: "prime conversazioni",
 };
 
+const STEP_LABELS = [
+  "Cosa vendi",
+  "Cliente ideale",
+  "Credibilità",
+  "Tempo & Goal",
+];
+
 export default function OnboardingPage() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -34,7 +42,10 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [done, setDone] = useState(false);
   const [data, setData] = useState<OnboardingInput>(initial);
+
+  const progress = ((step - 1) / 4) * 100;
 
   async function submit() {
     setError("");
@@ -43,7 +54,6 @@ export default function OnboardingPage() {
       setError("Compila i campi obbligatori prima di continuare.");
       return;
     }
-
     setLoading(true);
     try {
       repo.profile.saveOnboarding(userId, parsed.data);
@@ -57,7 +67,7 @@ export default function OnboardingPage() {
       repo.profile.savePlan(userId, plan);
       repo.profile.setOnboardingComplete(userId);
       repo.interaction.addInteraction(userId, "onboarding", JSON.stringify(parsed.data), plan);
-      router.push("/app");
+      setDone(true);
     } catch {
       setError("Non sono riuscito a generare il piano. Riprova.");
     } finally {
@@ -65,106 +75,311 @@ export default function OnboardingPage() {
     }
   }
 
-  return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Imposta il tuo sistema clienti</h2>
-      <p className="text-sm text-muted">Rispondi a poche domande. Creeremo il tuo piano commerciale LinkedIn.</p>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: configura il tuo sistema commerciale.</p>
-        <p><strong>Cosa inserire</strong>: offerta, cliente ideale, prove e tempo disponibile.</p>
-        <p><strong>Cosa ottieni</strong>: un piano pratico per passare da conversazione a call.</p>
-      </div>
-      <p className="text-sm text-muted">Step {step}/4</p>
+  if (done) {
+    return (
+      <div className="mx-auto max-w-lg space-y-6 py-8 text-center">
+        <div className="text-6xl mb-2">🎉</div>
+        <h1 className="text-3xl font-extrabold">Sistema creato!</h1>
+        <p className="text-[var(--color-muted)]">
+          Il tuo piano LinkedIn è pronto. Ora sai esattamente cosa fare ogni giorno.
+        </p>
 
+        {/* Journey preview */}
+        <div className="rounded-xl bg-[var(--color-soft)] border border-[var(--color-border)] p-5">
+          <p className="text-sm font-bold text-[var(--color-primary)] mb-3">Il tuo percorso verso nuovi clienti:</p>
+          <JourneyBar variant="light" className="justify-center" />
+        </div>
+
+        <button
+          onClick={() => router.push("/app")}
+          className="btn-primary px-8 py-4 text-base w-full justify-center"
+        >
+          🚀 Vai alla Dashboard
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mx-auto max-w-xl space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold">⚙️ Imposta il tuo sistema clienti</h1>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">
+          Rispondi a poche domande. Creeremo il tuo piano commerciale LinkedIn in pochi secondi.
+        </p>
+        <p className="text-xs text-[var(--color-muted)] mt-1">⏱️ Tempo stimato: 3–5 minuti</p>
+      </div>
+
+      {/* Progress bar */}
+      <div>
+        <div className="flex justify-between text-xs text-[var(--color-muted)] mb-2">
+          {STEP_LABELS.map((label, i) => (
+            <span key={i} className={i + 1 <= step ? "font-semibold text-[var(--color-primary)]" : ""}>{label}</span>
+          ))}
+        </div>
+        <div className="h-2 rounded-full bg-[var(--color-border)] overflow-hidden">
+          <div
+            className="h-full rounded-full bg-[var(--color-primary)] transition-all duration-300"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-xs text-[var(--color-muted)] mt-1">Step {step} di 4</p>
+      </div>
+
+      {/* Steps */}
       {step === 1 && (
-        <Section title="Step 1 - Cosa vendi?">
-          <Input label="Servizio principale" placeholder="Aiuto aziende SaaS ad aumentare le conversioni." value={data.offer_one_liner} onChange={(v) => setData({ ...data, offer_one_liner: v })} />
-          <Input label="Prezzo medio" placeholder="500-1500EUR" value={data.offer_price_range} onChange={(v) => setData({ ...data, offer_price_range: v })} />
-          <Select label="Durata progetto" value={data.offer_delivery_time} options={["1w", "2w", "1m", "3m"]} onChange={(v) => setData({ ...data, offer_delivery_time: v as OnboardingInput["offer_delivery_time"] })} />
-          <Input label="Risultato che ottiene il cliente" value={data.offer_outcome} onChange={(v) => setData({ ...data, offer_outcome: v })} />
-        </Section>
+        <StepSection
+          step={1}
+          title="Cosa vendi?"
+          why="Ci serve per capire come posizionarti su LinkedIn e cosa far dire ai tuoi post."
+        >
+          <Field
+            label="Servizio principale *"
+            hint='Es: "Aiuto aziende SaaS ad aumentare le conversioni con audit UX"'
+            value={data.offer_one_liner}
+            onChange={(v) => setData({ ...data, offer_one_liner: v })}
+          />
+          <Field
+            label="Prezzo medio"
+            hint='Es: "500-1500€" oppure "Non sono ancora sicuro"'
+            value={data.offer_price_range}
+            onChange={(v) => setData({ ...data, offer_price_range: v })}
+            optional
+          />
+          <FieldSelect
+            label="Durata tipica del progetto"
+            value={data.offer_delivery_time}
+            options={[
+              { value: "1w", label: "1 settimana" },
+              { value: "2w", label: "2 settimane" },
+              { value: "1m", label: "1 mese" },
+              { value: "3m", label: "3 mesi o più" },
+            ]}
+            onChange={(v) => setData({ ...data, offer_delivery_time: v as OnboardingInput["offer_delivery_time"] })}
+          />
+          <Field
+            label="Risultato che ottiene il cliente"
+            hint='Es: "Aumenta la retention del 20%" o "Trova 3 nuovi clienti in 60 giorni"'
+            value={data.offer_outcome}
+            onChange={(v) => setData({ ...data, offer_outcome: v })}
+          />
+        </StepSection>
       )}
 
       {step === 2 && (
-        <Section title="Step 2 - Chi è il cliente ideale?">
-          <Input label="Ruolo" value={data.icp_role} onChange={(v) => setData({ ...data, icp_role: v })} />
-          <Input label="Settore" value={data.icp_industry} onChange={(v) => setData({ ...data, icp_industry: v })} />
-          <Input label="Dimensione azienda" value={data.icp_company_size} onChange={(v) => setData({ ...data, icp_company_size: v })} />
-          <Input label="Problema principale" value={data.icp_main_problem} onChange={(v) => setData({ ...data, icp_main_problem: v })} />
-          <Input
+        <StepSection
+          step={2}
+          title="Chi è il tuo cliente ideale?"
+          why="Ti aiutiamo a scrivere post e messaggi che parlano direttamente a queste persone."
+        >
+          <Field
+            label="Ruolo / titolo"
+            hint='Es: "Founder SaaS", "HR Manager", "CEO PMI"'
+            value={data.icp_role}
+            onChange={(v) => setData({ ...data, icp_role: v })}
+            notSureLabel="Non ho ancora le idee chiarissime"
+          />
+          <Field
+            label="Settore"
+            hint='Es: "SaaS B2B", "Consulenza", "E-commerce"'
+            value={data.icp_industry}
+            onChange={(v) => setData({ ...data, icp_industry: v })}
+            optional
+          />
+          <Field
+            label="Dimensione azienda"
+            hint='Es: "1-10 persone", "10-50", "50-200"'
+            value={data.icp_company_size}
+            onChange={(v) => setData({ ...data, icp_company_size: v })}
+            optional
+          />
+          <Field
+            label="Problema principale che risolvi"
+            hint='Es: "Non riescono a convertire i lead in call" o "Non hanno un sistema per trovare clienti"'
+            value={data.icp_main_problem}
+            onChange={(v) => setData({ ...data, icp_main_problem: v })}
+          />
+          <Field
             label="Obiezioni principali (separate da virgola, max 3)"
+            hint='Es: "Non ho tempo, È troppo caro, Ci penso"'
             value={data.icp_top_objections.join(", ")}
             onChange={(v) => setData({ ...data, icp_top_objections: v.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 3) })}
+            optional
           />
-        </Section>
+        </StepSection>
       )}
 
       {step === 3 && (
-        <Section title="Step 3 - Perché dovrebbero fidarsi?">
-          <Input label="Mini caso studio" value={data.proof_case_study} onChange={(v) => setData({ ...data, proof_case_study: v })} />
-          <Input label="Testimonianza" value={data.proof_testimonial || ""} onChange={(v) => setData({ ...data, proof_testimonial: v })} />
-          <Input label="Portfolio" value={data.proof_links || ""} onChange={(v) => setData({ ...data, proof_links: v })} />
-        </Section>
+        <StepSection
+          step={3}
+          title="Perché dovrebbero fidarsi di te?"
+          why="Le prove sociali rendono i tuoi messaggi molto più credibili. Anche una frase basta."
+        >
+          <Field
+            label="Mini caso studio"
+            hint='Es: "Ho aiutato X a passare da 0 a 3 call/settimana in 4 settimane"'
+            value={data.proof_case_study}
+            onChange={(v) => setData({ ...data, proof_case_study: v })}
+            notSureLabel="Non ho ancora case study — salto per ora"
+            optional
+          />
+          <Field
+            label="Testimonianza o risultato"
+            hint='Es: "Marco ci ha detto: in 30 giorni ho firmato 2 nuovi clienti"'
+            value={data.proof_testimonial || ""}
+            onChange={(v) => setData({ ...data, proof_testimonial: v })}
+            optional
+          />
+          <Field
+            label="Portfolio o link utili"
+            hint="Link al sito, LinkedIn, portfolio..."
+            value={data.proof_links || ""}
+            onChange={(v) => setData({ ...data, proof_links: v })}
+            optional
+          />
+        </StepSection>
       )}
 
       {step === 4 && (
-        <Section title="Step 4 - Quanto tempo puoi dedicare?">
-          <Select label="Tempo settimanale" value={data.weekly_time_minutes} options={["15 min", "30 min", "1h", "2h"]} valueMap={{ "15 min": "15", "30 min": "30", "1h": "60", "2h": "120" }} onChange={(v) => setData({ ...data, weekly_time_minutes: v as OnboardingInput["weekly_time_minutes"] })} />
-          <Select label="Quanto ti senti sicuro nel pubblicare? (1-5)" value={data.comfort_post} options={["1", "2", "3", "4", "5"]} onChange={(v) => setData({ ...data, comfort_post: v as OnboardingInput["comfort_post"] })} />
-          <Select label="Quanto ti senti sicuro nel rispondere ai commenti? (1-5)" value={data.comfort_comments} options={["1", "2", "3", "4", "5"]} onChange={(v) => setData({ ...data, comfort_comments: v as OnboardingInput["comfort_comments"] })} />
-          <Select label="Quanto ti senti sicuro nei messaggi privati? (1-5)" value={data.comfort_dm} options={["1", "2", "3", "4", "5"]} onChange={(v) => setData({ ...data, comfort_dm: v as OnboardingInput["comfort_dm"] })} />
-          <Select
-            label="Goal"
+        <StepSection
+          step={4}
+          title="Quanto tempo puoi dedicare?"
+          why="Creiamo un piano realistico basato sul tuo tempo disponibile."
+        >
+          <FieldSelect
+            label="Tempo disponibile a settimana"
+            value={data.weekly_time_minutes}
+            options={[
+              { value: "15", label: "15 minuti" },
+              { value: "30", label: "30 minuti" },
+              { value: "60", label: "1 ora" },
+              { value: "120", label: "2 ore o più" },
+            ]}
+            onChange={(v) => setData({ ...data, weekly_time_minutes: v as OnboardingInput["weekly_time_minutes"] })}
+          />
+          <FieldSelect
+            label="Quanto ti senti sicuro nel pubblicare post? (1=poco, 5=molto)"
+            value={data.comfort_post}
+            options={[1,2,3,4,5].map((n) => ({ value: String(n), label: String(n) }))}
+            onChange={(v) => setData({ ...data, comfort_post: v as OnboardingInput["comfort_post"] })}
+          />
+          <FieldSelect
+            label="Sicurezza nel rispondere ai commenti?"
+            value={data.comfort_comments}
+            options={[1,2,3,4,5].map((n) => ({ value: String(n), label: String(n) }))}
+            onChange={(v) => setData({ ...data, comfort_comments: v as OnboardingInput["comfort_comments"] })}
+          />
+          <FieldSelect
+            label="Sicurezza nei messaggi privati?"
+            value={data.comfort_dm}
+            options={[1,2,3,4,5].map((n) => ({ value: String(n), label: String(n) }))}
+            onChange={(v) => setData({ ...data, comfort_dm: v as OnboardingInput["comfort_dm"] })}
+          />
+          <FieldSelect
+            label="Obiettivo principale"
             value={data.goal_primary}
-            options={["Prime conversazioni", "Più call", "Più clienti"]}
-            valueMap={{ "Prime conversazioni": "prime conversazioni", "Più call": "più call", "Più clienti": "più clienti" }}
+            options={[
+              { value: "prime conversazioni", label: "Iniziare le prime conversazioni" },
+              { value: "più call", label: "Avere più call" },
+              { value: "più clienti", label: "Chiudere più clienti" },
+            ]}
             onChange={(v) => setData({ ...data, goal_primary: v as OnboardingInput["goal_primary"] })}
           />
-        </Section>
+        </StepSection>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <div className="callout callout-danger text-sm">{error}</div>
+      )}
 
-      <div className="flex gap-2">
-        <button className="btn-secondary px-4 py-2" disabled={step === 1 || loading} onClick={() => setStep((s) => s - 1)}>Indietro</button>
+      <div className="flex justify-between gap-3">
+        <button
+          className="btn-secondary px-4 py-2.5"
+          disabled={step === 1 || loading}
+          onClick={() => setStep((s) => s - 1)}
+        >
+          ← Indietro
+        </button>
         {step < 4 ? (
-          <button className="btn-primary px-4 py-2" disabled={loading} onClick={() => setStep((s) => s + 1)}>Avanti</button>
+          <button
+            className="btn-primary px-6 py-2.5"
+            disabled={loading}
+            onClick={() => setStep((s) => s + 1)}
+          >
+            Avanti →
+          </button>
         ) : (
-          <button className="btn-primary px-4 py-2" disabled={loading} onClick={submit}>{loading ? "Generazione..." : "Genera piano"}</button>
+          <button
+            className="btn-primary px-6 py-2.5"
+            disabled={loading}
+            onClick={submit}
+          >
+            {loading ? "⏳ Generazione piano..." : "🚀 Genera il mio piano"}
+          </button>
         )}
       </div>
     </div>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function StepSection({ step, title, why, children }: { step: number; title: string; why: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-app p-4">
-      <h3 className="mb-3 font-semibold">{title}</h3>
-      <div className="space-y-3">{children}</div>
+    <div className="card-premium p-6 space-y-4">
+      <div>
+        <div className="badge badge-primary mb-2">Step {step} di 4</div>
+        <h2 className="text-xl font-extrabold">{title}</h2>
+        <p className="text-xs text-[var(--color-muted)] mt-1">💡 <em>{why}</em></p>
+      </div>
+      <div className="space-y-4">{children}</div>
     </div>
   );
 }
 
-function Input({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+function Field({
+  label, value, onChange, hint, optional, notSureLabel,
+}: {
+  label: string; value: string; onChange: (v: string) => void;
+  hint?: string; optional?: boolean; notSureLabel?: string;
+}) {
   return (
     <label className="block text-sm">
-      <span className="mb-1 block text-muted">{label}</span>
-      <input className="input w-full" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
+      <span className="mb-1.5 block font-semibold">
+        {label}
+        {optional && <span className="ml-1 font-normal text-[var(--color-muted)]">(opzionale)</span>}
+      </span>
+      {hint && <span className="block text-xs text-[var(--color-muted)] mb-1">{hint}</span>}
+      <input className="input w-full" value={value} onChange={(e) => onChange(e.target.value)} />
+      {notSureLabel && (
+        <button
+          type="button"
+          aria-label={`Seleziona risposta predefinita: ${notSureLabel}`}
+          className="mt-1.5 text-xs text-[var(--color-muted)] hover:text-[var(--color-primary)] underline underline-offset-2"
+          onClick={() => onChange(notSureLabel)}
+        >
+          💬 {notSureLabel}
+        </button>
+      )}
     </label>
   );
 }
 
-function Select({ label, value, onChange, options, valueMap }: { label: string; value: string; onChange: (v: string) => void; options: string[]; valueMap?: Record<string, string> }) {
-  const selectedLabel = valueMap ? Object.keys(valueMap).find((key) => valueMap[key] === value) || options[0] : value;
+function FieldSelect({
+  label, value, onChange, options,
+}: {
+  label: string; value: string;
+  onChange: (v: string) => void;
+  options: { value: string; label: string }[];
+}) {
   return (
     <label className="block text-sm">
-      <span className="mb-1 block text-muted">{label}</span>
-      <select className="input w-full" value={selectedLabel} onChange={(e) => onChange(valueMap ? valueMap[e.target.value] : e.target.value)}>
-        {options.map((option) => (
-          <option key={option} value={option}>{option}</option>
+      <span className="mb-1.5 block font-semibold">{label}</span>
+      <select className="input w-full" value={value} onChange={(e) => onChange(e.target.value)}>
+        {options.map((opt) => (
+          <option key={opt.value} value={opt.value}>{opt.label}</option>
         ))}
       </select>
     </label>
   );
 }
+

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import CopyButton from "@/components/shared/CopyButton";
+import PageGuide from "@/components/shared/PageGuide";
 import { defaultOpportunityFinder } from "@/lib/sales/defaults";
 import type { OpportunityFinderJson } from "@/lib/sales/schemas";
 
@@ -26,49 +27,73 @@ export default function OpportunityPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Trova opportunita di conversazione</h2>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: ti suggerisce dove commentare per aprire conversazioni utili.</p>
-        <p><strong>Cosa incollare</strong>: descrizione del cliente ideale.</p>
-        <p><strong>Cosa ottieni</strong>: tipi di post, keyword e opportunita pratiche.</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold">🔍 Trova opportunità di conversazione</h1>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">Scopri dove commentare per aprire conversazioni con i clienti giusti.</p>
       </div>
 
-      <div className="rounded-lg border border-app p-4 space-y-3">
+      <PageGuide
+        what="trovi dove e come commentare su LinkedIn per incontrare potenziali clienti."
+        paste="la descrizione del tuo cliente ideale (ruolo, settore, problema principale)."
+        get="tipi di post da monitorare, keyword da usare e opportunità pratiche dove commentare."
+        next="vai su LinkedIn, cerca i post suggeriti e commenta con valore — poi usa 'Rispondi ai commenti'."
+      />
+
+      <div className="card-premium p-6 space-y-4">
         <label className="block text-sm">
-          <span className="mb-1 block text-muted">Cliente ideale</span>
+          <span className="mb-1.5 block font-semibold">Cliente ideale</span>
           <textarea
             rows={5}
             className="input w-full"
-            placeholder="Founder SaaS B2B con team 10-50 che vuole aumentare demo call"
+            placeholder="Es: Founder SaaS B2B con team 10-50 che vuole aumentare le demo call"
             value={idealClientDescription}
             onChange={(e) => setIdealClientDescription(e.target.value)}
           />
         </label>
-        <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
+        <button onClick={generate} disabled={loading || !idealClientDescription.trim()} className="btn-primary px-6 py-3">
+          {loading ? "⏳ Ricerca in corso..." : "🔍 Trova opportunità"}
+        </button>
       </div>
 
       {output && (
-        <section className="rounded-lg border border-app p-4 space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">Opportunity Finder</h3>
-            <CopyButton text={JSON.stringify(output, null, 2)} />
+        <section className="space-y-4">
+          <h2 className="text-xl font-extrabold">✅ Dove trovare i tuoi clienti</h2>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <ListCard title="📝 Tipi di post da monitorare" items={output.post_types_to_search} />
+            <ListCard title="🔎 Keyword da monitorare" items={output.keywords_to_monitor} />
           </div>
-          <ResultCard title="Types of posts to search" text={output.post_types_to_search.join("\n")} />
-          <ResultCard title="Keywords to monitor" text={output.keywords_to_monitor.join("\n")} />
-          <ResultCard title="Conversation opportunities" text={output.conversation_opportunities.join("\n")} />
-          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_action}</div>
+
+          <ListCard title="💬 Opportunità concrete dove commentare" items={output.conversation_opportunities} />
+
+          <div className="callout callout-success flex items-start gap-3">
+            <span className="text-lg">➡️</span>
+            <div><strong>Prossima mossa:</strong> {output.next_action}</div>
+          </div>
         </section>
       )}
     </div>
   );
 }
 
-function ResultCard({ title, text }: { title: string; text: string }) {
+function ListCard({ title, items }: { title: string; items: string[] }) {
+  const text = items.join("\n");
   return (
-    <div className="rounded border border-app p-3 text-sm">
-      <div className="font-semibold">{title}</div>
-      <p className="mt-1 whitespace-pre-wrap">{text}</p>
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm">
+      <div className="flex items-center justify-between gap-2 mb-3">
+        <span className="font-bold text-sm">{title}</span>
+        <CopyButton text={text} />
+      </div>
+      <ul className="space-y-2">
+        {items.map((item, i) => (
+          <li key={i} className="flex items-start gap-2 text-sm">
+            <span className="mt-0.5 flex-shrink-0 text-[var(--color-primary)]">•</span>
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
+
