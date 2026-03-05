@@ -45,10 +45,7 @@ export default function MarketingHeader() {
               </button>
             </div>
           ) : (
-            <>
-              <Link href="/login" aria-label="Accedi" className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm">Accedi</Link>
-              <Link href="/signup" className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm">Signup</Link>
-            </>
+            <Link href="/app" aria-label="Apri app" className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm">Apri app</Link>
           )}
 
           {/* Mobile: hamburger */}
@@ -88,10 +85,7 @@ export default function MarketingHeader() {
                 <button onClick={() => signOut({ callbackUrl: "/" })} className="btn-secondary">Esci</button>
               </div>
             ) : (
-              <div className="grid gap-2">
-                <Link href="/login" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Accedi</Link>
-                <Link href="/signup" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Signup</Link>
-              </div>
+              <Link href="/app" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Apri app</Link>
             )}
           </div>
         </div>

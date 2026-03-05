@@ -1,14 +1,6 @@
-import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export default function Login() {
-  return (
-    <main className="min-h-screen flex items-center justify-center p-6">
-      <div className="w-full max-w-md rounded-2xl border border-app bg-surface p-7 text-center">
-        <h1 className="text-2xl font-bold">Login</h1>
-        <p className="mt-2 text-sm text-muted">Usa login esistente per accedere alla Sales OS.</p>
-        <Link href="/auth/login" className="mt-6 inline-block btn-primary px-5 py-3">Vai al login</Link>
-      </div>
-    </main>
-  );
+  redirect("/app");
 }
 
