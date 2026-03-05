@@ -47,21 +47,26 @@ export default function DmPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">DM Assistant + follow-ups</h2>
+      <h2 className="text-2xl font-bold">Gestisci i messaggi.</h2>
+      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
+        <p><strong>Cosa fa questa pagina</strong>: ti aiuta a rispondere ai messaggi per arrivare a una call.</p>
+        <p><strong>Cosa incollare</strong>: conversazione DM e, se vuoi, profilo del contatto.</p>
+        <p><strong>Cosa ottieni</strong>: risposta consigliata, versione breve, versione diretta e follow-up.</p>
+      </div>
       <div className="rounded-lg border border-app p-4 space-y-3">
-        <label className="block text-sm"><span className="mb-1 block text-muted">pasted_chat_thread</span><textarea rows={7} className="input w-full" value={pastedChatThread} onChange={(e) => setPastedChatThread(e.target.value)} /></label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">objective</span>
+        <label className="block text-sm"><span className="mb-1 block text-muted">Conversazione</span><textarea rows={7} className="input w-full" value={pastedChatThread} onChange={(e) => setPastedChatThread(e.target.value)} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-muted">Obiettivo</span>
           <select className="input w-full" value={objective} onChange={(e) => setObjective(e.target.value as "qualify" | "propose call" | "follow-up")}>
-            <option value="qualify">qualify</option>
-            <option value="propose call">propose call</option>
-            <option value="follow-up">follow-up</option>
+            <option value="qualify">Qualificare</option>
+            <option value="propose call">Proporre call</option>
+            <option value="follow-up">Follow-up</option>
           </select>
         </label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">optional prospect_profile_text</span><textarea rows={4} className="input w-full" value={prospectProfileText} onChange={(e) => setProspectProfileText(e.target.value)} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-muted">Profilo contatto (opzionale)</span><textarea rows={4} className="input w-full" value={prospectProfileText} onChange={(e) => setProspectProfileText(e.target.value)} /></label>
         <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
       </div>
-      {output && <JsonOutputCard title="DM Assistant JSON" value={output} />}
-      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">History</h3><HistoryList userId={userId} type="dm" /></section>
+      {output && <JsonOutputCard title="Output pronto da usare" value={output} />}
+      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">Storico</h3><HistoryList userId={userId} type="dm" /></section>
     </div>
   );
 }

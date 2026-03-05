@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid prospect input", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const prompt = `${salesRules}\nAnalyze prospect profile and return pains/angles/opener/dm1/questions/priority. Input:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
+  const prompt = `${salesRules}\nAnalyze prospect profile for client acquisition. Return pains, angles, opener, dm1, smart questions, priority and mandatory next_action. Optimize for conversation -> call -> client. Input:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
   const output = await generateStructured({
     prompt,
     schema: prospectAnalyzerSchema,

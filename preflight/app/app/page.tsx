@@ -21,7 +21,7 @@ export default function AppTodayPage() {
   const followupLead = repo
     .lead
     .listLeads(userId)
-    .filter((x) => x.status !== "Client")
+    .filter((x) => x.status !== "Cliente")
     .sort((a, b) => (a.next_action_at || "").localeCompare(b.next_action_at || ""))[0];
 
   function jumpQuickAssist() {
@@ -35,8 +35,8 @@ export default function AppTodayPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold">Oggi, fai avanzare la vendita.</h2>
-        <p className="mt-2 text-muted">15–30 minuti. Tre azioni. Una conversazione in più.</p>
+        <h2 className="text-3xl font-bold">Oggi: crea nuove opportunità.</h2>
+        <p className="mt-2 text-muted">15–30 minuti al giorno per generare conversazioni con potenziali clienti.</p>
       </div>
 
       {!profile.onboarding_complete && (
@@ -47,20 +47,38 @@ export default function AppTodayPage() {
       )}
 
       <div className="grid gap-4 md:grid-cols-3">
-        <TaskCard title="Inbound" text={today?.inbound || "Genera il tuo piano per vedere le azioni di oggi."} ctaHref="/app/inbound" />
-        <TaskCard title="Outbound" text={today?.outbound || "Apri 2 conversazioni con prospect in target."} ctaHref="/app/prospect" />
-        <TaskCard title="Follow-up" text={today?.followup || "Invia 1 follow-up su chat aperta."} ctaHref="/app/dm" />
+        <TaskCard
+          title="CONTENT"
+          explanation="Qui crei contenuti che fanno capire ai clienti che puoi aiutarli."
+          action={today?.inbound || "Genera il tuo piano per vedere l'azione di oggi."}
+          ctaHref="/app/inbound"
+          ctaLabel="Genera il contenuto di oggi"
+        />
+        <TaskCard
+          title="CONVERSATIONS"
+          explanation="Qui inizi conversazioni con potenziali clienti. Ti suggeriamo cosa scrivere."
+          action={today?.outbound || "Apri 2 conversazioni con contatti in target."}
+          ctaHref="/app/prospect"
+          ctaLabel="Scrivi a nuovi contatti"
+        />
+        <TaskCard
+          title="FOLLOW UPS"
+          explanation="La maggior parte dei clienti arriva dopo il secondo o terzo messaggio. Qui generi follow-up intelligenti."
+          action={today?.followup || "Invia 1 follow-up su chat aperta."}
+          ctaHref="/app/dm"
+          ctaLabel="Genera follow-up"
+        />
       </div>
 
       <div className="rounded-lg border border-app p-4">
-        <h3 className="font-semibold">Quick Assist</h3>
+        <h3 className="font-semibold">Assistente rapido</h3>
         <p className="text-sm text-muted">Incolla testo e salta direttamente nel modulo corretto.</p>
         <div className="mt-3 flex flex-col gap-3">
           <select value={quickType} onChange={(e) => setQuickType(e.target.value)} className="input">
             <option value="post">Post</option>
-            <option value="comment">Comment</option>
-            <option value="dm">DM</option>
-            <option value="prospect">Prospect</option>
+            <option value="comment">Commento</option>
+            <option value="dm">Messaggio</option>
+            <option value="prospect">Profilo cliente</option>
           </select>
           <textarea value={quickText} onChange={(e) => setQuickText(e.target.value)} rows={4} className="input" />
           <button onClick={jumpQuickAssist} className="btn-primary px-4 py-2 w-fit">Apri modulo</button>
@@ -85,12 +103,13 @@ export default function AppTodayPage() {
   );
 }
 
-function TaskCard({ title, text, ctaHref }: { title: string; text: string; ctaHref: string }) {
+function TaskCard({ title, explanation, action, ctaHref, ctaLabel }: { title: string; explanation: string; action: string; ctaHref: string; ctaLabel: string }) {
   return (
     <div className="rounded-lg border border-app p-4">
       <h3 className="font-semibold">{title}</h3>
-      <p className="mt-2 text-sm text-muted">{text}</p>
-      <Link href={ctaHref} className="mt-3 inline-block btn-secondary px-3 py-1.5">Genera</Link>
+      <p className="mt-2 text-sm text-muted">{explanation}</p>
+      <p className="mt-2 text-sm"><strong>Azione oggi:</strong> {action}</p>
+      <Link href={ctaHref} className="mt-3 inline-block btn-secondary px-3 py-1.5">{ctaLabel}</Link>
     </div>
   );
 }

@@ -128,4 +128,5 @@ export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
     "Quale obiezione blocca piu spesso la call?",
   ],
   priority_signal: "medium",
+  next_action: "Invia il connection_opener oggi e, dopo accettazione, manda dm1 entro 24 ore.",
 };

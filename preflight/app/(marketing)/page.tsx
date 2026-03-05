@@ -11,28 +11,39 @@ export default async function Home() {
   return (
     <main className="min-h-screen">
       <section className="rounded-2xl border border-app bg-soft p-10">
-        <h1 className="max-w-4xl text-4xl font-bold md:text-5xl">LinkedIn non è un social. È il tuo canale clienti.</h1>
+        <h1 className="max-w-4xl text-4xl font-bold md:text-5xl">LinkedIn non è un social.<br />È la tua pagina di vendita.</h1>
+        <p className="mt-4 max-w-4xl text-lg">Preflight trasforma LinkedIn nel tuo sistema per trovare clienti.</p>
         <p className="mt-4 max-w-4xl text-lg">
-          Preflight è il Sales OS guidato dall’AI che ti dice cosa pubblicare, chi contattare e cosa rispondere per trasformare commenti e DM in call e clienti.
+          Ti dice:<br />• cosa dire<br />• a chi scrivere<br />• come rispondere<br /><br />Così le conversazioni diventano call e clienti.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href="/app/onboarding" className="btn-primary px-5 py-3">Crea il mio piano clienti (5 min)</Link>
-          <Link href="/how-it-works" className="btn-secondary px-5 py-3">Vedi come funziona</Link>
+          <Link href="/app/onboarding" className="btn-primary px-5 py-3">Crea il tuo sistema clienti</Link>
+          <Link href="/how-it-works" className="btn-secondary px-5 py-3">Guarda come funziona</Link>
         </div>
-        <ul className="mt-6 space-y-2 text-sm">
-          <li>Non ti trasformiamo in social media manager: ti facciamo vendere.</li>
-          <li>Non serve collegare LinkedIn: funziona con copia/incolla.</li>
-          <li>Piano giornaliero: sai sempre cosa fare oggi.</li>
-        </ul>
+      </section>
+
+      <section className="mt-10 rounded-2xl border border-app p-8">
+        <h2 className="text-2xl font-semibold">Pubblicare non porta clienti.</h2>
+        <p className="mt-3 text-sm text-muted">Molti freelance pubblicano su LinkedIn ma non ricevono richieste.</p>
+        <p className="mt-3 text-sm text-muted">Non è un problema di contenuti.</p>
+        <p className="mt-3 text-sm text-muted">È un problema di sistema.</p>
+        <p className="mt-4 text-sm">Serve un metodo per:</p>
+        <p className="mt-2 text-sm">• attirare le persone giuste<br />• iniziare conversazioni<br />• gestire messaggi<br />• fare follow-up</p>
+      </section>
+
+      <section className="mt-10 rounded-2xl border border-app p-8">
+        <h2 className="text-2xl font-semibold">Un sistema commerciale per LinkedIn.</h2>
+        <p className="mt-4 text-sm">Preflight ti aiuta a:</p>
+        <p className="mt-2 text-sm">• posizionare la tua offerta<br />• parlare ai clienti giusti<br />• gestire commenti e messaggi<br />• trasformare conversazioni in call</p>
+        <p className="mt-4 text-sm text-muted">Non è un tool di contenuti.</p>
+        <p className="mt-1 text-sm text-muted">È il tuo sistema commerciale su LinkedIn.</p>
       </section>
 
       <section className="mt-10 rounded-2xl border border-app p-8">
         <h2 className="text-2xl font-semibold">Come funziona</h2>
-        <ol className="mt-4 space-y-2 text-sm">
-          <li>1) Setup (5 min)</li>
-          <li>2) Piano (14 giorni)</li>
-          <li>3) Esecuzione (ogni giorno: incolla -&gt; risposta + prossima mossa)</li>
-        </ol>
+        <p className="mt-3 text-sm"><strong>1) Setup</strong><br />Rispondi a poche domande su cosa vendi.</p>
+        <p className="mt-3 text-sm"><strong>2) Sistema</strong><br />Creiamo il tuo piano commerciale LinkedIn.</p>
+        <p className="mt-3 text-sm"><strong>3) Azione</strong><br />Segui le azioni giornaliere. Incolla commenti o messaggi e ti diciamo cosa rispondere.</p>
       </section>
     </main>
   );

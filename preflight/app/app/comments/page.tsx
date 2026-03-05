@@ -49,23 +49,28 @@ export default function CommentsPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Comment Reply Assistant</h2>
+      <h2 className="text-2xl font-bold">Rispondi ai commenti.</h2>
+      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
+        <p><strong>Cosa fa questa pagina</strong>: ti suggerisce come rispondere per continuare la conversazione.</p>
+        <p><strong>Cosa incollare</strong>: il post e il commento ricevuto.</p>
+        <p><strong>Cosa ottieni</strong>: 3 risposte, DM suggerito e prossima azione.</p>
+      </div>
       <div className="rounded-lg border border-app p-4 space-y-3">
-        <label className="block text-sm"><span className="mb-1 block text-muted">original_post</span><textarea rows={5} className="input w-full" value={originalPost} onChange={(e) => setOriginalPost(e.target.value)} /></label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">received_comment</span><textarea rows={4} className="input w-full" value={receivedComment} onChange={(e) => setReceivedComment(e.target.value)} /></label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">optional commenter_profile_text</span><textarea rows={4} className="input w-full" value={commenterProfileText} onChange={(e) => setCommenterProfileText(e.target.value)} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-muted">Post originale</span><textarea rows={5} className="input w-full" value={originalPost} onChange={(e) => setOriginalPost(e.target.value)} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-muted">Commento ricevuto</span><textarea rows={4} className="input w-full" value={receivedComment} onChange={(e) => setReceivedComment(e.target.value)} /></label>
+        <label className="block text-sm"><span className="mb-1 block text-muted">Profilo autore commento (opzionale)</span><textarea rows={4} className="input w-full" value={commenterProfileText} onChange={(e) => setCommenterProfileText(e.target.value)} /></label>
         <label className="block text-sm">
-          <span className="mb-1 block text-muted">objective</span>
+          <span className="mb-1 block text-muted">Obiettivo</span>
           <select className="input w-full" value={objective} onChange={(e) => setObjective(e.target.value)}>
-            <option value="conversation">conversation</option>
-            <option value="DM">DM</option>
-            <option value="call">call</option>
+            <option value="conversation">Continuare conversazione</option>
+            <option value="DM">Portare in DM</option>
+            <option value="call">Arrivare a call</option>
           </select>
         </label>
         <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
       </div>
-      {output && <JsonOutputCard title="Comment Assistant JSON" value={output} />}
-      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">History</h3><HistoryList userId={userId} type="comments" /></section>
+      {output && <JsonOutputCard title="Output pronto da usare" value={output} />}
+      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">Storico</h3><HistoryList userId={userId} type="comments" /></section>
     </div>
   );
 }

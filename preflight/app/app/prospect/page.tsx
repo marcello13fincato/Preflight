@@ -40,16 +40,21 @@ export default function ProspectPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Prospect Analyzer</h2>
+      <h2 className="text-2xl font-bold">Analizza un potenziale cliente.</h2>
+      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
+        <p><strong>Cosa fa questa pagina</strong>: analizza il profilo di un potenziale cliente.</p>
+        <p><strong>Cosa incollare</strong>: testo del profilo LinkedIn della persona.</p>
+        <p><strong>Cosa ottieni</strong>: bisogni probabili, apertura conversazione e domande utili.</p>
+      </div>
       <div className="rounded-lg border border-app p-4 space-y-3">
         <label className="block text-sm">
-          <span className="mb-1 block text-muted">pasted prospect profile text</span>
+          <span className="mb-1 block text-muted">Profilo LinkedIn del contatto</span>
           <textarea rows={9} className="input w-full" value={pastedProfileText} onChange={(e) => setPastedProfileText(e.target.value)} />
         </label>
         <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
       </div>
-      {output && <JsonOutputCard title="Prospect Analyzer JSON" value={output} />}
-      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">History</h3><HistoryList userId={userId} type="prospect" /></section>
+      {output && <JsonOutputCard title="Output pronto da usare" value={output} />}
+      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">Storico</h3><HistoryList userId={userId} type="prospect" /></section>
     </div>
   );
 }

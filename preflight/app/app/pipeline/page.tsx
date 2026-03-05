@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { Lead, LeadStatus } from "@/lib/sales/schemas";
 
-const statuses: LeadStatus[] = ["New", "In chat", "Interested", "Call proposed", "Call booked", "Client"];
+const statuses: LeadStatus[] = ["Nuovo", "In conversazione", "Interessato", "Call proposta", "Call fissata", "Cliente"];
 
 export default function PipelinePage() {
   const router = useRouter();
@@ -16,7 +16,7 @@ export default function PipelinePage() {
 
   const [name, setName] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [status, setStatus] = useState<LeadStatus>("New");
+  const [status, setStatus] = useState<LeadStatus>("Nuovo");
   const [notes, setNotes] = useState("");
   const [nextActionAt, setNextActionAt] = useState("");
   const [version, setVersion] = useState(0);
@@ -39,7 +39,7 @@ export default function PipelinePage() {
     });
     setName("");
     setLinkedinUrl("");
-    setStatus("New");
+    setStatus("Nuovo");
     setNotes("");
     setNextActionAt("");
     refresh();
@@ -57,7 +57,12 @@ export default function PipelinePage() {
 
   return (
     <div className="space-y-5" key={version}>
-      <h2 className="text-2xl font-bold">Pipeline mini-CRM</h2>
+      <h2 className="text-2xl font-bold">Clienti in corso</h2>
+      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
+        <p><strong>Cosa fa questa pagina</strong>: tiene traccia delle conversazioni commerciali in corso.</p>
+        <p><strong>Cosa inserire</strong>: nome cliente, stato, note e prossima azione.</p>
+        <p><strong>Cosa ottieni</strong>: visione chiara di chi ricontattare e quando.</p>
+      </div>
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
         {statuses.map((s) => (
@@ -69,15 +74,15 @@ export default function PipelinePage() {
       </div>
 
       <div className="rounded-lg border border-app p-4 space-y-3">
-        <h3 className="font-semibold">Nuovo lead</h3>
-        <input className="input w-full" placeholder="name" value={name} onChange={(e) => setName(e.target.value)} />
-        <input className="input w-full" placeholder="optional linkedin_url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} />
+        <h3 className="font-semibold">Nuovo contatto</h3>
+        <input className="input w-full" placeholder="Nome" value={name} onChange={(e) => setName(e.target.value)} />
+        <input className="input w-full" placeholder="URL LinkedIn (opzionale)" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} />
         <select className="input w-full" value={status} onChange={(e) => setStatus(e.target.value as LeadStatus)}>
           {statuses.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
-        <textarea className="input w-full" rows={3} placeholder="notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+        <textarea className="input w-full" rows={3} placeholder="Note" value={notes} onChange={(e) => setNotes(e.target.value)} />
         <input className="input w-full" type="date" value={nextActionAt} onChange={(e) => setNextActionAt(e.target.value)} />
-        <button onClick={addLead} className="btn-primary px-4 py-2">Salva lead</button>
+        <button onClick={addLead} className="btn-primary px-4 py-2">Salva contatto</button>
       </div>
 
       <div className="space-y-3">
@@ -96,7 +101,7 @@ export default function PipelinePage() {
                   onClick={() => router.push(`/app/dm?pasted_chat_thread=${encodeURIComponent(`Lead: ${lead.name}\nStato: ${lead.status}\nNote: ${lead.notes}`)}&objective=follow-up`)}
                   className="btn-secondary px-3 py-1.5"
                 >
-                  Generate follow-up
+                  Genera follow-up
                 </button>
                 <button onClick={() => removeLead(lead.id)} className="btn-secondary px-3 py-1.5">Elimina</button>
               </div>

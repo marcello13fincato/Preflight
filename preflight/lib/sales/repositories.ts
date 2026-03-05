@@ -57,6 +57,24 @@ function safeWrite<T>(storageKey: string, value: T) {
   localStorage.setItem(storageKey, JSON.stringify(value));
 }
 
+function normalizeStatus(status: string): LeadStatus {
+  const map: Record<string, LeadStatus> = {
+    "New": "Nuovo",
+    "In chat": "In conversazione",
+    "Interested": "Interessato",
+    "Call proposed": "Call proposta",
+    "Call booked": "Call fissata",
+    "Client": "Cliente",
+    "Nuovo": "Nuovo",
+    "In conversazione": "In conversazione",
+    "Interessato": "Interessato",
+    "Call proposta": "Call proposta",
+    "Call fissata": "Call fissata",
+    "Cliente": "Cliente",
+  };
+  return map[status] || "Nuovo";
+}
+
 export const localProfileRepository: ProfileRepository = {
   getProfile(userId) {
     return safeRead<UserProfileData>(key(userId, "profile"), {
@@ -104,6 +122,7 @@ export const localLeadRepository: LeadRepository = {
     const now = new Date().toISOString();
     const created: Lead = {
       ...lead,
+      status: normalizeStatus(String(lead.status)),
       id: crypto.randomUUID(),
       created_at: now,
       updated_at: now,
@@ -120,6 +139,7 @@ export const localLeadRepository: LeadRepository = {
     current[idx] = {
       ...current[idx],
       ...updates,
+      status: updates.status ? normalizeStatus(String(updates.status)) : current[idx].status,
       updated_at: new Date().toISOString(),
     };
     safeWrite(key(userId, "leads"), current);
@@ -133,10 +153,13 @@ export const localLeadRepository: LeadRepository = {
     );
   },
   listLeads(userId) {
-    return safeRead<Lead[]>(key(userId, "leads"), []);
+    return safeRead<Lead[]>(key(userId, "leads"), []).map((lead) => ({
+      ...lead,
+      status: normalizeStatus(String(lead.status)),
+    }));
   },
   listByStatus(userId) {
-    const statuses: LeadStatus[] = ["New", "In chat", "Interested", "Call proposed", "Call booked", "Client"];
+    const statuses: LeadStatus[] = ["Nuovo", "In conversazione", "Interessato", "Call proposta", "Call fissata", "Cliente"];
     const leads = localLeadRepository.listLeads(userId);
     return statuses.reduce(
       (acc, status) => {
@@ -144,12 +167,12 @@ export const localLeadRepository: LeadRepository = {
         return acc;
       },
       {
-        New: [],
-        "In chat": [],
-        Interested: [],
-        "Call proposed": [],
-        "Call booked": [],
-        Client: [],
+        "Nuovo": [],
+        "In conversazione": [],
+        "Interessato": [],
+        "Call proposta": [],
+        "Call fissata": [],
+        "Cliente": [],
       } as Record<LeadStatus, Lead[]>
     );
   },

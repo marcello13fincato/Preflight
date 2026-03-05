@@ -47,23 +47,28 @@ export default function PostPage() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Post Builder</h2>
+      <h2 className="text-2xl font-bold">Scrivi un post che genera conversazioni.</h2>
+      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
+        <p><strong>Cosa fa questa pagina</strong>: ti aiuta a scrivere un post che apre conversazioni utili.</p>
+        <p><strong>Cosa incollare</strong>: una bozza o un&apos;idea del post.</p>
+        <p><strong>Cosa ottieni</strong>: hooks, 3 versioni, CTA e prossima azione.</p>
+      </div>
       <div className="rounded-lg border border-app p-4 space-y-3">
         <label className="block text-sm">
-          <span className="mb-1 block text-muted">draft_post</span>
+          <span className="mb-1 block text-muted">Bozza o idea del post</span>
           <textarea rows={7} className="input w-full" value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
         </label>
         <div className="grid gap-3 md:grid-cols-2">
           <label className="block text-sm">
-            <span className="mb-1 block text-muted">objective</span>
+            <span className="mb-1 block text-muted">Obiettivo</span>
             <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
-              <option value="lead">lead</option>
-              <option value="call">call</option>
-              <option value="inbound">inbound</option>
+              <option value="lead">Aprire conversazioni</option>
+              <option value="call">Portare a call</option>
+              <option value="inbound">Ricevere richieste</option>
             </select>
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block text-muted">dm_keyword</span>
+            <span className="mb-1 block text-muted">Parola chiave per DM</span>
             <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
           </label>
         </div>
@@ -72,10 +77,10 @@ export default function PostPage() {
         </button>
       </div>
 
-      {output && <JsonOutputCard title="Post Builder JSON" value={output} />}
+      {output && <JsonOutputCard title="Output pronto da usare" value={output} />}
 
       <section className="rounded-lg border border-app p-4">
-        <h3 className="font-semibold mb-2">History</h3>
+        <h3 className="font-semibold mb-2">Storico</h3>
         <HistoryList userId={userId} type="post" />
       </section>
     </div>

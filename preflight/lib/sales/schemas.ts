@@ -99,6 +99,7 @@ export const prospectAnalyzerSchema = z.object({
   dm1: z.string(),
   smart_questions: z.tuple([z.string(), z.string(), z.string(), z.string(), z.string()]),
   priority_signal: z.enum(["high", "medium", "low"]),
+  next_action: z.string(),
 });
 
 export const onboardingInputSchema = z.object({
@@ -118,7 +119,7 @@ export const onboardingInputSchema = z.object({
   comfort_post: z.enum(["1", "2", "3", "4", "5"]),
   comfort_comments: z.enum(["1", "2", "3", "4", "5"]),
   comfort_dm: z.enum(["1", "2", "3", "4", "5"]),
-  goal_primary: z.enum(["prime conversazioni", "più call", "più inbound"]),
+  goal_primary: z.enum(["prime conversazioni", "più call", "più clienti"]),
 });
 
 export type PlanJson = z.infer<typeof planSchema>;
@@ -136,7 +137,7 @@ export type UserProfileData = {
   onboarding_complete: boolean;
 };
 
-export type LeadStatus = "New" | "In chat" | "Interested" | "Call proposed" | "Call booked" | "Client";
+export type LeadStatus = "Nuovo" | "In conversazione" | "Interessato" | "Call proposta" | "Call fissata" | "Cliente";
 
 export type Lead = {
   id: string;

@@ -4,15 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const nav = [
-  { href: "/app", label: "Today" },
-  { href: "/app/onboarding", label: "Onboarding" },
-  { href: "/app/inbound", label: "Inbound" },
-  { href: "/app/post", label: "Post" },
-  { href: "/app/comments", label: "Comments" },
-  { href: "/app/dm", label: "DM" },
-  { href: "/app/prospect", label: "Prospect" },
-  { href: "/app/pipeline", label: "Pipeline" },
-  { href: "/app/settings", label: "Settings" },
+  { href: "/app", label: "Oggi" },
+  { href: "/app/onboarding", label: "Imposta il tuo sistema" },
+  { href: "/app/inbound", label: "Contenuti" },
+  { href: "/app/post", label: "Scrivi un post" },
+  { href: "/app/comments", label: "Rispondi ai commenti" },
+  { href: "/app/dm", label: "Rispondi ai messaggi" },
+  { href: "/app/prospect", label: "Analizza un potenziale cliente" },
+  { href: "/app/pipeline", label: "Clienti in corso" },
+  { href: "/app/settings", label: "Impostazioni" },
 ];
 
 export default function AppNav() {
