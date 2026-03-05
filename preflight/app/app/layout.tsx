@@ -19,12 +19,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         <div className="flex items-center gap-3">
           <div
             className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold"
-            style={{ background: "rgba(255,255,255,0.18)", color: "white" }}
+            style={{ background: "var(--color-primary-bg-light)", color: "white" }}
           >
             P
           </div>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.65)" }}>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-primary-text-dim)" }}>
               Preflight
             </p>
             <h1 className="text-base font-bold leading-tight" style={{ color: "white" }}>
@@ -33,7 +33,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <span className="hidden sm:block" style={{ color: "rgba(255,255,255,0.75)" }}>
+          <span className="hidden sm:block" style={{ color: "var(--color-primary-text-muted)" }}>
             {session?.user?.email || session?.user?.name || "Guest mode"}
           </span>
           {session ? (
@@ -41,9 +41,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
               href="/api/auth/signout"
               className="rounded-lg px-3 py-1.5 text-sm font-medium transition-all"
               style={{
-                background: "rgba(255,255,255,0.18)",
+                background: "var(--color-primary-bg-light)",
                 color: "white",
-                border: "1px solid rgba(255,255,255,0.25)",
+                border: "1px solid var(--color-primary-bg-border)",
               }}
             >
               Esci

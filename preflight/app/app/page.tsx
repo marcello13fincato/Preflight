@@ -229,7 +229,7 @@ function KpiCard({ label, value, accent }: { label: string; value: number; accen
       </div>
       <div
         className="mt-1 text-xs font-medium"
-        style={{ color: accent ? "rgba(255,255,255,0.8)" : "var(--color-muted)" }}
+        style={{ color: accent ? "var(--color-primary-text-muted)" : "var(--color-muted)" }}
       >
         {label}
       </div>
