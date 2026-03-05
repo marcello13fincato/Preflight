@@ -18,9 +18,11 @@ const SCENARIOS = [
 
 type ProspectType = typeof PROSPECT_TYPES[number];
 
+type ScenarioValue = typeof SCENARIOS[number]["value"];
+
 export default function SimulatorPage() {
   const [prospectType, setProspectType] = useState<ProspectType>("Founder");
-  const [scenario, setScenario] = useState<string>("First connection reply");
+  const [scenario, setScenario] = useState<ScenarioValue>("First connection reply");
   const [userAnswer, setUserAnswer] = useState("");
   const [output, setOutput] = useState<SimulatorJson | null>(null);
   const [loading, setLoading] = useState(false);
@@ -76,7 +78,7 @@ export default function SimulatorPage() {
           </label>
           <label className="block text-sm">
             <span className="mb-1.5 block font-semibold">Scenario</span>
-            <select className="input w-full" value={scenario} onChange={(e) => setScenario(e.target.value)}>
+            <select className="input w-full" value={scenario} onChange={(e) => setScenario(e.target.value as ScenarioValue)}>
               {SCENARIOS.map((s) => (
                 <option key={s.value} value={s.value}>{s.label}</option>
               ))}

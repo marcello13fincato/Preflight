@@ -7,6 +7,7 @@ import Link from "next/link";
 import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import PageGuide from "@/components/shared/PageGuide";
+import OutputCard from "@/components/shared/OutputCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
 import { defaultPostBuilder } from "@/lib/sales/defaults";
@@ -153,16 +154,3 @@ export default function PostPage() {
     </div>
   );
 }
-
-function OutputCard({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm">
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="font-bold text-sm">{title}</span>
-        <CopyButton text={text} />
-      </div>
-      <p className="text-sm whitespace-pre-wrap text-[var(--color-text)]">{text}</p>
-    </div>
-  );
-}
-

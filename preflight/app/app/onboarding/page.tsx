@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import JourneyBar from "@/components/shared/JourneyBar";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
@@ -86,14 +87,7 @@ export default function OnboardingPage() {
         {/* Journey preview */}
         <div className="rounded-xl bg-[var(--color-soft)] border border-[var(--color-border)] p-5">
           <p className="text-sm font-bold text-[var(--color-primary)] mb-3">Il tuo percorso verso nuovi clienti:</p>
-          <div className="flex flex-wrap justify-center items-center gap-2">
-            {["✍️ Post", "💬 Commenti", "✉️ Messaggi", "📞 Call", "🏆 Cliente"].map((step, i, arr) => (
-              <span key={step} className="flex items-center gap-2">
-                <span className="rounded-full bg-[var(--color-primary)] text-white px-3 py-1 text-xs font-bold">{step}</span>
-                {i < arr.length - 1 && <span className="text-[var(--color-muted)]">→</span>}
-              </span>
-            ))}
-          </div>
+          <JourneyBar variant="light" className="justify-center" />
         </div>
 
         <button
@@ -359,6 +353,7 @@ function Field({
       {notSureLabel && (
         <button
           type="button"
+          aria-label={`Seleziona risposta predefinita: ${notSureLabel}`}
           className="mt-1.5 text-xs text-[var(--color-muted)] hover:text-[var(--color-primary)] underline underline-offset-2"
           onClick={() => onChange(notSureLabel)}
         >

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import getServerAuthSession from "../../lib/getServerAuthSession";
 import LinkedInFactCallout from "@/components/shared/LinkedInFactCallout";
+import JourneyBar from "@/components/shared/JourneyBar";
 
 export default async function Home() {
   const session = await getServerAuthSession();
@@ -106,16 +107,7 @@ export default async function Home() {
       {/* Journey */}
       <section className="rounded-2xl border border-[var(--color-primary)] bg-[var(--color-soft)] p-8 text-center">
         <h2 className="text-xl font-extrabold mb-4">Il percorso verso nuovi clienti</h2>
-        <div className="flex flex-wrap justify-center items-center gap-2">
-          {["✍️ Post", "💬 Commenti", "✉️ Messaggi", "📞 Call", "🏆 Cliente"].map((step, i, arr) => (
-            <span key={step} className="flex items-center gap-2">
-              <span className="rounded-full bg-[var(--color-primary)] text-white px-4 py-2 text-sm font-bold">
-                {step}
-              </span>
-              {i < arr.length - 1 && <span className="text-[var(--color-muted)] font-bold">→</span>}
-            </span>
-          ))}
-        </div>
+        <JourneyBar variant="light" className="justify-center" />
         <div className="mt-8">
           <Link href="/app/onboarding" className="btn-primary px-8 py-4 text-base inline-flex">
             🚀 Inizia gratis – 5 minuti

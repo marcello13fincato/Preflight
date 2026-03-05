@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import JourneyBar from "@/components/shared/JourneyBar";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 
 const STATUSES_COLORS: Record<string, string> = {
@@ -58,22 +59,7 @@ export default function AppTodayPage() {
         </p>
 
         {/* Journey bar */}
-        <div className="mt-5 flex flex-wrap items-center gap-1.5">
-          {[
-            { label: "Post", icon: "✍️" },
-            { label: "Commenti", icon: "💬" },
-            { label: "Messaggi", icon: "✉️" },
-            { label: "Call", icon: "📞" },
-            { label: "Cliente", icon: "🏆" },
-          ].map((step, i, arr) => (
-            <span key={step.label} className="flex items-center gap-1.5">
-              <span className="inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white">
-                {step.icon} {step.label}
-              </span>
-              {i < arr.length - 1 && <span className="text-white/50 text-xs">→</span>}
-            </span>
-          ))}
-        </div>
+        <JourneyBar variant="dark" className="mt-5" />
 
         {!profile.onboarding_complete && (
           <div className="mt-5 inline-flex items-center gap-2 rounded-xl bg-white/15 border border-white/30 px-4 py-3 text-sm">

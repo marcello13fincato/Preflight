@@ -11,5 +11,7 @@ export { default as StatBlock } from './StatBlock';
 export { default as Stepper } from './Stepper';
 export { default as PageGuide } from './PageGuide';
 export { default as LinkedInFactCallout } from './LinkedInFactCallout';
+export { default as OutputCard } from './OutputCard';
+export { default as JourneyBar } from './JourneyBar';
 export { HeatLevelBadge, RiskWarning } from './HeatLevel';
 export * as Icons from './icons';

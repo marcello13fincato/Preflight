@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import PageGuide from "@/components/shared/PageGuide";
+import OutputCard from "@/components/shared/OutputCard";
 import { HeatLevelBadge } from "@/components/shared/HeatLevel";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
@@ -112,18 +112,6 @@ export default function ProspectPage() {
         <h3 className="font-bold mb-3">📁 Storico analisi</h3>
         <HistoryList userId={userId} type="prospect" />
       </section>
-    </div>
-  );
-}
-
-function OutputCard({ title, text, highlight = false }: { title: string; text: string; highlight?: boolean }) {
-  return (
-    <div className={`rounded-xl border p-4 shadow-sm ${highlight ? "border-[var(--color-primary)] bg-[var(--color-soft)]" : "border-[var(--color-border)] bg-[var(--color-surface)]"}`}>
-      <div className="flex items-center justify-between gap-2 mb-2">
-        <span className="font-bold text-sm">{title}</span>
-        <CopyButton text={text} />
-      </div>
-      <p className="text-sm whitespace-pre-wrap text-[var(--color-text)]">{text}</p>
     </div>
   );
 }
