@@ -8,18 +8,51 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <section className="min-h-screen">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-app pb-4">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-muted">Preflight</p>
-          <h1 className="text-xl font-semibold">LinkedIn Sales OS</h1>
+      {/* Top header bar */}
+      <header
+        className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl px-5 py-3"
+        style={{
+          background: "var(--color-primary)",
+          boxShadow: "0 2px 8px rgba(10,102,194,0.25)",
+        }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold"
+            style={{ background: "rgba(255,255,255,0.18)", color: "white" }}
+          >
+            P
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.65)" }}>
+              Preflight
+            </p>
+            <h1 className="text-base font-bold leading-tight" style={{ color: "white" }}>
+              LinkedIn Sales OS
+            </h1>
+          </div>
         </div>
         <div className="flex items-center gap-3 text-sm">
-          <span className="text-muted">{session?.user?.email || session?.user?.name || "Guest mode"}</span>
-          {session ? <Link href="/api/auth/signout" className="btn-secondary px-3 py-1.5">Esci</Link> : null}
+          <span className="hidden sm:block" style={{ color: "rgba(255,255,255,0.75)" }}>
+            {session?.user?.email || session?.user?.name || "Guest mode"}
+          </span>
+          {session ? (
+            <Link
+              href="/api/auth/signout"
+              className="rounded-lg px-3 py-1.5 text-sm font-medium transition-all"
+              style={{
+                background: "rgba(255,255,255,0.18)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.25)",
+              }}
+            >
+              Esci
+            </Link>
+          ) : null}
         </div>
-      </div>
+      </header>
       <AppNav />
-      {children}
+      <main className="pb-12">{children}</main>
     </section>
   );
 }

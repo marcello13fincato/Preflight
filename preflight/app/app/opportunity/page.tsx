@@ -26,49 +26,156 @@ export default function OpportunityPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Trova opportunita di conversazione</h2>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: ti suggerisce dove commentare per aprire conversazioni utili.</p>
-        <p><strong>Cosa incollare</strong>: descrizione del cliente ideale.</p>
-        <p><strong>Cosa ottieni</strong>: tipi di post, keyword e opportunita pratiche.</p>
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-2xl font-bold">Trova opportunità di conversazione</h2>
+        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+          Scopri dove commentare e interagire per aprire nuove conversazioni con clienti ideali.
+        </p>
       </div>
 
-      <div className="rounded-lg border border-app p-4 space-y-3">
-        <label className="block text-sm">
-          <span className="mb-1 block text-muted">Cliente ideale</span>
-          <textarea
-            rows={5}
-            className="input w-full"
-            placeholder="Founder SaaS B2B con team 10-50 che vuole aumentare demo call"
-            value={idealClientDescription}
-            onChange={(e) => setIdealClientDescription(e.target.value)}
-          />
-        </label>
-        <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
+      {/* Guide box */}
+      <div className="callout">
+        <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
+          <div><span className="font-semibold">✅ Cosa fai:</span> trovi post da commentare per iniziare conversazioni</div>
+          <div><span className="font-semibold">📋 Cosa inserire:</span> descrizione del cliente ideale</div>
+          <div><span className="font-semibold">🎯 Cosa ottieni:</span> tipi di post, keyword e opportunità pratiche</div>
+          <div><span className="font-semibold">➡️ Prossima mossa:</span> vai a "Rispondi ai commenti" per interagire</div>
+        </div>
       </div>
 
-      {output && (
-        <section className="rounded-lg border border-app p-4 space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">Opportunity Finder</h3>
-            <CopyButton text={JSON.stringify(output, null, 2)} />
-          </div>
-          <ResultCard title="Types of posts to search" text={output.post_types_to_search.join("\n")} />
-          <ResultCard title="Keywords to monitor" text={output.keywords_to_monitor.join("\n")} />
-          <ResultCard title="Conversation opportunities" text={output.conversation_opportunities.join("\n")} />
-          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_action}</div>
-        </section>
-      )}
+      {/* Two-column layout */}
+      <div className="grid gap-5 lg:grid-cols-2">
+        {/* INPUT */}
+        <div
+          className="rounded-xl p-5 space-y-4"
+          style={{
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            boxShadow: "var(--shadow-sm)",
+          }}
+        >
+          <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+            Input
+          </h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Descrizione cliente ideale</span>
+            <textarea
+              rows={6}
+              className="input w-full resize-none"
+              placeholder="Founder SaaS B2B con team 10-50 che vuole aumentare demo call"
+              value={idealClientDescription}
+              onChange={(e) => setIdealClientDescription(e.target.value)}
+            />
+          </label>
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Trova opportunità →"}
+          </button>
+        </div>
+
+        {/* OUTPUT */}
+        <div>
+          {output ? (
+            <div
+              className="rounded-xl p-5 space-y-4"
+              style={{
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                boxShadow: "var(--shadow-sm)",
+              }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+                  Opportunità trovate
+                </h3>
+                <CopyButton text={JSON.stringify(output, null, 2)} />
+              </div>
+
+              <OpportunitySection
+                title="📌 Tipi di post da cercare"
+                items={output.post_types_to_search}
+                color="var(--color-primary)"
+              />
+              <OpportunitySection
+                title="🔍 Keyword da monitorare"
+                items={output.keywords_to_monitor}
+                color="#0B5CAD"
+                badge
+              />
+              <OpportunitySection
+                title="💬 Opportunità di conversazione"
+                items={output.conversation_opportunities}
+                color="#004182"
+              />
+
+              <div className="callout-success text-sm rounded-lg">
+                <span className="font-semibold">➡️ Prossima azione: </span>
+                {output.next_action}
+              </div>
+            </div>
+          ) : (
+            <div
+              className="rounded-xl p-8 flex flex-col items-center justify-center text-center h-full"
+              style={{
+                background: "var(--color-soft-2)",
+                border: "1.5px dashed var(--color-border)",
+                minHeight: "320px",
+              }}
+            >
+              <p className="text-4xl mb-3">🔍</p>
+              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+                Le opportunità appariranno qui
+              </p>
+              <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+                Descrivi il cliente ideale e clicca "Trova opportunità"
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
-function ResultCard({ title, text }: { title: string; text: string }) {
+function OpportunitySection({
+  title,
+  items,
+  color,
+  badge = false,
+}: {
+  title: string;
+  items: string[];
+  color: string;
+  badge?: boolean;
+}) {
   return (
-    <div className="rounded border border-app p-3 text-sm">
-      <div className="font-semibold">{title}</div>
-      <p className="mt-1 whitespace-pre-wrap">{text}</p>
+    <div
+      className="rounded-lg p-4"
+      style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
+    >
+      <div className="text-sm font-semibold mb-2" style={{ color }}>
+        {title}
+      </div>
+      {badge ? (
+        <div className="flex flex-wrap gap-1.5">
+          {items.map((item, i) => (
+            <span key={i} className="badge badge-blue">
+              {item}
+            </span>
+          ))}
+        </div>
+      ) : (
+        <ul className="space-y-1.5">
+          {items.map((item, i) => (
+            <li key={i} className="flex items-start gap-2 text-sm">
+              <span className="mt-0.5 font-bold" style={{ color }}>
+                •
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
