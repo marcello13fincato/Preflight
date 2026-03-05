@@ -3,8 +3,10 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import PageGuide from "@/components/shared/PageGuide";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
 import { defaultPostBuilder } from "@/lib/sales/defaults";
@@ -46,68 +48,121 @@ export default function PostPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Scrivi un post che genera conversazioni.</h2>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: ti aiuta a scrivere un post che apre conversazioni utili.</p>
-        <p><strong>Cosa incollare</strong>: una bozza o un&apos;idea del post.</p>
-        <p><strong>Cosa ottieni</strong>: hooks, 3 versioni, CTA e prossima azione.</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-text)]">✍️ Scrivi un post che genera conversazioni</h1>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">Crea contenuti che aprono conversazioni con i tuoi clienti ideali.</p>
       </div>
-      <div className="rounded-lg border border-app p-4 space-y-3">
+
+      <PageGuide
+        what="scrivi o migliori un post LinkedIn che porta nuove conversazioni."
+        paste="una bozza o un'idea del post (anche grezza — ci pensiamo noi)."
+        get="hook potente, 3 versioni del post, CTA e prossima azione."
+        next="pubblica il post e monitora i commenti con 'Rispondi ai commenti'."
+      />
+
+      <div className="card-premium p-6 space-y-4">
         <label className="block text-sm">
-          <span className="mb-1 block text-muted">Bozza o idea del post</span>
-          <textarea rows={7} className="input w-full" placeholder="Many SaaS companies lose conversions because onboarding is confusing." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
+          <span className="mb-1.5 block font-semibold text-[var(--color-text)]">Bozza o idea del post</span>
+          <textarea
+            rows={7}
+            className="input w-full"
+            placeholder="Es: Molte aziende SaaS perdono conversioni perché l'onboarding è confuso..."
+            value={draftPost}
+            onChange={(e) => setDraftPost(e.target.value)}
+          />
         </label>
-        <div className="grid gap-3 md:grid-cols-2">
+
+        <div className="grid gap-4 md:grid-cols-2">
           <label className="block text-sm">
-            <span className="mb-1 block text-muted">Obiettivo</span>
+            <span className="mb-1.5 block font-semibold text-[var(--color-text)]">Obiettivo del post</span>
             <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
-              <option value="lead">Aprire conversazioni</option>
-              <option value="call">Portare a call</option>
-              <option value="inbound">Ricevere richieste</option>
+              <option value="lead">💬 Aprire conversazioni</option>
+              <option value="call">📞 Portare a una call</option>
+              <option value="inbound">📥 Ricevere richieste dirette</option>
             </select>
           </label>
           <label className="block text-sm">
-            <span className="mb-1 block text-muted">Parola chiave per DM</span>
-            <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
+            <span className="mb-1.5 block font-semibold text-[var(--color-text)]">
+              Parola chiave per DM
+              <span className="ml-1.5 font-normal text-[var(--color-muted)]">(es: &quot;audit&quot;, &quot;guida&quot;)</span>
+            </span>
+            <input
+              className="input w-full"
+              placeholder="audit"
+              value={dmKeyword}
+              onChange={(e) => setDmKeyword(e.target.value)}
+            />
+            <span className="mt-1 block text-xs text-[var(--color-muted)]">
+              Chi commenta questa parola riceve un DM automatico con la tua offerta.
+            </span>
           </label>
         </div>
-        <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">
-          {loading ? "Generazione..." : "Genera"}
+
+        <button
+          onClick={generate}
+          disabled={loading || !draftPost.trim()}
+          className="btn-primary px-6 py-3"
+        >
+          {loading ? "⏳ Generazione in corso..." : "🚀 Genera il mio post"}
         </button>
       </div>
 
       {output && (
-        <section className="rounded-lg border border-app p-4 space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">Post pronto da usare</h3>
+        <section className="space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <h2 className="text-xl font-extrabold">✅ Post pronto da usare</h2>
             <CopyButton text={`${output.post_versions.clean}\n\n${output.cta}`} />
           </div>
-          <ResultCard title="Hooks" text={output.hooks.join("\n")} />
-          <div className="grid gap-3 md:grid-cols-3">
-            <ResultCard title="Versione clean" text={output.post_versions.clean} />
-            <ResultCard title="Versione diretta" text={output.post_versions.direct} />
-            <ResultCard title="Versione autorevole" text={output.post_versions.authority} />
+
+          <div className="card-premium p-5">
+            <h3 className="font-bold text-sm uppercase tracking-wide text-[var(--color-muted)] mb-3">🎣 Hook</h3>
+            <div className="space-y-2">
+              {output.hooks.map((hook, i) => (
+                <div key={i} className="rounded-lg bg-[var(--color-soft)] px-4 py-3 text-sm font-medium">{hook}</div>
+              ))}
+            </div>
           </div>
-          <ResultCard title="CTA" text={output.cta} />
-          <ResultCard title="Comment starter" text={output.comment_starter} />
-          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_step}</div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            <OutputCard title="✨ Versione naturale" text={output.post_versions.clean} />
+            <OutputCard title="🎯 Versione diretta" text={output.post_versions.direct} />
+            <OutputCard title="💪 Versione autorevole" text={output.post_versions.authority} />
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <OutputCard title="📢 CTA" text={output.cta} />
+            <OutputCard title="💬 Comment starter" text={output.comment_starter} />
+          </div>
+
+          <div className="callout callout-success flex items-start gap-3">
+            <span className="text-lg">➡️</span>
+            <div><strong>Prossima mossa:</strong> {output.next_step}</div>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Link href="/app/comments" className="btn-secondary px-4 py-2">💬 Rispondi ai commenti →</Link>
+          </div>
         </section>
       )}
 
-      <section className="rounded-lg border border-app p-4">
-        <h3 className="font-semibold mb-2">Storico</h3>
+      <section className="card-premium p-5">
+        <h3 className="font-bold mb-3">📁 Storico post</h3>
         <HistoryList userId={userId} type="post" />
       </section>
     </div>
   );
 }
 
-function ResultCard({ title, text }: { title: string; text: string }) {
+function OutputCard({ title, text }: { title: string; text: string }) {
   return (
-    <div className="rounded border border-app p-3 text-sm">
-      <div className="font-semibold">{title}</div>
-      <p className="mt-1 whitespace-pre-wrap">{text}</p>
+    <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4 shadow-sm">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="font-bold text-sm">{title}</span>
+        <CopyButton text={text} />
+      </div>
+      <p className="text-sm whitespace-pre-wrap text-[var(--color-text)]">{text}</p>
     </div>
   );
 }
+

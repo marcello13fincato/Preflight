@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 
 export default function SettingsPage() {
@@ -11,16 +12,45 @@ export default function SettingsPage() {
   const profile = repo.profile.getProfile(userId);
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Settings</h2>
-      <div className="rounded-lg border border-app p-4 text-sm">
-        <div><strong>Utente:</strong> {userId}</div>
-        <div><strong>Onboarding completato:</strong> {profile.onboarding_complete ? "Si" : "No"}</div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold">⚙️ Impostazioni</h1>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">Gestisci il tuo account e il tuo piano.</p>
       </div>
-      <div className="rounded-lg border border-app p-4 text-sm">
-        <h3 className="font-semibold">Account/Billing (MVP)</h3>
-        <p className="text-muted">Gestione account e fatturazione semplificata. Collegamento provider pagamenti in step successivo.</p>
+
+      <div className="card-premium p-6 space-y-3">
+        <h2 className="font-bold text-base">👤 Account</h2>
+        <div className="text-sm space-y-1">
+          <div className="flex gap-2">
+            <span className="text-[var(--color-muted)] w-40">Utente:</span>
+            <span className="font-medium">{userId}</span>
+          </div>
+          <div className="flex gap-2">
+            <span className="text-[var(--color-muted)] w-40">Setup completato:</span>
+            <span className={`font-medium ${profile.onboarding_complete ? "text-[var(--color-success)]" : "text-[var(--color-danger)]"}`}>
+              {profile.onboarding_complete ? "✅ Sì" : "❌ No"}
+            </span>
+          </div>
+        </div>
+        {!profile.onboarding_complete && (
+          <Link href="/app/onboarding" className="btn-primary px-4 py-2 mt-2 inline-flex">
+            ⚙️ Completa il setup
+          </Link>
+        )}
+        {profile.onboarding_complete && (
+          <Link href="/app/onboarding" className="btn-secondary px-4 py-2 mt-2 inline-flex">
+            ✏️ Modifica impostazioni
+          </Link>
+        )}
+      </div>
+
+      <div className="card-premium p-6 space-y-3">
+        <h2 className="font-bold text-base">💳 Piano & Fatturazione</h2>
+        <p className="text-sm text-[var(--color-muted)]">
+          Gestione account e fatturazione disponibile a breve. Per supporto contattaci direttamente.
+        </p>
       </div>
     </div>
   );
 }
+

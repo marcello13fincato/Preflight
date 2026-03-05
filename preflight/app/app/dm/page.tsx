@@ -6,6 +6,8 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import PageGuide from "@/components/shared/PageGuide";
+import { HeatLevelBadge, RiskWarning } from "@/components/shared/HeatLevel";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { dmAssistantSchema, type DmAssistantJson } from "@/lib/sales/schemas";
 import { defaultDmAssistant } from "@/lib/sales/defaults";
@@ -47,63 +49,115 @@ export default function DmPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Gestisci i messaggi.</h2>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: ti aiuta a rispondere ai messaggi per arrivare a una call.</p>
-        <p><strong>Cosa incollare</strong>: conversazione DM e, se vuoi, profilo del contatto.</p>
-        <p><strong>Cosa ottieni</strong>: risposta consigliata, versione breve, versione diretta e follow-up.</p>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold">✉️ Rispondi ai messaggi</h1>
+        <p className="mt-1 text-sm text-[var(--color-muted)]">Porta ogni conversazione DM verso una call o un cliente.</p>
       </div>
-      <div className="rounded-lg border border-app p-4 space-y-3">
-        <label className="block text-sm"><span className="mb-1 block text-muted">Conversazione</span><textarea rows={7} className="input w-full" placeholder="Hi Marco, thanks for connecting. I saw you're working on SaaS growth." value={pastedChatThread} onChange={(e) => setPastedChatThread(e.target.value)} /></label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">Obiettivo conversazione</span>
+
+      <PageGuide
+        what="gestisci i messaggi privati LinkedIn per arrivare a una call."
+        paste="la conversazione DM (copia/incolla la chat) e, se vuoi, il profilo del contatto."
+        get="risposta consigliata, versioni alternative, domande qualificanti e follow-up programmati."
+        next="invia la risposta e aggiorna lo stato in Pipeline."
+      />
+
+      <div className="card-premium p-6 space-y-4">
+        <label className="block text-sm">
+          <span className="mb-1.5 block font-semibold">Conversazione DM</span>
+          <textarea
+            rows={7}
+            className="input w-full"
+            placeholder="Incolla la conversazione DM qui (copia tutto il thread)..."
+            value={pastedChatThread}
+            onChange={(e) => setPastedChatThread(e.target.value)}
+          />
+        </label>
+
+        <label className="block text-sm">
+          <span className="mb-1.5 block font-semibold">🎯 Obiettivo della conversazione</span>
           <select className="input w-full" value={conversationGoal} onChange={(e) => setConversationGoal(e.target.value as typeof conversationGoal)}>
-            <option value="understand_fit">Capire se è un cliente in target</option>
-            <option value="continue_conversation">Continuare conversazione</option>
-            <option value="move_to_dm">Spostare la conversazione in DM</option>
-            <option value="propose_call">Proporre una call</option>
-            <option value="follow_up">Fare follow-up</option>
+            <option value="understand_fit">🔍 Capire se è un cliente in target</option>
+            <option value="continue_conversation">💬 Continuare la conversazione</option>
+            <option value="move_to_dm">✉️ Spostare in DM</option>
+            <option value="propose_call">📞 Proporre una call</option>
+            <option value="follow_up">🔁 Fare follow-up</option>
           </select>
         </label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">Profilo contatto (opzionale)</span><textarea rows={4} className="input w-full" value={prospectProfileText} onChange={(e) => setProspectProfileText(e.target.value)} /></label>
-        <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
+
+        <label className="block text-sm">
+          <span className="mb-1.5 block font-semibold">
+            Profilo del contatto
+            <span className="ml-1.5 font-normal text-[var(--color-muted)]">(opzionale – migliora la risposta)</span>
+          </span>
+          <textarea rows={3} className="input w-full" placeholder="Incolla headline/bio LinkedIn..." value={prospectProfileText} onChange={(e) => setProspectProfileText(e.target.value)} />
+        </label>
+
+        <button onClick={generate} disabled={loading || !pastedChatThread.trim()} className="btn-primary px-6 py-3">
+          {loading ? "⏳ Generazione in corso..." : "🚀 Genera risposta"}
+        </button>
       </div>
 
       {output && (
-        <section className="rounded-lg border border-app p-4 space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">Risultato</h3>
-            <CopyButton text={`${output.best_reply}\n\n${output.alternatives.short}\n\n${output.alternatives.assertive}`} />
+        <section className="space-y-4">
+          <h2 className="text-xl font-extrabold">✅ Risultati</h2>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] p-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-[var(--color-muted)] mb-2">🌡️ Calore del contatto</p>
+              <HeatLevelBadge level={output.client_heat_level} showDesc />
+            </div>
           </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="rounded border border-app p-3 text-sm"><strong>Client Heat Level:</strong> {output.client_heat_level}</div>
-            <div className="rounded border border-app p-3 text-sm"><strong>Valutazione messaggio:</strong> {output.message_risk_warning}</div>
+
+          <RiskWarning message={output.message_risk_warning} />
+
+          <OutputCard title="✨ Risposta consigliata" text={output.best_reply} highlight />
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <OutputCard title="📝 Versione breve" text={output.alternatives.short} />
+            <OutputCard title="🎯 Versione diretta" text={output.alternatives.assertive} />
           </div>
-          <ResultCard title="Risposta consigliata" text={output.best_reply} />
-          <div className="grid gap-3 md:grid-cols-2">
-            <ResultCard title="Versione breve" text={output.alternatives.short} />
-            <ResultCard title="Versione diretta" text={output.alternatives.assertive} />
+
+          <OutputCard title="❓ Domande qualificanti" text={output.qualifying_questions.join("\n")} />
+
+          <div>
+            <h3 className="font-bold text-sm mb-3">🔁 Follow-up programmati</h3>
+            <div className="grid gap-4 md:grid-cols-3">
+              <OutputCard title="⏰ Dopo 48 ore" text={output.followups["48h"]} />
+              <OutputCard title="📅 Dopo 5 giorni" text={output.followups["5d"]} />
+              <OutputCard title="🗓️ Dopo 10 giorni" text={output.followups["10d"]} />
+            </div>
           </div>
-          <ResultCard title="Domande qualificanti" text={output.qualifying_questions.join("\n")} />
-          <div className="grid gap-3 md:grid-cols-3">
-            <ResultCard title="Follow-up 48h" text={output.followups["48h"]} />
-            <ResultCard title="Follow-up 5d" text={output.followups["5d"]} />
-            <ResultCard title="Follow-up 10d" text={output.followups["10d"]} />
+
+          <div className="callout callout-success flex items-start gap-3">
+            <span className="text-lg">➡️</span>
+            <div><strong>Prossima mossa:</strong> {output.next_action}</div>
           </div>
-          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_action}</div>
-          <Link href="/app/pipeline" className="inline-block btn-secondary px-3 py-1.5">Aggiungi questo contatto alla pipeline?</Link>
+
+          <div className="flex flex-wrap gap-3">
+            <Link href="/app/pipeline" className="btn-primary px-4 py-2">📊 Aggiungi in Pipeline</Link>
+            <Link href="/app/prospect" className="btn-secondary px-4 py-2">🔎 Analizza il profilo →</Link>
+          </div>
         </section>
       )}
-      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">Storico</h3><HistoryList userId={userId} type="dm" /></section>
+
+      <section className="card-premium p-5">
+        <h3 className="font-bold mb-3">📁 Storico messaggi</h3>
+        <HistoryList userId={userId} type="dm" />
+      </section>
     </div>
   );
 }
 
-function ResultCard({ title, text }: { title: string; text: string }) {
+function OutputCard({ title, text, highlight = false }: { title: string; text: string; highlight?: boolean }) {
   return (
-    <div className="rounded border border-app p-3 text-sm">
-      <div className="font-semibold">{title}</div>
-      <p className="mt-1 whitespace-pre-wrap">{text}</p>
+    <div className={`rounded-xl border p-4 shadow-sm ${highlight ? "border-[var(--color-primary)] bg-[var(--color-soft)]" : "border-[var(--color-border)] bg-[var(--color-surface)]"}`}>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="font-bold text-sm">{title}</span>
+        <CopyButton text={text} />
+      </div>
+      <p className="text-sm whitespace-pre-wrap text-[var(--color-text)]">{text}</p>
     </div>
   );
 }
+
