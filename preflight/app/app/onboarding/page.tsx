@@ -6,27 +6,8 @@ import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
-const TOTAL_STEPS = 5;
-
-const initial: OnboardingInput = {
-  offer_one_liner: "",
-  offer_price_range: "",
-  offer_delivery_time: "1m",
-  offer_outcome: "",
-  icp_role: "",
-  icp_industry: "",
-  icp_company_size: "",
-  icp_main_problem: "",
-  icp_top_objections: [],
-  proof_case_study: "",
-  proof_testimonial: "",
-  proof_links: "",
-  weekly_time_minutes: "30",
-  comfort_post: "3",
-  comfort_comments: "3",
-  comfort_dm: "3",
-  goal_primary: "prime conversazioni",
-};
+const TOTAL_STEPS = 7;
+const PLACEHOLDER_VALUE = "Da definire";
 
 const timeOptions = [
   { label: "10–15 minuti", value: "15" },
@@ -41,7 +22,27 @@ const goalOptions = [
   { label: "🤝 Più clienti", value: "più clienti", desc: "Voglio chiudere nuovi contratti" },
 ];
 
-const PLACEHOLDER_VALUE = "Da definire";
+const initial: OnboardingInput = {
+  offer_one_liner: "",
+  offer_price_range: "",
+  offer_delivery_time: "1m",
+  offer_outcome: "",
+  linkedin_profile_url: "",
+  icp_role: "",
+  icp_industry: "",
+  icp_company_size: "",
+  icp_main_problem: "",
+  icp_top_objections: [],
+  trigger_situation: "",
+  proof_case_study: "",
+  proof_testimonial: "",
+  proof_links: "",
+  weekly_time_minutes: "30",
+  comfort_post: "3",
+  comfort_comments: "3",
+  comfort_dm: "3",
+  goal_primary: "prime conversazioni",
+};
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -119,23 +120,17 @@ export default function OnboardingPage() {
         >
           <div
             className="h-full rounded-full transition-all duration-300"
-            style={{
-              width: `${progressPct}%`,
-              background: "var(--color-primary)",
-            }}
+            style={{ width: `${progressPct}%`, background: "var(--color-primary)" }}
           />
         </div>
         {/* Step dots */}
         <div className="mt-3 flex justify-between">
           {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-            <div
-              key={i}
-              className="flex flex-col items-center gap-1"
-            >
+            <div key={i} className="flex flex-col items-center gap-1">
               <div
                 className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200"
                 style={{
-                  background: i + 1 < step ? "var(--color-primary)" : i + 1 === step ? "var(--color-primary)" : "var(--color-soft)",
+                  background: i + 1 <= step ? "var(--color-primary)" : "var(--color-soft)",
                   color: i + 1 <= step ? "white" : "var(--color-muted)",
                   opacity: i + 1 > step ? 0.5 : 1,
                 }}
@@ -156,7 +151,7 @@ export default function OnboardingPage() {
           boxShadow: "var(--shadow-md)",
         }}
       >
-        {/* ── Step 1 ── */}
+        {/* ── Step 1: Di cosa ti occupi? ── */}
         {step === 1 && (
           <>
             <StepHeader
@@ -186,15 +181,68 @@ export default function OnboardingPage() {
             <SkipOption
               label="Non sono ancora sicuro di come descriverlo"
               onClick={() => {
-                setData({ ...data, offer_one_liner: data.offer_one_liner || PLACEHOLDER_VALUE, offer_outcome: data.offer_outcome || PLACEHOLDER_VALUE });
+                setData({
+                  ...data,
+                  offer_one_liner: data.offer_one_liner || PLACEHOLDER_VALUE,
+                  offer_outcome: data.offer_outcome || PLACEHOLDER_VALUE,
+                });
                 setStep(2);
               }}
             />
           </>
         )}
 
-        {/* ── Step 2 ── */}
+        {/* ── Step 2: Profilo LinkedIn ── */}
         {step === 2 && (
+          <>
+            <StepHeader
+              emoji="🔗"
+              title="Analizziamo anche il tuo profilo LinkedIn"
+              subtitle="Questo ci aiuta a capire come ti presenti oggi e a costruire un sistema più preciso."
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Link al tuo profilo LinkedIn</span>
+              <input
+                className="input w-full"
+                type="url"
+                placeholder="https://www.linkedin.com/in/tuo-nome"
+                value={data.linkedin_profile_url || ""}
+                onChange={(e) => setData({ ...data, linkedin_profile_url: e.target.value })}
+              />
+            </label>
+            {/* Microcopy */}
+            <div
+              className="rounded-xl p-4 text-sm space-y-1.5"
+              style={{ background: "var(--color-soft)", border: "1px solid var(--color-border)" }}
+            >
+              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+                Useremo il tuo profilo per capire:
+              </p>
+              <ul className="space-y-1" style={{ color: "var(--color-muted)" }}>
+                <li>• come ti presenti oggi</li>
+                <li>• che tipo di cliente potresti attirare</li>
+                <li>• come adattare contenuti e conversazioni</li>
+              </ul>
+            </div>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                className="btn-primary w-full py-3 text-base"
+                disabled={!data.linkedin_profile_url}
+                onClick={() => setStep(3)}
+              >
+                🔍 Analizza il mio profilo
+              </button>
+              <SkipOption
+                label="Preferisco saltare questo passaggio"
+                onClick={() => setStep(3)}
+              />
+            </div>
+          </>
+        )}
+
+        {/* ── Step 3: Cliente ideale ── */}
+        {step === 3 && (
           <>
             <StepHeader
               emoji="🎯"
@@ -239,66 +287,98 @@ export default function OnboardingPage() {
                   icp_industry: data.icp_industry || PLACEHOLDER_VALUE,
                   icp_company_size: data.icp_company_size || PLACEHOLDER_VALUE,
                 });
-                setStep(3);
-              }}
-            />
-          </>
-        )}
-
-        {/* ── Step 3 ── */}
-        {step === 3 && (
-          <>
-            <StepHeader
-              emoji="⭐"
-              title="Perché dovrebbero fidarsi di te?"
-              subtitle="Anche un solo risultato concreto fa la differenza."
-            />
-            <label className="block text-sm">
-              <span className="mb-1.5 block font-medium">Un risultato ottenuto per un cliente</span>
-              <textarea
-                className="input w-full resize-none"
-                rows={3}
-                placeholder="Es. Ho aiutato Mario Rossi a passare da 0 a 5 clienti in 3 mesi con LinkedIn."
-                value={data.proof_case_study}
-                onChange={(e) => setData({ ...data, proof_case_study: e.target.value })}
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="mb-1.5 block font-medium">
-                Testimonianza{" "}
-                <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
-              </span>
-              <input
-                className="input w-full"
-                placeholder={`Es. "Grazie a Marco ho trovato 3 nuovi clienti in un mese."`}
-                value={data.proof_testimonial || ""}
-                onChange={(e) => setData({ ...data, proof_testimonial: e.target.value })}
-              />
-            </label>
-            <label className="block text-sm">
-              <span className="mb-1.5 block font-medium">
-                Link portfolio o casi studio{" "}
-                <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
-              </span>
-              <input
-                className="input w-full"
-                placeholder="https://..."
-                value={data.proof_links || ""}
-                onChange={(e) => setData({ ...data, proof_links: e.target.value })}
-              />
-            </label>
-            <SkipOption
-              label="Lo aggiungerò più avanti"
-              onClick={() => {
-                setData({ ...data, proof_case_study: data.proof_case_study || PLACEHOLDER_VALUE });
                 setStep(4);
               }}
             />
           </>
         )}
 
-        {/* ── Step 4 ── */}
+        {/* ── Step 4: Problema principale ── */}
         {step === 4 && (
+          <>
+            <StepHeader
+              emoji="🧩"
+              title="Che problema aiuti a risolvere?"
+              subtitle="Descrivi la sfida concreta che il tuo cliente affronta prima di trovarti."
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Il problema principale del tuo cliente ideale</span>
+              <textarea
+                className="input w-full resize-none"
+                rows={3}
+                placeholder="Es. Non riesce ad acquisire nuovi clienti in modo costante, gestisce tutto manualmente e perde tempo."
+                value={data.icp_main_problem}
+                onChange={(e) => setData({ ...data, icp_main_problem: e.target.value })}
+              />
+            </label>
+            <SkipOption
+              label="Non sono ancora sicuro"
+              onClick={() => {
+                setData({ ...data, icp_main_problem: data.icp_main_problem || PLACEHOLDER_VALUE });
+                setStep(5);
+              }}
+            />
+          </>
+        )}
+
+        {/* ── Step 5: Trigger conversazione ── */}
+        {step === 5 && (
+          <>
+            <StepHeader
+              emoji="💡"
+              title="Quando nasce la conversazione con il cliente?"
+              subtitle="In quale situazione un cliente decide di contattarti?"
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Descrivi la situazione tipica</span>
+              <textarea
+                className="input w-full resize-none"
+                rows={3}
+                placeholder="Es. Quando vuole più clienti, quando il sito non converte, quando cerca un consulente."
+                value={data.trigger_situation || ""}
+                onChange={(e) => setData({ ...data, trigger_situation: e.target.value })}
+              />
+            </label>
+            {/* Example chips */}
+            <div>
+              <p className="text-xs mb-2 font-medium" style={{ color: "var(--color-muted)" }}>
+                Scegli un esempio o scrivi il tuo:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Quando vuole più clienti",
+                  "Quando il sito non converte",
+                  "Quando ha bisogno di un consulente",
+                  "Quando vuole migliorare LinkedIn",
+                ].map((ex) => (
+                  <button
+                    key={ex}
+                    type="button"
+                    onClick={() => setData({ ...data, trigger_situation: ex })}
+                    className="rounded-full px-3 py-1 text-xs font-medium transition-all duration-150"
+                    style={{
+                      background: data.trigger_situation === ex ? "var(--color-primary)" : "var(--color-soft-2)",
+                      color: data.trigger_situation === ex ? "white" : "var(--color-text)",
+                      border: `1.5px solid ${data.trigger_situation === ex ? "var(--color-primary)" : "var(--color-border)"}`,
+                    }}
+                  >
+                    {ex}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <SkipOption
+              label="Non sono ancora sicuro"
+              onClick={() => {
+                setData({ ...data, trigger_situation: data.trigger_situation || PLACEHOLDER_VALUE });
+                setStep(6);
+              }}
+            />
+          </>
+        )}
+
+        {/* ── Step 6: Tempo disponibile ── */}
+        {step === 6 && (
           <>
             <StepHeader
               emoji="⏱"
@@ -325,8 +405,8 @@ export default function OnboardingPage() {
           </>
         )}
 
-        {/* ── Step 5 ── */}
-        {step === 5 && (
+        {/* ── Step 7: Obiettivo ── */}
+        {step === 7 && (
           <>
             <StepHeader
               emoji="🚀"
@@ -345,10 +425,15 @@ export default function OnboardingPage() {
                     border: `2px solid ${data.goal_primary === opt.value ? "var(--color-primary)" : "var(--color-border)"}`,
                   }}
                 >
-                  <div className="font-semibold text-sm" style={{ color: data.goal_primary === opt.value ? "var(--color-primary)" : "var(--color-text)" }}>
+                  <div
+                    className="font-semibold text-sm"
+                    style={{ color: data.goal_primary === opt.value ? "var(--color-primary)" : "var(--color-text)" }}
+                  >
                     {opt.label}
                   </div>
-                  <div className="text-xs mt-0.5" style={{ color: "var(--color-muted)" }}>{opt.desc}</div>
+                  <div className="text-xs mt-0.5" style={{ color: "var(--color-muted)" }}>
+                    {opt.desc}
+                  </div>
                 </button>
               ))}
             </div>
@@ -362,38 +447,52 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Navigation */}
-        <div className="flex gap-3 pt-2">
-          {step > 1 && (
-            <button
-              type="button"
-              className="btn-secondary flex-1"
-              disabled={loading}
-              onClick={() => setStep((s) => s - 1)}
-            >
-              ← Indietro
-            </button>
-          )}
-          {step < TOTAL_STEPS ? (
-            <button
-              type="button"
-              className="btn-primary flex-1 py-3 text-base"
-              disabled={loading}
-              onClick={() => setStep((s) => s + 1)}
-            >
-              Avanti →
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="btn-primary flex-1 py-3 text-base"
-              disabled={loading}
-              onClick={submit}
-            >
-              {loading ? "Generazione piano in corso…" : "🚀 Genera il mio piano"}
-            </button>
-          )}
-        </div>
+        {/* Navigation — hidden for step 2 which has its own buttons */}
+        {step !== 2 && (
+          <div className="flex gap-3 pt-2">
+            {step > 1 && (
+              <button
+                type="button"
+                className="btn-secondary flex-1"
+                disabled={loading}
+                onClick={() => setStep((s) => s - 1)}
+              >
+                ← Indietro
+              </button>
+            )}
+            {step < TOTAL_STEPS ? (
+              <button
+                type="button"
+                className="btn-primary flex-1 py-3 text-base"
+                disabled={loading}
+                onClick={() => setStep((s) => s + 1)}
+              >
+                Avanti →
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn-primary flex-1 py-3 text-base"
+                disabled={loading}
+                onClick={submit}
+              >
+                {loading ? "Generazione piano in corso…" : "🚀 Genera il mio piano"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Back button only for step 2 */}
+        {step === 2 && (
+          <button
+            type="button"
+            className="btn-secondary w-full"
+            disabled={loading}
+            onClick={() => setStep(1)}
+          >
+            ← Indietro
+          </button>
+        )}
       </div>
 
       {/* Reassurance */}
@@ -433,3 +532,4 @@ function SkipOption({ label, onClick }: { label: string; onClick: () => void }) 
     </button>
   );
 }
+
