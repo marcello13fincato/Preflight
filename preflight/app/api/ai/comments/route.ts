@@ -16,6 +16,7 @@ const requestSchema = z.object({
 
 export async function POST(req: Request) {
   const body = await req.json();
+  console.log("[comments] Received payload:", JSON.stringify(body));
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid comments input", details: parsed.error.flatten() }, { status: 400 });

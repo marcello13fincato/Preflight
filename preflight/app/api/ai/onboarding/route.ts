@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 
 export async function POST(req: Request) {
   const body = await req.json();
+  console.log("[onboarding] Received payload:", JSON.stringify(body));
   const parsed = onboardingInputSchema.safeParse(body?.onboarding);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid onboarding input", details: parsed.error.flatten() }, { status: 400 });

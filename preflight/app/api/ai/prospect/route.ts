@@ -13,6 +13,7 @@ const requestSchema = z.object({
 
 export async function POST(req: Request) {
   const body = await req.json();
+  console.log("[prospect] Received payload:", JSON.stringify(body));
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid prospect input", details: parsed.error.flatten() }, { status: 400 });
