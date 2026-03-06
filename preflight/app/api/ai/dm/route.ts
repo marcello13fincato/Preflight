@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateStructured, salesRules } from "@/lib/ai/structured";
-import { defaultDmAssistant } from "@/lib/sales/defaults";
 import { dmAssistantSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -15,17 +14,48 @@ const requestSchema = z.object({
 
 export async function POST(req: Request) {
   const body = await req.json();
+  console.log("[dm] Received payload:", JSON.stringify(body));
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid dm input", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const prompt = `${salesRules}\nGenerate DM assistant output with 48h/5d/10d followups. Include client heat level (Cold/Warm/Hot), message risk warning, and clear next action. Input:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
-  const output = await generateStructured({
-    prompt,
-    schema: dmAssistantSchema,
-    fallback: defaultDmAssistant,
-  });
+  try {
+    const { pasted_chat_thread, conversation_goal, prospect_profile_text, profile } = parsed.data;
+    const prompt = `${salesRules}
 
-  return NextResponse.json(output);
+You are analyzing a LinkedIn DM conversation. Return ONLY a JSON object with exactly this structure (no extra fields):
+{
+  "best_reply": "<string: the best reply to send right now>",
+  "client_heat_level": "<one of: Cold | Warm | Hot>",
+  "message_risk_warning": "<string: any risk in sending this message, or 'nessuno'>",
+  "alternatives": {
+    "short": "<string: shorter version of the reply>",
+    "assertive": "<string: more direct/assertive version>"
+  },
+  "qualifying_questions": [
+    "<string: question 1>",
+    "<string: question 2>",
+    "<string: question 3>"
+  ],
+  "followups": {
+    "48h": "<string: follow-up message to send after 48 hours>",
+    "5d": "<string: follow-up message to send after 5 days>",
+    "10d": "<string: follow-up message to send after 10 days>"
+  },
+  "next_action": "<string: concrete next step>"
+}
+
+Context:
+- Chat thread: ${pasted_chat_thread}
+- Goal: ${conversation_goal}
+- Prospect profile: ${prospect_profile_text || "not provided"}
+- User profile: ${JSON.stringify(profile)}`;
+    const output = await generateStructured({ prompt, schema: dmAssistantSchema });
+    return NextResponse.json(output);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
+    console.error("[dm] AI error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }
