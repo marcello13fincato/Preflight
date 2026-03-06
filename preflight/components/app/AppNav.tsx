@@ -12,9 +12,12 @@ const navGroups: NavGroup[] = [
     items: [{ href: "/app", label: "Dashboard" }],
   },
   {
+    label: "Sistema",
+    items: [{ href: "/app/onboarding", label: "Imposta il tuo sistema" }],
+  },
+  {
     label: "Attirare Clienti",
     items: [
-      { href: "/app/onboarding", label: "Imposta sistema" },
       { href: "/app/inbound", label: "Contenuti" },
       { href: "/app/post", label: "Scrivi un post" },
     ],
