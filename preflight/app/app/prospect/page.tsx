@@ -7,7 +7,6 @@ import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
-import { defaultProspectAnalyzer } from "@/lib/sales/defaults";
 
 export default function ProspectPage() {
   const params = useSearchParams();
@@ -19,20 +18,29 @@ export default function ProspectPage() {
   const [pastedProfileText, setPastedProfileText] = useState(params.get("pasted_profile_text") || "");
   const [output, setOutput] = useState<ProspectAnalyzerJson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function generate() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/ai/prospect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ profile: profile.onboarding, pasted_profile_text: pastedProfileText }),
       });
-      const json = await res.json();
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+      }
       const parsed = prospectAnalyzerSchema.safeParse(json);
-      const valid = parsed.success ? parsed.data : defaultProspectAnalyzer;
-      setOutput(valid);
-      repo.interaction.addInteraction(userId, "prospect", pastedProfileText, valid);
+      if (!parsed.success) {
+        throw new Error("Risposta AI non valida. Riprova.");
+      }
+      setOutput(parsed.data);
+      repo.interaction.addInteraction(userId, "prospect", pastedProfileText, parsed.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
       setLoading(false);
     }
@@ -53,6 +61,13 @@ export default function ProspectPage() {
         </label>
         <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
       </div>
+
+      {error && (
+        <div className="callout-danger rounded-xl p-5">
+          <p className="font-semibold mb-1">⚠️ Errore AI</p>
+          <p className="text-sm">{error}</p>
+        </div>
+      )}
 
       {output && (
         <section className="rounded-lg border border-app p-4 space-y-4">
