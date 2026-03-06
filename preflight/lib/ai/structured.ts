@@ -1,9 +1,42 @@
 import { z } from "zod";
 
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "";
+const OPENAI_MODEL = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
+
 export async function generateWithLLM(prompt: string, fallbackJson: string): Promise<string> {
-  // TODO: plug in a real provider (OpenAI/Anthropic) when credentials are available.
-  void prompt;
-  return fallbackJson;
+  if (!OPENAI_API_KEY) {
+    return fallbackJson;
+  }
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${OPENAI_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        response_format: { type: "json_object" },
+        messages: [
+          { role: "system", content: "You are a helpful assistant that responds only with valid JSON." },
+          { role: "user", content: prompt },
+        ],
+      }),
+    });
+
+    if (!response.ok) {
+      return fallbackJson;
+    }
+
+    const data = (await response.json()) as {
+      choices?: { message?: { content?: string } }[];
+    };
+    const content = data?.choices?.[0]?.message?.content;
+    return content ?? fallbackJson;
+  } catch {
+    return fallbackJson;
+  }
 }
 
 function safeJsonParse(input: string): unknown {
