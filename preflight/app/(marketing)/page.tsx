@@ -43,7 +43,73 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          2. PROBLEMA
+          2. TARGET
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-target">
+        <div className="hp-container">
+          <div className="hp-section-label">Target</div>
+          <h2 className="hp-section-title hp-target-title">Per chi è davvero Preflight</h2>
+          <p className="hp-section-subtitle hp-target-subtitle">
+            Preflight è pensato per professionisti che usano LinkedIn per trovare clienti,
+            iniziare conversazioni commerciali e vendere servizi.
+            <br />
+            Non è uno strumento per tutti gli utilizzi della piattaforma.
+          </p>
+
+          <div className="hp-target-grid">
+            <article className="hp-target-card hp-target-card-positive">
+              <h3 className="hp-target-card-title">Preflight è per te se...</h3>
+              <ul className="hp-target-list">
+                {[
+                  "Freelance che vogliono trovare nuovi clienti su LinkedIn",
+                  "Consulenti che vendono servizi B2B",
+                  "Professionisti che vogliono generare conversazioni con potenziali clienti",
+                  "Agenzie che usano LinkedIn per creare opportunità commerciali",
+                  "Founder e imprenditori che vendono servizi o consulenze",
+                  "Chi usa LinkedIn per costruire relazioni e trasformarle in clienti",
+                ].map((item) => (
+                  <li key={item} className="hp-target-item hp-target-item-positive">
+                    <span className="hp-target-icon hp-target-icon-positive" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="hp-target-note">
+                Se LinkedIn è per te uno strumento commerciale, Preflight è progettato per aiutarti a usarlo in modo più chiaro e sistematico.
+              </p>
+            </article>
+
+            <article className="hp-target-card hp-target-card-neutral">
+              <h3 className="hp-target-card-title">Preflight probabilmente non fa per te se...</h3>
+              <ul className="hp-target-list">
+                {[
+                  "Stai usando LinkedIn principalmente per cercare lavoro",
+                  "Sei un recruiter o un HR che cerca candidati",
+                  "Vuoi gestire campagne di employer branding",
+                  "Il tuo obiettivo è attrarre talenti o fare recruiting",
+                  "Stai cercando uno strumento per automatizzare spam o messaggi di massa",
+                  "Vuoi uno strumento per crescere solo in termini di follower o visibilità",
+                ].map((item) => (
+                  <li key={item} className="hp-target-item hp-target-item-neutral">
+                    <span className="hp-target-icon hp-target-icon-neutral" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="hp-target-note hp-target-note-neutral">
+                Preflight è costruito per migliorare conversazioni commerciali, non per il recruiting o la ricerca di lavoro.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          3. PROBLEMA
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
@@ -88,7 +154,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          3. IL SISTEMA
+          4. IL SISTEMA
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-dark">
         <div className="hp-container">
@@ -126,7 +192,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          4. DEMO PRODOTTO
+          5. DEMO PRODOTTO
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
@@ -256,7 +322,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          5. ANALISI PROFILO LINKEDIN
+          6. ANALISI PROFILO LINKEDIN
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-blue">
         <div className="hp-container">
@@ -315,7 +381,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          6. DATI LINKEDIN
+          7. DATI LINKEDIN
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
@@ -339,7 +405,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          7. FUNZIONI AVANZATE
+          8. FUNZIONI AVANZATE
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
@@ -389,7 +455,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          8. TESTIMONIANZE
+          9. TESTIMONIANZE
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
@@ -433,7 +499,7 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          9. CTA FINALE
+          10. CTA FINALE
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-final-cta">
         <div className="hp-final-glow" aria-hidden="true" />
