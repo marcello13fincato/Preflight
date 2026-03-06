@@ -8,7 +8,6 @@ import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { commentAssistantSchema, type CommentAssistantJson } from "@/lib/sales/schemas";
-import { defaultCommentAssistant } from "@/lib/sales/defaults";
 
 export default function CommentsPage() {
   const params = useSearchParams();
@@ -23,9 +22,11 @@ export default function CommentsPage() {
   const [conversationGoal, setConversationGoal] = useState<"understand_fit" | "continue_conversation" | "move_to_dm" | "propose_call" | "follow_up">("continue_conversation");
   const [output, setOutput] = useState<CommentAssistantJson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function generate() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/ai/comments", {
         method: "POST",
@@ -38,11 +39,18 @@ export default function CommentsPage() {
           conversation_goal: conversationGoal,
         }),
       });
-      const json = await res.json();
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+      }
       const parsed = commentAssistantSchema.safeParse(json);
-      const valid = parsed.success ? parsed.data : defaultCommentAssistant;
-      setOutput(valid);
-      repo.interaction.addInteraction(userId, "comments", `${originalPost}\n${receivedComment}`, valid);
+      if (!parsed.success) {
+        throw new Error("Risposta AI non valida. Riprova.");
+      }
+      setOutput(parsed.data);
+      repo.interaction.addInteraction(userId, "comments", `${originalPost}\n${receivedComment}`, parsed.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
       setLoading(false);
     }
@@ -140,7 +148,12 @@ export default function CommentsPage() {
 
         {/* OUTPUT */}
         <div>
-          {output ? (
+          {error ? (
+            <div className="callout-danger rounded-xl p-5">
+              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          ) : output ? (
             <div
               className="rounded-xl p-5 space-y-4"
               style={{

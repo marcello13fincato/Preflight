@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateStructured, salesRules } from "@/lib/ai/structured";
-import { defaultPostBuilder } from "@/lib/sales/defaults";
 import { postBuilderSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -21,9 +20,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid post input", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const fallback = defaultPostBuilder(parsed.data.objective || "inbound", parsed.data.dm_keyword || "audit");
-  const prompt = `${salesRules}\nCreate Post Builder output from:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
-  const output = await generateStructured({ prompt, schema: postBuilderSchema, fallback });
-
-  return NextResponse.json(output);
+  try {
+    const prompt = `${salesRules}\nCreate Post Builder output from:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
+    const output = await generateStructured({ prompt, schema: postBuilderSchema });
+    return NextResponse.json(output);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
+    console.error("[post] AI error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { generateStructured, salesRules } from "@/lib/ai/structured";
 import { commentAssistantSchema } from "@/lib/sales/schemas";
-import { defaultCommentAssistant } from "@/lib/sales/defaults";
 
 export const runtime = "nodejs";
 
@@ -22,12 +21,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Invalid comments input", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  const prompt = `${salesRules}\nGenerate comment assistant output focused on moving from post to conversation. Include client heat level (Cold/Warm/Hot), message risk warning, and a clear next action. Input:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
-  const output = await generateStructured({
-    prompt,
-    schema: commentAssistantSchema,
-    fallback: defaultCommentAssistant,
-  });
-
-  return NextResponse.json(output);
+  try {
+    const prompt = `${salesRules}\nGenerate comment assistant output focused on moving from post to conversation. Include client heat level (Cold/Warm/Hot), message risk warning, and a clear next action. Input:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
+    const output = await generateStructured({ prompt, schema: commentAssistantSchema });
+    return NextResponse.json(output);
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
+    console.error("[comments] AI error:", message);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
 }

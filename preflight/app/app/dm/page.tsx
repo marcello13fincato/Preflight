@@ -8,7 +8,6 @@ import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { dmAssistantSchema, type DmAssistantJson } from "@/lib/sales/schemas";
-import { defaultDmAssistant } from "@/lib/sales/defaults";
 
 export default function DmPage() {
   const params = useSearchParams();
@@ -22,9 +21,11 @@ export default function DmPage() {
   const [prospectProfileText, setProspectProfileText] = useState(params.get("prospect_profile_text") || "");
   const [output, setOutput] = useState<DmAssistantJson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function generate() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/ai/dm", {
         method: "POST",
@@ -36,11 +37,18 @@ export default function DmPage() {
           prospect_profile_text: prospectProfileText,
         }),
       });
-      const json = await res.json();
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+      }
       const parsed = dmAssistantSchema.safeParse(json);
-      const valid = parsed.success ? parsed.data : defaultDmAssistant;
-      setOutput(valid);
-      repo.interaction.addInteraction(userId, "dm", pastedChatThread, valid);
+      if (!parsed.success) {
+        throw new Error("Risposta AI non valida. Riprova.");
+      }
+      setOutput(parsed.data);
+      repo.interaction.addInteraction(userId, "dm", pastedChatThread, parsed.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
       setLoading(false);
     }
@@ -128,7 +136,12 @@ export default function DmPage() {
 
         {/* OUTPUT */}
         <div>
-          {output ? (
+          {error ? (
+            <div className="callout-danger rounded-xl p-5">
+              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          ) : output ? (
             <div
               className="rounded-xl p-5 space-y-4"
               style={{

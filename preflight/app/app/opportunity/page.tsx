@@ -2,24 +2,35 @@
 
 import { useState } from "react";
 import CopyButton from "@/components/shared/CopyButton";
-import { defaultOpportunityFinder } from "@/lib/sales/defaults";
 import type { OpportunityFinderJson } from "@/lib/sales/schemas";
+import { opportunityFinderSchema } from "@/lib/sales/schemas";
 
 export default function OpportunityPage() {
   const [idealClientDescription, setIdealClientDescription] = useState("");
   const [output, setOutput] = useState<OpportunityFinderJson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function generate() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/ai/opportunity", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ideal_client_description: idealClientDescription }),
       });
-      const json = await res.json();
-      setOutput(json?.post_types_to_search ? json : defaultOpportunityFinder);
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+      }
+      const parsed = opportunityFinderSchema.safeParse(json);
+      if (!parsed.success) {
+        throw new Error("Risposta AI non valida. Riprova.");
+      }
+      setOutput(parsed.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
       setLoading(false);
     }
@@ -75,7 +86,12 @@ export default function OpportunityPage() {
 
         {/* OUTPUT */}
         <div>
-          {output ? (
+          {error ? (
+            <div className="callout-danger rounded-xl p-5">
+              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          ) : output ? (
             <div
               className="rounded-xl p-5 space-y-4"
               style={{
