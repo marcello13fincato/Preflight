@@ -139,12 +139,28 @@ export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
 };
 
 export const defaultOpportunityFinder: OpportunityFinderJson = {
+  keywords_to_monitor: ["looking for", "any recommendations", "does anyone know"],
   post_types_to_search: [
     "Post con richieste di raccomandazioni",
     "Post con problema operativo aperto",
     "Post con domanda su tool o consulenti",
   ],
-  keywords_to_monitor: ["looking for", "any recommendations", "does anyone know"],
+  ideal_profiles: [
+    { role: "Founder di SaaS", sector: "Tecnologia B2B", company_size: "5–20 persone", why: "Ha bisogno di scalare senza aumentare il team" },
+    { role: "Marketing Manager", sector: "Aziende B2B", company_size: "10–50 dipendenti", why: "Gestisce il budget e cerca soluzioni operative" },
+    { role: "Consulente HR", sector: "PMI in crescita", company_size: "10–100 persone", why: "Affronta problemi di talent acquisition e retention" },
+  ],
+  useful_signals: [
+    "Pubblica post su problemi operativi ricorrenti",
+    "Cerca raccomandazioni su LinkedIn",
+    "Commenta su contenuti del tuo settore",
+    "Ha cambiato ruolo di recente",
+  ],
+  linkedin_search_queries: [
+    "Founder SaaS B2B Milano",
+    "Marketing Manager azienda tecnologia",
+    "HR Consultant PMI crescita",
+  ],
   conversation_opportunities: [
     "Commenta con una domanda utile e concreta",
     "Condividi mini-esempio pratico senza vendere",
