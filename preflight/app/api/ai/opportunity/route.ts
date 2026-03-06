@@ -18,7 +18,32 @@ export async function POST(req: Request) {
   }
 
   try {
-    const prompt = `${salesRules}\nFind LinkedIn conversation opportunities for this ideal client:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
+    const { ideal_client_description } = parsed.data;
+    const prompt = `${salesRules}
+
+You are finding LinkedIn conversation opportunities. Return ONLY a JSON object with exactly this structure (no extra fields):
+{
+  "post_types_to_search": [
+    "<string: type of post to search for>",
+    "<string: type of post to search for>",
+    "<string: type of post to search for>"
+  ],
+  "keywords_to_monitor": [
+    "<string: keyword>",
+    "<string: keyword>",
+    "<string: keyword>",
+    "<string: keyword>",
+    "<string: keyword>"
+  ],
+  "conversation_opportunities": [
+    "<string: specific opportunity description>",
+    "<string: specific opportunity description>",
+    "<string: specific opportunity description>"
+  ],
+  "next_action": "<string: concrete first step to take today>"
+}
+
+Ideal client description: ${ideal_client_description}`;
     const output = await generateStructured({ prompt, schema: opportunityFinderSchema });
     return NextResponse.json(output);
   } catch (err) {

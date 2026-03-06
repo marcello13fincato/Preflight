@@ -21,7 +21,33 @@ export async function POST(req: Request) {
   }
 
   try {
-    const prompt = `${salesRules}\nCreate Post Builder output from:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
+    const { draft_post, objective, dm_keyword, profile } = parsed.data;
+    const prompt = `${salesRules}
+
+You are writing a LinkedIn post. Return ONLY a JSON object with exactly this structure (no extra fields):
+{
+  "hooks": [
+    "<string: hook 1>",
+    "<string: hook 2>",
+    "<string: hook 3>",
+    "<string: hook 4>",
+    "<string: hook 5>"
+  ],
+  "post_versions": {
+    "clean": "<string: clean, readable version of the post>",
+    "direct": "<string: direct, punchy version>",
+    "authority": "<string: authoritative, expert version>"
+  },
+  "cta": "<string: call to action for the post>",
+  "comment_starter": "<string: example comment to seed engagement>",
+  "next_step": "<string: concrete next action after publishing>"
+}
+
+Context:
+- Draft/idea: ${draft_post}
+- Objective: ${objective}
+- DM keyword: ${dm_keyword}
+- User profile: ${JSON.stringify(profile)}`;
     const output = await generateStructured({ prompt, schema: postBuilderSchema });
     return NextResponse.json(output);
   } catch (err) {

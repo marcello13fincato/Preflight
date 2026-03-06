@@ -20,7 +20,23 @@ export async function POST(req: Request) {
   }
 
   try {
-    const prompt = `${salesRules}\nAct as the selected prospect and evaluate user's answer for moving toward call. Input:\n${JSON.stringify(parsed.data)}\nReturn strict JSON only.`;
+    const { prospect_type, scenario, user_answer } = parsed.data;
+    const prompt = `${salesRules}
+
+You are a LinkedIn sales conversation simulator. Act as a ${prospect_type} in the scenario: "${scenario}".
+The user answered: "${user_answer}"
+
+Return ONLY a JSON object with exactly this structure (no extra fields):
+{
+  "prospect_reply": "<string: the prospect's realistic reply to the user's message>",
+  "feedback": [
+    "<string: feedback point 1>",
+    "<string: feedback point 2>",
+    "<string: feedback point 3>"
+  ],
+  "message_risk_warning": "<string: what could go wrong with this approach>",
+  "next_action": "<string: what the user should do next>"
+}`;
     const output = await generateStructured({ prompt, schema: simulatorSchema });
     return NextResponse.json(output);
   } catch (err) {
