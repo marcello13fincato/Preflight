@@ -117,9 +117,19 @@ export const prospectAnalyzerSchema = z.object({
   next_action: z.string(),
 });
 
+export const idealProfileSchema = z.object({
+  role: z.string(),
+  sector: z.string(),
+  company_size: z.string(),
+  why: z.string(),
+});
+
 export const opportunityFinderSchema = z.object({
-  post_types_to_search: z.array(z.string()),
   keywords_to_monitor: z.array(z.string()),
+  post_types_to_search: z.array(z.string()),
+  ideal_profiles: z.array(idealProfileSchema),
+  useful_signals: z.array(z.string()),
+  linkedin_search_queries: z.array(z.string()),
   conversation_opportunities: z.array(z.string()),
   next_action: z.string(),
 });
@@ -158,6 +168,7 @@ export type PostBuilderJson = z.infer<typeof postBuilderSchema>;
 export type CommentAssistantJson = z.infer<typeof commentAssistantSchema>;
 export type DmAssistantJson = z.infer<typeof dmAssistantSchema>;
 export type ProspectAnalyzerJson = z.infer<typeof prospectAnalyzerSchema>;
+export type IdealProfileJson = z.infer<typeof idealProfileSchema>;
 export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
 export type SimulatorJson = z.infer<typeof simulatorSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;

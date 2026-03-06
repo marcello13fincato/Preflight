@@ -48,9 +48,9 @@ export default function OpportunityPage() {
       {/* Guide box */}
       <div className="callout">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold">✅ Cosa fai:</span> trovi post da commentare per iniziare conversazioni</div>
+          <div><span className="font-semibold">✅ Cosa fai:</span> trovi post e profili da commentare per iniziare conversazioni</div>
           <div><span className="font-semibold">📋 Cosa inserire:</span> descrizione del cliente ideale</div>
-          <div><span className="font-semibold">🎯 Cosa ottieni:</span> tipi di post, keyword e opportunità pratiche</div>
+          <div><span className="font-semibold">🎯 Cosa ottieni:</span> keyword, profili da cercare, segnali e query LinkedIn pronte</div>
           <div><span className="font-semibold">➡️ Prossima mossa:</span> vai a "Rispondi ai commenti" per interagire</div>
         </div>
       </div>
@@ -107,23 +107,90 @@ export default function OpportunityPage() {
                 <CopyButton text={JSON.stringify(output, null, 2)} />
               </div>
 
+              {/* 1. Keywords */}
               <OpportunitySection
-                title="📌 Tipi di post da cercare"
-                items={output.post_types_to_search}
-                color="var(--color-primary)"
-              />
-              <OpportunitySection
-                title="🔍 Keyword da monitorare"
+                title="🔍 Keyword da cercare"
                 items={output.keywords_to_monitor}
-                color="#0B5CAD"
+                color="var(--color-primary)"
                 badge
               />
+
+              {/* 2. Post types */}
+              <OpportunitySection
+                title="📌 Tipi di post da monitorare"
+                items={output.post_types_to_search}
+                color="#0B5CAD"
+              />
+
+              {/* 3. Ideal profiles */}
+              <div
+                className="rounded-lg p-4"
+                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
+              >
+                <div className="text-sm font-semibold mb-3" style={{ color: "#004182" }}>
+                  👤 Profili da cercare
+                </div>
+                <div className="space-y-3">
+                  {output.ideal_profiles.map((profile, i) => (
+                    <div
+                      key={i}
+                      className="rounded-lg p-3 space-y-1.5"
+                      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                    >
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <span className="font-semibold text-sm" style={{ color: "var(--color-primary)" }}>
+                          {profile.role}
+                        </span>
+                        <span className="badge badge-blue">{profile.sector}</span>
+                        <span className="badge" style={{ background: "var(--color-soft-2)", color: "var(--color-muted)" }}>
+                          {profile.company_size}
+                        </span>
+                      </div>
+                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
+                        💡 {profile.why}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. Useful signals */}
+              <OpportunitySection
+                title="📡 Segnali utili"
+                items={output.useful_signals}
+                color="#6B7280"
+              />
+
+              {/* 5. LinkedIn search queries */}
+              <div
+                className="rounded-lg p-4"
+                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
+              >
+                <div className="text-sm font-semibold mb-2" style={{ color: "#004182" }}>
+                  🔗 Come cercarli su LinkedIn
+                </div>
+                <div className="space-y-1.5">
+                  {output.linkedin_search_queries.map((query, i) => (
+                    <div
+                      key={i}
+                      className="flex items-start gap-2 rounded-md px-3 py-2 text-sm font-mono"
+                      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                    >
+                      <span style={{ color: "var(--color-primary)", flexShrink: 0 }}>{i + 1}.</span>
+                      <span>{query}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* 6. Conversation opportunities */}
               <OpportunitySection
                 title="💬 Opportunità di conversazione"
                 items={output.conversation_opportunities}
                 color="#004182"
               />
 
+              {/* Next action */}
               <div className="callout-success text-sm rounded-lg">
                 <span className="font-semibold">➡️ Prossima azione: </span>
                 {output.next_action}
@@ -195,3 +262,4 @@ function OpportunitySection({
     </div>
   );
 }
+
