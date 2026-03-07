@@ -6,16 +6,34 @@ import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
+const TOTAL_STEPS = 7;
+const PLACEHOLDER_VALUE = "Da definire";
+
+const timeOptions = [
+  { label: "10–15 minuti", value: "15" },
+  { label: "30 minuti", value: "30" },
+  { label: "1 ora", value: "60" },
+  { label: "Più di 1 ora", value: "120" },
+];
+
+const goalOptions = [
+  { label: "💬 Più conversazioni", value: "prime conversazioni", desc: "Voglio iniziare a dialogare con potenziali clienti" },
+  { label: "📞 Più call", value: "più call", desc: "Voglio trasformare le conversazioni in appuntamenti" },
+  { label: "🤝 Più clienti", value: "più clienti", desc: "Voglio chiudere nuovi contratti" },
+];
+
 const initial: OnboardingInput = {
   offer_one_liner: "",
   offer_price_range: "",
   offer_delivery_time: "1m",
   offer_outcome: "",
+  linkedin_profile_url: "",
   icp_role: "",
   icp_industry: "",
   icp_company_size: "",
   icp_main_problem: "",
   icp_top_objections: [],
+  trigger_situation: "",
   proof_case_study: "",
   proof_testimonial: "",
   proof_links: "",
@@ -65,106 +83,453 @@ export default function OnboardingPage() {
     }
   }
 
+  const progressPct = Math.round((step / TOTAL_STEPS) * 100);
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Imposta il tuo sistema clienti</h2>
-      <p className="text-sm text-muted">Rispondi a poche domande. Creeremo il tuo piano commerciale LinkedIn.</p>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: configura il tuo sistema commerciale.</p>
-        <p><strong>Cosa inserire</strong>: offerta, cliente ideale, prove e tempo disponibile.</p>
-        <p><strong>Cosa ottieni</strong>: un piano pratico per passare da conversazione a call.</p>
+    <div className="mx-auto max-w-xl space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>
+          Imposta il tuo sistema clienti
+        </h2>
+        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+          Rispondi a poche domande. Creeremo il tuo piano commerciale LinkedIn su misura.
+        </p>
       </div>
-      <p className="text-sm text-muted">Step {step}/4</p>
 
-      {step === 1 && (
-        <Section title="Step 1 - Cosa vendi?">
-          <Input label="Servizio principale" placeholder="Aiuto aziende SaaS ad aumentare le conversioni." value={data.offer_one_liner} onChange={(v) => setData({ ...data, offer_one_liner: v })} />
-          <Input label="Prezzo medio" placeholder="500-1500EUR" value={data.offer_price_range} onChange={(v) => setData({ ...data, offer_price_range: v })} />
-          <Select label="Durata progetto" value={data.offer_delivery_time} options={["1w", "2w", "1m", "3m"]} onChange={(v) => setData({ ...data, offer_delivery_time: v as OnboardingInput["offer_delivery_time"] })} />
-          <Input label="Risultato che ottiene il cliente" value={data.offer_outcome} onChange={(v) => setData({ ...data, offer_outcome: v })} />
-        </Section>
-      )}
+      {/* Guide box */}
+      <div className="callout text-sm space-y-1.5">
+        <div><span className="font-semibold">✅ Cosa fa questa pagina:</span> configura il tuo sistema commerciale.</div>
+        <div><span className="font-semibold">📋 Cosa inserire:</span> offerta, cliente ideale, prove e tempo disponibile.</div>
+        <div><span className="font-semibold">🎯 Cosa ottieni:</span> un piano pratico per passare da conversazione a call.</div>
+      </div>
 
-      {step === 2 && (
-        <Section title="Step 2 - Chi è il cliente ideale?">
-          <Input label="Ruolo" value={data.icp_role} onChange={(v) => setData({ ...data, icp_role: v })} />
-          <Input label="Settore" value={data.icp_industry} onChange={(v) => setData({ ...data, icp_industry: v })} />
-          <Input label="Dimensione azienda" value={data.icp_company_size} onChange={(v) => setData({ ...data, icp_company_size: v })} />
-          <Input label="Problema principale" value={data.icp_main_problem} onChange={(v) => setData({ ...data, icp_main_problem: v })} />
-          <Input
-            label="Obiezioni principali (separate da virgola, max 3)"
-            value={data.icp_top_objections.join(", ")}
-            onChange={(v) => setData({ ...data, icp_top_objections: v.split(",").map((x) => x.trim()).filter(Boolean).slice(0, 3) })}
+      {/* Progress bar */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+            Passo {step} di {TOTAL_STEPS}
+          </span>
+          <span className="text-xs font-semibold" style={{ color: "var(--color-primary)" }}>
+            {progressPct}% completato
+          </span>
+        </div>
+        <div
+          className="h-2 w-full rounded-full overflow-hidden"
+          style={{ background: "var(--color-soft)" }}
+        >
+          <div
+            className="h-full rounded-full transition-all duration-300"
+            style={{ width: `${progressPct}%`, background: "var(--color-primary)" }}
           />
-        </Section>
-      )}
+        </div>
+        {/* Step dots */}
+        <div className="mt-3 flex justify-between">
+          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+            <div key={i} className="flex flex-col items-center gap-1">
+              <div
+                className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-bold transition-all duration-200"
+                style={{
+                  background: i + 1 <= step ? "var(--color-primary)" : "var(--color-soft)",
+                  color: i + 1 <= step ? "white" : "var(--color-muted)",
+                  opacity: i + 1 > step ? 0.5 : 1,
+                }}
+              >
+                {i + 1 < step ? "✓" : i + 1}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
-      {step === 3 && (
-        <Section title="Step 3 - Perché dovrebbero fidarsi?">
-          <Input label="Mini caso studio" value={data.proof_case_study} onChange={(v) => setData({ ...data, proof_case_study: v })} />
-          <Input label="Testimonianza" value={data.proof_testimonial || ""} onChange={(v) => setData({ ...data, proof_testimonial: v })} />
-          <Input label="Portfolio" value={data.proof_links || ""} onChange={(v) => setData({ ...data, proof_links: v })} />
-        </Section>
-      )}
+      {/* Step cards */}
+      <div
+        className="rounded-2xl p-6 space-y-5"
+        style={{
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          boxShadow: "var(--shadow-md)",
+        }}
+      >
+        {/* ── Step 1: Di cosa ti occupi? ── */}
+        {step === 1 && (
+          <>
+            <StepHeader
+              emoji="💼"
+              title="Di cosa ti occupi?"
+              subtitle="Descrivi in modo semplice cosa fai e a chi serve."
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Il tuo servizio principale</span>
+              <textarea
+                className="input w-full resize-none"
+                rows={3}
+                placeholder="Es. Aiuto aziende SaaS a ridurre il churn attraverso una migliore onboarding."
+                value={data.offer_one_liner}
+                onChange={(e) => setData({ ...data, offer_one_liner: e.target.value })}
+              />
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Risultato concreto che ottiene il cliente</span>
+              <input
+                className="input w-full"
+                placeholder="Es. Aumenta le conversioni del 30% in 60 giorni."
+                value={data.offer_outcome}
+                onChange={(e) => setData({ ...data, offer_outcome: e.target.value })}
+              />
+            </label>
+            <SkipOption
+              label="Non sono ancora sicuro di come descriverlo"
+              onClick={() => {
+                setData({
+                  ...data,
+                  offer_one_liner: data.offer_one_liner || PLACEHOLDER_VALUE,
+                  offer_outcome: data.offer_outcome || PLACEHOLDER_VALUE,
+                });
+                setStep(2);
+              }}
+            />
+          </>
+        )}
 
-      {step === 4 && (
-        <Section title="Step 4 - Quanto tempo puoi dedicare?">
-          <Select label="Tempo settimanale" value={data.weekly_time_minutes} options={["15 min", "30 min", "1h", "2h"]} valueMap={{ "15 min": "15", "30 min": "30", "1h": "60", "2h": "120" }} onChange={(v) => setData({ ...data, weekly_time_minutes: v as OnboardingInput["weekly_time_minutes"] })} />
-          <Select label="Quanto ti senti sicuro nel pubblicare? (1-5)" value={data.comfort_post} options={["1", "2", "3", "4", "5"]} onChange={(v) => setData({ ...data, comfort_post: v as OnboardingInput["comfort_post"] })} />
-          <Select label="Quanto ti senti sicuro nel rispondere ai commenti? (1-5)" value={data.comfort_comments} options={["1", "2", "3", "4", "5"]} onChange={(v) => setData({ ...data, comfort_comments: v as OnboardingInput["comfort_comments"] })} />
-          <Select label="Quanto ti senti sicuro nei messaggi privati? (1-5)" value={data.comfort_dm} options={["1", "2", "3", "4", "5"]} onChange={(v) => setData({ ...data, comfort_dm: v as OnboardingInput["comfort_dm"] })} />
-          <Select
-            label="Goal"
-            value={data.goal_primary}
-            options={["Prime conversazioni", "Più call", "Più clienti"]}
-            valueMap={{ "Prime conversazioni": "prime conversazioni", "Più call": "più call", "Più clienti": "più clienti" }}
-            onChange={(v) => setData({ ...data, goal_primary: v as OnboardingInput["goal_primary"] })}
-          />
-        </Section>
-      )}
+        {/* ── Step 2: Profilo LinkedIn ── */}
+        {step === 2 && (
+          <>
+            <StepHeader
+              emoji="🔗"
+              title="Analizziamo anche il tuo profilo LinkedIn"
+              subtitle="Questo ci aiuta a capire come ti presenti oggi e a costruire un sistema più preciso."
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Link al tuo profilo LinkedIn</span>
+              <input
+                className="input w-full"
+                type="url"
+                placeholder="https://www.linkedin.com/in/tuo-nome"
+                value={data.linkedin_profile_url || ""}
+                onChange={(e) => setData({ ...data, linkedin_profile_url: e.target.value })}
+              />
+            </label>
+            {/* Microcopy */}
+            <div
+              className="rounded-xl p-4 text-sm space-y-1.5"
+              style={{ background: "var(--color-soft)", border: "1px solid var(--color-border)" }}
+            >
+              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+                Useremo il tuo profilo per capire:
+              </p>
+              <ul className="space-y-1" style={{ color: "var(--color-muted)" }}>
+                <li>• come ti presenti oggi</li>
+                <li>• che tipo di cliente potresti attirare</li>
+                <li>• come adattare contenuti e conversazioni</li>
+              </ul>
+            </div>
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                className="btn-primary w-full py-3 text-base"
+                disabled={!data.linkedin_profile_url}
+                onClick={() => setStep(3)}
+              >
+                🔍 Analizza il mio profilo
+              </button>
+              <SkipOption
+                label="Preferisco saltare questo passaggio"
+                onClick={() => setStep(3)}
+              />
+            </div>
+          </>
+        )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+        {/* ── Step 3: Cliente ideale ── */}
+        {step === 3 && (
+          <>
+            <StepHeader
+              emoji="🎯"
+              title="Chi dovrebbe diventare tuo cliente?"
+              subtitle="Più specifico sei, più precisi saranno i suggerimenti."
+            />
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="block text-sm">
+                <span className="mb-1.5 block font-medium">Ruolo / Titolo</span>
+                <input
+                  className="input w-full"
+                  placeholder="Es. CEO, Founder, Head of Growth"
+                  value={data.icp_role}
+                  onChange={(e) => setData({ ...data, icp_role: e.target.value })}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1.5 block font-medium">Settore</span>
+                <input
+                  className="input w-full"
+                  placeholder="Es. SaaS B2B, E-commerce, Consulenza"
+                  value={data.icp_industry}
+                  onChange={(e) => setData({ ...data, icp_industry: e.target.value })}
+                />
+              </label>
+            </div>
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Dimensione azienda</span>
+              <input
+                className="input w-full"
+                placeholder="Es. 10–50 dipendenti, startup early-stage"
+                value={data.icp_company_size}
+                onChange={(e) => setData({ ...data, icp_company_size: e.target.value })}
+              />
+            </label>
+            <SkipOption
+              label="Non ho ancora un cliente ideale definito"
+              onClick={() => {
+                setData({
+                  ...data,
+                  icp_role: data.icp_role || PLACEHOLDER_VALUE,
+                  icp_industry: data.icp_industry || PLACEHOLDER_VALUE,
+                  icp_company_size: data.icp_company_size || PLACEHOLDER_VALUE,
+                });
+                setStep(4);
+              }}
+            />
+          </>
+        )}
 
-      <div className="flex gap-2">
-        <button className="btn-secondary px-4 py-2" disabled={step === 1 || loading} onClick={() => setStep((s) => s - 1)}>Indietro</button>
-        {step < 4 ? (
-          <button className="btn-primary px-4 py-2" disabled={loading} onClick={() => setStep((s) => s + 1)}>Avanti</button>
-        ) : (
-          <button className="btn-primary px-4 py-2" disabled={loading} onClick={submit}>{loading ? "Generazione..." : "Genera piano"}</button>
+        {/* ── Step 4: Problema principale ── */}
+        {step === 4 && (
+          <>
+            <StepHeader
+              emoji="🧩"
+              title="Che problema aiuti a risolvere?"
+              subtitle="Descrivi la sfida concreta che il tuo cliente affronta prima di trovarti."
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Il problema principale del tuo cliente ideale</span>
+              <textarea
+                className="input w-full resize-none"
+                rows={3}
+                placeholder="Es. Non riesce ad acquisire nuovi clienti in modo costante, gestisce tutto manualmente e perde tempo."
+                value={data.icp_main_problem}
+                onChange={(e) => setData({ ...data, icp_main_problem: e.target.value })}
+              />
+            </label>
+            <SkipOption
+              label="Non sono ancora sicuro"
+              onClick={() => {
+                setData({ ...data, icp_main_problem: data.icp_main_problem || PLACEHOLDER_VALUE });
+                setStep(5);
+              }}
+            />
+          </>
+        )}
+
+        {/* ── Step 5: Trigger conversazione ── */}
+        {step === 5 && (
+          <>
+            <StepHeader
+              emoji="💡"
+              title="Quando nasce la conversazione con il cliente?"
+              subtitle="In quale situazione un cliente decide di contattarti?"
+            />
+            <label className="block text-sm">
+              <span className="mb-1.5 block font-medium">Descrivi la situazione tipica</span>
+              <textarea
+                className="input w-full resize-none"
+                rows={3}
+                placeholder="Es. Quando vuole più clienti, quando il sito non converte, quando cerca un consulente."
+                value={data.trigger_situation || ""}
+                onChange={(e) => setData({ ...data, trigger_situation: e.target.value })}
+              />
+            </label>
+            {/* Example chips */}
+            <div>
+              <p className="text-xs mb-2 font-medium" style={{ color: "var(--color-muted)" }}>
+                Scegli un esempio o scrivi il tuo:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {[
+                  "Quando vuole più clienti",
+                  "Quando il sito non converte",
+                  "Quando ha bisogno di un consulente",
+                  "Quando vuole migliorare LinkedIn",
+                ].map((ex) => (
+                  <button
+                    key={ex}
+                    type="button"
+                    onClick={() => setData({ ...data, trigger_situation: ex })}
+                    className="rounded-full px-3 py-1 text-xs font-medium transition-all duration-150"
+                    style={{
+                      background: data.trigger_situation === ex ? "var(--color-primary)" : "var(--color-soft-2)",
+                      color: data.trigger_situation === ex ? "white" : "var(--color-text)",
+                      border: `1.5px solid ${data.trigger_situation === ex ? "var(--color-primary)" : "var(--color-border)"}`,
+                    }}
+                  >
+                    {ex}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <SkipOption
+              label="Non sono ancora sicuro"
+              onClick={() => {
+                setData({ ...data, trigger_situation: data.trigger_situation || PLACEHOLDER_VALUE });
+                setStep(6);
+              }}
+            />
+          </>
+        )}
+
+        {/* ── Step 6: Tempo disponibile ── */}
+        {step === 6 && (
+          <>
+            <StepHeader
+              emoji="⏱"
+              title="Quanto tempo puoi dedicare a LinkedIn?"
+              subtitle="Adatteremo il piano alle tue disponibilità reali."
+            />
+            <div className="grid grid-cols-2 gap-3">
+              {timeOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setData({ ...data, weekly_time_minutes: opt.value as OnboardingInput["weekly_time_minutes"] })}
+                  className="rounded-xl p-4 text-sm font-medium text-left transition-all duration-150"
+                  style={{
+                    background: data.weekly_time_minutes === opt.value ? "var(--color-primary)" : "var(--color-soft-2)",
+                    color: data.weekly_time_minutes === opt.value ? "white" : "var(--color-text)",
+                    border: `2px solid ${data.weekly_time_minutes === opt.value ? "var(--color-primary)" : "var(--color-border)"}`,
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* ── Step 7: Obiettivo ── */}
+        {step === 7 && (
+          <>
+            <StepHeader
+              emoji="🚀"
+              title="Cosa vuoi ottenere?"
+              subtitle="Scegli il tuo obiettivo principale con LinkedIn."
+            />
+            <div className="space-y-3">
+              {goalOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setData({ ...data, goal_primary: opt.value as OnboardingInput["goal_primary"] })}
+                  className="w-full rounded-xl p-4 text-left transition-all duration-150"
+                  style={{
+                    background: data.goal_primary === opt.value ? "var(--color-soft)" : "var(--color-soft-2)",
+                    border: `2px solid ${data.goal_primary === opt.value ? "var(--color-primary)" : "var(--color-border)"}`,
+                  }}
+                >
+                  <div
+                    className="font-semibold text-sm"
+                    style={{ color: data.goal_primary === opt.value ? "var(--color-primary)" : "var(--color-text)" }}
+                  >
+                    {opt.label}
+                  </div>
+                  <div className="text-xs mt-0.5" style={{ color: "var(--color-muted)" }}>
+                    {opt.desc}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+
+        {/* Error */}
+        {error && (
+          <div className="callout-danger rounded-lg text-sm">
+            ⚠️ {error}
+          </div>
+        )}
+
+        {/* Navigation — hidden for step 2 which has its own buttons */}
+        {step !== 2 && (
+          <div className="flex gap-3 pt-2">
+            {step > 1 && (
+              <button
+                type="button"
+                className="btn-secondary flex-1"
+                disabled={loading}
+                onClick={() => setStep((s) => s - 1)}
+              >
+                ← Indietro
+              </button>
+            )}
+            {step < TOTAL_STEPS ? (
+              <button
+                type="button"
+                className="btn-primary flex-1 py-3 text-base"
+                disabled={loading}
+                onClick={() => setStep((s) => s + 1)}
+              >
+                Avanti →
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="btn-primary flex-1 py-3 text-base"
+                disabled={loading}
+                onClick={submit}
+              >
+                {loading ? "Generazione piano in corso…" : "🚀 Genera il mio piano"}
+              </button>
+            )}
+          </div>
+        )}
+
+        {/* Back button only for step 2 */}
+        {step === 2 && (
+          <button
+            type="button"
+            className="btn-secondary w-full"
+            disabled={loading}
+            onClick={() => setStep(1)}
+          >
+            ← Indietro
+          </button>
         )}
       </div>
+
+      {/* Reassurance */}
+      <p className="text-center text-xs" style={{ color: "var(--color-muted)" }}>
+        Puoi modificare queste informazioni in qualsiasi momento dalle impostazioni.
+      </p>
     </div>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function StepHeader({ emoji, title, subtitle }: { emoji: string; title: string; subtitle: string }) {
   return (
-    <div className="rounded-lg border border-app p-4">
-      <h3 className="mb-3 font-semibold">{title}</h3>
-      <div className="space-y-3">{children}</div>
+    <div className="flex items-start gap-4 pb-2">
+      <div
+        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-2xl"
+        style={{ background: "var(--color-soft)", color: "var(--color-primary)" }}
+      >
+        {emoji}
+      </div>
+      <div>
+        <h3 className="text-lg font-bold" style={{ color: "var(--color-text)" }}>{title}</h3>
+        <p className="text-sm" style={{ color: "var(--color-muted)" }}>{subtitle}</p>
+      </div>
     </div>
   );
 }
 
-function Input({ label, value, onChange, placeholder }: { label: string; value: string; onChange: (v: string) => void; placeholder?: string }) {
+function SkipOption({ label, onClick }: { label: string; onClick: () => void }) {
   return (
-    <label className="block text-sm">
-      <span className="mb-1 block text-muted">{label}</span>
-      <input className="input w-full" value={value} placeholder={placeholder} onChange={(e) => onChange(e.target.value)} />
-    </label>
+    <button
+      type="button"
+      onClick={onClick}
+      className="text-sm underline-offset-2 hover:underline"
+      style={{ color: "var(--color-muted)" }}
+    >
+      {label} →
+    </button>
   );
 }
 
-function Select({ label, value, onChange, options, valueMap }: { label: string; value: string; onChange: (v: string) => void; options: string[]; valueMap?: Record<string, string> }) {
-  const selectedLabel = valueMap ? Object.keys(valueMap).find((key) => valueMap[key] === value) || options[0] : value;
-  return (
-    <label className="block text-sm">
-      <span className="mb-1 block text-muted">{label}</span>
-      <select className="input w-full" value={selectedLabel} onChange={(e) => onChange(valueMap ? valueMap[e.target.value] : e.target.value)}>
-        {options.map((option) => (
-          <option key={option} value={option}>{option}</option>
-        ))}
-      </select>
-    </label>
-  );
-}

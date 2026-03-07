@@ -3,39 +3,58 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const nav = [
-  { href: "/app", label: "Oggi" },
+type NavItem = { href: string; label: string };
+
+const topItems: NavItem[] = [
+  { href: "/app", label: "Dashboard" },
   { href: "/app/onboarding", label: "Imposta il tuo sistema" },
+];
+
+const toolItems: NavItem[] = [
   { href: "/app/inbound", label: "Contenuti" },
   { href: "/app/post", label: "Scrivi un post" },
-  { href: "/app/comments", label: "Rispondi ai commenti" },
-  { href: "/app/dm", label: "Rispondi ai messaggi" },
-  { href: "/app/prospect", label: "Analizza un potenziale cliente" },
-  { href: "/app/opportunity", label: "Trova opportunita" },
-  { href: "/app/simulator", label: "Allenati alle conversazioni" },
-  { href: "/app/pipeline", label: "Clienti in corso" },
+  { href: "/app/comments", label: "Commenti" },
+  { href: "/app/dm", label: "Messaggi" },
+  { href: "/app/opportunity", label: "Opportunità" },
+  { href: "/app/prospect", label: "Analizza cliente" },
+  { href: "/app/simulator", label: "Simulatore" },
+  { href: "/app/pipeline", label: "Clienti" },
+];
+
+const bottomItems: NavItem[] = [
   { href: "/app/settings", label: "Impostazioni" },
 ];
 
 export default function AppNav() {
   const pathname = usePathname();
 
+  function navLink(item: NavItem) {
+    const active = pathname === item.href;
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`dash-nav-link${active ? " dash-nav-link-active" : ""}`}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
   return (
-    <nav className="mb-6 flex flex-wrap gap-2">
-      {nav.map((item) => {
-        const active = pathname === item.href;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`rounded-lg border px-3 py-2 text-sm ${
-              active ? "bg-soft border-app" : "border-app hover:bg-soft2"
-            }`}
-          >
-            {item.label}
-          </Link>
-        );
-      })}
+    <nav className="dash-nav">
+      <div className="dash-nav-group">
+        {topItems.map(navLink)}
+      </div>
+      <div className="dash-nav-divider" />
+      <div className="dash-nav-group">
+        <span className="dash-nav-label">Strumenti</span>
+        {toolItems.map(navLink)}
+      </div>
+      <div className="dash-nav-divider" />
+      <div className="dash-nav-group">
+        {bottomItems.map(navLink)}
+      </div>
     </nav>
   );
 }
