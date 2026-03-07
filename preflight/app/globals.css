@@ -1075,3 +1075,26 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 /* ── Animations ── */
 @keyframes dash-fadein{from{opacity:0}to{opacity:1}}
 @keyframes dash-slideup{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Image suggestion (post module) ── */
+.dash-img-section{
+  background:var(--color-surface);border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);padding:1.5rem;
+  box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:1rem}
+.dash-img-header{display:flex;align-items:flex-start;gap:0.75rem}
+.dash-img-header-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:var(--color-soft);color:var(--color-primary)}
+.dash-img-title{font-size:1.05rem;font-weight:700;color:var(--color-text);margin:0}
+.dash-img-sub{font-size:0.82rem;color:var(--color-muted);margin:0.15rem 0 0;line-height:1.45}
+.dash-img-tips{
+  display:flex;flex-direction:column;gap:0.4rem;
+  background:var(--color-bg);border-radius:var(--radius-md);padding:0.85rem 1rem}
+.dash-img-tip{font-size:0.82rem;color:var(--color-text);line-height:1.5}
+.dash-img-tip-label{font-weight:700;color:var(--color-primary)}
+.dash-img-preview{
+  border-radius:var(--radius-md);overflow:hidden;
+  border:1px solid var(--color-border);background:var(--color-bg)}
+.dash-img-result{display:block;width:100%;height:auto;max-height:520px;object-fit:contain}
+.dash-img-actions{display:flex;gap:0.5rem;flex-wrap:wrap}

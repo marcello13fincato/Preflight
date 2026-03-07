@@ -22,6 +22,11 @@ export default function PostPage() {
   const [output, setOutput] = useState<PostBuilderJson | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  /* Image generation state */
+  const [imgLoading, setImgLoading] = useState(false);
+  const [imgUrl, setImgUrl] = useState<string | null>(null);
+  const [imgError, setImgError] = useState<string | null>(null);
+
   async function generate() {
     setLoading(true);
     setError(null);
@@ -50,6 +55,32 @@ export default function PostPage() {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function generateImage() {
+    if (!output) return;
+    setImgLoading(true);
+    setImgError(null);
+    try {
+      const postText = output.post_versions.clean + "\n\n" + output.cta;
+      const res = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ post_content: postText }),
+      });
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore (${res.status})`);
+      }
+      if (typeof json.image_url !== "string") {
+        throw new Error("Nessuna immagine restituita.");
+      }
+      setImgUrl(json.image_url);
+    } catch (err) {
+      setImgError(err instanceof Error ? err.message : "Errore sconosciuto.");
+    } finally {
+      setImgLoading(false);
     }
   }
 
@@ -107,6 +138,51 @@ export default function PostPage() {
           <ResultCard title="CTA" text={output.cta} />
           <ResultCard title="Comment starter" text={output.comment_starter} />
           <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_step}</div>
+        </section>
+      )}
+
+      {/* ── Suggerimento immagine ── */}
+      {output && (
+        <section className="dash-img-section">
+          <div className="dash-img-header">
+            <div className="dash-img-header-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+            </div>
+            <div>
+              <h3 className="dash-img-title">Suggerimento immagine</h3>
+              <p className="dash-img-sub">Un&apos;immagine aumenta engagement e visibilità del post su LinkedIn.</p>
+            </div>
+          </div>
+
+          <div className="dash-img-tips">
+            <div className="dash-img-tip">
+              <span className="dash-img-tip-label">Tipo consigliato:</span>{" "}
+              Illustrazione o grafica astratta — evita foto stock generiche.
+            </div>
+            <div className="dash-img-tip">
+              <span className="dash-img-tip-label">Idea visiva:</span>{" "}
+              Un&apos;immagine che richiami il concetto chiave del post in modo semplice e professionale.
+            </div>
+          </div>
+
+          {imgError && (
+            <div className="callout-danger rounded-xl p-4">
+              <p className="text-sm font-semibold">⚠️ {imgError}</p>
+            </div>
+          )}
+
+          {imgUrl && (
+            <div className="dash-img-preview">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imgUrl} alt="Immagine generata per il post" className="dash-img-result" />
+            </div>
+          )}
+
+          <div className="dash-img-actions">
+            <button onClick={generateImage} disabled={imgLoading} className="dash-btn-primary">
+              {imgLoading ? "Generazione in corso..." : imgUrl ? "Genera un'altra immagine" : "Genera esempio immagine"}
+            </button>
+          </div>
         </section>
       )}
 
