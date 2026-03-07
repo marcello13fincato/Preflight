@@ -5,8 +5,40 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+import type { Lead } from "@/lib/sales/schemas";
 
 const MODAL_DISMISSED_KEY = "onboarding-modal-dismissed";
+
+/* ─── Status badge colour mapping ─── */
+const statusColors: Record<string, { bg: string; fg: string }> = {
+  Nuovo:               { bg: "var(--color-soft)",       fg: "var(--color-primary)" },
+  "In conversazione":  { bg: "#FEF3C7",                fg: "#92400E" },
+  Interessato:         { bg: "#D1FAE5",                 fg: "#065F46" },
+  "Call proposta":     { bg: "#DBEAFE",                 fg: "#1E40AF" },
+  "Call fissata":      { bg: "#E0E7FF",                 fg: "#3730A3" },
+  Cliente:             { bg: "var(--color-success-bg)", fg: "var(--color-success)" },
+  "Da ricontattare":   { bg: "var(--color-warning-bg)", fg: "var(--color-warning)" },
+};
+
+/* ─── AI suggestion stubs per status ─── */
+function aiSuggestion(lead: Lead): string {
+  switch (lead.status) {
+    case "Nuovo":
+      return "Potresti iniziare con un commento a un suo post recente per rompere il ghiaccio.";
+    case "In conversazione":
+      return "Potresti chiedere se stanno già affrontando questo problema.";
+    case "Interessato":
+      return "Il momento è buono: proponi una call conoscitiva breve (15 min).";
+    case "Call proposta":
+      return "Manda un follow-up gentile per confermare data e ora della call.";
+    case "Call fissata":
+      return "Preparati alla call: rivedi le note e i punti chiave del prospect.";
+    case "Cliente":
+      return "Ottimo! Chiedi un feedback e valuta un caso studio da condividere.";
+    default:
+      return "Riprendi la conversazione con un messaggio personalizzato.";
+  }
+}
 
 export default function AppTodayPage() {
   const router = useRouter();
@@ -16,21 +48,23 @@ export default function AppTodayPage() {
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = repo.profile.getProfile(userId);
-  const day = Math.min(14, Math.max(1, new Date().getDate() % 14 || 1));
-  const today = profile.plan?.plan_14_days.find((d) => d.day === day) || profile.plan?.plan_14_days[0];
   const leadsByStatus = repo.lead.listByStatus(userId);
+  const allLeads = repo.lead.listLeads(userId);
   const activeConversations =
     (leadsByStatus["In conversazione"]?.length || 0) +
     (leadsByStatus["Interessato"]?.length || 0) +
     (leadsByStatus["Call proposta"]?.length || 0);
-  const totalLeads = repo.lead.listLeads(userId).length;
+  const totalLeads = allLeads.length;
   const clienti = leadsByStatus["Cliente"]?.length || 0;
+  const daRicontattare = allLeads.filter(
+    (l) => l.status !== "Cliente" && !!l.next_action_at
+  ).length;
 
-  const followupLead = repo
-    .lead
-    .listLeads(userId)
-    .filter((x) => x.status !== "Cliente")
-    .sort((a, b) => (a.next_action_at || "").localeCompare(b.next_action_at || ""))[0];
+  /* Conversations to manage: non-client leads, most recent first */
+  const conversationsToManage = allLeads
+    .filter((l) => l.status !== "Cliente")
+    .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
+    .slice(0, 6);
 
   // Onboarding modal state
   const [modalDismissed, setModalDismissed] = useState(() => {
@@ -66,8 +100,7 @@ export default function AppTodayPage() {
             <div className="dash-modal-icon">⚙️</div>
             <h2 className="dash-modal-title">Imposta il tuo sistema</h2>
             <p className="dash-modal-desc">
-              Configura il tuo sistema clienti su LinkedIn.
-              Ti bastano pochi passaggi per adattare Preflight al tuo lavoro.
+              Configura il tuo sistema clienti su LinkedIn in pochi passaggi.
             </p>
 
             <div className="dash-modal-guide">
@@ -101,7 +134,7 @@ export default function AppTodayPage() {
                 onClick={() => setModalClosedTemporarily(true)}
               >
                 Imposta ora
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                <span className="dash-btn-arrow">→</span>
               </Link>
               <button onClick={dismissModal} className="dash-btn-secondary dash-btn-full">
                 Lo farò dopo
@@ -116,10 +149,10 @@ export default function AppTodayPage() {
         {/* ══════════════════════════════════════════════════════
             PAGE HEADING
         ══════════════════════════════════════════════════════ */}
-        <div className="dash-heading">
-          <h2 className="dash-heading-title">La tua dashboard</h2>
-          <p className="dash-heading-sub">
-            Gestisci le conversazioni e trova nuove opportunità su LinkedIn.
+        <div className="dash-hero">
+          <h2 className="dash-hero-title">La tua dashboard</h2>
+          <p className="dash-hero-sub">
+            Gestisci conversazioni, trova opportunità e trasforma LinkedIn in un sistema clienti.
           </p>
         </div>
 
@@ -135,13 +168,13 @@ export default function AppTodayPage() {
               <div>
                 <p className="dash-banner-title">Il tuo sistema non è ancora configurato.</p>
                 <p className="dash-banner-text">
-                  Completa l&apos;impostazione per ricevere suggerimenti più precisi e un piano di azione personalizzato.
+                  Completa l&apos;impostazione per ricevere suggerimenti più precisi.
                 </p>
               </div>
             </div>
             <Link href="/app/onboarding" className="dash-btn-primary dash-btn-sm">
               Completa configurazione
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span className="dash-btn-arrow">→</span>
             </Link>
           </div>
         )}
@@ -153,89 +186,166 @@ export default function AppTodayPage() {
           <KpiCard label="Conversazioni attive" value={activeConversations} accent />
           <KpiCard label="Contatti in pipeline" value={totalLeads} />
           <KpiCard label="Clienti acquisiti" value={clienti} />
-          <KpiCard
-            label="Da ricontattare"
-            value={
-              repo.lead
-                .listLeads(userId)
-                .filter((l) => l.status !== "Cliente" && !!l.next_action_at).length
-            }
-          />
+          <KpiCard label="Da ricontattare" value={daRicontattare} />
         </div>
 
         {/* ══════════════════════════════════════════════════════
-            IL TUO PROSSIMO PASSO
+            INIZIA DA QUI
         ══════════════════════════════════════════════════════ */}
-        <div className="dash-next-step">
-          <div className="dash-next-step-header">
-            <h3 className="dash-section-title">Il tuo prossimo passo</h3>
-            <p className="dash-section-sub">Ecco cosa puoi fare adesso per avanzare.</p>
+        <section className="dash-section">
+          <h3 className="dash-section-title">Inizia da qui</h3>
+          <p className="dash-section-sub">
+            Non sai da dove partire? Scegli una di queste azioni e inizia subito.
+          </p>
+          <div className="dash-start-grid">
+            <StartCard
+              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
+              title="Rispondi a un commento"
+              description="Incolla un commento ricevuto su LinkedIn e ottieni una risposta pronta."
+              href="/app/comments"
+              ctaLabel="Rispondi ora"
+            />
+            <StartCard
+              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>}
+              title="Analizza un messaggio"
+              description="Incolla una conversazione LinkedIn e scopri cosa rispondere."
+              href="/app/dm"
+              ctaLabel="Analizza ora"
+            />
+            <StartCard
+              icon={<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>}
+              title="Trova opportunità"
+              description="Scopri dove iniziare nuove conversazioni su LinkedIn."
+              href="/app/opportunity"
+              ctaLabel="Trova ora"
+            />
           </div>
-          <div className="dash-next-step-grid">
-            <NextStepCard
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            3 MACRO AREE
+        ══════════════════════════════════════════════════════ */}
+
+        {/* ── 1. Attirare clienti ── */}
+        <section className="dash-section">
+          <div className="dash-section-header">
+            <span className="dash-section-num">1</span>
+            <div>
+              <h3 className="dash-section-title">Attirare clienti</h3>
+              <p className="dash-section-sub">Pubblica contenuti che dimostrano il tuo valore e attirano clienti ideali.</p>
+            </div>
+          </div>
+          <div className="dash-tool-grid">
+            <ToolCard
+              icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>}
+              title="Contenuti"
+              description="Pianifica contenuti strategici per il tuo pubblico ideale."
+              href="/app/inbound"
+            />
+            <ToolCard
               icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>}
-              label="Pubblica un contenuto"
+              title="Scrivi un post"
+              description="Crea un post LinkedIn efficace con hook, corpo e CTA."
               href="/app/post"
             />
-            <NextStepCard
+            <ToolCard
+              icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>}
+              title="Trova opportunità"
+              description="Scopri nuovi contatti con cui iniziare una conversazione."
+              href="/app/opportunity"
+            />
+          </div>
+        </section>
+
+        {/* ── 2. Parlare con i clienti ── */}
+        <section className="dash-section">
+          <div className="dash-section-header">
+            <span className="dash-section-num">2</span>
+            <div>
+              <h3 className="dash-section-title">Parlare con i clienti</h3>
+              <p className="dash-section-sub">Avvia conversazioni autentiche con potenziali clienti nei commenti e nei messaggi.</p>
+            </div>
+          </div>
+          <div className="dash-tool-grid">
+            <ToolCard
               icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
-              label="Rispondi a un commento"
+              title="Rispondi ai commenti"
+              description="Analizza un commento ricevuto e genera una risposta strategica."
               href="/app/comments"
             />
-            <NextStepCard
-              icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>}
-              label="Analizza un potenziale cliente"
-              href="/app/prospect"
-            />
-            <NextStepCard
+            <ToolCard
               icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>}
-              label="Invia un messaggio"
+              title="Rispondi ai messaggi"
+              description="Incolla una chat e ricevi suggerimenti per proseguire la conversazione."
               href="/app/dm"
             />
+            <ToolCard
+              icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>}
+              title="Analizza un potenziale cliente"
+              description="Incolla un profilo LinkedIn e scopri come avvicinarlo."
+              href="/app/prospect"
+            />
+            <ToolCard
+              icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>}
+              title="Allenati alle conversazioni"
+              description="Simula una conversazione con un prospect per prepararti."
+              href="/app/simulator"
+            />
           </div>
-        </div>
+        </section>
+
+        {/* ── 3. Gestire i clienti ── */}
+        <section className="dash-section">
+          <div className="dash-section-header">
+            <span className="dash-section-num">3</span>
+            <div>
+              <h3 className="dash-section-title">Gestire i clienti</h3>
+              <p className="dash-section-sub">Segui le conversazioni aperte, invia follow-up e chiudi le trattative.</p>
+            </div>
+          </div>
+          <div className="dash-tool-grid">
+            <ToolCard
+              icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>}
+              title="Clienti in corso"
+              description="Visualizza e gestisci tutti i contatti nella tua pipeline."
+              href="/app/pipeline"
+            />
+          </div>
+        </section>
 
         {/* ══════════════════════════════════════════════════════
-            3 MACRO AREE — Azioni quotidiane
+            CONVERSAZIONI DA GESTIRE
         ══════════════════════════════════════════════════════ */}
-        <div>
-          <h3 className="dash-section-title">Azioni quotidiane</h3>
-          <p className="dash-section-sub">Dedica 15–30 minuti per creare nuove opportunità commerciali.</p>
-          <div className="dash-macro-grid">
-            <MacroCard
-              icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>}
-              number="1"
-              title="Attirare clienti"
-              explanation="Pubblica contenuti che dimostrano il tuo valore e attirano clienti ideali."
-              action={today?.inbound || "Genera il tuo piano per vedere l'azione di oggi."}
-              ctaHref="/app/inbound"
-              ctaLabel="Crea contenuto"
-            />
-            <MacroCard
-              icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
-              number="2"
-              title="Parlare con i clienti"
-              explanation="Avvia conversazioni autentiche con potenziali clienti nei commenti e nei messaggi."
-              action={today?.outbound || "Apri 2 conversazioni con contatti in target."}
-              ctaHref="/app/comments"
-              ctaLabel="Rispondi ai commenti"
-            />
-            <MacroCard
-              icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>}
-              number="3"
-              title="Gestire i clienti"
-              explanation="Segui le conversazioni aperte e invia follow-up strategici."
-              action={today?.followup || "Invia 1 follow-up su chat aperta."}
-              ctaHref="/app/pipeline"
-              ctaLabel="Vai alla pipeline"
-            />
+        <section className="dash-section">
+          <div className="dash-section-header-row">
+            <div>
+              <h3 className="dash-section-title">Conversazioni da gestire</h3>
+              <p className="dash-section-sub">Le conversazioni più importanti da seguire oggi.</p>
+            </div>
+            <Link href="/app/pipeline" className="dash-link">Vedi tutte →</Link>
           </div>
-        </div>
+
+          {conversationsToManage.length === 0 ? (
+            <div className="dash-empty">
+              <div className="dash-empty-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <p className="dash-empty-text">Nessuna conversazione attiva.</p>
+              <p className="dash-empty-sub">Inizia rispondendo a un commento o analizzando un profilo per aggiungere contatti alla tua pipeline.</p>
+            </div>
+          ) : (
+            <div className="dash-conv-list">
+              {conversationsToManage.map((lead) => (
+                <ConversationCard key={lead.id} lead={lead} />
+              ))}
+            </div>
+          )}
+        </section>
 
         {/* ══════════════════════════════════════════════════════
             PIPELINE SNAPSHOT
         ══════════════════════════════════════════════════════ */}
-        <div className="dash-card">
+        <section className="dash-card">
           <div className="dash-card-header">
             <h3 className="dash-card-title">Pipeline — stato corrente</h3>
             <Link href="/app/pipeline" className="dash-link">Vai alla pipeline →</Link>
@@ -248,22 +358,12 @@ export default function AppTodayPage() {
               </div>
             ))}
           </div>
-          {followupLead && (
-            <div className="dash-callout">
-              <span className="dash-callout-icon">➡️</span>
-              <span className="dash-callout-text">
-                <strong>Prossimo follow-up consigliato:</strong>{" "}
-                {followupLead.name}
-                <span className="dash-badge">{followupLead.status}</span>
-              </span>
-            </div>
-          )}
-        </div>
+        </section>
 
         {/* ══════════════════════════════════════════════════════
             ASSISTENTE RAPIDO
         ══════════════════════════════════════════════════════ */}
-        <div className="dash-card">
+        <section className="dash-card">
           <h3 className="dash-card-title">Assistente rapido</h3>
           <p className="dash-card-sub">
             Incolla un testo e scegli il modulo giusto: verrai reindirizzato direttamente.
@@ -288,36 +388,18 @@ export default function AppTodayPage() {
             />
             <button onClick={jumpQuickAssist} className="dash-btn-primary self-end">
               Apri modulo
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              <span className="dash-btn-arrow">→</span>
             </button>
           </div>
-        </div>
-
-        {/* ══════════════════════════════════════════════════════
-            COME FUNZIONA
-        ══════════════════════════════════════════════════════ */}
-        <div className="dash-guide">
-          <h3 className="dash-guide-title">Come funziona Preflight</h3>
-          <div className="dash-guide-steps">
-            {[
-              "Pubblica un post che mostra il tuo valore",
-              "Rispondi ai commenti per aprire conversazioni",
-              "Sposta la conversazione in messaggio privato",
-              "Proponi una call e aggiungi il contatto alla pipeline",
-            ].map((step, i) => (
-              <div key={i} className="dash-guide-step">
-                <span className="dash-guide-num">{i + 1}</span>
-                <span className="dash-guide-text">{step}</span>
-              </div>
-            ))}
-          </div>
-        </div>
+        </section>
       </div>
     </>
   );
 }
 
-/* ─── Sub-components ─── */
+/* ═══════════════════════════════════════════════════════════
+   SUB-COMPONENTS
+   ═══════════════════════════════════════════════════════════ */
 
 function KpiCard({ label, value, accent }: { label: string; value: number; accent?: boolean }) {
   return (
@@ -328,56 +410,78 @@ function KpiCard({ label, value, accent }: { label: string; value: number; accen
   );
 }
 
-function MacroCard({
-  icon,
-  number,
-  title,
-  explanation,
-  action,
-  ctaHref,
-  ctaLabel,
+function StartCard({
+  icon, title, description, href, ctaLabel,
 }: {
-  icon: React.ReactNode;
-  number: string;
-  title: string;
-  explanation: string;
-  action: string;
-  ctaHref: string;
-  ctaLabel: string;
+  icon: React.ReactNode; title: string; description: string; href: string; ctaLabel: string;
 }) {
   return (
-    <div className="dash-macro-card">
-      <div className="dash-macro-header">
-        <span className="dash-macro-icon">{icon}</span>
-        <span className="dash-macro-num">{number}</span>
-      </div>
-      <h4 className="dash-macro-title">{title}</h4>
-      <p className="dash-macro-text">{explanation}</p>
-      <div className="dash-macro-action">
-        <span className="dash-macro-action-label">Oggi:</span> {action}
-      </div>
-      <Link href={ctaHref} className="dash-btn-primary dash-btn-full">
+    <div className="dash-start-card">
+      <div className="dash-start-card-icon">{icon}</div>
+      <h4 className="dash-start-card-title">{title}</h4>
+      <p className="dash-start-card-desc">{description}</p>
+      <Link href={href} className="dash-btn-primary dash-btn-full">
         {ctaLabel}
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <span className="dash-btn-arrow">→</span>
       </Link>
     </div>
   );
 }
 
-function NextStepCard({
-  icon,
-  label,
-  href,
+function ToolCard({
+  icon, title, description, href,
 }: {
-  icon: React.ReactNode;
-  label: string;
-  href: string;
+  icon: React.ReactNode; title: string; description: string; href: string;
 }) {
   return (
-    <Link href={href} className="dash-next-card">
-      <span className="dash-next-card-icon">{icon}</span>
-      <span className="dash-next-card-label">{label}</span>
-      <svg className="dash-next-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    <Link href={href} className="dash-tool-card">
+      <div className="dash-tool-card-icon">{icon}</div>
+      <div className="dash-tool-card-body">
+        <h4 className="dash-tool-card-title">{title}</h4>
+        <p className="dash-tool-card-desc">{description}</p>
+      </div>
+      <svg className="dash-tool-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
     </Link>
+  );
+}
+
+function ConversationCard({ lead }: { lead: Lead }) {
+  const colors = statusColors[lead.status] || statusColors["Nuovo"];
+  return (
+    <div className="dash-conv-card">
+      <div className="dash-conv-card-top">
+        <div className="dash-conv-card-info">
+          <div className="dash-conv-avatar">{lead.name.charAt(0).toUpperCase()}</div>
+          <div>
+            <h4 className="dash-conv-name">{lead.name}</h4>
+            {lead.company && <p className="dash-conv-company">{lead.company}</p>}
+          </div>
+        </div>
+        <span
+          className="dash-status-badge"
+          style={{ background: colors.bg, color: colors.fg }}
+        >
+          {lead.status}
+        </span>
+      </div>
+
+      {lead.notes && (
+        <p className="dash-conv-context">{lead.notes}</p>
+      )}
+
+      <div className="dash-conv-ai">
+        <span className="dash-conv-ai-label">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/><line x1="11" y1="23" x2="13" y2="23"/></svg>
+          Suggerimento AI
+        </span>
+        <p className="dash-conv-ai-text">{aiSuggestion(lead)}</p>
+      </div>
+
+      <div className="dash-conv-actions">
+        <Link href={`/app/comments?received_comment=`} className="dash-btn-sm-outline">Rispondi</Link>
+        <Link href={`/app/dm?pasted_chat_thread=`} className="dash-btn-sm-outline">Apri messaggio</Link>
+        <Link href="/app/pipeline" className="dash-btn-sm-outline">Pipeline</Link>
+      </div>
+    </div>
   );
 }
