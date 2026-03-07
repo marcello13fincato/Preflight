@@ -7,7 +7,7 @@ export const runtime = "nodejs";
 
 const requestSchema = z.object({
   prospect_type: z.enum(["Founder", "HR", "CEO", "Marketing"]),
-  scenario: z.enum(["First connection reply", "Interested prospect", "Skeptical prospect", "No response", "Objection"]),
+  scenario: z.enum(["Prima risposta dopo connessione", "Prospect interessato", "Prospect scettico", "Nessuna risposta", "Obiezione"]),
   user_answer: z.string(),
 });
 
@@ -23,19 +23,19 @@ export async function POST(req: Request) {
     const { prospect_type, scenario, user_answer } = parsed.data;
     const prompt = `${salesRules}
 
-You are a LinkedIn sales conversation simulator. Act as a ${prospect_type} in the scenario: "${scenario}".
-The user answered: "${user_answer}"
+Sei un simulatore di conversazioni commerciali su LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Agisci come un ${prospect_type} nello scenario: "${scenario}".
+L'utente ha risposto: "${user_answer}"
 
-Return ONLY a JSON object with exactly this structure (no extra fields):
+Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {
-  "prospect_reply": "<string: the prospect's realistic reply to the user's message>",
+  "prospect_reply": "<stringa: risposta realistica del prospect al messaggio dell'utente, in italiano>",
   "feedback": [
-    "<string: feedback point 1>",
-    "<string: feedback point 2>",
-    "<string: feedback point 3>"
+    "<stringa: punto di feedback 1, in italiano>",
+    "<stringa: punto di feedback 2, in italiano>",
+    "<stringa: punto di feedback 3, in italiano>"
   ],
-  "message_risk_warning": "<string: what could go wrong with this approach>",
-  "next_action": "<string: what the user should do next>"
+  "message_risk_warning": "<stringa: cosa potrebbe andare storto con questo approccio, in italiano>",
+  "next_action": "<stringa: cosa dovrebbe fare l'utente dopo, in italiano>"
 }`;
     const output = await generateStructured({ prompt, schema: simulatorSchema });
     return NextResponse.json(output);

@@ -85,61 +85,120 @@ export default function PostPage() {
   }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Scrivi un post che genera conversazioni.</h2>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: ti aiuta a scrivere un post che apre conversazioni utili.</p>
-        <p><strong>Cosa incollare</strong>: una bozza o un&apos;idea del post.</p>
-        <p><strong>Cosa ottieni</strong>: hooks, 3 versioni, CTA e prossima azione.</p>
-      </div>
-      <div className="rounded-lg border border-app p-4 space-y-3">
-        <label className="block text-sm">
-          <span className="mb-1 block text-muted">Bozza o idea del post</span>
-          <textarea rows={7} className="input w-full" placeholder="Many SaaS companies lose conversions because onboarding is confusing." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
-        </label>
-        <div className="grid gap-3 md:grid-cols-2">
-          <label className="block text-sm">
-            <span className="mb-1 block text-muted">Obiettivo</span>
-            <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
-              <option value="lead">Aprire conversazioni</option>
-              <option value="call">Portare a call</option>
-              <option value="inbound">Ricevere richieste</option>
-            </select>
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1 block text-muted">Parola chiave per DM</span>
-            <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
-          </label>
-        </div>
-        <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">
-          {loading ? "Generazione..." : "Genera"}
-        </button>
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-2xl font-bold">Scrivi un post che genera conversazioni</h2>
+        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+          Trasforma un&apos;idea in un post LinkedIn strategico pronto da pubblicare.
+        </p>
       </div>
 
-      {error && (
-        <div className="callout-danger rounded-xl p-5">
-          <p className="font-semibold mb-1">⚠️ Errore AI</p>
-          <p className="text-sm">{error}</p>
+      {/* Guide box */}
+      <div className="callout">
+        <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
+          <div><span className="font-semibold">✅ Cosa fai:</span> scrivi un post che apre conversazioni utili</div>
+          <div><span className="font-semibold">📋 Cosa inserire:</span> bozza o idea del post, obiettivo e parola chiave DM</div>
+          <div><span className="font-semibold">🎯 Cosa ottieni:</span> hooks, 3 versioni, CTA e prossima azione</div>
+          <div><span className="font-semibold">➡️ Prossima mossa:</span> pubblica e rispondi ai commenti</div>
         </div>
-      )}
+      </div>
 
-      {output && (
-        <section className="rounded-lg border border-app p-4 space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">Post pronto da usare</h3>
-            <CopyButton text={`${output.post_versions.clean}\n\n${output.cta}`} />
+      {/* Two-column layout */}
+      <div className="grid gap-5 lg:grid-cols-2">
+        {/* INPUT */}
+        <div
+          className="rounded-xl p-5 space-y-4"
+          style={{
+            background: "var(--color-surface)",
+            border: "1px solid var(--color-border)",
+            boxShadow: "var(--shadow-sm)",
+          }}
+        >
+          <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+            Input
+          </h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Bozza o idea del post</span>
+            <textarea rows={7} className="input w-full resize-none" placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso..." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
+          </label>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium">Obiettivo</span>
+              <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
+                <option value="lead">Aprire conversazioni</option>
+                <option value="call">Portare a call</option>
+                <option value="inbound">Ricevere richieste</option>
+              </select>
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium">Parola chiave per DM</span>
+              <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
+            </label>
           </div>
-          <ResultCard title="Hooks" text={output.hooks.join("\n")} />
-          <div className="grid gap-3 md:grid-cols-3">
-            <ResultCard title="Versione clean" text={output.post_versions.clean} />
-            <ResultCard title="Versione diretta" text={output.post_versions.direct} />
-            <ResultCard title="Versione autorevole" text={output.post_versions.authority} />
-          </div>
-          <ResultCard title="CTA" text={output.cta} />
-          <ResultCard title="Comment starter" text={output.comment_starter} />
-          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_step}</div>
-        </section>
-      )}
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Genera post →"}
+          </button>
+        </div>
+
+        {/* OUTPUT */}
+        <div>
+          {error ? (
+            <div className="callout-danger rounded-xl p-5">
+              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          ) : output ? (
+            <div
+              className="rounded-xl p-5 space-y-4"
+              style={{
+                background: "var(--color-surface)",
+                border: "1px solid var(--color-border)",
+                boxShadow: "var(--shadow-sm)",
+              }}
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+                  Post pronto
+                </h3>
+                <CopyButton text={`${output.post_versions.clean}\n\n${output.cta}`} />
+              </div>
+
+              <OutputCard title="🪝 Hooks" text={output.hooks.join("\n")} />
+
+              <div className="grid gap-3 md:grid-cols-3">
+                <OutputCard title="✨ Versione pulita" text={output.post_versions.clean} accent />
+                <OutputCard title="🎯 Versione diretta" text={output.post_versions.direct} />
+                <OutputCard title="🏆 Versione autorevole" text={output.post_versions.authority} />
+              </div>
+
+              <OutputCard title="📣 Call to action" text={output.cta} />
+              <OutputCard title="💬 Commento di apertura" text={output.comment_starter} />
+
+              <div className="callout-success text-sm rounded-lg">
+                <span className="font-semibold">➡️ Prossima azione: </span>
+                {output.next_step}
+              </div>
+            </div>
+          ) : (
+            <div
+              className="rounded-xl p-8 flex flex-col items-center justify-center text-center h-full"
+              style={{
+                background: "var(--color-soft-2)",
+                border: "1.5px dashed var(--color-border)",
+                minHeight: "320px",
+              }}
+            >
+              <p className="text-4xl mb-3">✍️</p>
+              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+                Il risultato apparirà qui
+              </p>
+              <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+                Inserisci la bozza e clicca &quot;Genera post&quot;
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* ── Suggerimento immagine ── */}
       {output && (
@@ -186,18 +245,32 @@ export default function PostPage() {
         </section>
       )}
 
-      <section className="rounded-lg border border-app p-4">
-        <h3 className="font-semibold mb-2">Storico</h3>
+      {/* History */}
+      <div
+        className="rounded-xl p-5"
+        style={{
+          background: "var(--color-surface)",
+          border: "1px solid var(--color-border)",
+          boxShadow: "var(--shadow-sm)",
+        }}
+      >
+        <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="post" />
-      </section>
+      </div>
     </div>
   );
 }
 
-function ResultCard({ title, text }: { title: string; text: string }) {
+function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
   return (
-    <div className="rounded border border-app p-3 text-sm">
-      <div className="font-semibold">{title}</div>
+    <div
+      className="rounded-lg p-3 text-sm"
+      style={{
+        background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
+        border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,
+      }}
+    >
+      <div className="font-semibold mb-1">{title}</div>
       <p className="mt-1 whitespace-pre-wrap">{text}</p>
     </div>
   );

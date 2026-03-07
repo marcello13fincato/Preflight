@@ -22,36 +22,36 @@ export async function POST(req: Request) {
     const { pasted_profile_text, profile } = parsed.data;
     const prompt = `${salesRules}
 
-You are analyzing a LinkedIn prospect profile. Return ONLY a JSON object with exactly this structure (no extra fields):
+Stai analizzando il profilo LinkedIn di un potenziale cliente. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {
   "likely_pains": [
-    "<string: pain point 1>",
-    "<string: pain point 2>",
-    "<string: pain point 3>"
+    "<stringa: problema probabile 1, in italiano>",
+    "<stringa: problema probabile 2, in italiano>",
+    "<stringa: problema probabile 3, in italiano>"
   ],
   "angles": [
-    "<string: conversation angle 1>",
-    "<string: conversation angle 2>",
-    "<string: conversation angle 3>"
+    "<stringa: angolo di conversazione 1, in italiano>",
+    "<stringa: angolo di conversazione 2, in italiano>",
+    "<stringa: angolo di conversazione 3, in italiano>"
   ],
-  "connection_opener": "<string: personalized connection request message>",
-  "dm1": "<string: first DM message after connecting>",
+  "connection_opener": "<stringa: messaggio personalizzato di richiesta connessione, in italiano>",
+  "dm1": "<stringa: primo messaggio DM dopo la connessione, in italiano>",
   "smart_questions": [
-    "<string: qualifying question 1>",
-    "<string: qualifying question 2>",
-    "<string: qualifying question 3>",
-    "<string: qualifying question 4>",
-    "<string: qualifying question 5>"
+    "<stringa: domanda qualificante 1, in italiano>",
+    "<stringa: domanda qualificante 2, in italiano>",
+    "<stringa: domanda qualificante 3, in italiano>",
+    "<stringa: domanda qualificante 4, in italiano>",
+    "<stringa: domanda qualificante 5, in italiano>"
   ],
-  "client_heat_level": "<one of: Cold | Warm | Hot>",
-  "priority_signal": "<one of: high | medium | low>",
-  "next_action": "<string: concrete next step>"
+  "client_heat_level": "<uno tra: Cold | Warm | Hot>",
+  "priority_signal": "<uno tra: high | medium | low>",
+  "next_action": "<stringa: prossimo passo concreto, in italiano>"
 }
 
-Prospect profile:
+Profilo prospect:
 ${pasted_profile_text}
 
-User profile: ${JSON.stringify(profile)}`;
+Profilo utente: ${JSON.stringify(profile)}`;
     const output = await generateStructured({ prompt, schema: prospectAnalyzerSchema });
     return NextResponse.json(output);
   } catch (err) {

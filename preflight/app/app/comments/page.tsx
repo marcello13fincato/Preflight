@@ -100,7 +100,7 @@ export default function CommentsPage() {
             <textarea
               rows={5}
               className="input w-full resize-none"
-              placeholder="Many SaaS companies lose conversions because onboarding is confusing."
+              placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso."
               value={originalPost}
               onChange={(e) => setOriginalPost(e.target.value)}
             />
@@ -110,7 +110,7 @@ export default function CommentsPage() {
             <textarea
               rows={4}
               className="input w-full resize-none"
-              placeholder="Interesting. We might have this issue."
+              placeholder="Es. Interessante. Potremmo avere questo problema."
               value={receivedComment}
               onChange={(e) => setReceivedComment(e.target.value)}
             />
@@ -175,7 +175,7 @@ export default function CommentsPage() {
                   className="rounded-lg p-3 text-sm flex items-center gap-2"
                   style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
                 >
-                  <span className="font-medium">🌡️ Heat:</span>
+                  <span className="font-medium">🌡️ Livello interesse:</span>
                   <span className={`badge ${heatColors[output.client_heat_level] || "badge-blue"}`}>
                     {output.client_heat_level}
                   </span>
@@ -192,7 +192,7 @@ export default function CommentsPage() {
                       : {}
                   }
                 >
-                  <span className="font-medium">⚠️ Risk: </span>
+                  <span className="font-medium">⚠️ Rischio: </span>
                   <span>{output.message_risk_warning || "nessuno"}</span>
                 </div>
               </div>

@@ -98,7 +98,7 @@ export default function DmPage() {
             <textarea
               rows={7}
               className="input w-full resize-none"
-              placeholder="Hi Marco, thanks for connecting. I saw you're working on SaaS growth."
+              placeholder="Es. Ciao Marco, grazie per la connessione. Ho visto che lavori sulla crescita SaaS."
               value={pastedChatThread}
               onChange={(e) => setPastedChatThread(e.target.value)}
             />
@@ -163,7 +163,7 @@ export default function DmPage() {
                   className="rounded-lg p-3 text-sm flex items-center gap-2"
                   style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
                 >
-                  <span className="font-medium">🌡️ Heat:</span>
+                  <span className="font-medium">🌡️ Livello interesse:</span>
                   <span className={`badge ${heatColors[output.client_heat_level] || "badge-blue"}`}>
                     {output.client_heat_level}
                   </span>
@@ -184,7 +184,7 @@ export default function DmPage() {
                       : {}
                   }
                 >
-                  <span className="font-medium">⚠️ Risk: </span>
+                  <span className="font-medium">⚠️ Rischio: </span>
                   <span>{output.message_risk_warning || "nessuno"}</span>
                 </div>
               </div>

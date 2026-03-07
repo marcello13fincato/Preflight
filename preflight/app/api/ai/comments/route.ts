@@ -25,27 +25,27 @@ export async function POST(req: Request) {
     const { original_post, received_comment, commenter_profile_text, conversation_goal, profile } = parsed.data;
     const prompt = `${salesRules}
 
-You are analyzing a LinkedIn comment. Return ONLY a JSON object with exactly this structure (no extra fields):
+Stai analizzando un commento LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {
-  "comment_type": "<one of: lead | curious | support | objection | negative | peer>",
-  "strategy": "<string: 1-2 sentence strategy for responding>",
-  "client_heat_level": "<one of: Cold | Warm | Hot>",
-  "message_risk_warning": "<string: risk in this response, or 'nessuno' if none>",
+  "comment_type": "<uno tra: lead | curious | support | objection | negative | peer>",
+  "strategy": "<stringa: strategia di risposta in 1-2 frasi, in italiano>",
+  "client_heat_level": "<uno tra: Cold | Warm | Hot>",
+  "message_risk_warning": "<stringa: rischio in questa risposta, o 'nessuno' se non c'è>",
   "replies": {
-    "soft": "<string: warm, empathetic reply>",
-    "authority": "<string: authoritative, expert reply>",
-    "dm_pivot": "<string: reply that pivots to direct message>"
+    "soft": "<stringa: risposta calda ed empatica, in italiano>",
+    "authority": "<stringa: risposta autorevole ed esperta, in italiano>",
+    "dm_pivot": "<stringa: risposta che porta la conversazione in DM, in italiano>"
   },
-  "suggested_dm": "<string: the exact DM message to send after the reply>",
-  "next_action": "<string: concrete next step to take>"
+  "suggested_dm": "<stringa: messaggio DM esatto da inviare dopo la risposta, in italiano>",
+  "next_action": "<stringa: prossimo passo concreto, in italiano>"
 }
 
-Context:
-- Original post: ${original_post}
-- Comment received: ${received_comment}
-- Commenter profile: ${commenter_profile_text || "not provided"}
-- Conversation goal: ${conversation_goal}
-- User profile: ${JSON.stringify(profile)}`;
+Contesto:
+- Post originale: ${original_post}
+- Commento ricevuto: ${received_comment}
+- Profilo autore commento: ${commenter_profile_text || "non fornito"}
+- Obiettivo conversazione: ${conversation_goal}
+- Profilo utente: ${JSON.stringify(profile)}`;
     const output = await generateStructured({ prompt, schema: commentAssistantSchema });
     return NextResponse.json(output);
   } catch (err) {

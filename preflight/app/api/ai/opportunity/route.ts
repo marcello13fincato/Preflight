@@ -21,62 +21,62 @@ export async function POST(req: Request) {
     const { ideal_client_description } = parsed.data;
     const prompt = `${salesRules}
 
-You are finding LinkedIn conversation opportunities for an ideal client. Respond ONLY in Italian. Return ONLY a JSON object with exactly this structure (no extra fields):
+Stai cercando opportunità di conversazione su LinkedIn per un cliente ideale. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {
   "keywords_to_monitor": [
-    "<string: keyword in Italian>",
-    "<string: keyword in Italian>",
-    "<string: keyword in Italian>",
-    "<string: keyword in Italian>",
-    "<string: keyword in Italian>"
+    "<stringa: keyword da monitorare>",
+    "<stringa: keyword da monitorare>",
+    "<stringa: keyword da monitorare>",
+    "<stringa: keyword da monitorare>",
+    "<stringa: keyword da monitorare>"
   ],
   "post_types_to_search": [
-    "<string: type of post to look for, in Italian>",
-    "<string: type of post to look for, in Italian>",
-    "<string: type of post to look for, in Italian>"
+    "<stringa: tipo di post da cercare>",
+    "<stringa: tipo di post da cercare>",
+    "<stringa: tipo di post da cercare>"
   ],
   "ideal_profiles": [
     {
-      "role": "<string: job title or role, in Italian>",
-      "sector": "<string: industry sector, in Italian>",
-      "company_size": "<string: company size range, in Italian e.g. '5-20 persone'>",
-      "why": "<string: 1 sentence explaining why this profile is relevant to the ideal client, in Italian>"
+      "role": "<stringa: ruolo o titolo professionale>",
+      "sector": "<stringa: settore di appartenenza>",
+      "company_size": "<stringa: dimensione azienda, es. '5-20 persone'>",
+      "why": "<stringa: 1 frase che spiega perché questo profilo è rilevante>"
     },
     {
-      "role": "<string: job title or role, in Italian>",
-      "sector": "<string: industry sector, in Italian>",
-      "company_size": "<string: company size range, in Italian>",
-      "why": "<string: 1 sentence explaining relevance, in Italian>"
+      "role": "<stringa: ruolo o titolo professionale>",
+      "sector": "<stringa: settore di appartenenza>",
+      "company_size": "<stringa: dimensione azienda>",
+      "why": "<stringa: 1 frase che spiega la rilevanza>"
     },
     {
-      "role": "<string: job title or role, in Italian>",
-      "sector": "<string: industry sector, in Italian>",
-      "company_size": "<string: company size range, in Italian>",
-      "why": "<string: 1 sentence explaining relevance, in Italian>"
+      "role": "<stringa: ruolo o titolo professionale>",
+      "sector": "<stringa: settore di appartenenza>",
+      "company_size": "<stringa: dimensione azienda>",
+      "why": "<stringa: 1 frase che spiega la rilevanza>"
     }
   ],
   "useful_signals": [
-    "<string: signal that indicates the profile may be interested, in Italian>",
-    "<string: signal, in Italian>",
-    "<string: signal, in Italian>",
-    "<string: signal, in Italian>"
+    "<stringa: segnale che indica interesse del profilo>",
+    "<stringa: segnale>",
+    "<stringa: segnale>",
+    "<stringa: segnale>"
   ],
   "linkedin_search_queries": [
-    "<string: ready-to-use LinkedIn search query in Italian>",
-    "<string: ready-to-use LinkedIn search query in Italian>",
-    "<string: ready-to-use LinkedIn search query in Italian>"
+    "<stringa: query di ricerca LinkedIn pronta all'uso>",
+    "<stringa: query di ricerca LinkedIn pronta all'uso>",
+    "<stringa: query di ricerca LinkedIn pronta all'uso>"
   ],
   "conversation_opportunities": [
-    "<string: specific opportunity to start a conversation, in Italian>",
-    "<string: specific opportunity, in Italian>",
-    "<string: specific opportunity, in Italian>"
+    "<stringa: opportunità specifica per iniziare una conversazione>",
+    "<stringa: opportunità specifica>",
+    "<stringa: opportunità specifica>"
   ],
-  "next_action": "<string: concrete first step to take today, in Italian>"
+  "next_action": "<stringa: primo passo concreto da fare oggi>"
 }
 
-IMPORTANT: ideal_profiles must contain GENERIC ARCHETYPES (not real people, no real names or companies). Each profile is a fictional ideal-customer archetype.
+IMPORTANTE: ideal_profiles deve contenere ARCHETIPI GENERICI (non persone reali, nessun nome o azienda reale). Ogni profilo è un archetipo fittizio di cliente ideale.
 
-Ideal client description: ${ideal_client_description}`;
+Descrizione cliente ideale: ${ideal_client_description}`;
     const output = await generateStructured({ prompt, schema: opportunityFinderSchema });
     return NextResponse.json(output);
   } catch (err) {

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const d = parsed.data;
     const prompt = `${salesRules}
 
-You are building a 14-day LinkedIn Sales OS plan. Return ONLY a JSON object with exactly this structure (no extra fields):
+Stai costruendo un piano LinkedIn Sales OS di 14 giorni. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {
   "positioning": {
     "one_liner": "<string: one-sentence positioning>",
@@ -75,15 +75,15 @@ You are building a 14-day LinkedIn Sales OS plan. Return ONLY a JSON object with
   }
 }
 
-User profile:
-- Offer: ${d.offer_one_liner}
-- Outcome: ${d.offer_outcome}
-- ICP role: ${d.icp_role}
-- ICP industry: ${d.icp_industry}
-- ICP company size: ${d.icp_company_size}
-- Main problem: ${d.icp_main_problem}
-- Goal: ${d.goal_primary}
-- Weekly time: ${d.weekly_time_minutes} minutes`;
+Profilo utente:
+- Offerta: ${d.offer_one_liner}
+- Risultato: ${d.offer_outcome}
+- Ruolo ICP: ${d.icp_role}
+- Settore ICP: ${d.icp_industry}
+- Dimensione azienda ICP: ${d.icp_company_size}
+- Problema principale: ${d.icp_main_problem}
+- Obiettivo: ${d.goal_primary}
+- Tempo settimanale: ${d.weekly_time_minutes} minuti`;
     const output = await generateStructured({ prompt, schema: planSchema });
     return NextResponse.json(output);
   } catch (err) {

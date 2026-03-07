@@ -24,33 +24,33 @@ export async function POST(req: Request) {
     const { pasted_chat_thread, conversation_goal, prospect_profile_text, profile } = parsed.data;
     const prompt = `${salesRules}
 
-You are analyzing a LinkedIn DM conversation. Return ONLY a JSON object with exactly this structure (no extra fields):
+Stai analizzando una conversazione DM su LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {
-  "best_reply": "<string: the best reply to send right now>",
-  "client_heat_level": "<one of: Cold | Warm | Hot>",
-  "message_risk_warning": "<string: any risk in sending this message, or 'nessuno'>",
+  "best_reply": "<stringa: la migliore risposta da inviare adesso, in italiano>",
+  "client_heat_level": "<uno tra: Cold | Warm | Hot>",
+  "message_risk_warning": "<stringa: rischio nell'invio di questo messaggio, o 'nessuno'>",
   "alternatives": {
-    "short": "<string: shorter version of the reply>",
-    "assertive": "<string: more direct/assertive version>"
+    "short": "<stringa: versione più breve della risposta, in italiano>",
+    "assertive": "<stringa: versione più diretta e assertiva, in italiano>"
   },
   "qualifying_questions": [
-    "<string: question 1>",
-    "<string: question 2>",
-    "<string: question 3>"
+    "<stringa: domanda qualificante 1, in italiano>",
+    "<stringa: domanda qualificante 2, in italiano>",
+    "<stringa: domanda qualificante 3, in italiano>"
   ],
   "followups": {
-    "48h": "<string: follow-up message to send after 48 hours>",
-    "5d": "<string: follow-up message to send after 5 days>",
-    "10d": "<string: follow-up message to send after 10 days>"
+    "48h": "<stringa: messaggio follow-up dopo 48 ore, in italiano>",
+    "5d": "<stringa: messaggio follow-up dopo 5 giorni, in italiano>",
+    "10d": "<stringa: messaggio follow-up dopo 10 giorni, in italiano>"
   },
-  "next_action": "<string: concrete next step>"
+  "next_action": "<stringa: prossimo passo concreto, in italiano>"
 }
 
-Context:
-- Chat thread: ${pasted_chat_thread}
-- Goal: ${conversation_goal}
-- Prospect profile: ${prospect_profile_text || "not provided"}
-- User profile: ${JSON.stringify(profile)}`;
+Contesto:
+- Thread conversazione: ${pasted_chat_thread}
+- Obiettivo: ${conversation_goal}
+- Profilo prospect: ${prospect_profile_text || "non fornito"}
+- Profilo utente: ${JSON.stringify(profile)}`;
     const output = await generateStructured({ prompt, schema: dmAssistantSchema });
     return NextResponse.json(output);
   } catch (err) {
