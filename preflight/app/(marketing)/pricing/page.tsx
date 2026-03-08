@@ -264,6 +264,20 @@ export default function PricingPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
+          6b. LINKEDIN COME CANALE CLIENTI
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-light">
+        <div className="hp-container hp-dato-principale">
+          <div className="hp-section-label">Il contesto</div>
+          <h2 className="hp-section-title">Quando LinkedIn diventa un vero canale clienti</h2>
+          <p className="hp-dato-body">
+            Se LinkedIn è una delle principali fonti di clienti per consulenti e freelance,<br />
+            avere un sistema chiaro per gestire conversazioni e opportunità diventa fondamentale.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
           7. CTA FINALE
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-final-cta">

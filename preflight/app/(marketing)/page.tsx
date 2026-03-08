@@ -43,30 +43,98 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          2. TARGET
+          2. DATO PRINCIPALE
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-light">
+        <div className="hp-container hp-dato-principale">
+          <p className="hp-dato-value">80%</p>
+          <h2 className="hp-dato-title">
+            dei lead B2B provenienti dai social media arriva da LinkedIn.
+          </h2>
+          <p className="hp-dato-context">
+            Eppure la maggior parte dei professionisti lo usa senza un sistema chiaro per trasformare conversazioni in clienti.
+          </p>
+          <p className="hp-dato-body">
+            LinkedIn è di gran lunga la piattaforma più importante per vendere servizi tra aziende.<br />
+            Ma senza metodo, molte opportunità si perdono tra post, commenti e messaggi.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          2b. DATI LINKEDIN
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-soft">
+        <div className="hp-container">
+          <div className="hp-section-label">I dati</div>
+          <h2 className="hp-section-title">Perché LinkedIn è il canale principale per trovare clienti B2B</h2>
+          <div className="hp-stats-grid hp-stats-grid-3">
+            {[
+              { value: "89%", label: "dei marketer B2B usa LinkedIn per generare lead", sub: "La piattaforma più usata nel B2B" },
+              { value: "62%", label: "afferma che LinkedIn produce effettivamente lead", sub: "Risultati concreti, non solo visibilità" },
+              { value: "40%", label: "lo considera il canale più efficace per lead di qualità", sub: "Lead qualificati, non contatti generici" },
+            ].map((stat) => (
+              <div key={stat.value} className="hp-stat-card hp-stat-card-lg">
+                <div className="hp-stat-value">{stat.value}</div>
+                <div className="hp-stat-label">{stat.label}</div>
+                <div className="hp-stat-sub">{stat.sub}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          2c. DIMENSIONE PIATTAFORMA
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-light">
+        <div className="hp-container">
+          <div className="hp-section-label">La piattaforma</div>
+          <h2 className="hp-section-title">Una piattaforma piena di decision maker</h2>
+          <div className="hp-stats-grid hp-stats-grid-2">
+            {[
+              { value: "1,1 mld", label: "utenti nel mondo", sub: "La più grande piattaforma B2B al mondo" },
+              { value: "300M+", label: "utenti in Europa", sub: "Un bacino enorme di potenziali clienti" },
+            ].map((stat) => (
+              <div key={stat.value} className="hp-stat-card hp-stat-card-lg">
+                <div className="hp-stat-value">{stat.value}</div>
+                <div className="hp-stat-label">{stat.label}</div>
+                <div className="hp-stat-sub">{stat.sub}</div>
+              </div>
+            ))}
+          </div>
+          <p className="hp-piattaforma-body">
+            Su LinkedIn trovi professionisti, manager, imprenditori e decision maker.<br />
+            Le persone che prendono decisioni e acquistano servizi.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          2d. TARGET
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-target">
         <div className="hp-container">
           <div className="hp-section-label">Target</div>
           <h2 className="hp-section-title hp-target-title">Per chi è davvero Preflight</h2>
           <p className="hp-section-subtitle hp-target-subtitle">
-            Preflight è pensato per professionisti che usano LinkedIn per trovare clienti,
-            iniziare conversazioni commerciali e vendere servizi.
+            Preflight è progettato per chi usa LinkedIn per trovare clienti e vendere servizi.
             <br />
-            Non è uno strumento per tutti gli utilizzi della piattaforma.
+            Non è un tool per tutti gli utilizzi della piattaforma.
           </p>
 
           <div className="hp-target-grid">
             <article className="hp-target-card hp-target-card-positive">
-              <h3 className="hp-target-card-title">Preflight è per te se...</h3>
+              <h3 className="hp-target-card-title">Preflight è per te se…</h3>
               <ul className="hp-target-list">
                 {[
-                  "Freelance che vogliono trovare nuovi clienti su LinkedIn",
+                  "Freelance che trovano clienti su LinkedIn",
                   "Consulenti che vendono servizi B2B",
-                  "Professionisti che vogliono generare conversazioni con potenziali clienti",
-                  "Agenzie che usano LinkedIn per creare opportunità commerciali",
-                  "Founder e imprenditori che vendono servizi o consulenze",
-                  "Chi usa LinkedIn per costruire relazioni e trasformarle in clienti",
+                  "Coach e formatori che lavorano con aziende",
+                  "Consulenti marketing, HR, IT o AI",
+                  "Fractional manager e advisor",
+                  "Agenzie che generano clienti tramite LinkedIn",
+                  "Founder che vendono servizi o consulenze",
                 ].map((item) => (
                   <li key={item} className="hp-target-item hp-target-item-positive">
                     <span className="hp-target-icon hp-target-icon-positive" aria-hidden="true">
@@ -77,20 +145,21 @@ export default async function Home() {
                 ))}
               </ul>
               <p className="hp-target-note">
-                Se LinkedIn è per te uno strumento commerciale, Preflight è progettato per aiutarti a usarlo in modo più chiaro e sistematico.
+                Se LinkedIn per te è uno strumento commerciale,<br />
+                Preflight ti aiuta a usarlo con un metodo più chiaro.
               </p>
             </article>
 
             <article className="hp-target-card hp-target-card-neutral">
-              <h3 className="hp-target-card-title">Preflight probabilmente non fa per te se...</h3>
+              <h3 className="hp-target-card-title">Preflight probabilmente non fa per te se…</h3>
               <ul className="hp-target-list">
                 {[
                   "Stai usando LinkedIn principalmente per cercare lavoro",
-                  "Sei un recruiter o un HR che cerca candidati",
-                  "Vuoi gestire campagne di employer branding",
-                  "Il tuo obiettivo è attrarre talenti o fare recruiting",
-                  "Stai cercando uno strumento per automatizzare spam o messaggi di massa",
-                  "Vuoi uno strumento per crescere solo in termini di follower o visibilità",
+                  "Sei un recruiter che cerca candidati",
+                  "Il tuo obiettivo è fare employer branding",
+                  "Vuoi aumentare follower o visibilità senza obiettivi commerciali",
+                  "Cerchi strumenti di automazione o spam",
+                  "Vuoi fare campagne di recruiting",
                 ].map((item) => (
                   <li key={item} className="hp-target-item hp-target-item-neutral">
                     <span className="hp-target-icon hp-target-icon-neutral" aria-hidden="true">
@@ -101,7 +170,7 @@ export default async function Home() {
                 ))}
               </ul>
               <p className="hp-target-note hp-target-note-neutral">
-                Preflight è costruito per migliorare conversazioni commerciali, non per il recruiting o la ricerca di lavoro.
+                Preflight è progettato per migliorare conversazioni commerciali e acquisizione clienti.
               </p>
             </article>
           </div>

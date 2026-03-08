@@ -513,6 +513,43 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .hp-stat-label{margin-top:0.5rem;font-size:0.9rem;font-weight:600;color:var(--color-text);line-height:1.4}
 .hp-stat-sub{margin-top:0.35rem;font-size:0.78rem;color:var(--color-muted);line-height:1.4}
 
+/* ── DATO PRINCIPALE (hero stat) ── */
+.hp-dato-principale{text-align:center;max-width:720px;margin-left:auto;margin-right:auto}
+.hp-dato-value{
+  font-size:clamp(4rem,10vw,7rem);font-weight:900;
+  color:var(--color-primary);line-height:1;letter-spacing:-0.02em;
+  margin-bottom:0.25rem;
+}
+.hp-dato-title{
+  font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;
+  color:var(--color-text);line-height:1.3;margin-bottom:1.25rem;
+}
+.hp-dato-context{
+  font-size:1.05rem;color:var(--color-muted);line-height:1.6;
+  margin-bottom:1rem;
+}
+.hp-dato-body{
+  font-size:1rem;color:var(--color-text);line-height:1.7;
+  max-width:600px;margin-left:auto;margin-right:auto;
+}
+
+/* ── STATS GRID VARIANTS ── */
+.hp-stats-grid-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.hp-stats-grid-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.hp-stat-card-lg{
+  padding:2.25rem 1.75rem;
+  border:2px solid rgba(10,102,194,0.15);
+  background:linear-gradient(135deg,#fff 0%,#F3F8FF 100%);
+}
+.hp-stat-card-lg .hp-stat-value{font-size:clamp(2.5rem,5vw,3.5rem)}
+.hp-stat-card-lg .hp-stat-label{font-size:1rem}
+
+/* ── PIATTAFORMA BODY ── */
+.hp-piattaforma-body{
+  text-align:center;max-width:560px;margin:2rem auto 0;
+  font-size:1rem;color:var(--color-muted);line-height:1.7;
+}
+
 /* ── FUNZIONI AVANZATE ── */
 .hp-advanced-grid{
   display:grid;gap:1.5rem;margin-top:3rem;

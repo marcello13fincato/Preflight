@@ -92,9 +92,34 @@ export default function HowItWorksPage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          2.5. DATI LINKEDIN
+          2.5. DATI FREELANCE
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
+        <div className="hp-container">
+          <div className="hp-section-label">Dati</div>
+          <h2 className="hp-section-title">Perché molti freelance trovano clienti su LinkedIn</h2>
+          <div className="hp-stats-grid hp-stats-grid-2">
+            {[
+              { value: "97%", label: "dei freelance considera LinkedIn tra le prime 3 fonti di clienti", sub: "Una piattaforma essenziale per chi vende servizi" },
+              { value: "57%", label: "afferma che è la fonte principale di clienti di qualità", sub: "Non solo contatti, ma clienti reali" },
+            ].map((s) => (
+              <div key={s.value} className="hp-stat-card hp-stat-card-lg">
+                <div className="hp-stat-value">{s.value}</div>
+                <div className="hp-stat-label">{s.label}</div>
+                <div className="hp-stat-sub">{s.sub}</div>
+              </div>
+            ))}
+          </div>
+          <p className="hp-piattaforma-body">
+            Per molti consulenti e freelance LinkedIn è già il canale principale di acquisizione clienti.
+          </p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          2.6. DATI LINKEDIN
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-stats-grid">
             {[
