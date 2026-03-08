@@ -517,7 +517,7 @@ export default async function Home() {
           </div>
           <div className="hp-advanced-cta">
             <Link href="/pricing" className="hp-cta-primary">
-              Sblocca tutte le funzioni
+              Vedi i piani
             </Link>
           </div>
         </div>

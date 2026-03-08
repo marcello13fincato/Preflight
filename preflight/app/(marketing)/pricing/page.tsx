@@ -53,7 +53,7 @@ export default function PricingPage() {
         <div className="hp-container hp-hero-inner">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
-            Piani e prezzi
+            Piani
           </div>
           <h1 className="hp-hero-title">
             Scegli il piano per usare LinkedIn<br />

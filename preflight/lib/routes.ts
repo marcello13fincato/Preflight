@@ -1,6 +1,7 @@
 export const marketingNav = [
   { label: "Come funziona", href: "/how-it-works" },
-  { label: "Prezzi", href: "/pricing" },
+  { label: "Per chi è", href: "/per-chi-e" },
+  { label: "Piani", href: "/pricing" },
 ];
 
 export const marketingCTA = { label: "Crea il mio piano clienti (5 min)", href: "/app/onboarding" };
