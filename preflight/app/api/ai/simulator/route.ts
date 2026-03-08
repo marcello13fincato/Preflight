@@ -9,6 +9,7 @@ const requestSchema = z.object({
   prospect_type: z.enum(["Founder", "HR", "CEO", "Marketing"]),
   scenario: z.enum(["Prima risposta dopo connessione", "Prospect interessato", "Prospect scettico", "Nessuna risposta", "Obiezione"]),
   user_answer: z.string(),
+  profile: z.unknown().optional(),
 });
 
 export async function POST(req: Request) {
@@ -20,11 +21,12 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { prospect_type, scenario, user_answer } = parsed.data;
+    const { prospect_type, scenario, user_answer, profile } = parsed.data;
     const prompt = `${salesRules}
 
 Sei un simulatore di conversazioni commerciali su LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Agisci come un ${prospect_type} nello scenario: "${scenario}".
 L'utente ha risposto: "${user_answer}"
+Profilo utente: ${JSON.stringify(profile)}
 
 Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {

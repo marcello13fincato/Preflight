@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 
 const requestSchema = z.object({
   ideal_client_description: z.string(),
+  profile: z.unknown().optional(),
 });
 
 export async function POST(req: Request) {
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { ideal_client_description } = parsed.data;
+    const { ideal_client_description, profile } = parsed.data;
     const prompt = `${salesRules}
 
 Stai cercando opportunità di conversazione su LinkedIn per un cliente ideale. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
@@ -76,7 +77,8 @@ Stai cercando opportunità di conversazione su LinkedIn per un cliente ideale. R
 
 IMPORTANTE: ideal_profiles deve contenere ARCHETIPI GENERICI (non persone reali, nessun nome o azienda reale). Ogni profilo è un archetipo fittizio di cliente ideale.
 
-Descrizione cliente ideale: ${ideal_client_description}`;
+Descrizione cliente ideale: ${ideal_client_description}
+Profilo utente: ${JSON.stringify(profile)}`;
     const output = await generateStructured({ prompt, schema: opportunityFinderSchema });
     return NextResponse.json(output);
   } catch (err) {

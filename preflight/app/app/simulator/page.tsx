@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 import CopyButton from "@/components/shared/CopyButton";
+import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { SimulatorJson } from "@/lib/sales/schemas";
 import { simulatorSchema } from "@/lib/sales/schemas";
 
 export default function SimulatorPage() {
+  const { data: session } = useSession();
+  const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
+  const repo = useMemo(() => getRepositoryBundle(), []);
+  const profile = repo.profile.getProfile(userId);
   const [prospectType, setProspectType] = useState<"Founder" | "HR" | "CEO" | "Marketing">("Founder");
   const [scenario, setScenario] = useState<"Prima risposta dopo connessione" | "Prospect interessato" | "Prospect scettico" | "Nessuna risposta" | "Obiezione">("Prima risposta dopo connessione");
   const [userAnswer, setUserAnswer] = useState("");
@@ -20,7 +26,7 @@ export default function SimulatorPage() {
       const res = await fetch("/api/ai/simulator", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prospect_type: prospectType, scenario, user_answer: userAnswer }),
+        body: JSON.stringify({ prospect_type: prospectType, scenario, user_answer: userAnswer, profile: profile.onboarding }),
       });
       const json: Record<string, unknown> = await res.json().catch(() => ({}));
       if (!res.ok) {

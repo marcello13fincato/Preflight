@@ -4,16 +4,17 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+import { computeSystemProgress } from "@/components/app/SystemBanner";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
 const TOTAL_STEPS = 7;
 const PLACEHOLDER_VALUE = "Da definire";
 
 const timeOptions = [
-  { label: "10–15 minuti", value: "15" },
-  { label: "30 minuti", value: "30" },
-  { label: "1 ora", value: "60" },
-  { label: "Più di 1 ora", value: "120" },
+  { label: "30 minuti", value: "15" },
+  { label: "1 ora", value: "30" },
+  { label: "3 ore", value: "60" },
+  { label: "5 ore", value: "120" },
 ];
 
 const goalOptions = [
@@ -84,25 +85,105 @@ export default function OnboardingPage() {
   }
 
   const progressPct = Math.round((step / TOTAL_STEPS) * 100);
+  const systemPct = computeSystemProgress(data as unknown as Record<string, unknown>);
 
   return (
-    <div className="mx-auto max-w-xl space-y-6">
-      {/* Header */}
-      <div>
-        <h2 className="text-2xl font-bold" style={{ color: "var(--color-text)" }}>
-          Imposta il tuo sistema clienti
-        </h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
-          Rispondi a poche domande. Creeremo il tuo piano commerciale LinkedIn su misura.
+    <div className="onb-page">
+
+      {/* ═══════════════════════════════════════════════════════
+          HERO
+      ═══════════════════════════════════════════════════════ */}
+      <section className="onb-hero">
+        <h2 className="onb-hero-title">Configura il tuo sistema clienti</h2>
+        <p className="onb-hero-subtitle">
+          Preflight usa queste informazioni per adattare l&apos;AI al tuo lavoro.
         </p>
+        <p className="onb-hero-body">
+          Più l&apos;AI conosce il tuo business, più i suggerimenti saranno precisi.
+        </p>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          SPIEGAZIONE
+      ═══════════════════════════════════════════════════════ */}
+      <section className="onb-explain">
+        <h3 className="onb-explain-title">Perché è importante impostare il tuo sistema</h3>
+        <p className="onb-explain-text">
+          Preflight non è un generatore generico.
+          È un sistema che si adatta al tuo modo di trovare clienti su LinkedIn.
+        </p>
+        <p className="onb-explain-text">Quando inserisci informazioni sul tuo lavoro, l&apos;AI può:</p>
+        <ul className="onb-explain-list">
+          <li>capire meglio i tuoi clienti ideali</li>
+          <li>scrivere contenuti più mirati</li>
+          <li>suggerire risposte più efficaci</li>
+          <li>analizzare meglio le conversazioni</li>
+          <li>proporre strategie più utili</li>
+        </ul>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════
+          GUIDE CARDS
+      ═══════════════════════════════════════════════════════ */}
+      <div className="onb-guide-grid">
+        <div className="onb-guide-card">
+          <div className="onb-guide-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </div>
+          <h4 className="onb-guide-title">Cosa inserirai</h4>
+          <ul className="onb-guide-list">
+            <li>La tua offerta</li>
+            <li>Il cliente ideale</li>
+            <li>Prove e risultati</li>
+            <li>Il tempo che puoi dedicare a LinkedIn</li>
+          </ul>
+        </div>
+        <div className="onb-guide-card">
+          <div className="onb-guide-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h7v8l10-12h-7l0-8z"/></svg>
+          </div>
+          <h4 className="onb-guide-title">Cosa succede dopo</h4>
+          <p className="onb-guide-text">L&apos;AI userà queste informazioni per migliorare:</p>
+          <ul className="onb-guide-list">
+            <li>Contenuti</li>
+            <li>Commenti</li>
+            <li>Messaggi</li>
+            <li>Analisi dei potenziali clienti</li>
+          </ul>
+        </div>
+        <div className="onb-guide-card">
+          <div className="onb-guide-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <h4 className="onb-guide-title">Cosa ottieni</h4>
+          <p className="onb-guide-text">
+            Un sistema più preciso per trasformare conversazioni in call e clienti.
+          </p>
+        </div>
       </div>
 
-      {/* Guide box */}
-      <div className="callout text-sm space-y-1.5">
-        <div><span className="font-semibold">✅ Cosa fa questa pagina:</span> configura il tuo sistema commerciale.</div>
-        <div><span className="font-semibold">📋 Cosa inserire:</span> offerta, cliente ideale, prove e tempo disponibile.</div>
-        <div><span className="font-semibold">🎯 Cosa ottieni:</span> un piano pratico per passare da conversazione a call.</div>
+      {/* ═══════════════════════════════════════════════════════
+          SYSTEM COMPLETION BAR
+      ═══════════════════════════════════════════════════════ */}
+      <div className="onb-completion">
+        <div className="onb-completion-header">
+          <h3 className="onb-completion-title">Completamento del tuo sistema</h3>
+          <span className="onb-completion-pct">
+            {systemPct === 100 ? "Sistema configurato correttamente" : `Sistema configurato al ${systemPct}%`}
+          </span>
+        </div>
+        <div className="onb-completion-track">
+          <div
+            className={`onb-completion-fill${systemPct === 100 ? " onb-completion-fill-done" : ""}`}
+            style={{ width: `${systemPct}%` }}
+          />
+        </div>
       </div>
+
+      {/* ═══════════════════════════════════════════════════════
+          FORM
+      ═══════════════════════════════════════════════════════ */}
+      <div className="mx-auto max-w-xl space-y-6">
 
       {/* Progress bar */}
       <div>
@@ -156,11 +237,12 @@ export default function OnboardingPage() {
           <>
             <StepHeader
               emoji="💼"
-              title="Di cosa ti occupi?"
-              subtitle="Descrivi in modo semplice cosa fai e a chi serve."
+              title="Offerta"
+              subtitle="Chi aiuti e che problema risolvi."
             />
             <label className="block text-sm">
               <span className="mb-1.5 block font-medium">Il tuo servizio principale</span>
+              <p className="text-xs mb-2" style={{ color: "var(--color-muted)" }}>Descrivi in modo semplice cosa fai e a chi serve.</p>
               <textarea
                 className="input w-full resize-none"
                 rows={3}
@@ -171,6 +253,7 @@ export default function OnboardingPage() {
             </label>
             <label className="block text-sm">
               <span className="mb-1.5 block font-medium">Risultato concreto che ottiene il cliente</span>
+              <p className="text-xs mb-2" style={{ color: "var(--color-muted)" }}>Un beneficio specifico e misurabile.</p>
               <input
                 className="input w-full"
                 placeholder="Es. Aumenta le conversioni del 30% in 60 giorni."
@@ -246,8 +329,8 @@ export default function OnboardingPage() {
           <>
             <StepHeader
               emoji="🎯"
-              title="Chi dovrebbe diventare tuo cliente?"
-              subtitle="Più specifico sei, più precisi saranno i suggerimenti."
+              title="Cliente ideale"
+              subtitle="Tipo di azienda o professionista che vuoi raggiungere."
             />
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="block text-sm">
@@ -382,8 +465,8 @@ export default function OnboardingPage() {
           <>
             <StepHeader
               emoji="⏱"
-              title="Quanto tempo puoi dedicare a LinkedIn?"
-              subtitle="Adatteremo il piano alle tue disponibilità reali."
+              title="Quanto tempo puoi dedicare a LinkedIn ogni settimana?"
+              subtitle="Questo aiuta Preflight a suggerire strategie realistiche."
             />
             <div className="grid grid-cols-2 gap-3">
               {timeOptions.map((opt) => (
@@ -499,6 +582,7 @@ export default function OnboardingPage() {
       <p className="text-center text-xs" style={{ color: "var(--color-muted)" }}>
         Puoi modificare queste informazioni in qualsiasi momento dalle impostazioni.
       </p>
+      </div>
     </div>
   );
 }

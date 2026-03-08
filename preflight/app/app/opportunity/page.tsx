@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 import CopyButton from "@/components/shared/CopyButton";
+import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { OpportunityFinderJson } from "@/lib/sales/schemas";
 import { opportunityFinderSchema } from "@/lib/sales/schemas";
 
 export default function OpportunityPage() {
+  const { data: session } = useSession();
+  const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
+  const repo = useMemo(() => getRepositoryBundle(), []);
+  const profile = repo.profile.getProfile(userId);
   const [idealClientDescription, setIdealClientDescription] = useState("");
   const [output, setOutput] = useState<OpportunityFinderJson | null>(null);
   const [loading, setLoading] = useState(false);
@@ -18,7 +24,7 @@ export default function OpportunityPage() {
       const res = await fetch("/api/ai/opportunity", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ideal_client_description: idealClientDescription }),
+        body: JSON.stringify({ ideal_client_description: idealClientDescription, profile: profile.onboarding }),
       });
       const json: Record<string, unknown> = await res.json().catch(() => ({}));
       if (!res.ok) {

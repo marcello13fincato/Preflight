@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import getServerAuthSession from "@/lib/getServerAuthSession";
 import AppNav from "@/components/app/AppNav";
+import SystemBanner from "@/components/app/SystemBanner";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
@@ -51,6 +52,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           ) : null}
         </div>
       </header>
+      <SystemBanner />
       <AppNav />
       <main className="pb-12">{children}</main>
     </section>

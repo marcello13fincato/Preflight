@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+import { computeSystemProgress } from "@/components/app/SystemBanner";
 import type { Lead } from "@/lib/sales/schemas";
 
 const MODAL_DISMISSED_KEY = "onboarding-modal-dismissed";
@@ -98,34 +99,11 @@ export default function AppTodayPage() {
         <div className="dash-modal-overlay">
           <div className="dash-modal">
             <div className="dash-modal-icon">⚙️</div>
-            <h2 className="dash-modal-title">Imposta il tuo sistema</h2>
+            <h2 className="dash-modal-title">Configura il tuo sistema clienti</h2>
             <p className="dash-modal-desc">
-              Configura il tuo sistema clienti su LinkedIn in pochi passaggi.
+              Preflight funziona meglio quando conosce il tuo lavoro.<br />
+              Ti bastano pochi passaggi per personalizzare l&apos;AI.
             </p>
-
-            <div className="dash-modal-guide">
-              <div className="dash-modal-guide-row">
-                <span className="dash-modal-guide-icon">✅</span>
-                <div>
-                  <span className="dash-modal-guide-label">Cosa fa questa pagina:</span>{" "}
-                  configura il tuo sistema commerciale.
-                </div>
-              </div>
-              <div className="dash-modal-guide-row">
-                <span className="dash-modal-guide-icon">📋</span>
-                <div>
-                  <span className="dash-modal-guide-label">Cosa inserire:</span>{" "}
-                  offerta, cliente ideale, prove e tempo disponibile.
-                </div>
-              </div>
-              <div className="dash-modal-guide-row">
-                <span className="dash-modal-guide-icon">🎯</span>
-                <div>
-                  <span className="dash-modal-guide-label">Cosa ottieni:</span>{" "}
-                  un piano pratico per passare da conversazione a call.
-                </div>
-              </div>
-            </div>
 
             <div className="dash-modal-actions">
               <Link
@@ -133,7 +111,7 @@ export default function AppTodayPage() {
                 className="dash-btn-primary dash-btn-full"
                 onClick={() => setModalClosedTemporarily(true)}
               >
-                Imposta ora
+                Configura ora
                 <span className="dash-btn-arrow">→</span>
               </Link>
               <button onClick={dismissModal} className="dash-btn-secondary dash-btn-full">
@@ -157,27 +135,32 @@ export default function AppTodayPage() {
         </div>
 
         {/* ══════════════════════════════════════════════════════
-            PERSISTENT ONBOARDING BANNER
+            PROGRESS BAR SISTEMA
         ══════════════════════════════════════════════════════ */}
-        {!profile.onboarding_complete && modalDismissed && (
-          <div className="dash-banner">
-            <div className="dash-banner-content">
-              <div className="dash-banner-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        {!profile.onboarding_complete && (() => {
+          const pct = computeSystemProgress(profile.onboarding as Record<string, unknown> | null);
+          return (
+            <div className="dash-system-progress">
+              <div className="dash-system-progress-header">
+                <div>
+                  <h3 className="dash-system-progress-title">
+                    Sistema clienti configurato al {pct}%
+                  </h3>
+                  <p className="dash-system-progress-sub">
+                    Completa l&apos;impostazione per ricevere suggerimenti più precisi.
+                  </p>
+                </div>
+                <Link href="/app/onboarding" className="dash-btn-primary dash-btn-sm">
+                  Completa configurazione
+                  <span className="dash-btn-arrow">→</span>
+                </Link>
               </div>
-              <div>
-                <p className="dash-banner-title">Il tuo sistema non è ancora configurato.</p>
-                <p className="dash-banner-text">
-                  Completa l&apos;impostazione per ricevere suggerimenti più precisi.
-                </p>
+              <div className="dash-system-progress-track">
+                <div className="dash-system-progress-fill" style={{ width: `${pct}%` }} />
               </div>
             </div>
-            <Link href="/app/onboarding" className="dash-btn-primary dash-btn-sm">
-              Completa configurazione
-              <span className="dash-btn-arrow">→</span>
-            </Link>
-          </div>
-        )}
+          );
+        })()}
 
         {/* ══════════════════════════════════════════════════════
             KPI CARDS
