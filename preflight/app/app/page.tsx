@@ -163,22 +163,12 @@ export default function AppTodayPage() {
         })()}
 
         {/* ══════════════════════════════════════════════════════
-            KPI CARDS
-        ══════════════════════════════════════════════════════ */}
-        <div className="dash-kpi-grid">
-          <KpiCard label="Conversazioni attive" value={activeConversations} accent />
-          <KpiCard label="Contatti in pipeline" value={totalLeads} />
-          <KpiCard label="Clienti acquisiti" value={clienti} />
-          <KpiCard label="Da ricontattare" value={daRicontattare} />
-        </div>
-
-        {/* ══════════════════════════════════════════════════════
-            INIZIA DA QUI
+            ASSISTENTE RAPIDO (prima sezione visibile)
         ══════════════════════════════════════════════════════ */}
         <section className="dash-section">
-          <h3 className="dash-section-title">Inizia da qui</h3>
+          <h3 className="dash-section-title">Assistente rapido</h3>
           <p className="dash-section-sub">
-            Non sai da dove partire? Scegli una di queste azioni e inizia subito.
+            Prova subito uno degli strumenti principali.
           </p>
           <div className="dash-start-grid">
             <StartCard
@@ -204,6 +194,16 @@ export default function AppTodayPage() {
             />
           </div>
         </section>
+
+        {/* ══════════════════════════════════════════════════════
+            KPI CARDS
+        ══════════════════════════════════════════════════════ */}
+        <div className="dash-kpi-grid">
+          <KpiCard label="Conversazioni attive" value={activeConversations} accent />
+          <KpiCard label="Contatti in pipeline" value={totalLeads} />
+          <KpiCard label="Clienti acquisiti" value={clienti} />
+          <KpiCard label="Da ricontattare" value={daRicontattare} />
+        </div>
 
         {/* ══════════════════════════════════════════════════════
             3 MACRO AREE
