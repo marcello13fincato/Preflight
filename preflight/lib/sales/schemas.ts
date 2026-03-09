@@ -150,12 +150,36 @@ export const findClientsSchema = z.object({
   cosa_fare_dopo: z.string(),
 });
 
+export const dailyPlanSchema = z.object({
+  persone_da_contattare: z.object({
+    tipo_profili: z.string(),
+    link_ricerca: z.string(),
+    criteri_scelta: z.string(),
+    primo_messaggio: z.string(),
+    strategia: z.string(),
+  }),
+  contenuto_consigliato: z.object({
+    idea_post: z.string(),
+    struttura: z.string(),
+    esempio_testo: z.string(),
+    suggerimento_immagine: z.string(),
+  }),
+  conversazioni_da_seguire: z.object({
+    followup_da_fare: z.string(),
+    quando_scrivere: z.string(),
+    cosa_chiedere: z.string(),
+    esempio_followup: z.string(),
+  }),
+});
+
 export const onboardingInputSchema = z.object({
   servizio: z.string().min(1),
   cliente_ideale: z.string().min(1),
   problema_cliente: z.string().min(1),
   risultato_cliente: z.string().min(1),
   linkedin_search_links: z.array(z.string()).default([]),
+  materiali_nomi: z.array(z.string()).default([]),
+  social_links: z.array(z.string()).default([]),
   tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]),
 });
 
@@ -168,6 +192,7 @@ export type IdealProfileJson = z.infer<typeof idealProfileSchema>;
 export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
 export type SimulatorJson = z.infer<typeof simulatorSchema>;
 export type FindClientsJson = z.infer<typeof findClientsSchema>;
+export type DailyPlanJson = z.infer<typeof dailyPlanSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
 export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 

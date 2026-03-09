@@ -1851,6 +1851,60 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 
 /* ═══════════════════════════════════════════════════════════
+   DAILY PLAN — Piano di oggi
+═══════════════════════════════════════════════════════════ */
+.dp-header{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;
+}
+.dp-title{
+  font-size:1.25rem;font-weight:800;color:var(--color-text);margin:0;letter-spacing:-0.01em;
+}
+.dp-subtitle{
+  font-size:.88rem;color:var(--color-muted);margin:.25rem 0 0;line-height:1.5;max-width:520px;
+}
+.dp-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:1.5rem;
+}
+@media(max-width:900px){
+  .dp-grid{grid-template-columns:1fr}
+}
+.dp-card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:1.5rem;
+  display:flex;flex-direction:column;gap:.75rem;
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s,transform .2s;
+}
+.dp-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.dp-card-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:var(--color-soft);color:var(--color-primary);
+  display:flex;align-items:center;justify-content:center;
+}
+.dp-card-title{
+  font-size:1rem;font-weight:700;color:var(--color-text);margin:0;
+}
+.dp-block{
+  display:flex;flex-direction:column;gap:.2rem;
+  padding:.65rem .75rem;border-radius:var(--radius-sm);
+  background:var(--color-bg);
+}
+.dp-block-highlight{
+  background:var(--color-soft);border-left:3px solid var(--color-primary);
+}
+.dp-block-label{
+  font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;
+  color:var(--color-primary);
+}
+.dp-block-text{
+  font-size:.85rem;color:var(--color-text);line-height:1.55;margin:0;
+}
+.dp-block-pre{white-space:pre-wrap}
+.dp-cta{margin-top:auto;align-self:flex-start}
+
+/* ═══════════════════════════════════════════════════════════
    CHATBOX — Global AI Assistant
 ═══════════════════════════════════════════════════════════ */
 .cb-fab{

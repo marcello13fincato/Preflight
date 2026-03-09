@@ -42,6 +42,13 @@ function aiSuggestion(lead: Lead): string {
 export default function AppTodayPage() {
   const { data: session } = useSession();
   const [dashMode, setDashMode] = useState<null | "profile" | "advice" | "find">(null);
+  // Daily plan state
+  const [dailyPlan, setDailyPlan] = useState<{
+    persone_da_contattare: { tipo_profili: string; link_ricerca: string; criteri_scelta: string; primo_messaggio: string; strategia: string };
+    contenuto_consigliato: { idea_post: string; struttura: string; esempio_testo: string; suggerimento_immagine: string };
+    conversazioni_da_seguire: { followup_da_fare: string; quando_scrivere: string; cosa_chiedere: string; esempio_followup: string };
+  } | null>(null);
+  const [dailyPlanLoading, setDailyPlanLoading] = useState(false);
   // Find clients state
   const [findTipoCliente, setFindTipoCliente] = useState("");
   const [findSettore, setFindSettore] = useState("");
@@ -206,6 +213,28 @@ export default function AppTodayPage() {
     }
   }
 
+  async function handleGenerateDailyPlan() {
+    if (dailyPlanLoading) return;
+    setDailyPlanLoading(true);
+    setDailyPlan(null);
+    try {
+      const res = await fetch("/api/ai/daily-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile: profile.onboarding || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore");
+      const data = await res.json();
+      setDailyPlan(data);
+    } catch {
+      setDailyPlan(null);
+    } finally {
+      setDailyPlanLoading(false);
+    }
+  }
+
   return (
     <>
       {/* ══════════════════════════════════════════════════════
@@ -287,6 +316,100 @@ export default function AppTodayPage() {
               </button>
             </div>
           </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            PIANO DI OGGI
+        ══════════════════════════════════════════════════════ */}
+        <section className="dash-section">
+          <div className="dp-header">
+            <div>
+              <h3 className="dp-title">Piano di oggi</h3>
+              <p className="dp-subtitle">In base al tuo servizio e ai clienti che cerchi, Preflight ti suggerisce cosa fare oggi su LinkedIn.</p>
+            </div>
+            <button
+              type="button"
+              onClick={handleGenerateDailyPlan}
+              disabled={dailyPlanLoading}
+              className="btn-primary"
+            >
+              {dailyPlanLoading ? (
+                <><span className="qa-spinner" aria-hidden="true" />Genero il piano…</>
+              ) : (
+                <>{dailyPlan ? "Rigenera piano" : "Genera il piano di oggi"} <span className="dash-btn-arrow">→</span></>
+              )}
+            </button>
+          </div>
+
+          {dailyPlan && (
+            <div className="dp-grid">
+              {/* ── Blocco 1: Persone da contattare ── */}
+              <div className="dp-card">
+                <div className="dp-card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h4 className="dp-card-title">Persone che potresti contattare oggi</h4>
+                {dailyPlan.persone_da_contattare.tipo_profili && (
+                  <div className="dp-block"><span className="dp-block-label">Chi contattare</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.tipo_profili}</p></div>
+                )}
+                {dailyPlan.persone_da_contattare.link_ricerca && (
+                  <div className="dp-block"><span className="dp-block-label">Ricerca LinkedIn</span><p className="dp-block-text"><a href={dailyPlan.persone_da_contattare.link_ricerca} target="_blank" rel="noopener noreferrer" className="qa-result-link">{dailyPlan.persone_da_contattare.link_ricerca}</a></p></div>
+                )}
+                {dailyPlan.persone_da_contattare.criteri_scelta && (
+                  <div className="dp-block"><span className="dp-block-label">Come scegliere i profili migliori</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.criteri_scelta}</p></div>
+                )}
+                {dailyPlan.persone_da_contattare.primo_messaggio && (
+                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Primo messaggio suggerito</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.primo_messaggio}</p></div>
+                )}
+                {dailyPlan.persone_da_contattare.strategia && (
+                  <div className="dp-block"><span className="dp-block-label">Strategia</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.strategia}</p></div>
+                )}
+                <button type="button" className="qa-cta-secondary dp-cta" onClick={() => setDashMode("profile")}>
+                  Analizza questo profilo →
+                </button>
+              </div>
+
+              {/* ── Blocco 2: Contenuto consigliato ── */}
+              <div className="dp-card">
+                <div className="dp-card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </div>
+                <h4 className="dp-card-title">Contenuto consigliato per oggi</h4>
+                {dailyPlan.contenuto_consigliato.idea_post && (
+                  <div className="dp-block"><span className="dp-block-label">Idea del post</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.idea_post}</p></div>
+                )}
+                {dailyPlan.contenuto_consigliato.struttura && (
+                  <div className="dp-block"><span className="dp-block-label">Struttura</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.struttura}</p></div>
+                )}
+                {dailyPlan.contenuto_consigliato.esempio_testo && (
+                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Esempio di testo</span><p className="dp-block-text dp-block-pre">{dailyPlan.contenuto_consigliato.esempio_testo}</p></div>
+                )}
+                {dailyPlan.contenuto_consigliato.suggerimento_immagine && (
+                  <div className="dp-block"><span className="dp-block-label">Suggerimento immagine</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.suggerimento_immagine}</p></div>
+                )}
+              </div>
+
+              {/* ── Blocco 3: Conversazioni da seguire ── */}
+              <div className="dp-card">
+                <div className="dp-card-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h4 className="dp-card-title">Conversazioni da seguire</h4>
+                {dailyPlan.conversazioni_da_seguire.followup_da_fare && (
+                  <div className="dp-block"><span className="dp-block-label">Follow-up da fare</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.followup_da_fare}</p></div>
+                )}
+                {dailyPlan.conversazioni_da_seguire.quando_scrivere && (
+                  <div className="dp-block"><span className="dp-block-label">Quando scrivere</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.quando_scrivere}</p></div>
+                )}
+                {dailyPlan.conversazioni_da_seguire.cosa_chiedere && (
+                  <div className="dp-block"><span className="dp-block-label">Cosa chiedere</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.cosa_chiedere}</p></div>
+                )}
+                {dailyPlan.conversazioni_da_seguire.esempio_followup && (
+                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Esempio di follow-up</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.esempio_followup}</p></div>
+                )}
+              </div>
+            </div>
+          )}
         </section>
 
         {/* ── MODALITÀ PROFILO ── */}

@@ -8,13 +8,18 @@ import { getRepositoryBundle } from "@/lib/sales/repositories";
 export function computeSystemProgress(onboarding: Record<string, unknown> | null): number {
   if (!onboarding) return 0;
   let filled = 0;
+  const total = 8;
   const fields = ["servizio", "cliente_ideale", "problema_cliente", "risultato_cliente", "tempo_settimanale"];
   for (const f of fields) {
     if (onboarding[f] && onboarding[f] !== "") filled++;
   }
   const links = onboarding.linkedin_search_links;
   if (Array.isArray(links) && links.length > 0 && links[0]) filled++;
-  return Math.round((filled / 6) * 100);
+  const materiali = onboarding.materiali_nomi;
+  if (Array.isArray(materiali) && materiali.length > 0) filled++;
+  const social = onboarding.social_links;
+  if (Array.isArray(social) && social.length > 0 && social[0]) filled++;
+  return Math.round((filled / total) * 100);
 }
 
 export default function SystemBanner() {

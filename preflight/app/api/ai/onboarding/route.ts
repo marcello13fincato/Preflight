@@ -81,6 +81,8 @@ Profilo utente:
 - Problema del cliente: ${d.problema_cliente}
 - Risultato che porta: ${d.risultato_cliente}
 - Profili LinkedIn da contattare: ${d.linkedin_search_links.filter(Boolean).join(", ") || "non specificato"}
+- Materiali caricati: ${d.materiali_nomi?.filter(Boolean).join(", ") || "nessuno"}
+- Social e sito: ${d.social_links?.filter(Boolean).join(", ") || "non specificato"}
 - Tempo settimanale: ${d.tempo_settimanale}`;
     const output = await generateStructured({ prompt, schema: planSchema });
     return NextResponse.json(output);

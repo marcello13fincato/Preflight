@@ -114,6 +114,14 @@ export function formatProfileContext(profile: unknown): string {
   if (Array.isArray(links) && links.filter(Boolean).length > 0) {
     lines.push(`- Categorie LinkedIn target: ${links.filter(Boolean).join(", ")}`);
   }
+  const materiali = p.materiali_nomi;
+  if (Array.isArray(materiali) && materiali.filter(Boolean).length > 0) {
+    lines.push(`- Materiali caricati: ${materiali.filter(Boolean).join(", ")}`);
+  }
+  const social = p.social_links;
+  if (Array.isArray(social) && social.filter(Boolean).length > 0) {
+    lines.push(`- Social e sito: ${social.filter(Boolean).join(", ")}`);
+  }
   if (p.tempo_settimanale) lines.push(`- Tempo settimanale su LinkedIn: ${p.tempo_settimanale}`);
   // Backward compat: old schema fields
   if (!p.servizio && p.offer_one_liner) lines.push(`- Servizio: ${p.offer_one_liner}`);

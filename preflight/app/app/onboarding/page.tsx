@@ -7,7 +7,7 @@ import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { computeSystemProgress } from "@/components/app/SystemBanner";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 8;
 
 const timeOptions = [
   { label: "Meno di 1 ora", value: "meno_1h" },
@@ -22,6 +22,8 @@ const initial: OnboardingInput = {
   problema_cliente: "",
   risultato_cliente: "",
   linkedin_search_links: [""],
+  materiali_nomi: [],
+  social_links: [""],
   tempo_settimanale: "1_3h",
 };
 
@@ -64,19 +66,44 @@ export default function OnboardingPage() {
     }
   }
 
+  /* ── LinkedIn search links helpers ── */
   function addLink() {
     setData({ ...data, linkedin_search_links: [...data.linkedin_search_links, ""] });
   }
-
   function updateLink(idx: number, val: string) {
     const links = [...data.linkedin_search_links];
     links[idx] = val;
     setData({ ...data, linkedin_search_links: links });
   }
-
   function removeLink(idx: number) {
     const links = data.linkedin_search_links.filter((_, i) => i !== idx);
     setData({ ...data, linkedin_search_links: links.length === 0 ? [""] : links });
+  }
+
+  /* ── Social links helpers ── */
+  function addSocialLink() {
+    setData({ ...data, social_links: [...data.social_links, ""] });
+  }
+  function updateSocialLink(idx: number, val: string) {
+    const links = [...data.social_links];
+    links[idx] = val;
+    setData({ ...data, social_links: links });
+  }
+  function removeSocialLink(idx: number) {
+    const links = data.social_links.filter((_, i) => i !== idx);
+    setData({ ...data, social_links: links.length === 0 ? [""] : links });
+  }
+
+  /* ── File upload handler ── */
+  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files) return;
+    const names = Array.from(files).map((f) => f.name);
+    setData({ ...data, materiali_nomi: [...data.materiali_nomi, ...names] });
+  }
+  function removeFile(idx: number) {
+    const nomi = data.materiali_nomi.filter((_, i) => i !== idx);
+    setData({ ...data, materiali_nomi: nomi });
   }
 
   const progressPct = Math.round((step / TOTAL_STEPS) * 100);
@@ -91,10 +118,7 @@ export default function OnboardingPage() {
       <section className="onb-hero">
         <h2 className="onb-hero-title">Imposta il tuo sistema</h2>
         <p className="onb-hero-subtitle">
-          Preflight usa queste informazioni per darti consigli più precisi.
-        </p>
-        <p className="onb-hero-body">
-          Rispondi a poche domande semplici. Nessun campo tecnico, nessuna astrazione.
+          Più Preflight conosce il tuo lavoro, più i suggerimenti saranno utili e personalizzati.
         </p>
       </section>
 
@@ -170,10 +194,7 @@ export default function OnboardingPage() {
         {/* ── Step 1: Che servizio offri? ── */}
         {step === 1 && (
           <>
-            <StepHeader
-              emoji="💼"
-              title="Che servizio offri?"
-            />
+            <StepHeader emoji="💼" title="Che servizio offri?" />
             <label className="block text-sm">
               <p className="text-xs mb-2" style={{ color: "var(--color-muted)" }}>Descrivi in una frase cosa fai per i tuoi clienti.</p>
               <textarea
@@ -190,12 +211,8 @@ export default function OnboardingPage() {
         {/* ── Step 2: Che tipo di clienti cerchi? ── */}
         {step === 2 && (
           <>
-            <StepHeader
-              emoji="🎯"
-              title="Che tipo di clienti cerchi?"
-            />
+            <StepHeader emoji="🎯" title="Che tipo di clienti cerchi?" />
             <label className="block text-sm">
-              <p className="text-xs mb-2" style={{ color: "var(--color-muted)" }}>Pensa alle persone che potrebbero davvero comprare il tuo servizio.</p>
               <textarea
                 className="input w-full resize-none"
                 rows={3}
@@ -210,10 +227,7 @@ export default function OnboardingPage() {
         {/* ── Step 3: Problema del cliente ── */}
         {step === 3 && (
           <>
-            <StepHeader
-              emoji="🧩"
-              title="Che problema hanno i tuoi clienti prima di lavorare con te?"
-            />
+            <StepHeader emoji="🧩" title="Che problema hanno i tuoi clienti prima di lavorare con te?" />
             <label className="block text-sm">
               <textarea
                 className="input w-full resize-none"
@@ -229,10 +243,7 @@ export default function OnboardingPage() {
         {/* ── Step 4: Risultato che porti ── */}
         {step === 4 && (
           <>
-            <StepHeader
-              emoji="🏆"
-              title="Che risultato porti ai tuoi clienti?"
-            />
+            <StepHeader emoji="🏆" title="Che risultato porti ai tuoi clienti?" />
             <label className="block text-sm">
               <textarea
                 className="input w-full resize-none"
@@ -248,10 +259,7 @@ export default function OnboardingPage() {
         {/* ── Step 5: Profili LinkedIn da contattare ── */}
         {step === 5 && (
           <>
-            <StepHeader
-              emoji="🔗"
-              title="Che tipo di profili vuoi contattare su LinkedIn?"
-            />
+            <StepHeader emoji="🔗" title="Che tipo di profili vuoi contattare su LinkedIn?" />
             <p className="text-xs" style={{ color: "var(--color-muted)" }}>
               Inserisci uno o più link di ricerca LinkedIn con i profili che vuoi trovare.
             </p>
@@ -284,18 +292,96 @@ export default function OnboardingPage() {
               className="text-sm font-medium"
               style={{ color: "var(--color-primary)" }}
             >
-              + Aggiungi un&apos;altra categoria
+              + Aggiungi un&apos;altra ricerca
             </button>
           </>
         )}
 
-        {/* ── Step 6: Tempo settimanale ── */}
+        {/* ── Step 6: Materiali del servizio ── */}
         {step === 6 && (
           <>
-            <StepHeader
-              emoji="⏱"
-              title="Quanto tempo puoi dedicare a LinkedIn ogni settimana?"
-            />
+            <StepHeader emoji="📎" title="Materiali del tuo servizio" />
+            <p className="text-xs" style={{ color: "var(--color-muted)", lineHeight: 1.5 }}>
+              Carica presentazioni o documenti che spiegano il tuo servizio.
+              L&apos;AI li userà per capire meglio cosa fai e come parlarne.
+            </p>
+            <label className="qa-file-upload">
+              <input
+                type="file"
+                accept=".pdf,.ppt,.pptx"
+                multiple
+                className="qa-file-input"
+                onChange={handleFileUpload}
+              />
+              <span className="qa-file-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Scegli file (PDF, PPT, PPTX)
+              </span>
+            </label>
+            {data.materiali_nomi.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {data.materiali_nomi.map((name, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-sm" style={{ color: "var(--color-text)" }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span className="flex-1 truncate">{name}</span>
+                    <button type="button" onClick={() => removeFile(idx)} className="shrink-0" style={{ color: "var(--color-muted)" }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="text-xs mt-1" style={{ color: "var(--color-muted)", fontStyle: "italic" }}>
+              Questo campo è facoltativo. Puoi aggiungerli anche in un secondo momento.
+            </p>
+          </>
+        )}
+
+        {/* ── Step 7: Social e sito ── */}
+        {step === 7 && (
+          <>
+            <StepHeader emoji="🌐" title="Dove possiamo capire meglio il tuo lavoro?" />
+            <p className="text-xs" style={{ color: "var(--color-muted)", lineHeight: 1.5 }}>
+              Inserisci link al tuo sito web, profilo LinkedIn, Instagram, YouTube o altri social.
+            </p>
+            <div className="space-y-3">
+              {data.social_links.map((link, idx) => (
+                <div key={idx} className="flex gap-2 items-center">
+                  <input
+                    className="input w-full"
+                    type="url"
+                    placeholder="https://www.linkedin.com/in/tuoprofilo"
+                    value={link}
+                    onChange={(e) => updateSocialLink(idx, e.target.value)}
+                  />
+                  {data.social_links.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeSocialLink(idx)}
+                      className="shrink-0 h-9 w-9 flex items-center justify-center rounded-lg transition-colors"
+                      style={{ color: "var(--color-muted)", border: "1px solid var(--color-border)" }}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              onClick={addSocialLink}
+              className="text-sm font-medium"
+              style={{ color: "var(--color-primary)" }}
+            >
+              + Aggiungi un altro link
+            </button>
+          </>
+        )}
+
+        {/* ── Step 8: Tempo settimanale ── */}
+        {step === 8 && (
+          <>
+            <StepHeader emoji="⏱" title="Quanto tempo puoi dedicare a LinkedIn ogni settimana?" />
             <div className="grid grid-cols-2 gap-3">
               {timeOptions.map((opt) => (
                 <button
