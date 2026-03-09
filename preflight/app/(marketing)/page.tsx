@@ -39,6 +39,10 @@ export default async function Home() {
               Guarda come funziona
             </Link>
           </div>
+          <a href="#assistente" className="hp-cta-try">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
+            Prova subito l&apos;assistente AI ↓
+          </a>
           <p className="hp-hero-trust">✓ Gratis per iniziare &nbsp;&nbsp; ✓ Nessuna carta di credito &nbsp;&nbsp; ✓ Setup in 5 minuti</p>
         </div>
       </section>
@@ -82,6 +86,70 @@ export default async function Home() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          2B+. AI PERSONALIZZATA — SPIEGAZIONE
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-soft">
+        <div className="hp-container">
+          <div className="hp-section-label">AI personalizzata</div>
+          <h2 className="hp-section-title">L&apos;AI funziona meglio quando conosce il tuo lavoro.</h2>
+          <p className="hp-section-subtitle">
+            Preflight può adattare i suggerimenti al tuo lavoro e ai tuoi clienti.
+          </p>
+          <div className="hp-ai-explain-grid">
+            <div className="hp-ai-explain-text">
+              <p className="hp-ai-explain-intro">Quando configuri il tuo sistema, l&apos;AI può capire:</p>
+              <ul className="hp-ai-explain-list">
+                <li><span className="hp-ai-explain-check">✓</span>Che servizi offri</li>
+                <li><span className="hp-ai-explain-check">✓</span>Chi sono i tuoi clienti ideali</li>
+                <li><span className="hp-ai-explain-check">✓</span>Quali problemi risolvi</li>
+                <li><span className="hp-ai-explain-check">✓</span>Quanto tempo puoi dedicare a LinkedIn</li>
+              </ul>
+              <p className="hp-ai-explain-note">Questo permette di generare suggerimenti molto più precisi.</p>
+              <Link href="/app/onboarding" className="hp-cta-primary" style={{ marginTop: "1rem" }}>
+                Configura il tuo sistema
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </Link>
+            </div>
+            <div className="hp-ai-explain-visual">
+              <div className="hp-ai-explain-card">
+                <div className="hp-ai-explain-card-icon">⚙️</div>
+                <div className="hp-ai-explain-card-label">Il tuo profilo</div>
+                <div className="hp-mock-lines" style={{ padding: "8px 0" }}>
+                  <div className="hp-mock-line hp-mock-line-w70" />
+                  <div className="hp-mock-line hp-mock-line-w50" />
+                  <div className="hp-mock-line hp-mock-line-w80" />
+                </div>
+              </div>
+              <div className="hp-ai-explain-arrow" aria-hidden="true">→</div>
+              <div className="hp-ai-explain-card hp-ai-explain-card-accent">
+                <div className="hp-ai-explain-card-icon">🤖</div>
+                <div className="hp-ai-explain-card-label">Suggerimenti personalizzati</div>
+                <div className="hp-mock-lines" style={{ padding: "8px 0" }}>
+                  <div className="hp-mock-line hp-mock-line-w80" />
+                  <div className="hp-mock-line hp-mock-line-w60" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="hp-ai-explain-transition">Puoi comunque provare subito una versione semplificata dell&apos;assistente.</p>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          2B++. ASSISTENTE RAPIDO — DEMO
+      ═══════════════════════════════════════════════════════════ */}
+      <section id="assistente" className="hp-section hp-section-light">
+        <div className="hp-container">
+          <div className="hp-section-label">Assistente rapido</div>
+          <h2 className="hp-section-title">Prova subito l&apos;assistente</h2>
+          <p className="hp-section-subtitle">
+            Incolla un commento o un messaggio LinkedIn e scopri come potresti rispondere.
+          </p>
+          <QuickAssistant />
         </div>
       </section>
 
@@ -521,70 +589,6 @@ export default async function Home() {
               Vedi i piani
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          8B. AI PERSONALIZZATA — SPIEGAZIONE
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-soft">
-        <div className="hp-container">
-          <div className="hp-section-label">AI personalizzata</div>
-          <h2 className="hp-section-title">L&apos;AI funziona meglio quando conosce il tuo lavoro.</h2>
-          <p className="hp-section-subtitle">
-            Preflight può adattare i suggerimenti al tuo lavoro e ai tuoi clienti.
-          </p>
-          <div className="hp-ai-explain-grid">
-            <div className="hp-ai-explain-text">
-              <p className="hp-ai-explain-intro">Quando configuri il tuo sistema, l&apos;AI può capire:</p>
-              <ul className="hp-ai-explain-list">
-                <li><span className="hp-ai-explain-check">✓</span>Che servizi offri</li>
-                <li><span className="hp-ai-explain-check">✓</span>Chi sono i tuoi clienti ideali</li>
-                <li><span className="hp-ai-explain-check">✓</span>Quali problemi risolvi</li>
-                <li><span className="hp-ai-explain-check">✓</span>Quanto tempo puoi dedicare a LinkedIn</li>
-              </ul>
-              <p className="hp-ai-explain-note">Questo permette di generare suggerimenti molto più precisi.</p>
-              <Link href="/app/onboarding" className="hp-cta-primary" style={{ marginTop: "1rem" }}>
-                Configura il tuo sistema
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </Link>
-            </div>
-            <div className="hp-ai-explain-visual">
-              <div className="hp-ai-explain-card">
-                <div className="hp-ai-explain-card-icon">⚙️</div>
-                <div className="hp-ai-explain-card-label">Il tuo profilo</div>
-                <div className="hp-mock-lines" style={{ padding: "8px 0" }}>
-                  <div className="hp-mock-line hp-mock-line-w70" />
-                  <div className="hp-mock-line hp-mock-line-w50" />
-                  <div className="hp-mock-line hp-mock-line-w80" />
-                </div>
-              </div>
-              <div className="hp-ai-explain-arrow" aria-hidden="true">→</div>
-              <div className="hp-ai-explain-card hp-ai-explain-card-accent">
-                <div className="hp-ai-explain-card-icon">🤖</div>
-                <div className="hp-ai-explain-card-label">Suggerimenti personalizzati</div>
-                <div className="hp-mock-lines" style={{ padding: "8px 0" }}>
-                  <div className="hp-mock-line hp-mock-line-w80" />
-                  <div className="hp-mock-line hp-mock-line-w60" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <p className="hp-ai-explain-transition">Puoi comunque provare subito una versione semplificata dell&apos;assistente.</p>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          8C. ASSISTENTE RAPIDO — DEMO
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
-        <div className="hp-container">
-          <div className="hp-section-label">Assistente rapido</div>
-          <h2 className="hp-section-title">Prova subito l&apos;assistente</h2>
-          <p className="hp-section-subtitle">
-            Incolla un commento o un messaggio LinkedIn e scopri come potresti rispondere.
-          </p>
-          <QuickAssistant />
         </div>
       </section>
 
