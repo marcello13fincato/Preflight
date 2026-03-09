@@ -41,7 +41,18 @@ function aiSuggestion(lead: Lead): string {
 
 export default function AppTodayPage() {
   const { data: session } = useSession();
-  const [dashMode, setDashMode] = useState<null | "profile" | "advice">(null);
+  const [dashMode, setDashMode] = useState<null | "profile" | "advice" | "find">(null);
+  // Find clients state
+  const [findTipoCliente, setFindTipoCliente] = useState("");
+  const [findSettore, setFindSettore] = useState("");
+  const [findDimensione, setFindDimensione] = useState("");
+  const [findArea, setFindArea] = useState("");
+  const [findResult, setFindResult] = useState<{
+    tipo_cliente_ideale: string; come_cercarlo: string;
+    link_ricerca_linkedin: string; suggerimenti_filtri: string;
+    profili_simili: string; cosa_fare_dopo: string;
+  } | null>(null);
+  const [findLoading, setFindLoading] = useState(false);
   // Profile analysis state
   const [quickLinkedinUrl, setQuickLinkedinUrl] = useState("");
   const [quickPdfFile, setQuickPdfFile] = useState<File | null>(null);
@@ -164,6 +175,37 @@ export default function AppTodayPage() {
     }
   }
 
+  async function handleFindClients() {
+    if (!findTipoCliente.trim()) return;
+    if (findLoading) return;
+    setFindLoading(true);
+    setFindResult(null);
+    try {
+      const res = await fetch("/api/ai/find-clients", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          tipo_cliente: findTipoCliente,
+          settore: findSettore || undefined,
+          dimensione: findDimensione || undefined,
+          area_geografica: findArea || undefined,
+          profile: profile.onboarding || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore");
+      const data = await res.json();
+      setFindResult(data);
+    } catch {
+      setFindResult({
+        tipo_cliente_ideale: "Si è verificato un errore. Riprova più tardi.",
+        come_cercarlo: "", link_ricerca_linkedin: "",
+        suggerimenti_filtri: "", profili_simili: "", cosa_fare_dopo: "",
+      });
+    } finally {
+      setFindLoading(false);
+    }
+  }
+
   return (
     <>
       {/* ══════════════════════════════════════════════════════
@@ -210,7 +252,7 @@ export default function AppTodayPage() {
             DUE AZIONI PRINCIPALI
         ══════════════════════════════════════════════════════ */}
         <section className="dash-section">
-          <div className="dash-start-grid" style={{ gridTemplateColumns: "1fr 1fr" }}>
+          <div className="dash-start-grid" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
             <div className="dash-start-card">
               <div className="dash-start-card-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -230,6 +272,17 @@ export default function AppTodayPage() {
               <p className="dash-start-card-desc">Descrivi una situazione reale — un commento ricevuto, un messaggio, un follow-up — e scopri come muoverti.</p>
               <button type="button" onClick={() => setDashMode("advice")} className="dash-btn-primary dash-btn-full">
                 Chiedi un consiglio
+                <span className="dash-btn-arrow">→</span>
+              </button>
+            </div>
+            <div className="dash-start-card">
+              <div className="dash-start-card-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <h4 className="dash-start-card-title">Trova clienti su LinkedIn</h4>
+              <p className="dash-start-card-desc">Descrivi il tipo di cliente che vuoi trovare e Preflight ti aiuta a creare la ricerca LinkedIn giusta.</p>
+              <button type="button" onClick={() => setDashMode("find")} className="dash-btn-primary dash-btn-full">
+                Trova clienti
                 <span className="dash-btn-arrow">→</span>
               </button>
             </div>
@@ -417,6 +470,87 @@ export default function AppTodayPage() {
               {quickAdviceResult && !profile.onboarding_complete && (
                 <div className="qa-callout">
                   <p className="qa-callout-text">💡 Questa analisi può essere ancora più precisa se configuri il tuo sistema.</p>
+                  <Link href="/app/onboarding" className="qa-callout-link">Configura il tuo sistema →</Link>
+                </div>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* ── MODALITÀ TROVA CLIENTI ── */}
+        {dashMode === "find" && (
+          <section className="dash-section">
+            <div className="qa-container qa-container-dash">
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setFindResult(null); }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Torna alle opzioni
+              </button>
+
+              <div className="qa-section-header">
+                <h4 className="qa-section-title">Trova clienti su LinkedIn</h4>
+                <p className="qa-section-sub">Descrivi il tipo di cliente che vuoi trovare e Preflight ti aiuta a creare la ricerca LinkedIn giusta.</p>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
+                <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder di startup SaaS B2B" />
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Dimensione azienda <span className="qa-label-opt">(facoltativo)</span></label>
+                <div className="qa-chip-group">
+                  {["freelance", "startup", "PMI", "enterprise"].map((d) => (
+                    <button key={d} type="button" className={`qa-chip${findDimensione === d ? " qa-chip-active" : ""}`} onClick={() => setFindDimensione(findDimensione === d ? "" : d)}>{d}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa / globale" />
+              </div>
+
+              <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
+                {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+              </button>
+
+              {findResult && (
+                <div className="qa-result">
+                  {findResult.tipo_cliente_ideale && (
+                    <div className="qa-result-block qa-result-valutazione"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Tipo di cliente ideale</div><p className="qa-result-text">{findResult.tipo_cliente_ideale}</p></div>
+                  )}
+                  {findResult.come_cercarlo && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Come cercarlo su LinkedIn</div><p className="qa-result-text">{findResult.come_cercarlo}</p></div>
+                  )}
+                  {findResult.link_ricerca_linkedin && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
+                  )}
+                  {findResult.suggerimenti_filtri && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Suggerimenti per filtrare meglio</div><p className="qa-result-text">{findResult.suggerimenti_filtri}</p></div>
+                  )}
+                  {findResult.profili_simili && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Profili simili da cercare</div><p className="qa-result-text">{findResult.profili_simili}</p></div>
+                  )}
+                  {findResult.cosa_fare_dopo && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Cosa fare dopo</div><p className="qa-result-text">{findResult.cosa_fare_dopo}</p></div>
+                  )}
+
+                  <div className="qa-result-ctas" style={{ marginTop: "1rem" }}>
+                    <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
+                      Analizza questo profilo →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {findResult && !profile.onboarding_complete && (
+                <div className="qa-callout">
+                  <p className="qa-callout-text">💡 Questa ricerca può essere ancora più precisa se configuri il tuo sistema.</p>
                   <Link href="/app/onboarding" className="qa-callout-link">Configura il tuo sistema →</Link>
                 </div>
               )}

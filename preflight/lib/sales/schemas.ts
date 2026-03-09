@@ -141,6 +141,15 @@ export const simulatorSchema = z.object({
   next_action: z.string(),
 });
 
+export const findClientsSchema = z.object({
+  tipo_cliente_ideale: z.string(),
+  come_cercarlo: z.string(),
+  link_ricerca_linkedin: z.string(),
+  suggerimenti_filtri: z.string(),
+  profili_simili: z.string(),
+  cosa_fare_dopo: z.string(),
+});
+
 export const onboardingInputSchema = z.object({
   servizio: z.string().min(1),
   cliente_ideale: z.string().min(1),
@@ -158,6 +167,7 @@ export type ProspectAnalyzerJson = z.infer<typeof prospectAnalyzerSchema>;
 export type IdealProfileJson = z.infer<typeof idealProfileSchema>;
 export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
 export type SimulatorJson = z.infer<typeof simulatorSchema>;
+export type FindClientsJson = z.infer<typeof findClientsSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
 export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 

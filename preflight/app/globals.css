@@ -1844,6 +1844,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .qa-callout-text{margin:0;font-size:.85rem;color:var(--color-text)}
 .qa-callout-link{font-size:.85rem;font-weight:600;color:var(--color-primary);white-space:nowrap;text-decoration:none}
 .qa-callout-link:hover{text-decoration:underline}
+.qa-result-link{color:var(--color-primary);text-decoration:none;word-break:break-all;font-size:.85rem}
+.qa-result-link:hover{text-decoration:underline}
+@media(max-width:900px){
+  .dash-start-grid[style*="1fr 1fr 1fr"]{grid-template-columns:1fr!important}
+}
 
 /* ═══════════════════════════════════════════════════════════
    CHATBOX — Global AI Assistant
