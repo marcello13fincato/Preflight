@@ -43,8 +43,15 @@ function aiSuggestion(lead: Lead): string {
 export default function AppTodayPage() {
   const { data: session } = useSession();
   const [quickText, setQuickText] = useState("");
+  const [quickLinkedinUrl, setQuickLinkedinUrl] = useState("");
+  const [quickProfileInfo, setQuickProfileInfo] = useState("");
+  const [quickInteractionType, setQuickInteractionType] = useState("Commento");
+  const [quickWhoWrote, setQuickWhoWrote] = useState("L'ho scritto io");
   const [quickResult, setQuickResult] = useState<{
+    valutazione: { qualita: number; probabilita: string };
+    temperatura: { stato: string; spiegazione: string };
     lettura: string; strategia: string; risposta: string; prossima_mossa: string;
+    suggerimenti?: string;
   } | null>(null);
   const [quickLoading, setQuickLoading] = useState(false);
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
@@ -95,6 +102,10 @@ export default function AppTodayPage() {
           message: quickText,
           advice: true,
           profile: profile.onboarding || undefined,
+          linkedinUrl: quickLinkedinUrl.trim() || undefined,
+          profileInfo: quickProfileInfo.trim() || undefined,
+          interactionType: quickInteractionType,
+          whoWrote: quickWhoWrote,
         }),
       });
       if (!res.ok) throw new Error("Errore");
@@ -103,18 +114,18 @@ export default function AppTodayPage() {
         setQuickResult(data.structured);
       } else {
         setQuickResult({
+          valutazione: { qualita: 0, probabilita: "–" },
+          temperatura: { stato: "Neutra", spiegazione: data.reply || "Non disponibile." },
           lettura: data.reply || "Non sono riuscito a generare una risposta.",
-          strategia: "",
-          risposta: "",
-          prossima_mossa: "",
+          strategia: "", risposta: "", prossima_mossa: "",
         });
       }
     } catch {
       setQuickResult({
+        valutazione: { qualita: 0, probabilita: "–" },
+        temperatura: { stato: "–", spiegazione: "Errore." },
         lettura: "Si è verificato un errore. Riprova più tardi.",
-        strategia: "",
-        risposta: "",
-        prossima_mossa: "",
+        strategia: "", risposta: "", prossima_mossa: "",
       });
     } finally {
       setQuickLoading(false);
@@ -384,6 +395,7 @@ export default function AppTodayPage() {
           </p>
 
           <div className="qa-container qa-container-dash">
+            {/* Campo principale */}
             <div className="qa-field">
               <label className="qa-label">Spiegami il contesto</label>
               <textarea
@@ -391,8 +403,73 @@ export default function AppTodayPage() {
                 onChange={(e) => setQuickText(e.target.value)}
                 rows={5}
                 className="qa-input qa-input-lg"
-                placeholder={"Ho scritto a un potenziale cliente.\nMi ha risposto in modo cordiale ma un po' vago.\nLavora come marketing manager in un'azienda B2B.\nCome posso continuare senza sembrare troppo commerciale?"}
+                placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nÈ founder di una startup SaaS.\nNon ci siamo mai scritti prima.\n\nCome mi conviene rispondere?"}
               />
+            </div>
+
+            {/* Profilo LinkedIn */}
+            <div className="qa-field">
+              <label className="qa-label">
+                Profilo LinkedIn della persona
+                <span className="qa-label-opt">(facoltativo)</span>
+              </label>
+              <input
+                type="url"
+                value={quickLinkedinUrl}
+                onChange={(e) => setQuickLinkedinUrl(e.target.value)}
+                className="qa-input"
+                placeholder="https://linkedin.com/in/nomecognome"
+              />
+            </div>
+
+            {/* Info profilo */}
+            <div className="qa-field">
+              <label className="qa-label">
+                Informazioni sul profilo
+                <span className="qa-label-opt">(facoltativo)</span>
+              </label>
+              <textarea
+                value={quickProfileInfo}
+                onChange={(e) => setQuickProfileInfo(e.target.value)}
+                className="qa-input"
+                rows={2}
+                placeholder={"Founder di startup SaaS.\nPubblica su crescita e acquisizione clienti."}
+              />
+            </div>
+
+            {/* Selettori */}
+            <div className="qa-selectors">
+              <div className="qa-field">
+                <label className="qa-label">Tipo di interazione</label>
+                <div className="qa-segmented">
+                  {["Commento", "Messaggio", "Post", "Prima interazione"].map((t) => (
+                    <button
+                      key={t}
+                      type="button"
+                      className={`qa-seg-btn${quickInteractionType === t ? " qa-seg-active" : ""}`}
+                      onClick={() => setQuickInteractionType(t)}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Chi ha scritto il messaggio?</label>
+                <div className="qa-segmented">
+                  {["L'ho scritto io", "L'ho ricevuto"].map((o) => (
+                    <button
+                      key={o}
+                      type="button"
+                      className={`qa-seg-btn${quickWhoWrote === o ? " qa-seg-active" : ""}`}
+                      onClick={() => setQuickWhoWrote(o)}
+                    >
+                      {o}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <button
@@ -403,7 +480,7 @@ export default function AppTodayPage() {
               {quickLoading ? (
                 <>
                   <span className="qa-spinner" aria-hidden="true" />
-                  Sto pensando…
+                  Sto analizzando…
                 </>
               ) : (
                 <>
@@ -415,6 +492,37 @@ export default function AppTodayPage() {
 
             {quickResult && (
               <div className="qa-result">
+                {/* Valutazione conversazione */}
+                <div className="qa-result-block qa-result-valutazione">
+                  <div className="qa-result-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Valutazione della conversazione
+                  </div>
+                  <div className="qa-valutazione-grid">
+                    <div className="qa-valutazione-item">
+                      <span className="qa-valutazione-number">{quickResult.valutazione.qualita}<span className="qa-valutazione-max">/10</span></span>
+                      <span className="qa-valutazione-desc">Qualità della conversazione</span>
+                    </div>
+                    <div className="qa-valutazione-item">
+                      <span className="qa-valutazione-number">{quickResult.valutazione.probabilita}</span>
+                      <span className="qa-valutazione-desc">Probabilità stimata di arrivare a una call</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Temperatura */}
+                <div className="qa-result-block qa-result-temperatura">
+                  <div className="qa-result-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+                    Temperatura della conversazione
+                  </div>
+                  <div className="qa-temperatura-badge" data-stato={quickResult.temperatura.stato}>
+                    {quickResult.temperatura.stato}
+                  </div>
+                  <p className="qa-result-text">{quickResult.temperatura.spiegazione}</p>
+                </div>
+
+                {/* Lettura della situazione */}
                 {quickResult.lettura && (
                   <div className="qa-result-block">
                     <div className="qa-result-label">
@@ -425,6 +533,7 @@ export default function AppTodayPage() {
                   </div>
                 )}
 
+                {/* Strategia */}
                 {quickResult.strategia && (
                   <div className="qa-result-block">
                     <div className="qa-result-label">
@@ -435,16 +544,18 @@ export default function AppTodayPage() {
                   </div>
                 )}
 
+                {/* Risposta pronta */}
                 {quickResult.risposta && (
                   <div className="qa-result-block qa-result-reply">
                     <div className="qa-result-label">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      Esempio di risposta
+                      Risposta pronta da inviare
                     </div>
                     <p className="qa-result-text">{quickResult.risposta}</p>
                   </div>
                 )}
 
+                {/* Prossima mossa */}
                 {quickResult.prossima_mossa && (
                   <div className="qa-result-block">
                     <div className="qa-result-label">
@@ -452,6 +563,17 @@ export default function AppTodayPage() {
                       Prossima mossa
                     </div>
                     <p className="qa-result-text">{quickResult.prossima_mossa}</p>
+                  </div>
+                )}
+
+                {/* Suggerimenti aggiuntivi */}
+                {quickResult.suggerimenti && (
+                  <div className="qa-result-block">
+                    <div className="qa-result-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                      Suggerimenti aggiuntivi
+                    </div>
+                    <p className="qa-result-text">{quickResult.suggerimenti}</p>
                   </div>
                 )}
               </div>

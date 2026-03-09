@@ -21,6 +21,10 @@ const requestSchema = z.object({
   context: contextSchema.optional(),
   advice: z.boolean().optional(),
   demo: z.boolean().optional(),
+  linkedinUrl: z.string().max(500).optional(),
+  profileInfo: z.string().max(2000).optional(),
+  interactionType: z.string().max(100).optional(),
+  whoWrote: z.string().max(100).optional(),
 });
 
 function buildStructuredPrompt(
@@ -72,10 +76,24 @@ Testo da analizzare:
 ${message}`;
 }
 
-function buildAdvicePrompt(message: string, profile: unknown, demo: boolean): string {
+function buildAdvicePrompt(
+  message: string,
+  profile: unknown,
+  demo: boolean,
+  extra: { linkedinUrl?: string; profileInfo?: string; interactionType?: string; whoWrote?: string },
+): string {
   const depth = demo
     ? "Rispondi in modo sintetico ma completo. Massimo 2-3 frasi per sezione."
     : "Rispondi in modo approfondito e dettagliato. Fornisci analisi completa e suggerimenti concreti.";
+
+  const extraContext = [
+    extra.interactionType ? `- Tipo di interazione: ${extra.interactionType}` : "",
+    extra.whoWrote ? `- Chi ha scritto: ${extra.whoWrote}` : "",
+    extra.linkedinUrl ? `- Profilo LinkedIn della persona: ${extra.linkedinUrl}` : "",
+    extra.profileInfo ? `- Informazioni sul profilo della persona: ${extra.profileInfo}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return `${salesRules}
 
@@ -92,22 +110,32 @@ Il tuo approccio:
 
 NON fare:
 - Non sembrare aggressivo o da marketer
+- Non sembrare un guru
 - Non usare frasi cringe o motivazionali
 - Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
 
-Il tono deve essere: professionale, calmo, realistico, concreto.
+Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
 
 ${depth}
 
-${profile ? `Profilo utente: ${JSON.stringify(profile)}` : ""}
+${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
+${profile ? `Profilo utente Preflight: ${JSON.stringify(profile)}` : ""}
 
 Rispondi SEMPRE in italiano.
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
-  "lettura": "<breve lettura di cosa sta succedendo nella conversazione>",
-  "strategia": "<approccio consigliato per continuare in modo naturale>",
+  "valutazione": {
+    "qualita": <numero da 1 a 10 che indica la qualità della conversazione>,
+    "probabilita": "<percentuale indicativa di arrivare a una call, es. '35%'>"
+  },
+  "temperatura": {
+    "stato": "<uno tra: Fredda, Neutra, Calda, Troppo presto per proporre una call>",
+    "spiegazione": "<breve spiegazione della temperatura>"
+  },
+  "lettura": "<analisi della dinamica della conversazione>",
+  "strategia": "<come continuare la conversazione in modo naturale>",
   "risposta": "<esempio concreto di risposta che l'utente potrebbe usare>",
-  "prossima_mossa": "<cosa fare dopo per avvicinarsi a una call>"
+  "prossima_mossa": "<cosa fare dopo per avvicinarsi a una call>"${!demo ? ',\n  "suggerimenti": "<eventuali suggerimenti aggiuntivi>"' : ""}
 }
 
 Situazione descritta dall'utente:
@@ -125,11 +153,16 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { message, history, profile, context, advice, demo } = parsed.data;
+    const { message, history, profile, context, advice, demo, linkedinUrl, profileInfo, interactionType, whoWrote } = parsed.data;
 
     /* ── Advice mode ("Chiedi un consiglio") ── */
     if (advice) {
-      const prompt = buildAdvicePrompt(message, profile, !!demo);
+      const prompt = buildAdvicePrompt(message, profile, !!demo, {
+        linkedinUrl,
+        profileInfo,
+        interactionType,
+        whoWrote,
+      });
       const raw = await generateWithLLM(prompt);
       try {
         const structured = JSON.parse(raw);

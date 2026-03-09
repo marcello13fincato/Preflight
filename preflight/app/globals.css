@@ -1655,6 +1655,66 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 .qa-cta-secondary:hover{background:var(--color-primary);color:#fff}
 
+/* ── Selectors row ── */
+.qa-selectors{display:flex;gap:1.25rem;flex-wrap:wrap}
+
+/* ── Valutazione ── */
+.qa-result-valutazione{background:var(--color-soft)}
+.qa-valutazione-grid{display:flex;gap:1.5rem;margin-top:.5rem;flex-wrap:wrap}
+.qa-valutazione-item{display:flex;flex-direction:column;gap:.15rem}
+.qa-valutazione-number{font-size:1.6rem;font-weight:700;color:var(--color-primary);line-height:1}
+.qa-valutazione-max{font-size:.85rem;font-weight:500;color:var(--color-muted)}
+.qa-valutazione-desc{font-size:.78rem;color:var(--color-muted)}
+
+/* ── Temperatura ── */
+.qa-result-temperatura{background:#fff}
+.qa-temperatura-badge{
+  display:inline-block;padding:.3rem .85rem;border-radius:var(--radius-full);
+  font-size:.82rem;font-weight:600;margin:.5rem 0;
+  background:#E2E8F0;color:#475569;
+}
+.qa-temperatura-badge[data-stato="Fredda"]{background:#DBEAFE;color:#1E40AF}
+.qa-temperatura-badge[data-stato="Neutra"]{background:#E2E8F0;color:#475569}
+.qa-temperatura-badge[data-stato="Calda"]{background:#FEF3C7;color:#92400E}
+.qa-temperatura-badge[data-stato="Troppo presto per proporre una call"]{background:#FEE2E2;color:#991B1B}
+
+/* ── Locked section (homepage demo) ── */
+.qa-locked{
+  position:relative;overflow:hidden;
+  border:1.5px dashed var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:1.5rem;background:#FAFBFC;
+  text-align:center;
+}
+.qa-locked-header{
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-size:.95rem;font-weight:700;color:var(--color-heading);
+  margin-bottom:.75rem;
+}
+.qa-locked-list{
+  list-style:none;padding:0;margin:0 0 1rem;
+  display:flex;flex-direction:column;gap:.35rem;
+}
+.qa-locked-list li{
+  font-size:.85rem;color:var(--color-muted);
+  display:flex;align-items:center;justify-content:center;gap:.35rem;
+}
+.qa-locked-list li::before{content:"🔒";font-size:.7rem}
+.qa-locked-cta{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--color-primary);color:#fff;
+  font-size:.88rem;font-weight:600;
+  padding:.65rem 1.5rem;border-radius:var(--radius-full);
+  text-decoration:none;border:none;cursor:pointer;
+  transition:background .2s, transform .15s, box-shadow .2s;
+  box-shadow:0 2px 8px rgba(10,102,194,.18);
+}
+.qa-locked-cta:hover{
+  background:var(--color-primary-dark);
+  transform:translateY(-1px);
+  box-shadow:0 4px 16px rgba(10,102,194,.25);
+}
+
 /* ═══════════════════════════════════════════════════════════
    CHATBOX — Global AI Assistant
 ═══════════════════════════════════════════════════════════ */
