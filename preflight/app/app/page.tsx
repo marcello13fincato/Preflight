@@ -42,12 +42,9 @@ function aiSuggestion(lead: Lead): string {
 
 export default function AppTodayPage() {
   const { data: session } = useSession();
-  const [quickType, setQuickType] = useState("post");
   const [quickText, setQuickText] = useState("");
-  const [quickOrigin, setQuickOrigin] = useState<"scritto" | "ricevuto">("ricevuto");
-  const [quickProfile, setQuickProfile] = useState("");
   const [quickResult, setQuickResult] = useState<{
-    risposta: string; perche: string; prossima_mossa: string; analisi?: string;
+    lettura: string; strategia: string; risposta: string; prossima_mossa: string;
   } | null>(null);
   const [quickLoading, setQuickLoading] = useState(false);
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
@@ -90,18 +87,13 @@ export default function AppTodayPage() {
     if (!quickText.trim() || quickLoading) return;
     setQuickLoading(true);
     setQuickResult(null);
-    const ctMap: Record<string, string> = { post: "post", comment: "commento", dm: "messaggio" };
     try {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: quickText,
-          context: {
-            contentType: ctMap[quickType] || "post",
-            origin: quickOrigin,
-            personProfile: quickProfile.trim() || undefined,
-          },
+          advice: true,
           profile: profile.onboarding || undefined,
         }),
       });
@@ -111,15 +103,17 @@ export default function AppTodayPage() {
         setQuickResult(data.structured);
       } else {
         setQuickResult({
-          risposta: data.reply || "Non sono riuscito a generare una risposta.",
-          perche: "",
+          lettura: data.reply || "Non sono riuscito a generare una risposta.",
+          strategia: "",
+          risposta: "",
           prossima_mossa: "",
         });
       }
     } catch {
       setQuickResult({
-        risposta: "Si è verificato un errore. Riprova più tardi.",
-        perche: "",
+        lettura: "Si è verificato un errore. Riprova più tardi.",
+        strategia: "",
+        risposta: "",
         prossima_mossa: "",
       });
     } finally {
@@ -381,92 +375,23 @@ export default function AppTodayPage() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            ASSISTENTE RAPIDO
+            CHIEDI UN CONSIGLIO
         ══════════════════════════════════════════════════════ */}
         <section className="dash-card">
-          <h3 className="dash-card-title">Assistente rapido</h3>
+          <h3 className="dash-card-title">Chiedi un consiglio</h3>
           <p className="dash-card-sub">
-            Analizza un contenuto LinkedIn con l&apos;AI. Scegli il tipo, incolla il testo e ottieni una risposta.
+            Spiega il contesto della conversazione e scopri come muoverti per portarla verso una call.
           </p>
 
           <div className="qa-container qa-container-dash">
-            {/* Tipo contenuto */}
             <div className="qa-field">
-              <label className="qa-label">Che tipo di contenuto vuoi analizzare?</label>
-              <div className="qa-segmented">
-                {[
-                  { value: "post", label: "Post" },
-                  { value: "comment", label: "Commento" },
-                  { value: "dm", label: "Messaggio" },
-                ].map((t) => (
-                  <button
-                    key={t.value}
-                    type="button"
-                    className={`qa-seg-btn${quickType === t.value ? " qa-seg-active" : ""}`}
-                    onClick={() => setQuickType(t.value)}
-                  >
-                    {t.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Chi lo ha scritto */}
-            <div className="qa-field">
-              <label className="qa-label">Questo contenuto…</label>
-              <div className="qa-segmented">
-                <button
-                  type="button"
-                  className={`qa-seg-btn${quickOrigin === "scritto" ? " qa-seg-active" : ""}`}
-                  onClick={() => setQuickOrigin("scritto")}
-                >
-                  L&apos;ho scritto io
-                </button>
-                <button
-                  type="button"
-                  className={`qa-seg-btn${quickOrigin === "ricevuto" ? " qa-seg-active" : ""}`}
-                  onClick={() => setQuickOrigin("ricevuto")}
-                >
-                  L&apos;ho ricevuto
-                </button>
-              </div>
-            </div>
-
-            {/* Profilo persona */}
-            <div className="qa-field">
-              <label className="qa-label">
-                Profilo della persona coinvolta
-                <span className="qa-label-opt">(facoltativo)</span>
-              </label>
-              <p className="qa-microcopy">
-                {quickOrigin === "ricevuto"
-                  ? "Chi ti ha scritto / chi ha commentato"
-                  : "La persona a cui è rivolto o che potrebbe leggerlo"}
-              </p>
-              <textarea
-                value={quickProfile}
-                onChange={(e) => setQuickProfile(e.target.value)}
-                className="qa-input"
-                rows={2}
-                placeholder="Founder di una startup SaaS, pubblica spesso su crescita e clienti, lavora con aziende B2B."
-              />
-            </div>
-
-            {/* Testo */}
-            <div className="qa-field">
-              <label className="qa-label">Incolla qui il testo</label>
+              <label className="qa-label">Spiegami il contesto</label>
               <textarea
                 value={quickText}
                 onChange={(e) => setQuickText(e.target.value)}
-                rows={3}
-                className="qa-input"
-                placeholder={
-                  quickType === "post"
-                    ? "Molte aziende B2B pubblicano su LinkedIn ma non riescono a trasformare i contenuti in clienti."
-                    : quickType === "comment"
-                    ? "Interessante, anche noi stiamo affrontando questo problema."
-                    : "Ciao, interessante quello che fai. Come funziona il tuo servizio?"
-                }
+                rows={5}
+                className="qa-input qa-input-lg"
+                placeholder={"Ho scritto a un potenziale cliente.\nMi ha risposto in modo cordiale ma un po' vago.\nLavora come marketing manager in un'azienda B2B.\nCome posso continuare senza sembrare troppo commerciale?"}
               />
             </div>
 
@@ -478,11 +403,11 @@ export default function AppTodayPage() {
               {quickLoading ? (
                 <>
                   <span className="qa-spinner" aria-hidden="true" />
-                  Analisi in corso…
+                  Sto pensando…
                 </>
               ) : (
                 <>
-                  Analizza
+                  Dammi un consiglio
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </>
               )}
@@ -490,31 +415,33 @@ export default function AppTodayPage() {
 
             {quickResult && (
               <div className="qa-result">
-                <div className="qa-result-block">
-                  <div className="qa-result-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    Risposta consigliata
-                  </div>
-                  <p className="qa-result-text">{quickResult.risposta}</p>
-                </div>
-
-                {quickResult.analisi && (
-                  <div className="qa-result-block qa-result-analysis">
+                {quickResult.lettura && (
+                  <div className="qa-result-block">
                     <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      Analisi del testo
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                      Lettura della situazione
                     </div>
-                    <p className="qa-result-text">{quickResult.analisi}</p>
+                    <p className="qa-result-text">{quickResult.lettura}</p>
                   </div>
                 )}
 
-                {quickResult.perche && (
+                {quickResult.strategia && (
                   <div className="qa-result-block">
                     <div className="qa-result-label">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
-                      Perché può funzionare
+                      Strategia consigliata
                     </div>
-                    <p className="qa-result-text">{quickResult.perche}</p>
+                    <p className="qa-result-text">{quickResult.strategia}</p>
+                  </div>
+                )}
+
+                {quickResult.risposta && (
+                  <div className="qa-result-block qa-result-reply">
+                    <div className="qa-result-label">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                      Esempio di risposta
+                    </div>
+                    <p className="qa-result-text">{quickResult.risposta}</p>
                   </div>
                 )}
 

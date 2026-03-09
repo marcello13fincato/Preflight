@@ -19,6 +19,8 @@ const requestSchema = z.object({
     .default([]),
   profile: z.unknown().optional(),
   context: contextSchema.optional(),
+  advice: z.boolean().optional(),
+  demo: z.boolean().optional(),
 });
 
 function buildStructuredPrompt(
@@ -70,6 +72,48 @@ Testo da analizzare:
 ${message}`;
 }
 
+function buildAdvicePrompt(message: string, profile: unknown, demo: boolean): string {
+  const depth = demo
+    ? "Rispondi in modo sintetico ma completo. Massimo 2-3 frasi per sezione."
+    : "Rispondi in modo approfondito e dettagliato. Fornisci analisi completa e suggerimenti concreti.";
+
+  return `${salesRules}
+
+Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+
+L'utente ti descrive una situazione reale su LinkedIn e ti chiede come comportarsi.
+
+Il tuo approccio:
+- Ragiona come un venditore esperto e riflessivo
+- Spiega il perché delle tue scelte
+- Suggerisci approcci naturali, mai aggressivi
+- L'obiettivo NON è vendere subito, ma portare la conversazione un passo più avanti
+- Il contesto è SEMPRE LinkedIn: conversazioni brevi, tono naturale, niente pitch aggressivi
+
+NON fare:
+- Non sembrare aggressivo o da marketer
+- Non usare frasi cringe o motivazionali
+- Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
+
+Il tono deve essere: professionale, calmo, realistico, concreto.
+
+${depth}
+
+${profile ? `Profilo utente: ${JSON.stringify(profile)}` : ""}
+
+Rispondi SEMPRE in italiano.
+Rispondi SOLO con un oggetto JSON con questa struttura:
+{
+  "lettura": "<breve lettura di cosa sta succedendo nella conversazione>",
+  "strategia": "<approccio consigliato per continuare in modo naturale>",
+  "risposta": "<esempio concreto di risposta che l'utente potrebbe usare>",
+  "prossima_mossa": "<cosa fare dopo per avvicinarsi a una call>"
+}
+
+Situazione descritta dall'utente:
+${message}`;
+}
+
 export async function POST(req: Request) {
   const body = await req.json();
   const parsed = requestSchema.safeParse(body);
@@ -81,7 +125,19 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { message, history, profile, context } = parsed.data;
+    const { message, history, profile, context, advice, demo } = parsed.data;
+
+    /* ── Advice mode ("Chiedi un consiglio") ── */
+    if (advice) {
+      const prompt = buildAdvicePrompt(message, profile, !!demo);
+      const raw = await generateWithLLM(prompt);
+      try {
+        const structured = JSON.parse(raw);
+        return NextResponse.json({ reply: structured.lettura, structured });
+      } catch {
+        return NextResponse.json({ reply: raw });
+      }
+    }
 
     /* ── Structured assistant mode (with context) ── */
     if (context) {

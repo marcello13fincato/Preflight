@@ -40,8 +40,8 @@ export default async function Home() {
             </Link>
           </div>
           <a href="#assistente" className="hp-cta-try">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
-            Prova subito l&apos;assistente AI ↓
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Chiedi un consiglio ↓
           </a>
           <p className="hp-hero-trust">✓ Gratis per iniziare &nbsp;&nbsp; ✓ Nessuna carta di credito &nbsp;&nbsp; ✓ Setup in 5 minuti</p>
         </div>
@@ -135,19 +135,19 @@ export default async function Home() {
               </div>
             </div>
           </div>
-          <p className="hp-ai-explain-transition">Puoi comunque provare subito una versione semplificata dell&apos;assistente.</p>
+          <p className="hp-ai-explain-transition">Puoi comunque provare subito a chiedere un consiglio commerciale.</p>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          2B++. ASSISTENTE RAPIDO — DEMO
+          2B++. CHIEDI UN CONSIGLIO — DEMO
       ═══════════════════════════════════════════════════════════ */}
       <section id="assistente" className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Assistente rapido</div>
-          <h2 className="hp-section-title">Prova subito l&apos;assistente</h2>
+          <div className="hp-section-label">Chiedi un consiglio</div>
+          <h2 className="hp-section-title">Chiedi un consiglio</h2>
           <p className="hp-section-subtitle">
-            Incolla un commento o un messaggio LinkedIn e scopri come potresti rispondere.
+            Spiega il contesto della conversazione e scopri come muoverti per portarla verso una call.
           </p>
           <QuickAssistant />
         </div>

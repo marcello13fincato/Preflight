@@ -1597,6 +1597,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   background:#fff;
   transition:border-color .2s, box-shadow .2s;
 }
+.qa-input-lg{font-size:.88rem;line-height:1.6}
 .qa-input:focus{
   outline:none;border-color:var(--color-primary);
   box-shadow:0 0 0 3px rgba(10,102,194,.1);
@@ -1634,8 +1635,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   padding:.75rem .85rem;border-radius:var(--radius-md);
   background:#fff;border:1px solid var(--color-border);
 }
-.qa-result-analysis{
-  background:#FFFBEB;border-color:#FDE68A;
+.qa-result-reply{
+  background:#F0F9FF;border-color:rgba(10,102,194,.2);
 }
 .qa-result-label{
   display:flex;align-items:center;gap:.4rem;
