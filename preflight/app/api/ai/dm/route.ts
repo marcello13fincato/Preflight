@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules } from "@/lib/ai/structured";
+import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
 import { dmAssistantSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -50,7 +50,7 @@ Contesto:
 - Thread conversazione: ${pasted_chat_thread}
 - Obiettivo: ${conversation_goal}
 - Profilo prospect: ${prospect_profile_text || "non fornito"}
-- Profilo utente: ${JSON.stringify(profile)}`;
+${formatProfileContext(profile) || "Profilo utente: non configurato"}`;
     const output = await generateStructured({ prompt, schema: dmAssistantSchema });
     return NextResponse.json(output);
   } catch (err) {

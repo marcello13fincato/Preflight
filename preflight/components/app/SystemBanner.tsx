@@ -7,13 +7,14 @@ import { getRepositoryBundle } from "@/lib/sales/repositories";
 
 export function computeSystemProgress(onboarding: Record<string, unknown> | null): number {
   if (!onboarding) return 0;
-  let pct = 0;
-  const placeholder = "Da definire";
-  if (onboarding.offer_one_liner && onboarding.offer_one_liner !== placeholder) pct += 25;
-  if (onboarding.icp_role && onboarding.icp_role !== placeholder) pct += 25;
-  if (onboarding.proof_case_study && onboarding.proof_case_study !== placeholder) pct += 25;
-  if (onboarding.weekly_time_minutes) pct += 25;
-  return pct;
+  let filled = 0;
+  const fields = ["servizio", "cliente_ideale", "problema_cliente", "risultato_cliente", "tempo_settimanale"];
+  for (const f of fields) {
+    if (onboarding[f] && onboarding[f] !== "") filled++;
+  }
+  const links = onboarding.linkedin_search_links;
+  if (Array.isArray(links) && links.length > 0 && links[0]) filled++;
+  return Math.round((filled / 6) * 100);
 }
 
 export default function SystemBanner() {

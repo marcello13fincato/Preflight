@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules } from "@/lib/ai/structured";
+import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
 import { simulatorSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
 Sei un simulatore di conversazioni commerciali su LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Agisci come un ${prospect_type} nello scenario: "${scenario}".
 L'utente ha risposto: "${user_answer}"
-Profilo utente: ${JSON.stringify(profile)}
+${formatProfileContext(profile) || "Profilo utente: non configurato"}
 
 Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
 {

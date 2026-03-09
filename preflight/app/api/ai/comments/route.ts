@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules } from "@/lib/ai/structured";
+import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
 import { commentAssistantSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -45,7 +45,7 @@ Contesto:
 - Commento ricevuto: ${received_comment}
 - Profilo autore commento: ${commenter_profile_text || "non fornito"}
 - Obiettivo conversazione: ${conversation_goal}
-- Profilo utente: ${JSON.stringify(profile)}`;
+${formatProfileContext(profile) || "- Profilo utente: non configurato"}`;
     const output = await generateStructured({ prompt, schema: commentAssistantSchema });
     return NextResponse.json(output);
   } catch (err) {

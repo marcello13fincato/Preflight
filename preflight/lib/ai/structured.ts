@@ -101,3 +101,24 @@ export const salesRules = [
   "Evita frasi cringe, motivazionali o aggressive come 'devi assolutamente', 'strategia definitiva', 'chiudi subito la call'.",
   "IMPORTANTE: Rispondi ESCLUSIVAMENTE in italiano. Ogni campo del JSON deve essere scritto in italiano.",
 ].join(" ");
+
+export function formatProfileContext(profile: unknown): string {
+  if (!profile || typeof profile !== "object") return "";
+  const p = profile as Record<string, unknown>;
+  const lines: string[] = [];
+  if (p.servizio) lines.push(`- Servizio offerto: ${p.servizio}`);
+  if (p.cliente_ideale) lines.push(`- Cliente ideale: ${p.cliente_ideale}`);
+  if (p.problema_cliente) lines.push(`- Problema del cliente: ${p.problema_cliente}`);
+  if (p.risultato_cliente) lines.push(`- Risultato promesso: ${p.risultato_cliente}`);
+  const links = p.linkedin_search_links;
+  if (Array.isArray(links) && links.filter(Boolean).length > 0) {
+    lines.push(`- Categorie LinkedIn target: ${links.filter(Boolean).join(", ")}`);
+  }
+  if (p.tempo_settimanale) lines.push(`- Tempo settimanale su LinkedIn: ${p.tempo_settimanale}`);
+  // Backward compat: old schema fields
+  if (!p.servizio && p.offer_one_liner) lines.push(`- Servizio: ${p.offer_one_liner}`);
+  if (!p.cliente_ideale && p.icp_role) lines.push(`- Cliente ideale: ${p.icp_role}`);
+  if (!p.problema_cliente && p.icp_main_problem) lines.push(`- Problema cliente: ${p.icp_main_problem}`);
+  if (!p.risultato_cliente && p.offer_outcome) lines.push(`- Risultato: ${p.offer_outcome}`);
+  return lines.length > 0 ? `PROFILO UTENTE (chi chiede il consiglio):\n${lines.join("\n")}` : "";
+}

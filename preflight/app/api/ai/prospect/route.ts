@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules } from "@/lib/ai/structured";
+import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
 import { prospectAnalyzerSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -51,7 +51,7 @@ Stai analizzando il profilo LinkedIn di un potenziale cliente. Rispondi ESCLUSIV
 Profilo prospect:
 ${pasted_profile_text}
 
-Profilo utente: ${JSON.stringify(profile)}`;
+${formatProfileContext(profile) || "Profilo utente: non configurato"}`;
     const output = await generateStructured({ prompt, schema: prospectAnalyzerSchema });
     return NextResponse.json(output);
   } catch (err) {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateWithLLM, salesRules } from "@/lib/ai/structured";
+import { generateWithLLM, salesRules, formatProfileContext } from "@/lib/ai/structured";
 
 export const runtime = "nodejs";
 
@@ -59,7 +59,7 @@ CONTESTO della richiesta:
 - Tipo di contenuto: ${ctx.contentType}
 - Il testo è stato: ${originLabel}
 ${ctx.personProfile ? `- Profilo della persona coinvolta: ${ctx.personProfile}` : "- Profilo persona: non specificato"}
-${profile ? `- Profilo utente Preflight: ${JSON.stringify(profile)}` : ""}
+${formatProfileContext(profile)}
 
 Il tuo compito:
 Analizza il ${ctx.contentType} ${originLabel} e fornisci una risposta strutturata.
@@ -116,7 +116,7 @@ Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
 ${depth}
 
 ${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
-${profile ? `Profilo utente Preflight (chi chiede il consiglio): ${JSON.stringify(profile)}` : ""}
+${formatProfileContext(profile)}
 
 Rispondi SEMPRE in italiano.
 Rispondi SOLO con un oggetto JSON con questa struttura:
@@ -179,7 +179,7 @@ Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
 ${depth}
 
 ${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
-${profile ? `Profilo utente Preflight (chi chiede il consiglio): ${JSON.stringify(profile)}` : ""}
+${formatProfileContext(profile)}
 
 Rispondi SEMPRE in italiano.
 Rispondi SOLO con un oggetto JSON con questa struttura:
@@ -239,7 +239,7 @@ Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
 ${depth}
 
 ${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
-${profile ? `Profilo utente Preflight (chi chiede il consiglio): ${JSON.stringify(profile)}` : ""}
+${formatProfileContext(profile)}
 
 Rispondi SEMPRE in italiano.
 Rispondi SOLO con un oggetto JSON con questa struttura:
@@ -330,7 +330,7 @@ Il tuo compito è:
 Rispondi SEMPRE in italiano. Sii breve, concreto e utile. Non fare pitch.
 Rispondi SOLO con un oggetto JSON: { "reply": "<la tua risposta>" }
 
-${profile ? `Profilo utente: ${JSON.stringify(profile)}` : "Profilo utente: non configurato"}
+${formatProfileContext(profile) || "Profilo utente: non configurato"}
 
 ${historyBlock ? `Storico conversazione:\n${historyBlock}\n` : ""}
 Utente: ${message}`;

@@ -142,25 +142,12 @@ export const simulatorSchema = z.object({
 });
 
 export const onboardingInputSchema = z.object({
-  offer_one_liner: z.string(),
-  offer_price_range: z.string(),
-  offer_delivery_time: z.enum(["1w", "2w", "1m", "3m"]),
-  offer_outcome: z.string(),
-  linkedin_profile_url: z.string().optional().default(""),
-  icp_role: z.string(),
-  icp_industry: z.string(),
-  icp_company_size: z.string(),
-  icp_main_problem: z.string(),
-  icp_top_objections: z.array(z.string()).max(3),
-  trigger_situation: z.string().optional().default(""),
-  proof_case_study: z.string(),
-  proof_testimonial: z.string().optional().default(""),
-  proof_links: z.string().optional().default(""),
-  weekly_time_minutes: z.enum(["15", "30", "60", "120"]),
-  comfort_post: z.enum(["1", "2", "3", "4", "5"]),
-  comfort_comments: z.enum(["1", "2", "3", "4", "5"]),
-  comfort_dm: z.enum(["1", "2", "3", "4", "5"]),
-  goal_primary: z.enum(["prime conversazioni", "più call", "più clienti"]),
+  servizio: z.string().min(1),
+  cliente_ideale: z.string().min(1),
+  problema_cliente: z.string().min(1),
+  risultato_cliente: z.string().min(1),
+  linkedin_search_links: z.array(z.string()).default([]),
+  tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]),
 });
 
 export type PlanJson = z.infer<typeof planSchema>;

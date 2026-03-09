@@ -12,47 +12,46 @@ import type {
 export function createDefaultPlan(input: OnboardingInput): PlanJson {
   return {
     positioning: {
-      one_liner: input.offer_one_liner,
-      ideal_customer: `${input.icp_role} in ${input.icp_industry}`,
-      problem: input.icp_main_problem,
-      promise: input.offer_outcome,
+      one_liner: input.servizio,
+      ideal_customer: input.cliente_ideale,
+      problem: input.problema_cliente,
+      promise: input.risultato_cliente,
     },
     linkedin_profile: {
-      headline: `${input.icp_role}: ${input.offer_outcome}`,
-      about: `Aiuto ${input.icp_role} nel settore ${input.icp_industry} a ottenere ${input.offer_outcome} in ${input.offer_delivery_time}.`,
-      cta: "Scrivimi 'audit' in DM per il prossimo step.",
+      headline: `${input.cliente_ideale}: ${input.risultato_cliente}`,
+      about: `Aiuto ${input.cliente_ideale} a ottenere ${input.risultato_cliente}.`,
+      cta: "Scrivimi in DM per il prossimo step.",
     },
     plan_14_days: Array.from({ length: 14 }, (_, idx) => ({
       day: idx + 1,
-      inbound: `Pubblica un contenuto su ${input.icp_main_problem} con CTA verso DM.`,
-      outbound: `Contatta 2 profili ${input.icp_role} con domanda iniziale personalizzata.`,
+      inbound: `Pubblica un contenuto su ${input.problema_cliente} con CTA verso DM.`,
+      outbound: `Contatta 2 profili ${input.cliente_ideale} con domanda iniziale personalizzata.`,
       followup: "Segui 1 conversazione aperta con una domanda di qualificazione.",
     })),
     content_plan: [
-      { week: 1, post_type: "educational", topic: input.icp_main_problem, hook: "Errore che blocca vendite su LinkedIn", cta: "Commenta 'audit'" },
-      { week: 1, post_type: "case-study", topic: input.proof_case_study, hook: "Da zero a conversazioni utili", cta: "Scrivimi in DM" },
-      { week: 2, post_type: "opinion", topic: `Obiezione: ${input.icp_top_objections[0] || "non ho tempo"}`, hook: "La verita sulle obiezioni in DM", cta: "Vuoi lo script?" },
-      { week: 2, post_type: "educational", topic: input.offer_outcome, hook: "Framework in 3 step", cta: "Salva il post e scrivimi" },
+      { week: 1, post_type: "educational" as const, topic: input.problema_cliente, hook: "Errore che blocca vendite su LinkedIn", cta: "Commenta per saperne di più" },
+      { week: 1, post_type: "case-study" as const, topic: input.risultato_cliente, hook: "Da zero a conversazioni utili", cta: "Scrivimi in DM" },
+      { week: 2, post_type: "opinion" as const, topic: input.problema_cliente, hook: "La verità sulle obiezioni in DM", cta: "Vuoi lo script?" },
+      { week: 2, post_type: "educational" as const, topic: input.risultato_cliente, hook: "Framework in 3 step", cta: "Salva il post e scrivimi" },
     ],
     outbound_plan: {
       weekly_targets: { connections: 20, dms: 10, followups: 10 },
-      linkedin_search_queries: [
-        `${input.icp_role} ${input.icp_industry}`,
-        `${input.icp_role} ${input.icp_company_size}`,
-      ],
+      linkedin_search_queries: input.linkedin_search_links.length > 0
+        ? input.linkedin_search_links
+        : [`${input.cliente_ideale}`],
       connection_message_templates: [
-        `Ciao, ho visto che lavori su ${input.icp_main_problem}. Ti va uno scambio rapido su come lo affrontate ora?`,
+        `Ciao, ho visto che lavori su ${input.problema_cliente}. Ti va uno scambio rapido su come lo affrontate ora?`,
       ],
     },
     dm_templates: {
       connect: "Ciao, felice di connettermi. Ho letto il tuo profilo e mi ha colpito il focus sui risultati.",
-      dm1: "Domanda veloce: oggi cosa ti blocca di piu nel trasformare conversazioni LinkedIn in call?",
+      dm1: "Domanda veloce: oggi cosa ti blocca di più nel trasformare conversazioni LinkedIn in call?",
       followup48h: "Ti riprendo qui: vuoi che ti condivida un esempio pratico da usare questa settimana?",
       followup5d: "Se utile, posso inviarti uno schema breve per qualificare meglio i lead in DM.",
       followup10d: "Chiudo il loop: ha senso fare 15 minuti per capire se il mio metodo si adatta al tuo caso?",
     },
     comment_playbook: {
-      lead_comment_reply: "Ottimo punto. La leva e chiarire problema e prossimo step nel primo blocco del post.",
+      lead_comment_reply: "Ottimo punto. La leve è chiarire problema e prossimo step nel primo blocco del post.",
       curious_comment_reply: "Bella domanda. Posso condividere un esempio concreto in DM se ti va.",
       objection_reply: "Obiezione legittima. Dipende da target e messaggio: posso spiegarti il criterio che uso.",
       pivot_to_dm: "Se vuoi, continuo in DM con un esempio sul tuo caso.",

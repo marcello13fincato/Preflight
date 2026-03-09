@@ -76,14 +76,12 @@ Stai costruendo un piano LinkedIn Sales OS di 14 giorni. Rispondi ESCLUSIVAMENTE
 }
 
 Profilo utente:
-- Offerta: ${d.offer_one_liner}
-- Risultato: ${d.offer_outcome}
-- Ruolo ICP: ${d.icp_role}
-- Settore ICP: ${d.icp_industry}
-- Dimensione azienda ICP: ${d.icp_company_size}
-- Problema principale: ${d.icp_main_problem}
-- Obiettivo: ${d.goal_primary}
-- Tempo settimanale: ${d.weekly_time_minutes} minuti`;
+- Servizio: ${d.servizio}
+- Cliente ideale: ${d.cliente_ideale}
+- Problema del cliente: ${d.problema_cliente}
+- Risultato che porta: ${d.risultato_cliente}
+- Profili LinkedIn da contattare: ${d.linkedin_search_links.filter(Boolean).join(", ") || "non specificato"}
+- Tempo settimanale: ${d.tempo_settimanale}`;
     const output = await generateStructured({ prompt, schema: planSchema });
     return NextResponse.json(output);
   } catch (err) {

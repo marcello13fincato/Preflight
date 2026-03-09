@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules } from "@/lib/ai/structured";
+import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
 import { opportunityFinderSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
@@ -78,7 +78,7 @@ Stai cercando opportunità di conversazione su LinkedIn per un cliente ideale. R
 IMPORTANTE: ideal_profiles deve contenere ARCHETIPI GENERICI (non persone reali, nessun nome o azienda reale). Ogni profilo è un archetipo fittizio di cliente ideale.
 
 Descrizione cliente ideale: ${ideal_client_description}
-Profilo utente: ${JSON.stringify(profile)}`;
+${formatProfileContext(profile) || "Profilo utente: non configurato"}`;
     const output = await generateStructured({ prompt, schema: opportunityFinderSchema });
     return NextResponse.json(output);
   } catch (err) {
