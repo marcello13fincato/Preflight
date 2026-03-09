@@ -4,16 +4,12 @@ export const marketingNav = [
   { label: "Piani", href: "/pricing" },
 ];
 
-export const marketingCTA = { label: "Crea il mio piano clienti (5 min)", href: "/app/onboarding" };
+export const marketingCTA = { label: "Prova l'assistente", href: "/app" };
 
 export const dashboardNav = [
-  { label: "Today", href: "/app" },
-  { label: "Onboarding", href: "/app/onboarding" },
-  { label: "Inbound", href: "/app/inbound" },
-  { label: "Post", href: "/app/post" },
-  { label: "Comments", href: "/app/comments" },
-  { label: "DM", href: "/app/dm" },
-  { label: "Prospect", href: "/app/prospect" },
-  { label: "Pipeline", href: "/app/pipeline" },
+  { label: "Dashboard", href: "/app" },
+  { label: "Analizza profilo", href: "/app/prospect" },
+  { label: "Chiedi un consiglio", href: "/app/dm" },
+  { label: "Configura", href: "/app/onboarding" },
   { label: "Settings", href: "/app/settings" },
 ];

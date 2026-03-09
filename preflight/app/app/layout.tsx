@@ -29,7 +29,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
               Preflight
             </p>
             <h1 className="text-base font-bold leading-tight" style={{ color: "white" }}>
-              LinkedIn Sales OS
+              Assistente LinkedIn
             </h1>
           </div>
         </div>

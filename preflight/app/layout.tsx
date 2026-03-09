@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Preflight - LinkedIn Sales OS",
-  description: "LinkedIn Sales OS per freelancer e consulenti: piano, assistenti AI e pipeline per ottenere clienti.",
+  title: "Preflight - Assistente LinkedIn",
+  description: "Scopri chi contattare su LinkedIn e come iniziare la conversazione giusta.",
 };
 
 export default function RootLayout({

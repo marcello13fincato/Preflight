@@ -7,18 +7,12 @@ type NavItem = { href: string; label: string };
 
 const topItems: NavItem[] = [
   { href: "/app", label: "Dashboard" },
-  { href: "/app/onboarding", label: "Imposta il tuo sistema" },
 ];
 
 const toolItems: NavItem[] = [
-  { href: "/app/inbound", label: "Contenuti" },
-  { href: "/app/post", label: "Scrivi un post" },
-  { href: "/app/comments", label: "Commenti" },
-  { href: "/app/dm", label: "Messaggi" },
-  { href: "/app/opportunity", label: "Opportunità" },
-  { href: "/app/prospect", label: "Analizza cliente" },
-  { href: "/app/simulator", label: "Simulatore" },
-  { href: "/app/pipeline", label: "Clienti" },
+  { href: "/app/prospect", label: "Analizza profilo" },
+  { href: "/app/dm", label: "Chiedi un consiglio" },
+  { href: "/app/onboarding", label: "Configura il tuo sistema" },
 ];
 
 const bottomItems: NavItem[] = [

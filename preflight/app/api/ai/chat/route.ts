@@ -53,7 +53,7 @@ NON includere il campo "analisi" nel JSON.`;
 
   return `${salesRules}
 
-Sei l'Assistente Preflight, un assistente AI integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+Sei l'Assistente Preflight, un assistente AI integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
 
 CONTESTO della richiesta:
 - Tipo di contenuto: ${ctx.contentType}
@@ -96,9 +96,7 @@ function buildProfileAnalysisPrompt(
 
   return `${salesRules}
 
-Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
-
-L'utente ti chiede di analizzare un profilo LinkedIn per capire se vale la pena contattare questa persona e come farlo.
+Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
 
 Il tuo approccio:
 - Ragiona come un venditore esperto ma riflessivo
@@ -146,7 +144,7 @@ function buildAdviceOnlyPrompt(
 
   return `${salesRules}
 
-Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
 
 L'utente ti descrive una situazione reale su LinkedIn e vuole capire come muoversi.
 
@@ -203,7 +201,7 @@ function buildAdvicePrompt(
 
   return `${salesRules}
 
-Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
 
 L'utente ti descrive una situazione reale su LinkedIn e/o ti chiede di analizzare un profilo LinkedIn per capire come iniziare o continuare una conversazione.
 
@@ -304,7 +302,7 @@ export async function POST(req: Request) {
 
     const prompt = `${salesRules}
 
-Sei l'Assistente Preflight, un assistente AI integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+Sei l'Assistente Preflight, un assistente AI integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
 
 Il tuo compito è:
 - Rispondere a domande sul prodotto Preflight

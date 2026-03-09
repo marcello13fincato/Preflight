@@ -6,18 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useRef, useEffect } from "react";
 
 /* ── dropdown megamenu content per voce ── */
-const megaPanels: Record<string, { title: string; desc: string; href: string }[]> = {
-  "/how-it-works": [
-    { title: "Sistema clienti", desc: "Piano editoriale e strategia LinkedIn personalizzati", href: "/how-it-works" },
-    { title: "Conversazioni", desc: "Commenti, messaggi e follow-up guidati dall'AI", href: "/how-it-works" },
-    { title: "Opportunità", desc: "Trova prospect e gestisci la pipeline commerciale", href: "/how-it-works" },
-  ],
-  "/per-chi-e": [
-    { title: "Freelance & Consulenti", desc: "Per chi vende competenze e servizi professionali", href: "/per-chi-e" },
-    { title: "Coach & Formatori", desc: "Per chi costruisce autorevolezza con i contenuti", href: "/per-chi-e" },
-    { title: "Fractional & Agenzie", desc: "Per chi gestisce più clienti e opportunità", href: "/per-chi-e" },
-  ],
-};
+const megaPanels: Record<string, { title: string; desc: string; href: string }[]> = {};
 
 export default function MarketingHeader() {
   const { data: session } = useSession();
@@ -81,19 +70,19 @@ export default function MarketingHeader() {
 
         {/* ── Right side ── */}
         <div className="mega-actions">
-          <Link href="/app/onboarding" className="mega-cta">
-            Inizia ora
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </Link>
-
           {session ? (
             <div className="mega-user">
               <span className="mega-user-name">{session.user?.name || session.user?.email}</span>
               <button onClick={() => signOut({ callbackUrl: "/" })} className="mega-user-btn" aria-label="Esci">Esci</button>
             </div>
           ) : (
-            <Link href="/app" className="mega-secondary" aria-label="Apri app">Apri app</Link>
+            <Link href="/app" className="mega-secondary" aria-label="Accedi">Accedi</Link>
           )}
+
+          <Link href="/app" className="mega-cta">
+            Prova l&apos;assistente
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </Link>
 
           {/* ── Hamburger mobile ── */}
           <button
@@ -138,17 +127,17 @@ export default function MarketingHeader() {
               {item.label}
             </Link>
           ))}
-          <Link href="/app/onboarding" className="mega-mobile-cta" onClick={() => setMobileOpen(false)}>
-            Inizia ora
-          </Link>
           {session ? (
             <div className="mega-mobile-user">
               <span className="text-sm">{session.user?.name || session.user?.email}</span>
               <button onClick={() => signOut({ callbackUrl: "/" })} className="mega-user-btn">Esci</button>
             </div>
           ) : (
-            <Link href="/app" className="mega-mobile-link" onClick={() => setMobileOpen(false)}>Apri app</Link>
+            <Link href="/app" className="mega-mobile-link" onClick={() => setMobileOpen(false)}>Accedi</Link>
           )}
+          <Link href="/app" className="mega-mobile-cta" onClick={() => setMobileOpen(false)}>
+            Prova l&apos;assistente
+          </Link>
         </div>
       )}
     </header>
