@@ -1756,6 +1756,66 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   box-shadow:0 4px 16px rgba(10,102,194,.25);
 }
 
+/* ── Choice cards (two-option selector) ── */
+.qa-choice-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;
+  margin-top:1rem;
+}
+@media(max-width:600px){.qa-choice-grid{grid-template-columns:1fr}}
+.qa-choice-card{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;gap:.75rem;
+  padding:2rem 1.5rem;
+  background:#fff;border:1.5px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  cursor:pointer;
+  transition:border-color .2s, box-shadow .2s, transform .15s;
+}
+.qa-choice-card:hover{
+  border-color:var(--color-primary);
+  box-shadow:0 4px 20px rgba(10,102,194,.12);
+  transform:translateY(-2px);
+}
+.qa-choice-icon{
+  display:flex;align-items:center;justify-content:center;
+  width:56px;height:56px;border-radius:50%;
+  background:var(--color-soft);color:var(--color-primary);
+}
+.qa-choice-title{
+  font-size:1.05rem;font-weight:700;color:var(--color-heading);margin:0;
+}
+.qa-choice-desc{
+  font-size:.88rem;color:var(--color-muted);line-height:1.5;margin:0;
+}
+.qa-choice-cta{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-size:.88rem;font-weight:600;color:var(--color-primary);
+  margin-top:.25rem;
+}
+
+/* ── Back button ── */
+.qa-back-btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  font-size:.85rem;font-weight:500;color:var(--color-muted);
+  background:none;border:none;cursor:pointer;padding:0;
+  transition:color .2s;margin-bottom:.25rem;
+}
+.qa-back-btn:hover{color:var(--color-primary)}
+
+/* ── Examples block ── */
+.qa-examples{
+  background:#FAFBFC;border:1px solid var(--color-border);
+  border-radius:var(--radius-md);padding:.85rem 1.1rem;
+}
+.qa-examples-title{
+  font-size:.82rem;font-weight:600;color:var(--color-heading);margin:0 0 .4rem;
+}
+.qa-examples-list{
+  margin:0;padding-left:1.25rem;
+  display:flex;flex-direction:column;gap:.25rem;
+}
+.qa-examples-list li{font-size:.82rem;color:var(--color-muted);line-height:1.5}
+
 /* ═══════════════════════════════════════════════════════════
    CHATBOX — Global AI Assistant
 ═══════════════════════════════════════════════════════════ */

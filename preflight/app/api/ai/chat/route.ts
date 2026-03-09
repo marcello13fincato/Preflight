@@ -25,6 +25,7 @@ const requestSchema = z.object({
   profileInfo: z.string().max(2000).optional(),
   interactionType: z.string().max(100).optional(),
   whoWrote: z.string().max(100).optional(),
+  assistantMode: z.enum(["profile", "advice"]).optional(),
 });
 
 function buildStructuredPrompt(
@@ -73,6 +74,111 @@ Rispondi SOLO con un oggetto JSON con questa struttura:
 }
 
 Testo da analizzare:
+${message}`;
+}
+
+function buildProfileAnalysisPrompt(
+  message: string,
+  profile: unknown,
+  demo: boolean,
+  extra: { linkedinUrl?: string; profileInfo?: string },
+): string {
+  const depth = demo
+    ? "Rispondi in modo sintetico ma completo. Massimo 2-3 frasi per sezione."
+    : "Rispondi in modo approfondito e dettagliato. Fornisci analisi completa e suggerimenti concreti.";
+
+  const extraContext = [
+    extra.linkedinUrl ? `- Profilo LinkedIn della persona: ${extra.linkedinUrl}` : "",
+    extra.profileInfo ? `- Informazioni sul profilo della persona: ${extra.profileInfo}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  return `${salesRules}
+
+Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+
+L'utente ti chiede di analizzare un profilo LinkedIn per capire se vale la pena contattare questa persona e come farlo.
+
+Il tuo approccio:
+- Ragiona come un venditore esperto ma riflessivo
+- Spiega il perché delle tue scelte
+- Suggerisci approcci naturali, mai aggressivi
+- L'obiettivo NON è vendere subito, ma portare la conversazione un passo più avanti
+- Il contesto è SEMPRE LinkedIn: conversazioni brevi, tono naturale, niente pitch aggressivi
+
+NON fare:
+- Non sembrare aggressivo o da marketer
+- Non sembrare un guru
+- Non usare frasi cringe o motivazionali
+- Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
+
+Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
+
+${depth}
+
+${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
+${profile ? `Profilo utente Preflight (chi chiede il consiglio): ${JSON.stringify(profile)}` : ""}
+
+Rispondi SEMPRE in italiano.
+Rispondi SOLO con un oggetto JSON con questa struttura:
+{
+  "chi_e": "<breve lettura del profilo: chi è, cosa fa, che ruolo ha>",
+  "potenziale": "<valutazione: Alto potenziale / Potenziale medio / Potenziale basso — con spiegazione>",
+  "perche_parlarle": "<motivi concreti basati su profilo e contesto per cui ha senso contattarla>",
+  "strategia_contatto": "<strategia di contatto consigliata: commentare un suo post, scrivere in DM, interagire prima in modo leggero, aspettare una sua pubblicazione>",
+  "primo_messaggio": "<primo messaggio consigliato, naturale e non aggressivo>",
+  "step_successivi": "<sequenza chiara di passi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>"
+}
+
+Richiesta dell'utente:
+${message}`;
+}
+
+function buildAdviceOnlyPrompt(
+  message: string,
+  profile: unknown,
+  demo: boolean,
+): string {
+  const depth = demo
+    ? "Rispondi in modo sintetico ma completo. Massimo 2-3 frasi per sezione."
+    : "Rispondi in modo approfondito e dettagliato. Fornisci analisi completa e suggerimenti concreti.";
+
+  return `${salesRules}
+
+Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — LinkedIn Sales OS per freelance e consulenti.
+
+L'utente ti descrive una situazione reale su LinkedIn e vuole capire come muoversi.
+
+Il tuo approccio:
+- Ragiona come un venditore esperto ma riflessivo
+- Spiega il perché delle tue scelte
+- Suggerisci approcci naturali, mai aggressivi
+- L'obiettivo NON è vendere subito, ma portare la conversazione un passo più avanti
+- Il contesto è SEMPRE LinkedIn: conversazioni brevi, tono naturale, niente pitch aggressivi
+
+NON fare:
+- Non sembrare aggressivo o da marketer
+- Non sembrare un guru
+- Non usare frasi cringe o motivazionali
+- Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
+
+Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
+
+${depth}
+
+${profile ? `Profilo utente Preflight (chi chiede il consiglio): ${JSON.stringify(profile)}` : ""}
+
+Rispondi SEMPRE in italiano.
+Rispondi SOLO con un oggetto JSON con questa struttura:
+{
+  "lettura_situazione": "<spiegazione breve di ciò che sta succedendo>",
+  "cosa_fare": "<direzione strategica chiara su cosa conviene fare adesso>",
+  "risposta_consigliata": "<testo pronto da usare se serve, oppure indicazione concreta>",
+  "step_successivi": "<sequenza di passi precisi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>"
+}
+
+Situazione descritta dall'utente:
 ${message}`;
 }
 
@@ -157,18 +263,23 @@ export async function POST(req: Request) {
   try {
     const { message, history, profile, context, advice, demo, linkedinUrl, profileInfo, interactionType, whoWrote } = parsed.data;
 
-    /* ── Advice mode ("Chiedi un consiglio") ── */
+    /* ── Advice mode ("Chiedi un consiglio" / "Analizza profilo") ── */
     if (advice) {
-      const prompt = buildAdvicePrompt(message, profile, !!demo, {
-        linkedinUrl,
-        profileInfo,
-        interactionType,
-        whoWrote,
-      });
+      const assistantMode = parsed.data.assistantMode;
+      let prompt: string;
+      if (assistantMode === "profile") {
+        prompt = buildProfileAnalysisPrompt(message, profile, !!demo, { linkedinUrl, profileInfo });
+      } else if (assistantMode === "advice") {
+        prompt = buildAdviceOnlyPrompt(message, profile, !!demo);
+      } else {
+        prompt = buildAdvicePrompt(message, profile, !!demo, {
+          linkedinUrl, profileInfo, interactionType, whoWrote,
+        });
+      }
       const raw = await generateWithLLM(prompt);
       try {
         const structured = JSON.parse(raw);
-        return NextResponse.json({ reply: structured.lettura, structured });
+        return NextResponse.json({ reply: structured.chi_e || structured.lettura_situazione || structured.lettura, structured });
       } catch {
         return NextResponse.json({ reply: raw });
       }

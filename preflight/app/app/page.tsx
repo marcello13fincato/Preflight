@@ -42,19 +42,24 @@ function aiSuggestion(lead: Lead): string {
 
 export default function AppTodayPage() {
   const { data: session } = useSession();
-  const [quickText, setQuickText] = useState("");
+  const [dashMode, setDashMode] = useState<null | "profile" | "advice">(null);
+  // Profile analysis state
   const [quickLinkedinUrl, setQuickLinkedinUrl] = useState("");
-  const [quickInteractionType, setQuickInteractionType] = useState("Commento");
-  const [quickWhoWrote, setQuickWhoWrote] = useState("L'ho scritto io");
   const [quickPdfFile, setQuickPdfFile] = useState<File | null>(null);
   const [quickShowGuide, setQuickShowGuide] = useState(false);
-  const [quickResult, setQuickResult] = useState<{
-    valutazione: { qualita: number; probabilita: string };
-    temperatura: { stato: string; spiegazione: string };
-    chi_e: string; interessi: string; perche_parlargli: string;
-    strategia_contatto: string; primo_messaggio: string; prossima_mossa: string;
+  const [quickProfileReason, setQuickProfileReason] = useState("");
+  const [quickProfileResult, setQuickProfileResult] = useState<{
+    chi_e: string; potenziale: string; perche_parlarle: string;
+    strategia_contatto: string; primo_messaggio: string; step_successivi: string;
   } | null>(null);
-  const [quickLoading, setQuickLoading] = useState(false);
+  const [quickProfileLoading, setQuickProfileLoading] = useState(false);
+  // Advice state
+  const [quickSituation, setQuickSituation] = useState("");
+  const [quickAdviceResult, setQuickAdviceResult] = useState<{
+    lettura_situazione: string; cosa_fare: string;
+    risposta_consigliata: string; step_successivi: string;
+  } | null>(null);
+  const [quickAdviceLoading, setQuickAdviceLoading] = useState(false);
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = repo.profile.getProfile(userId);
@@ -91,11 +96,11 @@ export default function AppTodayPage() {
     setModalDismissed(true);
   }
 
-  async function handleDashAssist() {
-    if (!quickText.trim() && !quickLinkedinUrl.trim()) return;
-    if (quickLoading) return;
-    setQuickLoading(true);
-    setQuickResult(null);
+  async function handleDashProfile() {
+    if (!quickLinkedinUrl.trim()) return;
+    if (quickProfileLoading) return;
+    setQuickProfileLoading(true);
+    setQuickProfileResult(null);
     try {
       let pdfText = "";
       if (quickPdfFile) {
@@ -105,38 +110,58 @@ export default function AppTodayPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: quickText || `Analizza questo profilo LinkedIn: ${quickLinkedinUrl}`,
+          message: `Analizza questo profilo LinkedIn: ${quickLinkedinUrl}${quickProfileReason ? `\n\nMotivo del contatto: ${quickProfileReason}` : ""}`,
           advice: true,
+          assistantMode: "profile",
           profile: profile.onboarding || undefined,
-          linkedinUrl: quickLinkedinUrl.trim() || undefined,
+          linkedinUrl: quickLinkedinUrl.trim(),
           profileInfo: pdfText || undefined,
-          interactionType: quickText.trim() ? quickInteractionType : undefined,
-          whoWrote: quickText.trim() ? quickWhoWrote : undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore");
       const data = await res.json();
       if (data.structured) {
-        setQuickResult(data.structured);
-      } else {
-        setQuickResult({
-          valutazione: { qualita: 0, probabilita: "–" },
-          temperatura: { stato: "Neutra", spiegazione: data.reply || "Non disponibile." },
-          chi_e: data.reply || "Non sono riuscito a generare una risposta.",
-          interessi: "", perche_parlargli: "",
-          strategia_contatto: "", primo_messaggio: "", prossima_mossa: "",
-        });
+        setQuickProfileResult(data.structured);
       }
     } catch {
-      setQuickResult({
-        valutazione: { qualita: 0, probabilita: "–" },
-        temperatura: { stato: "–", spiegazione: "Errore." },
+      setQuickProfileResult({
         chi_e: "Si è verificato un errore. Riprova più tardi.",
-        interessi: "", perche_parlargli: "",
-        strategia_contatto: "", primo_messaggio: "", prossima_mossa: "",
+        potenziale: "", perche_parlarle: "",
+        strategia_contatto: "", primo_messaggio: "", step_successivi: "",
       });
     } finally {
-      setQuickLoading(false);
+      setQuickProfileLoading(false);
+    }
+  }
+
+  async function handleDashAdvice() {
+    if (!quickSituation.trim()) return;
+    if (quickAdviceLoading) return;
+    setQuickAdviceLoading(true);
+    setQuickAdviceResult(null);
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: quickSituation,
+          advice: true,
+          assistantMode: "advice",
+          profile: profile.onboarding || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore");
+      const data = await res.json();
+      if (data.structured) {
+        setQuickAdviceResult(data.structured);
+      }
+    } catch {
+      setQuickAdviceResult({
+        lettura_situazione: "Si è verificato un errore. Riprova più tardi.",
+        cosa_fare: "", risposta_consigliata: "", step_successivi: "",
+      });
+    } finally {
+      setQuickAdviceLoading(false);
     }
   }
 
@@ -394,248 +419,171 @@ export default function AppTodayPage() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            CHIEDI UN CONSIGLIO
+            ASSISTENZA RAPIDA
         ══════════════════════════════════════════════════════ */}
         <section className="dash-card">
-          <h3 className="dash-card-title">Chiedi un consiglio</h3>
+          <h3 className="dash-card-title">Assistenza rapida</h3>
           <p className="dash-card-sub">
-            Spiega il contesto della conversazione o analizza un profilo LinkedIn per capire come iniziare una conversazione.
+            Scegli cosa vuoi fare e ricevi un consiglio concreto.
           </p>
 
-          <div className="qa-container qa-container-dash">
-            {/* ── SEZIONE 1: DESCRIVI LA SITUAZIONE ── */}
-            <div className="qa-section-header">
-              <h4 className="qa-section-title">Descrivi la situazione</h4>
-            </div>
-
-            <div className="qa-field">
-              <label className="qa-label">Spiegami il contesto</label>
-              <textarea
-                value={quickText}
-                onChange={(e) => setQuickText(e.target.value)}
-                rows={5}
-                className="qa-input qa-input-lg"
-                placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nÈ founder di una startup SaaS.\nNon ci siamo mai scritti prima.\n\nCome mi conviene rispondere?"}
-              />
-            </div>
-
-            <div className="qa-selectors">
-              <div className="qa-field">
-                <label className="qa-label">Tipo di interazione</label>
-                <div className="qa-segmented">
-                  {["Commento", "Messaggio", "Post", "Prima interazione"].map((t) => (
-                    <button
-                      key={t}
-                      type="button"
-                      className={`qa-seg-btn${quickInteractionType === t ? " qa-seg-active" : ""}`}
-                      onClick={() => setQuickInteractionType(t)}
-                    >
-                      {t}
-                    </button>
-                  ))}
+          {!dashMode && (
+            <div className="qa-choice-grid">
+              <button type="button" className="qa-choice-card" onClick={() => setDashMode("profile")}>
+                <div className="qa-choice-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 </div>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Chi ha scritto il messaggio?</label>
-                <div className="qa-segmented">
-                  {["L'ho scritto io", "L'ho ricevuto"].map((o) => (
-                    <button
-                      key={o}
-                      type="button"
-                      className={`qa-seg-btn${quickWhoWrote === o ? " qa-seg-active" : ""}`}
-                      onClick={() => setQuickWhoWrote(o)}
-                    >
-                      {o}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* ── SEZIONE 2: ANALIZZA UN PROFILO LINKEDIN ── */}
-            <div className="qa-section-divider" />
-
-            <div className="qa-section-header">
-              <h4 className="qa-section-title">Analizza questo profilo</h4>
-              <p className="qa-section-sub">
-                Inserisci il profilo LinkedIn di una persona e scopri come iniziare una conversazione.
-              </p>
-            </div>
-
-            <div className="qa-field">
-              <label className="qa-label">Link profilo LinkedIn</label>
-              <input
-                type="url"
-                value={quickLinkedinUrl}
-                onChange={(e) => setQuickLinkedinUrl(e.target.value)}
-                className="qa-input"
-                placeholder="https://linkedin.com/in/nomecognome"
-              />
-            </div>
-
-            <div className="qa-field">
-              <label className="qa-label">
-                Carica il PDF del profilo LinkedIn
-                <span className="qa-label-opt">(facoltativo)</span>
-              </label>
-              <p className="qa-microcopy">
-                Questo aiuta l&apos;AI a capire meglio il contesto professionale della persona.
-              </p>
-              <label className="qa-file-upload">
-                <input
-                  type="file"
-                  accept=".pdf"
-                  className="qa-file-input"
-                  onChange={(e) => setQuickPdfFile(e.target.files?.[0] || null)}
-                />
-                <span className="qa-file-label">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  {quickPdfFile ? quickPdfFile.name : "Scegli un file PDF"}
+                <h4 className="qa-choice-title">Analizza questo profilo</h4>
+                <p className="qa-choice-desc">Scopri se vale la pena contattare una persona e come farlo.</p>
+                <span className="qa-choice-cta">
+                  Analizza profilo
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </span>
-              </label>
+              </button>
+              <button type="button" className="qa-choice-card" onClick={() => setDashMode("advice")}>
+                <div className="qa-choice-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h4 className="qa-choice-title">Chiedimi un consiglio</h4>
+                <p className="qa-choice-desc">Descrivi una situazione reale e scopri come muoverti.</p>
+                <span className="qa-choice-cta">
+                  Chiedi un consiglio
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </span>
+              </button>
             </div>
+          )}
 
-            <button
-              type="button"
-              className="qa-guide-toggle"
-              onClick={() => setQuickShowGuide(!quickShowGuide)}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              Come scaricare il PDF del profilo LinkedIn
-            </button>
+          {/* ── MODALITÀ PROFILO ── */}
+          {dashMode === "profile" && (
+            <div className="qa-container qa-container-dash">
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickProfileResult(null); }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Torna alle opzioni
+              </button>
 
-            {quickShowGuide && (
-              <div className="qa-guide">
-                <ol className="qa-guide-steps">
-                  <li>Vai sul profilo LinkedIn della persona</li>
-                  <li>Clicca sui tre puntini accanto alla foto del profilo</li>
-                  <li>Seleziona &quot;Salva come PDF&quot;</li>
-                  <li>Carica il file qui</li>
-                </ol>
+              <div className="qa-section-header">
+                <h4 className="qa-section-title">Analizza questo profilo</h4>
+                <p className="qa-section-sub">Scopri se vale la pena contattare questa persona e come muoverti per iniziare la conversazione.</p>
               </div>
-            )}
 
-            {/* ── CTA ── */}
-            <button
-              onClick={handleDashAssist}
-              disabled={quickLoading || (!quickText.trim() && !quickLinkedinUrl.trim())}
-              className="qa-btn"
-            >
-              {quickLoading ? (
-                <>
-                  <span className="qa-spinner" aria-hidden="true" />
-                  Sto analizzando…
-                </>
-              ) : (
-                <>
-                  Dammi un consiglio
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </>
+              <div className="qa-field">
+                <label className="qa-label">Link al profilo LinkedIn</label>
+                <input type="url" value={quickLinkedinUrl} onChange={(e) => setQuickLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
+                <p className="qa-microcopy">Se vuoi un&apos;analisi più precisa, puoi caricare anche il PDF del profilo.</p>
+                <label className="qa-file-upload">
+                  <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setQuickPdfFile(e.target.files?.[0] || null)} />
+                  <span className="qa-file-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    {quickPdfFile ? quickPdfFile.name : "Scegli un file PDF"}
+                  </span>
+                </label>
+              </div>
+
+              <button type="button" className="qa-guide-toggle" onClick={() => setQuickShowGuide(!quickShowGuide)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Come scaricare il PDF del profilo LinkedIn
+              </button>
+
+              {quickShowGuide && (
+                <div className="qa-guide">
+                  <ol className="qa-guide-steps">
+                    <li>Vai sul profilo LinkedIn della persona</li>
+                    <li>Clicca sui tre puntini accanto alla foto del profilo</li>
+                    <li>Seleziona &quot;Salva come PDF&quot;</li>
+                    <li>Carica il file qui</li>
+                  </ol>
+                </div>
               )}
-            </button>
 
-            {/* ── OUTPUT COMPLETO ── */}
-            {quickResult && (
-              <div className="qa-result">
-                {/* Valutazione */}
-                <div className="qa-result-block qa-result-valutazione">
-                  <div className="qa-result-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    Valutazione della conversazione
-                  </div>
-                  <div className="qa-valutazione-grid">
-                    <div className="qa-valutazione-item">
-                      <span className="qa-valutazione-number">{quickResult.valutazione.qualita}<span className="qa-valutazione-max">/10</span></span>
-                      <span className="qa-valutazione-desc">Qualità della conversazione</span>
-                    </div>
-                    <div className="qa-valutazione-item">
-                      <span className="qa-valutazione-number">{quickResult.valutazione.probabilita}</span>
-                      <span className="qa-valutazione-desc">Probabilità stimata di arrivare a una call</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Temperatura */}
-                <div className="qa-result-block qa-result-temperatura">
-                  <div className="qa-result-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
-                    Temperatura della conversazione
-                  </div>
-                  <div className="qa-temperatura-badge" data-stato={quickResult.temperatura.stato}>
-                    {quickResult.temperatura.stato}
-                  </div>
-                  <p className="qa-result-text">{quickResult.temperatura.spiegazione}</p>
-                </div>
-
-                {/* Chi è questa persona */}
-                {quickResult.chi_e && (
-                  <div className="qa-result-block">
-                    <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                      Chi è questa persona
-                    </div>
-                    <p className="qa-result-text">{quickResult.chi_e}</p>
-                  </div>
-                )}
-
-                {/* Cosa potrebbe interessargli */}
-                {quickResult.interessi && (
-                  <div className="qa-result-block">
-                    <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                      Cosa potrebbe interessargli
-                    </div>
-                    <p className="qa-result-text">{quickResult.interessi}</p>
-                  </div>
-                )}
-
-                {/* Perché potrebbe avere senso parlargli */}
-                {quickResult.perche_parlargli && (
-                  <div className="qa-result-block">
-                    <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
-                      Perché potrebbe avere senso parlargli
-                    </div>
-                    <p className="qa-result-text">{quickResult.perche_parlargli}</p>
-                  </div>
-                )}
-
-                {/* Strategia di contatto */}
-                {quickResult.strategia_contatto && (
-                  <div className="qa-result-block">
-                    <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                      Strategia di contatto
-                    </div>
-                    <p className="qa-result-text">{quickResult.strategia_contatto}</p>
-                  </div>
-                )}
-
-                {/* Primo messaggio consigliato */}
-                {quickResult.primo_messaggio && (
-                  <div className="qa-result-block qa-result-reply">
-                    <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      Primo messaggio consigliato
-                    </div>
-                    <p className="qa-result-text">{quickResult.primo_messaggio}</p>
-                  </div>
-                )}
-
-                {/* Prossima mossa */}
-                {quickResult.prossima_mossa && (
-                  <div className="qa-result-block">
-                    <div className="qa-result-label">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                      Prossima mossa
-                    </div>
-                    <p className="qa-result-text">{quickResult.prossima_mossa}</p>
-                  </div>
-                )}
+              <div className="qa-field">
+                <label className="qa-label">Perché vorresti contattare questa persona? <span className="qa-label-opt">(facoltativo)</span></label>
+                <textarea value={quickProfileReason} onChange={(e) => setQuickProfileReason(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Credo che questa persona possa essere interessata a migliorare LinkedIn come canale per trovare clienti." />
               </div>
-            )}
-          </div>
+
+              <button onClick={handleDashProfile} disabled={quickProfileLoading || !quickLinkedinUrl.trim()} className="qa-btn">
+                {quickProfileLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto analizzando…</>) : (<>Analizza profilo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+              </button>
+
+              {quickProfileResult && (
+                <div className="qa-result">
+                  {quickProfileResult.chi_e && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Chi è questa persona</div><p className="qa-result-text">{quickProfileResult.chi_e}</p></div>
+                  )}
+                  {quickProfileResult.potenziale && (
+                    <div className="qa-result-block qa-result-valutazione"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Ha senso contattarla?</div><p className="qa-result-text">{quickProfileResult.potenziale}</p></div>
+                  )}
+                  {quickProfileResult.perche_parlarle && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg> Perché potrebbe avere senso parlarle</div><p className="qa-result-text">{quickProfileResult.perche_parlarle}</p></div>
+                  )}
+                  {quickProfileResult.strategia_contatto && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Strategia di contatto consigliata</div><p className="qa-result-text">{quickProfileResult.strategia_contatto}</p></div>
+                  )}
+                  {quickProfileResult.primo_messaggio && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Primo messaggio consigliato</div><p className="qa-result-text">{quickProfileResult.primo_messaggio}</p></div>
+                  )}
+                  {quickProfileResult.step_successivi && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Step successivi</div><p className="qa-result-text">{quickProfileResult.step_successivi}</p></div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── MODALITÀ CONSIGLIO ── */}
+          {dashMode === "advice" && (
+            <div className="qa-container qa-container-dash">
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickAdviceResult(null); }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Torna alle opzioni
+              </button>
+
+              <div className="qa-section-header">
+                <h4 className="qa-section-title">Chiedimi un consiglio</h4>
+                <p className="qa-section-sub">Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.</p>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Spiegami la situazione</label>
+                <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nNon ci siamo mai scritti prima.\nCome mi conviene rispondere per continuare la conversazione?"} />
+              </div>
+
+              <div className="qa-examples">
+                <p className="qa-examples-title">Esempi di situazioni:</p>
+                <ul className="qa-examples-list">
+                  <li>Qualcuno ha commentato un mio post</li>
+                  <li>Ho ricevuto un messaggio su LinkedIn</li>
+                  <li>Voglio capire se è il momento giusto per proporre una call</li>
+                  <li>Non so come continuare una conversazione</li>
+                </ul>
+              </div>
+
+              <button onClick={handleDashAdvice} disabled={quickAdviceLoading || !quickSituation.trim()} className="qa-btn">
+                {quickAdviceLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto analizzando…</>) : (<>Chiedi un consiglio <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+              </button>
+
+              {quickAdviceResult && (
+                <div className="qa-result">
+                  {quickAdviceResult.lettura_situazione && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Lettura della situazione</div><p className="qa-result-text">{quickAdviceResult.lettura_situazione}</p></div>
+                  )}
+                  {quickAdviceResult.cosa_fare && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg> Cosa conviene fare adesso</div><p className="qa-result-text">{quickAdviceResult.cosa_fare}</p></div>
+                  )}
+                  {quickAdviceResult.risposta_consigliata && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> Risposta consigliata</div><p className="qa-result-text">{quickAdviceResult.risposta_consigliata}</p></div>
+                  )}
+                  {quickAdviceResult.step_successivi && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Step successivi</div><p className="qa-result-text">{quickAdviceResult.step_successivi}</p></div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </section>
       </div>
     </>

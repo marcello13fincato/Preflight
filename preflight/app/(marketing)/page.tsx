@@ -144,10 +144,10 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section id="assistente" className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Chiedi un consiglio</div>
-          <h2 className="hp-section-title">Chiedi un consiglio</h2>
+          <div className="hp-section-label">Assistenza rapida</div>
+          <h2 className="hp-section-title">Assistenza rapida</h2>
           <p className="hp-section-subtitle">
-            Spiega il contesto della conversazione o analizza un profilo LinkedIn per capire come iniziare una conversazione.
+            Scegli cosa vuoi fare e ricevi un consiglio concreto.
           </p>
           <QuickAssistant />
         </div>
