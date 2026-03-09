@@ -50,13 +50,18 @@ export default function AppTodayPage() {
   const [quickProfileResult, setQuickProfileResult] = useState<{
     chi_e: string; potenziale: string; perche_parlarle: string;
     strategia_contatto: string; primo_messaggio: string; step_successivi: string;
+    primo_followup: string; secondo_followup: string;
+    segnali_positivi: string; segnali_deboli: string; promemoria: string;
   } | null>(null);
   const [quickProfileLoading, setQuickProfileLoading] = useState(false);
   // Advice state
   const [quickSituation, setQuickSituation] = useState("");
+  const [quickSituationType, setQuickSituationType] = useState("");
+  const [quickPersonProfile, setQuickPersonProfile] = useState("");
   const [quickAdviceResult, setQuickAdviceResult] = useState<{
     lettura_situazione: string; cosa_fare: string;
     risposta_consigliata: string; step_successivi: string;
+    followup_consigliato: string; errori_da_evitare: string;
   } | null>(null);
   const [quickAdviceLoading, setQuickAdviceLoading] = useState(false);
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
@@ -117,6 +122,8 @@ export default function AppTodayPage() {
         chi_e: "Si è verificato un errore. Riprova più tardi.",
         potenziale: "", perche_parlarle: "",
         strategia_contatto: "", primo_messaggio: "", step_successivi: "",
+        primo_followup: "", secondo_followup: "",
+        segnali_positivi: "", segnali_deboli: "", promemoria: "",
       });
     } finally {
       setQuickProfileLoading(false);
@@ -137,6 +144,8 @@ export default function AppTodayPage() {
           advice: true,
           assistantMode: "advice",
           profile: profile.onboarding || undefined,
+          interactionType: quickSituationType || undefined,
+          profileInfo: quickPersonProfile || undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore");
@@ -148,6 +157,7 @@ export default function AppTodayPage() {
       setQuickAdviceResult({
         lettura_situazione: "Si è verificato un errore. Riprova più tardi.",
         cosa_fare: "", risposta_consigliata: "", step_successivi: "",
+        followup_consigliato: "", errori_da_evitare: "",
       });
     } finally {
       setQuickAdviceLoading(false);
@@ -193,6 +203,7 @@ export default function AppTodayPage() {
         ══════════════════════════════════════════════════════ */}
         <div className="dash-hero">
           <h2 className="dash-hero-title">Cosa vuoi fare oggi?</h2>
+          <p className="dash-hero-sub">Preflight ti aiuta a capire chi contattare, cosa scrivere e quali step seguire per arrivare a una call.</p>
         </div>
 
         {/* ══════════════════════════════════════════════════════
@@ -205,7 +216,7 @@ export default function AppTodayPage() {
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
               <h4 className="dash-start-card-title">Analizza questo profilo</h4>
-              <p className="dash-start-card-desc">Scopri se vale la pena contattare una persona su LinkedIn e come iniziare la conversazione.</p>
+              <p className="dash-start-card-desc">Incolla il link di un profilo LinkedIn. L&apos;AI ti dirà chi è, se ha senso contattarla, cosa scriverle e quali step seguire.</p>
               <button type="button" onClick={() => setDashMode("profile")} className="dash-btn-primary dash-btn-full">
                 Analizza profilo
                 <span className="dash-btn-arrow">→</span>
@@ -216,7 +227,7 @@ export default function AppTodayPage() {
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               </div>
               <h4 className="dash-start-card-title">Chiedimi un consiglio</h4>
-              <p className="dash-start-card-desc">Descrivi una situazione reale su LinkedIn e scopri come muoverti.</p>
+              <p className="dash-start-card-desc">Descrivi una situazione reale — un commento ricevuto, un messaggio, un follow-up — e scopri come muoverti.</p>
               <button type="button" onClick={() => setDashMode("advice")} className="dash-btn-primary dash-btn-full">
                 Chiedi un consiglio
                 <span className="dash-btn-arrow">→</span>
@@ -301,6 +312,28 @@ export default function AppTodayPage() {
                   {quickProfileResult.step_successivi && (
                     <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Step successivi</div><p className="qa-result-text">{quickProfileResult.step_successivi}</p></div>
                   )}
+                  {quickProfileResult.primo_followup && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Primo follow-up consigliato</div><p className="qa-result-text">{quickProfileResult.primo_followup}</p></div>
+                  )}
+                  {quickProfileResult.secondo_followup && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Secondo follow-up</div><p className="qa-result-text">{quickProfileResult.secondo_followup}</p></div>
+                  )}
+                  {quickProfileResult.segnali_positivi && (
+                    <div className="qa-result-block qa-result-valutazione"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-6 0v4"/><path d="M18.8 10H5.2A2.2 2.2 0 0 0 3 12.2v7.6A2.2 2.2 0 0 0 5.2 22h13.6a2.2 2.2 0 0 0 2.2-2.2v-7.6A2.2 2.2 0 0 0 18.8 10z"/></svg> Segnali positivi</div><p className="qa-result-text">{quickProfileResult.segnali_positivi}</p></div>
+                  )}
+                  {quickProfileResult.segnali_deboli && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Segnali deboli o rischi</div><p className="qa-result-text">{quickProfileResult.segnali_deboli}</p></div>
+                  )}
+                  {quickProfileResult.promemoria && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Promemoria (tra 7 giorni)</div><p className="qa-result-text">{quickProfileResult.promemoria}</p></div>
+                  )}
+                </div>
+              )}
+
+              {quickProfileResult && !profile.onboarding_complete && (
+                <div className="qa-callout">
+                  <p className="qa-callout-text">💡 Questa analisi può essere ancora più precisa se configuri il tuo sistema.</p>
+                  <Link href="/app/onboarding" className="qa-callout-link">Configura il tuo sistema →</Link>
                 </div>
               )}
             </div>
@@ -311,7 +344,7 @@ export default function AppTodayPage() {
         {dashMode === "advice" && (
           <section className="dash-section">
             <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickAdviceResult(null); }}>
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickAdviceResult(null); setQuickSituationType(""); setQuickPersonProfile(""); }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Torna alle opzioni
               </button>
@@ -322,18 +355,36 @@ export default function AppTodayPage() {
               </div>
 
               <div className="qa-field">
+                <label className="qa-label">Tipo di situazione</label>
+                <div className="qa-chip-group">
+                  {["Commento ricevuto", "Messaggio ricevuto", "Messaggio inviato", "Prima interazione", "Follow-up", "Altro"].map((t) => (
+                    <button key={t} type="button" className={`qa-chip${quickSituationType === t ? " qa-chip-active" : ""}`} onClick={() => setQuickSituationType(quickSituationType === t ? "" : t)}>{t}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="qa-field">
                 <label className="qa-label">Spiegami la situazione</label>
                 <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nNon ci siamo mai scritti prima.\nCome mi conviene rispondere per continuare la conversazione?"} />
               </div>
 
+              <div className="qa-field">
+                <label className="qa-label">Profilo della persona coinvolta <span className="qa-label-opt">(facoltativo)</span></label>
+                <textarea value={quickPersonProfile} onChange={(e) => setQuickPersonProfile(e.target.value)} className="qa-input" rows={2} placeholder="Es: CEO di un'agenzia di marketing, 5000 follower, pubblica regolarmente su LinkedIn" />
+              </div>
+
               <div className="qa-examples">
-                <p className="qa-examples-title">Esempi di situazioni:</p>
-                <ul className="qa-examples-list">
-                  <li>Qualcuno ha commentato un mio post</li>
-                  <li>Ho ricevuto un messaggio su LinkedIn</li>
-                  <li>Voglio capire se è il momento giusto per proporre una call</li>
-                  <li>Non so come continuare una conversazione</li>
-                </ul>
+                <p className="qa-examples-title">Esempi — clicca per usare:</p>
+                <div className="qa-examples-chips">
+                  {[
+                    "Qualcuno ha commentato un mio post e sembra interessato al tema",
+                    "Ho ricevuto un messaggio su LinkedIn da una persona che non conosco",
+                    "Ho scritto un messaggio 5 giorni fa e non ho ricevuto risposta",
+                    "Voglio capire se è il momento giusto per proporre una call",
+                  ].map((ex) => (
+                    <button key={ex} type="button" className="qa-example-btn" onClick={() => setQuickSituation(ex)}>{ex}</button>
+                  ))}
+                </div>
               </div>
 
               <button onClick={handleDashAdvice} disabled={quickAdviceLoading || !quickSituation.trim()} className="qa-btn">
@@ -354,6 +405,19 @@ export default function AppTodayPage() {
                   {quickAdviceResult.step_successivi && (
                     <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg> Step successivi</div><p className="qa-result-text">{quickAdviceResult.step_successivi}</p></div>
                   )}
+                  {quickAdviceResult.followup_consigliato && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg> Follow-up consigliato</div><p className="qa-result-text">{quickAdviceResult.followup_consigliato}</p></div>
+                  )}
+                  {quickAdviceResult.errori_da_evitare && (
+                    <div className="qa-result-block"><div className="qa-result-label"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Errori da evitare</div><p className="qa-result-text">{quickAdviceResult.errori_da_evitare}</p></div>
+                  )}
+                </div>
+              )}
+
+              {quickAdviceResult && !profile.onboarding_complete && (
+                <div className="qa-callout">
+                  <p className="qa-callout-text">💡 Questa analisi può essere ancora più precisa se configuri il tuo sistema.</p>
+                  <Link href="/app/onboarding" className="qa-callout-link">Configura il tuo sistema →</Link>
                 </div>
               )}
             </div>

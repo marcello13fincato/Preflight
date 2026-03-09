@@ -1816,6 +1816,35 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 .qa-examples-list li{font-size:.82rem;color:var(--color-muted);line-height:1.5}
 
+/* ── Chip selector (situation type) ── */
+.qa-chip-group{display:flex;flex-wrap:wrap;gap:.45rem}
+.qa-chip{
+  font-size:.8rem;padding:.35rem .75rem;border-radius:999px;
+  border:1px solid var(--color-border);background:#fff;color:var(--color-text);
+  cursor:pointer;transition:all .15s;
+}
+.qa-chip:hover{border-color:var(--color-primary);color:var(--color-primary)}
+.qa-chip-active{background:var(--color-soft);border-color:var(--color-primary);color:var(--color-primary);font-weight:600}
+
+/* ── Clickable example chips ── */
+.qa-examples-chips{display:flex;flex-wrap:wrap;gap:.4rem}
+.qa-example-btn{
+  font-size:.78rem;padding:.3rem .7rem;border-radius:var(--radius-md);
+  border:1px dashed var(--color-border);background:#fff;color:var(--color-muted);
+  cursor:pointer;transition:all .15s;text-align:left;
+}
+.qa-example-btn:hover{border-color:var(--color-primary);color:var(--color-primary);border-style:solid}
+
+/* ── Onboarding callout after result ── */
+.qa-callout{
+  margin-top:1rem;padding:.85rem 1.1rem;
+  background:var(--color-soft);border:1px solid var(--color-primary-border, rgba(10,102,194,.2));
+  border-radius:var(--radius-md);display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+}
+.qa-callout-text{margin:0;font-size:.85rem;color:var(--color-text)}
+.qa-callout-link{font-size:.85rem;font-weight:600;color:var(--color-primary);white-space:nowrap;text-decoration:none}
+.qa-callout-link:hover{text-decoration:underline}
+
 /* ═══════════════════════════════════════════════════════════
    CHATBOX — Global AI Assistant
 ═══════════════════════════════════════════════════════════ */

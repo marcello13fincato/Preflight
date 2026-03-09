@@ -126,7 +126,12 @@ Rispondi SOLO con un oggetto JSON con questa struttura:
   "perche_parlarle": "<motivi concreti basati su profilo e contesto per cui ha senso contattarla>",
   "strategia_contatto": "<strategia di contatto consigliata: commentare un suo post, scrivere in DM, interagire prima in modo leggero, aspettare una sua pubblicazione>",
   "primo_messaggio": "<primo messaggio consigliato, naturale e non aggressivo>",
-  "step_successivi": "<sequenza chiara di passi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>"
+  "step_successivi": "<sequenza chiara di passi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
+  "primo_followup": "<messaggio di follow-up da inviare se non risponde entro 3-5 giorni, diverso dal primo messaggio>",
+  "secondo_followup": "<secondo follow-up dopo altri 5-7 giorni, con angolo diverso>",
+  "segnali_positivi": "<segnali concreti nel profilo o nel comportamento che indicano apertura o interesse>",
+  "segnali_deboli": "<segnali di rischio o che potrebbero indicare scarso interesse>",
+  "promemoria": "<cosa controllare o fare tra 7 giorni su questa persona>"
 }
 
 Richiesta dell'utente:
@@ -137,10 +142,18 @@ function buildAdviceOnlyPrompt(
   message: string,
   profile: unknown,
   demo: boolean,
+  extra?: { interactionType?: string; personProfile?: string },
 ): string {
   const depth = demo
     ? "Rispondi in modo sintetico ma completo. Massimo 2-3 frasi per sezione."
     : "Rispondi in modo approfondito e dettagliato. Fornisci analisi completa e suggerimenti concreti.";
+
+  const extraContext = [
+    extra?.interactionType ? `- Tipo di situazione: ${extra.interactionType}` : "",
+    extra?.personProfile ? `- Profilo della persona coinvolta: ${extra.personProfile}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   return `${salesRules}
 
@@ -165,6 +178,7 @@ Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
 
 ${depth}
 
+${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
 ${profile ? `Profilo utente Preflight (chi chiede il consiglio): ${JSON.stringify(profile)}` : ""}
 
 Rispondi SEMPRE in italiano.
@@ -173,7 +187,9 @@ Rispondi SOLO con un oggetto JSON con questa struttura:
   "lettura_situazione": "<spiegazione breve di ciò che sta succedendo>",
   "cosa_fare": "<direzione strategica chiara su cosa conviene fare adesso>",
   "risposta_consigliata": "<testo pronto da usare se serve, oppure indicazione concreta>",
-  "step_successivi": "<sequenza di passi precisi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>"
+  "step_successivi": "<sequenza di passi precisi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
+  "followup_consigliato": "<messaggio o azione di follow-up da fare tra qualche giorno se non c'è risposta>",
+  "errori_da_evitare": "<cosa NON fare in questa situazione e perché, errori comuni>"
 }
 
 Situazione descritta dall'utente:
@@ -268,7 +284,7 @@ export async function POST(req: Request) {
       if (assistantMode === "profile") {
         prompt = buildProfileAnalysisPrompt(message, profile, !!demo, { linkedinUrl, profileInfo });
       } else if (assistantMode === "advice") {
-        prompt = buildAdviceOnlyPrompt(message, profile, !!demo);
+        prompt = buildAdviceOnlyPrompt(message, profile, !!demo, { interactionType, personProfile: profileInfo });
       } else {
         prompt = buildAdvicePrompt(message, profile, !!demo, {
           linkedinUrl, profileInfo, interactionType, whoWrote,
