@@ -147,7 +147,7 @@ export default async function Home() {
           <div className="hp-section-label">Chiedi un consiglio</div>
           <h2 className="hp-section-title">Chiedi un consiglio</h2>
           <p className="hp-section-subtitle">
-            Spiega il contesto della conversazione e scopri come muoverti per portarla verso una call.
+            Spiega il contesto della conversazione o analizza un profilo LinkedIn per capire come iniziare una conversazione.
           </p>
           <QuickAssistant />
         </div>

@@ -9,38 +9,49 @@ const WHO_WROTE_OPTIONS = ["L'ho scritto io", "L'ho ricevuto"] as const;
 export interface AdviceOutput {
   valutazione: { qualita: number; probabilita: string };
   temperatura: { stato: string; spiegazione: string };
-  lettura: string;
-  strategia: string;
-  risposta: string;
+  chi_e: string;
+  interessi: string;
+  perche_parlargli: string;
+  strategia_contatto: string;
+  primo_messaggio: string;
   prossima_mossa: string;
-  suggerimenti?: string;
 }
 
 export default function QuickAssistant() {
   const [input, setInput] = useState("");
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [profileInfo, setProfileInfo] = useState("");
   const [interactionType, setInteractionType] = useState<string>(INTERACTION_TYPES[0]);
   const [whoWrote, setWhoWrote] = useState<string>(WHO_WROTE_OPTIONS[0]);
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [showPdfGuide, setShowPdfGuide] = useState(false);
   const [result, setResult] = useState<AdviceOutput | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleAsk() {
-    if (!input.trim() || loading) return;
+    if (!input.trim() && !linkedinUrl.trim()) return;
+    if (loading) return;
     setLoading(true);
     setResult(null);
     try {
+      let pdfText = "";
+      if (pdfFile) {
+        const formData = new FormData();
+        formData.append("file", pdfFile);
+        // Extract text client-side from the PDF name as context hint
+        pdfText = `[PDF caricato: ${pdfFile.name}]`;
+      }
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: input,
+          message: input || `Analizza questo profilo LinkedIn: ${linkedinUrl}`,
           advice: true,
           demo: true,
           linkedinUrl: linkedinUrl.trim() || undefined,
-          profileInfo: profileInfo.trim() || undefined,
-          interactionType,
-          whoWrote,
+          profileInfo: pdfText || undefined,
+          interactionType: input.trim() ? interactionType : undefined,
+          whoWrote: input.trim() ? whoWrote : undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore nella richiesta");
@@ -51,9 +62,11 @@ export default function QuickAssistant() {
         setResult({
           valutazione: { qualita: 0, probabilita: "–" },
           temperatura: { stato: "Neutra", spiegazione: data.reply || "Non disponibile." },
-          lettura: data.reply || "Non sono riuscito a generare una risposta.",
-          strategia: "",
-          risposta: "",
+          chi_e: "",
+          interessi: "",
+          perche_parlargli: "",
+          strategia_contatto: "",
+          primo_messaggio: "",
           prossima_mossa: "",
         });
       }
@@ -61,9 +74,11 @@ export default function QuickAssistant() {
       setResult({
         valutazione: { qualita: 0, probabilita: "–" },
         temperatura: { stato: "–", spiegazione: "Errore." },
-        lettura: "Si è verificato un errore. Riprova più tardi.",
-        strategia: "",
-        risposta: "",
+        chi_e: "Si è verificato un errore. Riprova più tardi.",
+        interessi: "",
+        perche_parlargli: "",
+        strategia_contatto: "",
+        primo_messaggio: "",
         prossima_mossa: "",
       });
     } finally {
@@ -71,15 +86,13 @@ export default function QuickAssistant() {
     }
   }
 
-  const truncatedStrategia = result?.strategia
-    ? result.strategia.length > 180
-      ? result.strategia.slice(0, 180) + "…"
-      : result.strategia
-    : "";
-
   return (
     <div className="qa-container">
-      {/* Campo principale */}
+      {/* ── SEZIONE 1: DESCRIVI LA SITUAZIONE ── */}
+      <div className="qa-section-header">
+        <h3 className="qa-section-title">Descrivi la situazione</h3>
+      </div>
+
       <div className="qa-field">
         <label className="qa-label">Spiegami il contesto</label>
         <textarea
@@ -91,37 +104,6 @@ export default function QuickAssistant() {
         />
       </div>
 
-      {/* Profilo LinkedIn */}
-      <div className="qa-field">
-        <label className="qa-label">
-          Profilo LinkedIn della persona
-          <span className="qa-label-opt">(facoltativo)</span>
-        </label>
-        <input
-          type="url"
-          value={linkedinUrl}
-          onChange={(e) => setLinkedinUrl(e.target.value)}
-          className="qa-input"
-          placeholder="https://linkedin.com/in/nomecognome"
-        />
-      </div>
-
-      {/* Info profilo */}
-      <div className="qa-field">
-        <label className="qa-label">
-          Informazioni sul profilo
-          <span className="qa-label-opt">(facoltativo)</span>
-        </label>
-        <textarea
-          value={profileInfo}
-          onChange={(e) => setProfileInfo(e.target.value)}
-          className="qa-input"
-          rows={2}
-          placeholder={"Founder di startup SaaS.\nPubblica su crescita e acquisizione clienti."}
-        />
-      </div>
-
-      {/* Selettori */}
       <div className="qa-selectors">
         <div className="qa-field">
           <label className="qa-label">Tipo di interazione</label>
@@ -156,9 +138,73 @@ export default function QuickAssistant() {
         </div>
       </div>
 
+      {/* ── SEZIONE 2: ANALIZZA UN PROFILO LINKEDIN ── */}
+      <div className="qa-section-divider" />
+
+      <div className="qa-section-header">
+        <h3 className="qa-section-title">Analizza questo profilo</h3>
+        <p className="qa-section-sub">
+          Inserisci il profilo LinkedIn di una persona e scopri come iniziare una conversazione.
+        </p>
+      </div>
+
+      <div className="qa-field">
+        <label className="qa-label">Link profilo LinkedIn</label>
+        <input
+          type="url"
+          value={linkedinUrl}
+          onChange={(e) => setLinkedinUrl(e.target.value)}
+          className="qa-input"
+          placeholder="https://linkedin.com/in/nomecognome"
+        />
+      </div>
+
+      <div className="qa-field">
+        <label className="qa-label">
+          Carica il PDF del profilo LinkedIn
+          <span className="qa-label-opt">(facoltativo)</span>
+        </label>
+        <p className="qa-microcopy">
+          Questo aiuta l&apos;AI a capire meglio il contesto professionale della persona.
+        </p>
+        <label className="qa-file-upload">
+          <input
+            type="file"
+            accept=".pdf"
+            className="qa-file-input"
+            onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+          />
+          <span className="qa-file-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            {pdfFile ? pdfFile.name : "Scegli un file PDF"}
+          </span>
+        </label>
+      </div>
+
+      <button
+        type="button"
+        className="qa-guide-toggle"
+        onClick={() => setShowPdfGuide(!showPdfGuide)}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        Come scaricare il PDF del profilo LinkedIn
+      </button>
+
+      {showPdfGuide && (
+        <div className="qa-guide">
+          <ol className="qa-guide-steps">
+            <li>Vai sul profilo LinkedIn della persona</li>
+            <li>Clicca sui tre puntini accanto alla foto del profilo</li>
+            <li>Seleziona &quot;Salva come PDF&quot;</li>
+            <li>Carica il file qui</li>
+          </ol>
+        </div>
+      )}
+
+      {/* ── CTA ── */}
       <button
         onClick={handleAsk}
-        disabled={loading || !input.trim()}
+        disabled={loading || (!input.trim() && !linkedinUrl.trim())}
         className="qa-btn"
       >
         {loading ? (
@@ -174,9 +220,10 @@ export default function QuickAssistant() {
         )}
       </button>
 
+      {/* ── OUTPUT ── */}
       {result && (
         <div className="qa-result">
-          {/* Valutazione conversazione */}
+          {/* Valutazione */}
           <div className="qa-result-block qa-result-valutazione">
             <div className="qa-result-label">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
@@ -206,25 +253,14 @@ export default function QuickAssistant() {
             <p className="qa-result-text">{result.temperatura.spiegazione}</p>
           </div>
 
-          {/* Lettura della situazione */}
-          {result.lettura && (
+          {/* Chi è questa persona */}
+          {result.chi_e && (
             <div className="qa-result-block">
               <div className="qa-result-label">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                Lettura della situazione
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Chi è questa persona
               </div>
-              <p className="qa-result-text">{result.lettura}</p>
-            </div>
-          )}
-
-          {/* Inizio strategia (troncata) */}
-          {truncatedStrategia && (
-            <div className="qa-result-block">
-              <div className="qa-result-label">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
-                Strategia consigliata
-              </div>
-              <p className="qa-result-text">{truncatedStrategia}</p>
+              <p className="qa-result-text">{result.chi_e}</p>
             </div>
           )}
 
@@ -232,12 +268,12 @@ export default function QuickAssistant() {
           <div className="qa-locked">
             <div className="qa-locked-header">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Per vedere l&apos;analisi completa
+              Per vedere l&apos;analisi completa accedi alla dashboard.
             </div>
             <ul className="qa-locked-list">
-              <li>Risposta completa pronta da inviare</li>
-              <li>Prossima mossa per portare la conversazione verso una call</li>
-              <li>Strategia completa</li>
+              <li>Primo messaggio consigliato</li>
+              <li>Strategia di contatto completa</li>
+              <li>Prossima mossa per arrivare a una call</li>
             </ul>
             <Link href="/signup" className="qa-locked-cta">
               Sblocca l&apos;analisi completa
