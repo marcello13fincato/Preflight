@@ -12,14 +12,14 @@ type DashMode =
   | null
   | "profile"
   | "advice"
-  | "find"
   | "post"
   | "comment"
   | "dm"
+  | "conversation"
   | "followup"
   | "image";
 
-/* ─── Tool definitions ─── */
+/* ─── Tool definitions (Sezione Strumenti operativi) ─── */
 const TOOLS: {
   id: DashMode & string;
   icon: string;
@@ -36,37 +36,37 @@ const TOOLS: {
     id: "advice",
     icon: "💬",
     title: "Chiedimi un consiglio",
-    desc: "Descrivi una situazione reale su LinkedIn e scopri come muoverti.",
+    desc: "Descrivi una situazione e scopri come muoverti.",
   },
   {
     id: "post",
     icon: "✍️",
-    title: "Scrivi un post LinkedIn",
-    desc: "Genera un post efficace partendo da un'idea o una bozza.",
+    title: "Scrivi un post",
+    desc: "Genera un post LinkedIn efficace con hook e CTA.",
   },
   {
     id: "image",
     icon: "🖼️",
     title: "Genera immagine per il post",
-    desc: "Crea un'immagine professionale per accompagnare il tuo post.",
+    desc: "Crea un'immagine professionale per il tuo post.",
   },
   {
     id: "comment",
     icon: "💡",
-    title: "Suggerisci commento",
-    desc: "Analizza un commento ricevuto e scopri come rispondere.",
+    title: "Scrivi un commento",
+    desc: "Rispondi a un commento in modo strategico.",
   },
   {
     id: "dm",
     icon: "✉️",
-    title: "Suggerisci messaggio DM",
-    desc: "Incolla una conversazione DM e ottieni la risposta migliore.",
+    title: "Scrivi un messaggio DM",
+    desc: "Ottieni la risposta migliore per una conversazione DM.",
   },
   {
-    id: "find",
-    icon: "🔍",
-    title: "Trova clienti su LinkedIn",
-    desc: "Genera ricerche LinkedIn per trovare i clienti giusti.",
+    id: "conversation",
+    icon: "🗣️",
+    title: "Gestisci conversazione",
+    desc: "Analizza una conversazione in corso e scopri come portarla avanti.",
   },
   {
     id: "followup",
@@ -92,24 +92,23 @@ export default function AppTodayPage() {
   const [quickLinkedinUrl, setQuickLinkedinUrl] = useState("");
   const [quickPdfFile, setQuickPdfFile] = useState<File | null>(null);
   const [quickShowGuide, setQuickShowGuide] = useState(false);
-  const [quickProfileReason, setQuickProfileReason] = useState("");
+  const [quickWebsiteUrl, setQuickWebsiteUrl] = useState("");
+  const [quickProfileDesc, setQuickProfileDesc] = useState("");
   const [quickProfileResult, setQuickProfileResult] = useState<{
     nome_contatto?: string; ruolo_contatto?: string; azienda_contatto?: string;
-    chi_e: string; potenziale: string; perche_parlarle: string;
-    strategia_contatto: string; primo_messaggio: string; step_successivi: string;
-    primo_followup: string; secondo_followup: string;
-    segnali_positivi: string; segnali_deboli: string; promemoria: string;
+    chi_e: string; ruolo_e_contesto: string; perche_buon_contatto: string;
+    strategia_contatto: string; primo_messaggio: string; followup_consigliato: string;
+    step_successivi: string; segnali_da_osservare: string;
   } | null>(null);
   const [quickProfileLoading, setQuickProfileLoading] = useState(false);
 
   /* ── Advice state ── */
   const [quickSituation, setQuickSituation] = useState("");
-  const [quickSituationType, setQuickSituationType] = useState("");
-  const [quickPersonProfile, setQuickPersonProfile] = useState("");
+  const [quickAdviceLinkedinUrl, setQuickAdviceLinkedinUrl] = useState("");
   const [quickAdviceResult, setQuickAdviceResult] = useState<{
-    lettura_situazione: string; cosa_fare: string;
-    risposta_consigliata: string; step_successivi: string;
-    followup_consigliato: string; errori_da_evitare: string;
+    lettura_situazione: string; strategia: string;
+    risposta_consigliata: string; followup_consigliato: string;
+    step_successivi: string; errori_da_evitare: string;
   } | null>(null);
   const [quickAdviceLoading, setQuickAdviceLoading] = useState(false);
 
@@ -132,10 +131,14 @@ export default function AppTodayPage() {
     hooks: [string, string, string, string, string];
     post_versions: { clean: string; direct: string; authority: string };
     cta: string; comment_starter: string; next_step: string;
+    suggerimento_immagine: { tipo: string; perche_funziona: string };
   } | null>(null);
   const [postLoading, setPostLoading] = useState(false);
 
   /* ── Comment state ── */
+  const [commentLinkedinUrl, setCommentLinkedinUrl] = useState("");
+  const [commentProfileAnalyzed, setCommentProfileAnalyzed] = useState(false);
+  const [commentProfileLoading, setCommentProfileLoading] = useState(false);
   const [commentPost, setCommentPost] = useState("");
   const [commentReceived, setCommentReceived] = useState("");
   const [commentGoal, setCommentGoal] = useState("continue_conversation");
@@ -148,6 +151,9 @@ export default function AppTodayPage() {
   const [commentLoading, setCommentLoading] = useState(false);
 
   /* ── DM state ── */
+  const [dmLinkedinUrl, setDmLinkedinUrl] = useState("");
+  const [dmProfileAnalyzed, setDmProfileAnalyzed] = useState(false);
+  const [dmProfileLoading, setDmProfileLoading] = useState(false);
   const [dmThread, setDmThread] = useState("");
   const [dmGoal, setDmGoal] = useState("continue_conversation");
   const [dmProspect, setDmProspect] = useState("");
@@ -159,6 +165,22 @@ export default function AppTodayPage() {
     next_action: string;
   } | null>(null);
   const [dmLoading, setDmLoading] = useState(false);
+
+  /* ── Conversation state ── */
+  const [convLinkedinUrl, setConvLinkedinUrl] = useState("");
+  const [convProfileAnalyzed, setConvProfileAnalyzed] = useState(false);
+  const [convProfileLoading, setConvProfileLoading] = useState(false);
+  const [convThread, setConvThread] = useState("");
+  const [convGoal, setConvGoal] = useState("continue_conversation");
+  const [convProspect, setConvProspect] = useState("");
+  const [convResult, setConvResult] = useState<{
+    best_reply: string; client_heat_level: string; message_risk_warning: string;
+    alternatives: { short: string; assertive: string };
+    qualifying_questions: [string, string, string];
+    followups: { "48h": string; "5d": string; "10d": string };
+    next_action: string;
+  } | null>(null);
+  const [convLoading, setConvLoading] = useState(false);
 
   /* ── Follow-up state ── */
   const [followupContext, setFollowupContext] = useState("");
@@ -219,37 +241,43 @@ export default function AppTodayPage() {
   );
 
   async function handleDashProfile() {
-    if (!quickLinkedinUrl.trim() || quickProfileLoading) return;
+    if (!quickLinkedinUrl.trim() && !quickWebsiteUrl.trim() && !quickProfileDesc.trim()) return;
+    if (quickProfileLoading) return;
     setQuickProfileLoading(true);
     setQuickProfileResult(null);
     try {
       let pdfText = "";
       if (quickPdfFile) pdfText = `[PDF caricato: ${quickPdfFile.name}]`;
+
+      const inputParts: string[] = [];
+      if (quickLinkedinUrl.trim()) inputParts.push(`Profilo LinkedIn: ${quickLinkedinUrl}`);
+      if (quickWebsiteUrl.trim()) inputParts.push(`Sito web: ${quickWebsiteUrl}`);
+      if (quickProfileDesc.trim()) inputParts.push(`Descrizione persona: ${quickProfileDesc}`);
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: `Analizza questo profilo LinkedIn: ${quickLinkedinUrl}${quickProfileReason ? `\n\nMotivo del contatto: ${quickProfileReason}` : ""}`,
+          message: `Analizza questo profilo:\n${inputParts.join("\n")}`,
           advice: true,
           assistantMode: "profile",
           profile: profile.onboarding || undefined,
-          linkedinUrl: quickLinkedinUrl.trim(),
-          profileInfo: pdfText || undefined,
+          linkedinUrl: quickLinkedinUrl.trim() || undefined,
+          profileInfo: [pdfText, quickWebsiteUrl.trim() ? `Sito web: ${quickWebsiteUrl}` : ""].filter(Boolean).join("\n") || undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore");
       const data = await res.json();
       if (data.structured) {
         setQuickProfileResult(data.structured);
-        saveContact(data.structured, quickLinkedinUrl.trim());
+        if (quickLinkedinUrl.trim()) saveContact(data.structured, quickLinkedinUrl.trim());
       }
     } catch {
       setQuickProfileResult({
         chi_e: "Si è verificato un errore. Riprova più tardi.",
-        potenziale: "", perche_parlarle: "", strategia_contatto: "",
-        primo_messaggio: "", step_successivi: "",
-        primo_followup: "", secondo_followup: "",
-        segnali_positivi: "", segnali_deboli: "", promemoria: "",
+        ruolo_e_contesto: "", perche_buon_contatto: "", strategia_contatto: "",
+        primo_messaggio: "", followup_consigliato: "", step_successivi: "",
+        segnali_da_osservare: "",
       });
     } finally {
       setQuickProfileLoading(false);
@@ -269,8 +297,7 @@ export default function AppTodayPage() {
           advice: true,
           assistantMode: "advice",
           profile: profile.onboarding || undefined,
-          interactionType: quickSituationType || undefined,
-          profileInfo: quickPersonProfile || undefined,
+          profileInfo: quickAdviceLinkedinUrl.trim() || undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore");
@@ -279,8 +306,8 @@ export default function AppTodayPage() {
     } catch {
       setQuickAdviceResult({
         lettura_situazione: "Si è verificato un errore. Riprova più tardi.",
-        cosa_fare: "", risposta_consigliata: "", step_successivi: "",
-        followup_consigliato: "", errori_da_evitare: "",
+        strategia: "", risposta_consigliata: "", followup_consigliato: "",
+        step_successivi: "", errori_da_evitare: "",
       });
     } finally {
       setQuickAdviceLoading(false);
@@ -358,6 +385,41 @@ export default function AppTodayPage() {
     }
   }
 
+  /* ── Inline profile analysis helper (for comment/dm/conv) ── */
+  async function analyzeInlineProfile(
+    url: string,
+    setLoading: (v: boolean) => void,
+    setAnalyzed: (v: boolean) => void,
+    setProspectText?: (v: string) => void,
+  ) {
+    if (!url.trim()) return;
+    setLoading(true);
+    try {
+      const res = await fetch("/api/ai/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: `Analizza questo profilo LinkedIn: ${url}`,
+          advice: true,
+          assistantMode: "profile",
+          profile: profile.onboarding || undefined,
+          linkedinUrl: url.trim(),
+        }),
+      });
+      if (!res.ok) throw new Error("Errore");
+      const data = await res.json();
+      if (data.structured) {
+        saveContact(data.structured, url.trim());
+        setAnalyzed(true);
+        if (setProspectText) {
+          const s = data.structured;
+          setProspectText(`${s.chi_e || ""} ${s.ruolo_e_contesto || ""} ${s.perche_buon_contatto || ""}`.trim());
+        }
+      }
+    } catch { /* ignore */ }
+    finally { setLoading(false); }
+  }
+
   async function handleComment() {
     if (!commentReceived.trim() || commentLoading) return;
     setCommentLoading(true);
@@ -370,6 +432,7 @@ export default function AppTodayPage() {
           original_post: commentPost || "Post non specificato",
           received_comment: commentReceived,
           conversation_goal: commentGoal,
+          commenter_linkedin_url: commentLinkedinUrl.trim() || undefined,
           profile: profile.onboarding || undefined,
         }),
       });
@@ -394,6 +457,7 @@ export default function AppTodayPage() {
           pasted_chat_thread: dmThread,
           conversation_goal: dmGoal,
           prospect_profile_text: dmProspect || "",
+          prospect_linkedin_url: dmLinkedinUrl.trim() || undefined,
           profile: profile.onboarding || undefined,
         }),
       });
@@ -403,6 +467,31 @@ export default function AppTodayPage() {
       setDmResult(null);
     } finally {
       setDmLoading(false);
+    }
+  }
+
+  async function handleConversation() {
+    if (!convThread.trim() || convLoading) return;
+    setConvLoading(true);
+    setConvResult(null);
+    try {
+      const res = await fetch("/api/ai/dm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pasted_chat_thread: convThread,
+          conversation_goal: convGoal,
+          prospect_profile_text: convProspect || "",
+          prospect_linkedin_url: convLinkedinUrl.trim() || undefined,
+          profile: profile.onboarding || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore");
+      setConvResult(await res.json());
+    } catch {
+      setConvResult(null);
+    } finally {
+      setConvLoading(false);
     }
   }
 
@@ -429,15 +518,17 @@ export default function AppTodayPage() {
     }
   }
 
-  async function handleImage() {
-    if (!imageContent.trim() || imageLoading) return;
+  async function handleImage(content?: string) {
+    const text = content || imageContent;
+    if (!text.trim() || imageLoading) return;
     setImageLoading(true);
     setImageUrl("");
+    if (content) setImageContent(content);
     try {
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ post_content: imageContent }),
+        body: JSON.stringify({ post_content: text }),
       });
       if (!res.ok) throw new Error("Errore");
       const data = await res.json();
@@ -535,16 +626,13 @@ export default function AppTodayPage() {
                 </div>
                 <h4 className="dp-card-title">Persone da contattare oggi</h4>
                 {dailyPlan.persone_da_contattare.tipo_profili && (
-                  <div className="dp-block"><span className="dp-block-label">Chi contattare</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.tipo_profili}</p></div>
+                  <div className="dp-block"><span className="dp-block-label">Tipo profilo suggerito</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.tipo_profili}</p></div>
                 )}
                 {dailyPlan.persone_da_contattare.link_ricerca && (
                   <div className="dp-block"><span className="dp-block-label">Ricerca LinkedIn</span><p className="dp-block-text"><a href={dailyPlan.persone_da_contattare.link_ricerca} target="_blank" rel="noopener noreferrer" className="qa-result-link">{dailyPlan.persone_da_contattare.link_ricerca}</a></p></div>
                 )}
-                {dailyPlan.persone_da_contattare.criteri_scelta && (
-                  <div className="dp-block"><span className="dp-block-label">Come scegliere i profili migliori</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.criteri_scelta}</p></div>
-                )}
                 {dailyPlan.persone_da_contattare.primo_messaggio && (
-                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Primo messaggio suggerito</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.primo_messaggio}</p></div>
+                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Messaggio iniziale suggerito</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.primo_messaggio}</p></div>
                 )}
                 {dailyPlan.persone_da_contattare.strategia && (
                   <div className="dp-block"><span className="dp-block-label">Strategia</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.strategia}</p></div>
@@ -559,18 +647,18 @@ export default function AppTodayPage() {
                 <div className="dp-card-icon">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                 </div>
-                <h4 className="dp-card-title">Contenuto da pubblicare oggi</h4>
+                <h4 className="dp-card-title">Contenuto consigliato per oggi</h4>
                 {dailyPlan.contenuto_consigliato.idea_post && (
-                  <div className="dp-block"><span className="dp-block-label">Idea del post</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.idea_post}</p></div>
+                  <div className="dp-block"><span className="dp-block-label">Idea contenuto</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.idea_post}</p></div>
                 )}
                 {dailyPlan.contenuto_consigliato.struttura && (
-                  <div className="dp-block"><span className="dp-block-label">Struttura</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.struttura}</p></div>
+                  <div className="dp-block"><span className="dp-block-label">Struttura post</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.struttura}</p></div>
                 )}
                 {dailyPlan.contenuto_consigliato.esempio_testo && (
                   <div className="dp-block dp-block-highlight"><span className="dp-block-label">Esempio di testo</span><p className="dp-block-text dp-block-pre">{dailyPlan.contenuto_consigliato.esempio_testo}</p></div>
                 )}
                 {dailyPlan.contenuto_consigliato.suggerimento_immagine && (
-                  <div className="dp-block"><span className="dp-block-label">Suggerimento immagine</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.suggerimento_immagine}</p></div>
+                  <div className="dp-block"><span className="dp-block-label">Suggerimento immagine</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.suggerimento_immagine}</p><p className="qa-microcopy" style={{ marginTop: ".35rem" }}>📸 Preferisci sempre foto reali: foto mentre lavori, il tuo ambiente, screenshot del tuo lavoro.</p></div>
                 )}
               </div>
 
@@ -583,14 +671,14 @@ export default function AppTodayPage() {
                 {dailyPlan.conversazioni_da_seguire.followup_da_fare && (
                   <div className="dp-block"><span className="dp-block-label">Follow-up da fare</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.followup_da_fare}</p></div>
                 )}
-                {dailyPlan.conversazioni_da_seguire.quando_scrivere && (
-                  <div className="dp-block"><span className="dp-block-label">Quando scrivere</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.quando_scrivere}</p></div>
-                )}
                 {dailyPlan.conversazioni_da_seguire.cosa_chiedere && (
-                  <div className="dp-block"><span className="dp-block-label">Cosa chiedere</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.cosa_chiedere}</p></div>
+                  <div className="dp-block"><span className="dp-block-label">Domande da fare</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.cosa_chiedere}</p></div>
+                )}
+                {dailyPlan.conversazioni_da_seguire.quando_scrivere && (
+                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Quando proporre call</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.quando_scrivere}</p></div>
                 )}
                 {dailyPlan.conversazioni_da_seguire.esempio_followup && (
-                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Esempio di follow-up</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.esempio_followup}</p></div>
+                  <div className="dp-block"><span className="dp-block-label">Esempio follow-up</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.esempio_followup}</p></div>
                 )}
               </div>
             </div>
@@ -598,10 +686,67 @@ export default function AppTodayPage() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 2 — STRUMENTI
+            SEZIONE 2 — TROVA CLIENTI SU LINKEDIN
+        ══════════════════════════════════════════════════════ */}
+        <section className="dash-section find-section">
+          <div className="find-section-header">
+            <div className="find-section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div>
+              <h3 className="find-section-title">Trova clienti su LinkedIn</h3>
+              <p className="find-section-sub">Descrivi il tipo di cliente che vuoi trovare e Preflight genera la ricerca LinkedIn giusta.</p>
+            </div>
+          </div>
+
+          <div className="find-section-form">
+            <div className="qa-field">
+              <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
+              <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={2} placeholder="Es: Founder di startup SaaS B2B, CEO di agenzie di marketing, responsabili vendite in PMI" />
+            </div>
+
+            <div className="find-section-row">
+              <div className="qa-field" style={{ flex: 1 }}>
+                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
+              </div>
+              <div className="qa-field" style={{ flex: 1 }}>
+                <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa" />
+              </div>
+            </div>
+
+            <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
+              {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+            </button>
+          </div>
+
+          {findResult && (
+            <div className="qa-result">
+              {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
+              {findResult.come_cercarlo && <ResultBlock icon="search" label="Keyword di ricerca" text={findResult.come_cercarlo} />}
+              {findResult.link_ricerca_linkedin && (
+                <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
+              )}
+              {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti filtri" text={findResult.suggerimenti_filtri} />}
+              {findResult.profili_simili && <ResultBlock icon="user" label="Ruoli simili" text={findResult.profili_simili} />}
+              {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
+              <div style={{ marginTop: "1rem" }}>
+                <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
+                  Analizza questo profilo →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {findResult && !profile.onboarding_complete && <OnboardingCallout />}
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            SEZIONE 3 — STRUMENTI OPERATIVI
         ══════════════════════════════════════════════════════ */}
         <section className="dash-section">
-          <h3 className="dash-section-title">Strumenti</h3>
+          <h3 className="dash-section-title">Strumenti operativi</h3>
           <div className="tools-grid">
             {TOOLS.map((tool) => (
               <button
@@ -633,7 +778,7 @@ export default function AppTodayPage() {
 
               <div className="qa-section-header">
                 <h4 className="qa-section-title">Analizza questo profilo</h4>
-                <p className="qa-section-sub">Scopri se vale la pena contattare questa persona e come muoverti per iniziare la conversazione.</p>
+                <p className="qa-section-sub">Scopri se vale la pena contattare questa persona e come muoverti.</p>
               </div>
 
               <div className="qa-field">
@@ -670,27 +815,29 @@ export default function AppTodayPage() {
               )}
 
               <div className="qa-field">
-                <label className="qa-label">Perché vorresti contattare questa persona? <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea value={quickProfileReason} onChange={(e) => setQuickProfileReason(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Credo che questa persona possa essere interessata a migliorare LinkedIn come canale per trovare clienti." />
+                <label className="qa-label">Link sito web <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="url" value={quickWebsiteUrl} onChange={(e) => setQuickWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://www.esempio.com" />
               </div>
 
-              <button onClick={handleDashProfile} disabled={quickProfileLoading || !quickLinkedinUrl.trim()} className="qa-btn">
+              <div className="qa-field">
+                <label className="qa-label">Descrizione della persona <span className="qa-label-opt">(facoltativo)</span></label>
+                <textarea value={quickProfileDesc} onChange={(e) => setQuickProfileDesc(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Es: CEO di un'agenzia di marketing digitale, 50 dipendenti, lavora con e-commerce" />
+              </div>
+
+              <button onClick={handleDashProfile} disabled={quickProfileLoading || (!quickLinkedinUrl.trim() && !quickWebsiteUrl.trim() && !quickProfileDesc.trim())} className="qa-btn">
                 {quickProfileLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto analizzando…</>) : (<>Analizza profilo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
               </button>
 
               {quickProfileResult && (
                 <div className="qa-result">
                   {quickProfileResult.chi_e && <ResultBlock icon="user" label="Chi è questa persona" text={quickProfileResult.chi_e} />}
-                  {quickProfileResult.potenziale && <ResultBlock icon="check" label="Ha senso contattarla?" text={quickProfileResult.potenziale} variant="valutazione" />}
-                  {quickProfileResult.perche_parlarle && <ResultBlock icon="bulb" label="Perché potrebbe avere senso parlarle" text={quickProfileResult.perche_parlarle} />}
-                  {quickProfileResult.strategia_contatto && <ResultBlock icon="search" label="Strategia di contatto consigliata" text={quickProfileResult.strategia_contatto} />}
+                  {quickProfileResult.ruolo_e_contesto && <ResultBlock icon="info" label="Ruolo e contesto" text={quickProfileResult.ruolo_e_contesto} />}
+                  {quickProfileResult.perche_buon_contatto && <ResultBlock icon="bulb" label="Perché potrebbe essere un buon contatto" text={quickProfileResult.perche_buon_contatto} variant="valutazione" />}
+                  {quickProfileResult.strategia_contatto && <ResultBlock icon="search" label="Strategia di contatto" text={quickProfileResult.strategia_contatto} />}
                   {quickProfileResult.primo_messaggio && <ResultBlock icon="chat" label="Primo messaggio consigliato" text={quickProfileResult.primo_messaggio} variant="reply" />}
+                  {quickProfileResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up consigliato" text={quickProfileResult.followup_consigliato} variant="reply" />}
                   {quickProfileResult.step_successivi && <ResultBlock icon="arrow" label="Step successivi" text={quickProfileResult.step_successivi} />}
-                  {quickProfileResult.primo_followup && <ResultBlock icon="repeat" label="Primo follow-up consigliato" text={quickProfileResult.primo_followup} variant="reply" />}
-                  {quickProfileResult.secondo_followup && <ResultBlock icon="repeat" label="Secondo follow-up" text={quickProfileResult.secondo_followup} variant="reply" />}
-                  {quickProfileResult.segnali_positivi && <ResultBlock icon="lock" label="Segnali positivi" text={quickProfileResult.segnali_positivi} variant="valutazione" />}
-                  {quickProfileResult.segnali_deboli && <ResultBlock icon="warn" label="Segnali deboli o rischi" text={quickProfileResult.segnali_deboli} />}
-                  {quickProfileResult.promemoria && <ResultBlock icon="clock" label="Promemoria (tra 7 giorni)" text={quickProfileResult.promemoria} />}
+                  {quickProfileResult.segnali_da_osservare && <ResultBlock icon="warn" label="Segnali da osservare" text={quickProfileResult.segnali_da_osservare} />}
                 </div>
               )}
 
@@ -703,7 +850,7 @@ export default function AppTodayPage() {
         {dashMode === "advice" && (
           <section className="dash-section">
             <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickAdviceResult(null); setQuickSituationType(""); setQuickPersonProfile(""); }}>
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickAdviceResult(null); }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Torna agli strumenti
               </button>
@@ -714,22 +861,13 @@ export default function AppTodayPage() {
               </div>
 
               <div className="qa-field">
-                <label className="qa-label">Tipo di situazione</label>
-                <div className="qa-chip-group">
-                  {["Commento ricevuto", "Messaggio ricevuto", "Messaggio inviato", "Prima interazione", "Follow-up", "Altro"].map((t) => (
-                    <button key={t} type="button" className={`qa-chip${quickSituationType === t ? " qa-chip-active" : ""}`} onClick={() => setQuickSituationType(quickSituationType === t ? "" : t)}>{t}</button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="qa-field">
                 <label className="qa-label">Spiegami la situazione</label>
                 <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nNon ci siamo mai scritti prima.\nCome mi conviene rispondere per continuare la conversazione?"} />
               </div>
 
               <div className="qa-field">
-                <label className="qa-label">Profilo della persona coinvolta <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea value={quickPersonProfile} onChange={(e) => setQuickPersonProfile(e.target.value)} className="qa-input" rows={2} placeholder="Es: CEO di un'agenzia di marketing, 5000 follower, pubblica regolarmente su LinkedIn" />
+                <label className="qa-label">Link profilo LinkedIn della persona coinvolta <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="url" value={quickAdviceLinkedinUrl} onChange={(e) => setQuickAdviceLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
               </div>
 
               <button onClick={handleDashAdvice} disabled={quickAdviceLoading || !quickSituation.trim()} className="qa-btn">
@@ -739,10 +877,10 @@ export default function AppTodayPage() {
               {quickAdviceResult && (
                 <div className="qa-result">
                   {quickAdviceResult.lettura_situazione && <ResultBlock icon="info" label="Lettura della situazione" text={quickAdviceResult.lettura_situazione} />}
-                  {quickAdviceResult.cosa_fare && <ResultBlock icon="check" label="Cosa conviene fare adesso" text={quickAdviceResult.cosa_fare} />}
-                  {quickAdviceResult.risposta_consigliata && <ResultBlock icon="chat" label="Risposta consigliata" text={quickAdviceResult.risposta_consigliata} variant="reply" />}
+                  {quickAdviceResult.strategia && <ResultBlock icon="check" label="Strategia" text={quickAdviceResult.strategia} />}
+                  {quickAdviceResult.risposta_consigliata && <ResultBlock icon="chat" label="Risposta suggerita" text={quickAdviceResult.risposta_consigliata} variant="reply" />}
+                  {quickAdviceResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up" text={quickAdviceResult.followup_consigliato} variant="reply" />}
                   {quickAdviceResult.step_successivi && <ResultBlock icon="arrow" label="Step successivi" text={quickAdviceResult.step_successivi} />}
-                  {quickAdviceResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up consigliato" text={quickAdviceResult.followup_consigliato} variant="reply" />}
                   {quickAdviceResult.errori_da_evitare && <ResultBlock icon="warn" label="Errori da evitare" text={quickAdviceResult.errori_da_evitare} />}
                 </div>
               )}
@@ -794,6 +932,27 @@ export default function AppTodayPage() {
                   <ResultBlock icon="info" label="CTA" text={postResult.cta} />
                   <ResultBlock icon="chat" label="Commento starter" text={postResult.comment_starter} />
                   <ResultBlock icon="arrow" label="Prossimo passo" text={postResult.next_step} />
+
+                  {/* Immagine suggerita */}
+                  {postResult.suggerimento_immagine && (
+                    <div className="qa-result-block qa-result-valutazione">
+                      <div className="qa-result-label"><RIcon type="image" /> Immagine suggerita per il post</div>
+                      <p className="qa-result-text">{postResult.suggerimento_immagine.tipo}</p>
+                      <p className="qa-result-text" style={{ marginTop: ".35rem", fontStyle: "italic", fontSize: ".82rem" }}>{postResult.suggerimento_immagine.perche_funziona}</p>
+                      <p className="qa-microcopy" style={{ marginTop: ".5rem" }}>📸 Preferisci sempre foto reali: foto mentre lavori, il tuo ambiente, screenshot del tuo lavoro reale.</p>
+                      <button
+                        type="button"
+                        className="qa-cta-secondary"
+                        style={{ marginTop: ".75rem" }}
+                        onClick={() => {
+                          setDashMode("image");
+                          setImageContent(postResult.post_versions.clean);
+                        }}
+                      >
+                        Genera immagine per questo post →
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -819,9 +978,9 @@ export default function AppTodayPage() {
                 <textarea value={imageContent} onChange={(e) => setImageContent(e.target.value)} className="qa-input qa-input-lg" rows={5} placeholder="Incolla qui il testo del post per cui vuoi generare l'immagine…" />
               </div>
 
-              <p className="qa-microcopy">💡 Consiglio: usa foto reali quando possibile. L&apos;immagine generata è un punto di partenza.</p>
+              <p className="qa-microcopy">📸 Consiglio: usa foto reali quando possibile. L&apos;immagine generata è un punto di partenza.</p>
 
-              <button onClick={handleImage} disabled={imageLoading || !imageContent.trim()} className="qa-btn">
+              <button onClick={() => handleImage()} disabled={imageLoading || !imageContent.trim()} className="qa-btn">
                 {imageLoading ? (<><span className="qa-spinner" aria-hidden="true" />Genero l&apos;immagine…</>) : (<>Genera immagine <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
               </button>
 
@@ -839,18 +998,36 @@ export default function AppTodayPage() {
           </section>
         )}
 
-        {/* ── SUGGERISCI COMMENTO ── */}
+        {/* ── SCRIVI UN COMMENTO ── */}
         {dashMode === "comment" && (
           <section className="dash-section">
             <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setCommentResult(null); }}>
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setCommentResult(null); setCommentProfileAnalyzed(false); }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Torna agli strumenti
               </button>
 
               <div className="qa-section-header">
-                <h4 className="qa-section-title">Suggerisci commento</h4>
+                <h4 className="qa-section-title">Scrivi un commento</h4>
                 <p className="qa-section-sub">Hai ricevuto un commento su LinkedIn? Scopri come rispondere in modo strategico.</p>
+              </div>
+
+              {/* Inline profile analysis */}
+              <div className="qa-inline-profile">
+                <div className="qa-field">
+                  <label className="qa-label">Profilo LinkedIn della persona <span className="qa-label-opt">(facoltativo)</span></label>
+                  <div className="qa-inline-profile-row">
+                    <input type="url" value={commentLinkedinUrl} onChange={(e) => { setCommentLinkedinUrl(e.target.value); setCommentProfileAnalyzed(false); }} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" style={{ flex: 1 }} />
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      disabled={commentProfileLoading || !commentLinkedinUrl.trim() || commentProfileAnalyzed}
+                      onClick={() => analyzeInlineProfile(commentLinkedinUrl, setCommentProfileLoading, setCommentProfileAnalyzed)}
+                    >
+                      {commentProfileLoading ? "Analizzo…" : commentProfileAnalyzed ? "✓ Analizzato" : "Analizza profilo"}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="qa-field">
@@ -898,18 +1075,36 @@ export default function AppTodayPage() {
           </section>
         )}
 
-        {/* ── SUGGERISCI MESSAGGIO DM ── */}
+        {/* ── SCRIVI MESSAGGIO DM ── */}
         {dashMode === "dm" && (
           <section className="dash-section">
             <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setDmResult(null); }}>
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setDmResult(null); setDmProfileAnalyzed(false); }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Torna agli strumenti
               </button>
 
               <div className="qa-section-header">
-                <h4 className="qa-section-title">Suggerisci messaggio DM</h4>
+                <h4 className="qa-section-title">Scrivi un messaggio DM</h4>
                 <p className="qa-section-sub">Incolla la conversazione DM e ottieni la risposta migliore da inviare.</p>
+              </div>
+
+              {/* Inline profile analysis */}
+              <div className="qa-inline-profile">
+                <div className="qa-field">
+                  <label className="qa-label">Profilo LinkedIn della persona <span className="qa-label-opt">(facoltativo)</span></label>
+                  <div className="qa-inline-profile-row">
+                    <input type="url" value={dmLinkedinUrl} onChange={(e) => { setDmLinkedinUrl(e.target.value); setDmProfileAnalyzed(false); }} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" style={{ flex: 1 }} />
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      disabled={dmProfileLoading || !dmLinkedinUrl.trim() || dmProfileAnalyzed}
+                      onClick={() => analyzeInlineProfile(dmLinkedinUrl, setDmProfileLoading, setDmProfileAnalyzed, setDmProspect)}
+                    >
+                      {dmProfileLoading ? "Analizzo…" : dmProfileAnalyzed ? "✓ Analizzato" : "Analizza profilo"}
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <div className="qa-field">
@@ -959,58 +1154,81 @@ export default function AppTodayPage() {
           </section>
         )}
 
-        {/* ── TROVA CLIENTI ── */}
-        {dashMode === "find" && (
+        {/* ── GESTISCI CONVERSAZIONE ── */}
+        {dashMode === "conversation" && (
           <section className="dash-section">
             <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setFindResult(null); }}>
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setConvResult(null); setConvProfileAnalyzed(false); }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                 Torna agli strumenti
               </button>
 
               <div className="qa-section-header">
-                <h4 className="qa-section-title">Trova clienti su LinkedIn</h4>
-                <p className="qa-section-sub">Descrivi il tipo di cliente che vuoi trovare e Preflight ti aiuta a creare la ricerca LinkedIn giusta.</p>
+                <h4 className="qa-section-title">Gestisci conversazione</h4>
+                <p className="qa-section-sub">Incolla una conversazione in corso e scopri come portarla avanti verso il tuo obiettivo.</p>
               </div>
 
-              <div className="qa-field">
-                <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
-                <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder di startup SaaS B2B" />
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa / globale" />
-              </div>
-
-              <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
-                {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
-              </button>
-
-              {findResult && (
-                <div className="qa-result">
-                  {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Tipo di cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
-                  {findResult.come_cercarlo && <ResultBlock icon="search" label="Come cercarlo su LinkedIn" text={findResult.come_cercarlo} />}
-                  {findResult.link_ricerca_linkedin && (
-                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
-                  )}
-                  {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti per filtrare meglio" text={findResult.suggerimenti_filtri} />}
-                  {findResult.profili_simili && <ResultBlock icon="user" label="Profili simili da cercare" text={findResult.profili_simili} />}
-                  {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
-                  <div style={{ marginTop: "1rem" }}>
-                    <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
-                      Analizza questo profilo →
+              {/* Inline profile analysis */}
+              <div className="qa-inline-profile">
+                <div className="qa-field">
+                  <label className="qa-label">Profilo LinkedIn della persona <span className="qa-label-opt">(facoltativo)</span></label>
+                  <div className="qa-inline-profile-row">
+                    <input type="url" value={convLinkedinUrl} onChange={(e) => { setConvLinkedinUrl(e.target.value); setConvProfileAnalyzed(false); }} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" style={{ flex: 1 }} />
+                    <button
+                      type="button"
+                      className="btn-secondary"
+                      disabled={convProfileLoading || !convLinkedinUrl.trim() || convProfileAnalyzed}
+                      onClick={() => analyzeInlineProfile(convLinkedinUrl, setConvProfileLoading, setConvProfileAnalyzed, setConvProspect)}
+                    >
+                      {convProfileLoading ? "Analizzo…" : convProfileAnalyzed ? "✓ Analizzato" : "Analizza profilo"}
                     </button>
                   </div>
                 </div>
-              )}
+              </div>
 
-              {findResult && !profile.onboarding_complete && <OnboardingCallout />}
+              <div className="qa-field">
+                <label className="qa-label">Conversazione in corso</label>
+                <textarea value={convThread} onChange={(e) => setConvThread(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Incolla tutta la conversazione:\nIo: Ho visto il tuo post su…\nLui: Sì, è un tema importante…\nIo: Come state gestendo questo aspetto?"} />
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Obiettivo</label>
+                <div className="qa-chip-group">
+                  {[
+                    { id: "continue_conversation", label: "Continuare" },
+                    { id: "understand_fit", label: "Capire il fit" },
+                    { id: "propose_call", label: "Proporre call" },
+                    { id: "follow_up", label: "Follow-up" },
+                  ].map((g) => (
+                    <button key={g.id} type="button" className={`qa-chip${convGoal === g.id ? " qa-chip-active" : ""}`} onClick={() => setConvGoal(g.id)}>{g.label}</button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Note sulla persona <span className="qa-label-opt">(facoltativo)</span></label>
+                <textarea value={convProspect} onChange={(e) => setConvProspect(e.target.value)} className="qa-input" rows={2} placeholder="Es: CEO di un'agenzia, mi ha già chiesto info" />
+              </div>
+
+              <button onClick={handleConversation} disabled={convLoading || !convThread.trim()} className="qa-btn">
+                {convLoading ? (<><span className="qa-spinner" aria-hidden="true" />Analizzo…</>) : (<>Analizza conversazione <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+              </button>
+
+              {convResult && (
+                <div className="qa-result">
+                  <ResultBlock icon="chat" label={`Risposta migliore · Calore: ${convResult.client_heat_level}`} text={convResult.best_reply} variant="reply" />
+                  <ResultBlock icon="arrow" label="Versione breve" text={convResult.alternatives.short} variant="reply" />
+                  <ResultBlock icon="check" label="Versione diretta" text={convResult.alternatives.assertive} variant="reply" />
+                  <ResultBlock icon="bulb" label="Domande qualificanti" text={convResult.qualifying_questions.join("\n\n")} />
+                  <ResultBlock icon="repeat" label="Follow-up 48h" text={convResult.followups["48h"]} variant="reply" />
+                  <ResultBlock icon="repeat" label="Follow-up 5 giorni" text={convResult.followups["5d"]} variant="reply" />
+                  <ResultBlock icon="repeat" label="Follow-up 10 giorni" text={convResult.followups["10d"]} variant="reply" />
+                  {convResult.message_risk_warning && convResult.message_risk_warning !== "nessuno" && (
+                    <ResultBlock icon="warn" label="Attenzione" text={convResult.message_risk_warning} />
+                  )}
+                  <ResultBlock icon="arrow" label="Prossimo passo" text={convResult.next_action} />
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -1062,7 +1280,7 @@ export default function AppTodayPage() {
         )}
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 3 — CONTATTI ANALIZZATI
+            SEZIONE 4 — CONTATTI ANALIZZATI
         ══════════════════════════════════════════════════════ */}
         <section className="dash-section">
           <h3 className="dash-section-title">Contatti analizzati</h3>
@@ -1136,6 +1354,7 @@ const ICON_MAP: Record<string, React.ReactElement> = {
   clock: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   info: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
   link: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>,
+  image: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
 };
 
 function RIcon({ type }: { type: string }) {

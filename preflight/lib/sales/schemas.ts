@@ -73,6 +73,10 @@ export const postBuilderSchema = z.object({
   cta: z.string(),
   comment_starter: z.string(),
   next_step: z.string(),
+  suggerimento_immagine: z.object({
+    tipo: z.string(),
+    perche_funziona: z.string(),
+  }),
 });
 
 export const commentAssistantSchema = z.object({

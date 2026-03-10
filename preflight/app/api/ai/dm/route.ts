@@ -10,6 +10,7 @@ const requestSchema = z.object({
   pasted_chat_thread: z.string(),
   conversation_goal: z.enum(["understand_fit", "continue_conversation", "move_to_dm", "propose_call", "follow_up"]),
   prospect_profile_text: z.string().optional().default(""),
+  prospect_linkedin_url: z.string().max(500).optional(),
 });
 
 export async function POST(req: Request) {
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { pasted_chat_thread, conversation_goal, prospect_profile_text, profile } = parsed.data;
+    const { pasted_chat_thread, conversation_goal, prospect_profile_text, prospect_linkedin_url, profile } = parsed.data;
     const prompt = `${salesRules}
 
 Stai analizzando una conversazione DM su LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
@@ -50,6 +51,7 @@ Contesto:
 - Thread conversazione: ${pasted_chat_thread}
 - Obiettivo: ${conversation_goal}
 - Profilo prospect: ${prospect_profile_text || "non fornito"}
+${prospect_linkedin_url ? `- LinkedIn prospect: ${prospect_linkedin_url}` : ""}
 ${formatProfileContext(profile) || "Profilo utente: non configurato"}`;
     const output = await generateStructured({ prompt, schema: dmAssistantSchema });
     return NextResponse.json(output);

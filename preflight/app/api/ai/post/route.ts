@@ -40,7 +40,11 @@ Stai scrivendo un post LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Restituisc
   },
   "cta": "<stringa: call to action per il post>",
   "comment_starter": "<stringa: commento esempio per stimolare engagement>",
-  "next_step": "<stringa: prossima azione concreta dopo la pubblicazione>"
+  "next_step": "<stringa: prossima azione concreta dopo la pubblicazione>",
+  "suggerimento_immagine": {
+    "tipo": "<stringa: tipo di immagine consigliata. Suggerisci SEMPRE di preferire foto reali dell'utente (foto mentre lavora, foto dell'ambiente, screenshot di lavoro reale) oppure grafiche semplici per attirare attenzione>",
+    "perche_funziona": "<stringa: perché questo tipo di immagine funziona per questo post>"
+  }
 }
 
 Contesto:

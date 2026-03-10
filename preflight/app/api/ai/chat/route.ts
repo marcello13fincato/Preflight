@@ -124,17 +124,14 @@ Rispondi SOLO con un oggetto JSON con questa struttura:
   "nome_contatto": "<nome della persona analizzata, se desumibile>",
   "ruolo_contatto": "<ruolo o titolo professionale della persona, se desumibile>",
   "azienda_contatto": "<azienda della persona, se desumibile>",
-  "chi_e": "<breve lettura del profilo: chi è, cosa fa, che ruolo ha>",
-  "potenziale": "<valutazione: Alto potenziale / Potenziale medio / Potenziale basso — con spiegazione>",
-  "perche_parlarle": "<motivi concreti basati su profilo e contesto per cui ha senso contattarla>",
+  "chi_e": "<chi è questa persona: breve lettura del profilo, cosa fa, che tipo di figura è>",
+  "ruolo_e_contesto": "<ruolo nella sua azienda, dimensione azienda, settore, fase in cui si trova>",
+  "perche_buon_contatto": "<motivi concreti basati su profilo e contesto per cui potrebbe essere un buon contatto per te>",
   "strategia_contatto": "<strategia di contatto consigliata: commentare un suo post, scrivere in DM, interagire prima in modo leggero, aspettare una sua pubblicazione>",
   "primo_messaggio": "<primo messaggio consigliato, naturale e non aggressivo>",
+  "followup_consigliato": "<messaggio follow-up naturale da inviare se non risponde entro 3-5 giorni>",
   "step_successivi": "<sequenza chiara di passi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
-  "primo_followup": "<messaggio di follow-up da inviare se non risponde entro 3-5 giorni, diverso dal primo messaggio>",
-  "secondo_followup": "<secondo follow-up dopo altri 5-7 giorni, con angolo diverso>",
-  "segnali_positivi": "<segnali concreti nel profilo o nel comportamento che indicano apertura o interesse>",
-  "segnali_deboli": "<segnali di rischio o che potrebbero indicare scarso interesse>",
-  "promemoria": "<cosa controllare o fare tra 7 giorni su questa persona>"
+  "segnali_da_osservare": "<segnali concreti nel profilo o nel comportamento da osservare: segnali positivi, segnali deboli, cosa monitorare>"
 }
 
 Richiesta dell'utente:
@@ -188,10 +185,10 @@ Rispondi SEMPRE in italiano.
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
   "lettura_situazione": "<spiegazione breve di ciò che sta succedendo>",
-  "cosa_fare": "<direzione strategica chiara su cosa conviene fare adesso>",
+  "strategia": "<direzione strategica chiara su cosa conviene fare adesso>",
   "risposta_consigliata": "<testo pronto da usare se serve, oppure indicazione concreta>",
-  "step_successivi": "<sequenza di passi precisi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
   "followup_consigliato": "<messaggio o azione di follow-up da fare tra qualche giorno se non c'è risposta>",
+  "step_successivi": "<sequenza di passi precisi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
   "errori_da_evitare": "<cosa NON fare in questa situazione e perché, errori comuni>"
 }
 

@@ -12,10 +12,10 @@ const topItems: NavItem[] = [
 const toolItems: NavItem[] = [
   { href: "/app/prospect", label: "Analizza profilo" },
   { href: "/app/dm", label: "Chiedi un consiglio" },
-  { href: "/app/onboarding", label: "Configura il tuo sistema" },
 ];
 
 const bottomItems: NavItem[] = [
+  { href: "/app/onboarding", label: "Configura il tuo sistema" },
   { href: "/app/settings", label: "Impostazioni" },
 ];
 
@@ -47,6 +47,7 @@ export default function AppNav() {
       </div>
       <div className="dash-nav-divider" />
       <div className="dash-nav-group">
+        <span className="dash-nav-label">Area personale</span>
         {bottomItems.map(navLink)}
       </div>
     </nav>

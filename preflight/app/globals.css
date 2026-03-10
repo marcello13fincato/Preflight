@@ -1998,6 +1998,58 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 
 /* ═══════════════════════════════════════════════════════════
+   FIND SECTION — Trova clienti su LinkedIn (prominent)
+═══════════════════════════════════════════════════════════ */
+.find-section{
+  background:var(--color-surface);
+  border:2px solid var(--color-primary);
+  border-radius:var(--radius-lg);
+  padding:2rem;
+  box-shadow:0 0 0 4px rgba(10,102,194,0.08),var(--shadow-md);
+}
+.find-section-header{
+  display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem;
+}
+.find-section-icon{
+  width:48px;height:48px;border-radius:14px;flex-shrink:0;
+  background:var(--color-primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+}
+.find-section-title{
+  font-size:1.2rem;font-weight:800;color:var(--color-text);margin:0;letter-spacing:-0.01em;
+}
+.find-section-sub{
+  font-size:.88rem;color:var(--color-muted);margin:.2rem 0 0;line-height:1.5;
+}
+.find-section-form{
+  display:flex;flex-direction:column;gap:.75rem;
+}
+.find-section-row{
+  display:flex;gap:1rem;
+}
+@media(max-width:640px){
+  .find-section{padding:1.25rem}
+  .find-section-row{flex-direction:column;gap:.75rem}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INLINE PROFILE ANALYSIS — per comment/dm/conv
+═══════════════════════════════════════════════════════════ */
+.qa-inline-profile{
+  background:var(--color-bg);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  padding:1rem 1.25rem;
+  margin-bottom:.5rem;
+}
+.qa-inline-profile-row{
+  display:flex;gap:.75rem;align-items:flex-start;
+}
+@media(max-width:480px){
+  .qa-inline-profile-row{flex-direction:column}
+}
+
+/* ═══════════════════════════════════════════════════════════
    TOOL IMAGE PREVIEW
 ═══════════════════════════════════════════════════════════ */
 .tool-image-preview{
