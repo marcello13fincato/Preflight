@@ -105,6 +105,8 @@ export default function AppTodayPage() {
   /* ── Advice state ── */
   const [quickSituation, setQuickSituation] = useState("");
   const [quickAdviceLinkedinUrl, setQuickAdviceLinkedinUrl] = useState("");
+  const [quickAdvicePdfFile, setQuickAdvicePdfFile] = useState<File | null>(null);
+  const [quickAdviceWebsiteUrl, setQuickAdviceWebsiteUrl] = useState("");
   const [quickAdviceResult, setQuickAdviceResult] = useState<{
     lettura_situazione: string; strategia: string;
     risposta_consigliata: string; followup_consigliato: string;
@@ -289,6 +291,14 @@ export default function AppTodayPage() {
     setQuickAdviceLoading(true);
     setQuickAdviceResult(null);
     try {
+      let pdfText = "";
+      if (quickAdvicePdfFile) pdfText = `[PDF caricato: ${quickAdvicePdfFile.name}]`;
+
+      const extraParts: string[] = [];
+      if (quickAdviceLinkedinUrl.trim()) extraParts.push(`Profilo LinkedIn: ${quickAdviceLinkedinUrl}`);
+      if (pdfText) extraParts.push(pdfText);
+      if (quickAdviceWebsiteUrl.trim()) extraParts.push(`Sito web: ${quickAdviceWebsiteUrl}`);
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -297,7 +307,7 @@ export default function AppTodayPage() {
           advice: true,
           assistantMode: "advice",
           profile: profile.onboarding || undefined,
-          profileInfo: quickAdviceLinkedinUrl.trim() || undefined,
+          profileInfo: extraParts.length ? extraParts.join("\n") : undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore");
@@ -590,7 +600,7 @@ export default function AppTodayPage() {
             PAGE HEADING
         ══════════════════════════════════════════════════════ */}
         <div className="dash-hero">
-          <h2 className="dash-hero-title">Cosa vuoi fare oggi?</h2>
+          <h2 className="dash-hero-title">Cosa fare oggi</h2>
           <p className="dash-hero-sub">Preflight ti aiuta a trovare persone da contattare, capire come scriverle, generare contenuti e gestire le conversazioni.</p>
         </div>
 
@@ -600,7 +610,7 @@ export default function AppTodayPage() {
         <section className="dash-section">
           <div className="dp-header">
             <div>
-              <h3 className="dp-title">Piano di oggi</h3>
+              <h3 className="dp-title">Cosa fare oggi</h3>
               <p className="dp-subtitle">In base al tuo servizio e ai clienti che cerchi, Preflight ti suggerisce cosa fare oggi su LinkedIn.</p>
             </div>
             <button
@@ -686,67 +696,31 @@ export default function AppTodayPage() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 2 — TROVA CLIENTI SU LINKEDIN
+            SEZIONE 2 — STRUMENTI OPERATIVI
         ══════════════════════════════════════════════════════ */}
-        <section className="dash-section find-section">
-          <div className="find-section-header">
-            <div className="find-section-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <div>
-              <h3 className="find-section-title">Trova clienti su LinkedIn</h3>
-              <p className="find-section-sub">Descrivi il tipo di cliente che vuoi trovare e Preflight genera la ricerca LinkedIn giusta.</p>
-            </div>
-          </div>
+        <section className="dash-section">
+          <h3 className="dash-section-title">Strumenti</h3>
 
-          <div className="find-section-form">
-            <div className="qa-field">
-              <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
-              <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={2} placeholder="Es: Founder di startup SaaS B2B, CEO di agenzie di marketing, responsabili vendite in PMI" />
-            </div>
-
-            <div className="find-section-row">
-              <div className="qa-field" style={{ flex: 1 }}>
-                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
-              </div>
-              <div className="qa-field" style={{ flex: 1 }}>
-                <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa" />
-              </div>
-            </div>
-
-            <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
-              {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
-            </button>
-          </div>
-
-          {findResult && (
-            <div className="qa-result">
-              {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
-              {findResult.come_cercarlo && <ResultBlock icon="search" label="Keyword di ricerca" text={findResult.come_cercarlo} />}
-              {findResult.link_ricerca_linkedin && (
-                <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
-              )}
-              {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti filtri" text={findResult.suggerimenti_filtri} />}
-              {findResult.profili_simili && <ResultBlock icon="user" label="Ruoli simili" text={findResult.profili_simili} />}
-              {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
-              <div style={{ marginTop: "1rem" }}>
-                <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
-                  Analizza questo profilo →
-                </button>
-              </div>
+          {/* Mini promemoria "Cosa fare oggi" integrato nel flusso strumenti */}
+          {!dailyPlan && (
+            <div className="dp-inline-reminder" style={{ marginBottom: "1.25rem", padding: "1rem 1.25rem", borderRadius: ".75rem", border: "1px solid var(--border-secondary, #e5e5e5)", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "1.25rem" }}>📋</span>
+              <span style={{ flex: 1, fontSize: ".9rem", color: "var(--fg-secondary, #666)" }}>Non hai ancora generato il piano di oggi. Parti da lì per sapere cosa fare su LinkedIn.</span>
+              <button type="button" onClick={handleGenerateDailyPlan} disabled={dailyPlanLoading} className="btn-secondary" style={{ whiteSpace: "nowrap" }}>
+                {dailyPlanLoading ? "Genero…" : "Genera il piano di oggi →"}
+              </button>
             </div>
           )}
 
-          {findResult && !profile.onboarding_complete && <OnboardingCallout />}
-        </section>
+          {dailyPlan && (
+            <div className="dp-inline-reminder" style={{ marginBottom: "1.25rem", padding: "1rem 1.25rem", borderRadius: ".75rem", border: "1px solid var(--border-secondary, #e5e5e5)", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
+              <span style={{ fontSize: "1.25rem" }}>✅</span>
+              <span style={{ flex: 1, fontSize: ".9rem", color: "var(--fg-secondary, #666)" }}>
+                <strong>Piano di oggi attivo</strong> — {dailyPlan.persone_da_contattare.tipo_profili ? `Contatta: ${dailyPlan.persone_da_contattare.tipo_profili.substring(0, 80)}${dailyPlan.persone_da_contattare.tipo_profili.length > 80 ? "…" : ""}` : "Usa gli strumenti qui sotto per eseguire il piano."}
+              </span>
+            </div>
+          )}
 
-        {/* ══════════════════════════════════════════════════════
-            SEZIONE 3 — STRUMENTI OPERATIVI
-        ══════════════════════════════════════════════════════ */}
-        <section className="dash-section">
-          <h3 className="dash-section-title">Strumenti operativi</h3>
           <div className="tools-grid">
             {TOOLS.map((tool) => (
               <button
@@ -815,13 +789,13 @@ export default function AppTodayPage() {
               )}
 
               <div className="qa-field">
-                <label className="qa-label">Link sito web <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="url" value={quickWebsiteUrl} onChange={(e) => setQuickWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://www.esempio.com" />
+                <label className="qa-label">Link sito web <span className="qa-label-opt">(facoltativo, se azienda)</span></label>
+                <input type="url" value={quickWebsiteUrl} onChange={(e) => setQuickWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://azienda.com" />
               </div>
 
               <div className="qa-field">
                 <label className="qa-label">Descrizione della persona <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea value={quickProfileDesc} onChange={(e) => setQuickProfileDesc(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Es: CEO di un'agenzia di marketing digitale, 50 dipendenti, lavora con e-commerce" />
+                <textarea value={quickProfileDesc} onChange={(e) => setQuickProfileDesc(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder SaaS B2B che pubblica su crescita aziendale." />
               </div>
 
               <button onClick={handleDashProfile} disabled={quickProfileLoading || (!quickLinkedinUrl.trim() && !quickWebsiteUrl.trim() && !quickProfileDesc.trim())} className="qa-btn">
@@ -862,12 +836,28 @@ export default function AppTodayPage() {
 
               <div className="qa-field">
                 <label className="qa-label">Spiegami la situazione</label>
-                <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nNon ci siamo mai scritti prima.\nCome mi conviene rispondere per continuare la conversazione?"} />
+                <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho scritto a un founder SaaS ma mi ha risposto in modo abbastanza generico.\nNon so se continuare la conversazione o cosa scrivere."} />
               </div>
 
               <div className="qa-field">
                 <label className="qa-label">Link profilo LinkedIn della persona coinvolta <span className="qa-label-opt">(facoltativo)</span></label>
                 <input type="url" value={quickAdviceLinkedinUrl} onChange={(e) => setQuickAdviceLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
+                <label className="qa-file-upload">
+                  <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setQuickAdvicePdfFile(e.target.files?.[0] || null)} />
+                  <span className="qa-file-label">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    {quickAdvicePdfFile ? quickAdvicePdfFile.name : "Scegli un file PDF"}
+                  </span>
+                </label>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Link sito web azienda <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="url" value={quickAdviceWebsiteUrl} onChange={(e) => setQuickAdviceWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://azienda.com" />
               </div>
 
               <button onClick={handleDashAdvice} disabled={quickAdviceLoading || !quickSituation.trim()} className="qa-btn">
@@ -1278,6 +1268,63 @@ export default function AppTodayPage() {
             </div>
           </section>
         )}
+
+        {/* ══════════════════════════════════════════════════════
+            SEZIONE 3 — TROVA CLIENTI SU LINKEDIN
+        ══════════════════════════════════════════════════════ */}
+        <section className="dash-section find-section">
+          <div className="find-section-header">
+            <div className="find-section-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div>
+              <h3 className="find-section-title">Trova clienti su LinkedIn</h3>
+              <p className="find-section-sub">Descrivi il tipo di cliente che vuoi trovare e Preflight genera la ricerca LinkedIn giusta.</p>
+            </div>
+          </div>
+
+          <div className="find-section-form">
+            <div className="qa-field">
+              <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
+              <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={2} placeholder="Es: Founder di startup SaaS B2B, CEO di agenzie di marketing, responsabili vendite in PMI" />
+            </div>
+
+            <div className="find-section-row">
+              <div className="qa-field" style={{ flex: 1 }}>
+                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
+              </div>
+              <div className="qa-field" style={{ flex: 1 }}>
+                <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
+                <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa" />
+              </div>
+            </div>
+
+            <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
+              {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+            </button>
+          </div>
+
+          {findResult && (
+            <div className="qa-result">
+              {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
+              {findResult.come_cercarlo && <ResultBlock icon="search" label="Keyword di ricerca" text={findResult.come_cercarlo} />}
+              {findResult.link_ricerca_linkedin && (
+                <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
+              )}
+              {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti filtri" text={findResult.suggerimenti_filtri} />}
+              {findResult.profili_simili && <ResultBlock icon="user" label="Ruoli simili" text={findResult.profili_simili} />}
+              {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
+              <div style={{ marginTop: "1rem" }}>
+                <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
+                  Analizza questo profilo →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {findResult && !profile.onboarding_complete && <OnboardingCallout />}
+        </section>
 
         {/* ══════════════════════════════════════════════════════
             SEZIONE 4 — CONTATTI ANALIZZATI
