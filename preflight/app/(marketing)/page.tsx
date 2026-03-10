@@ -137,6 +137,48 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
+          4b. TROVA CLIENTI (preview premium)
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-light">
+        <div className="hp-container">
+          <div className="hp-section-label">Trova clienti</div>
+          <h2 className="hp-section-title">Trova clienti su LinkedIn</h2>
+          <p className="hp-section-subtitle">
+            Descrivi il tipo di cliente che cerchi e Preflight genera ricerche LinkedIn pronte all&apos;uso con keyword, filtri e suggerimenti.
+          </p>
+
+          <div className="hp-premium-preview">
+            <div className="hp-premium-preview-overlay">
+              <div className="hp-premium-lock-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </div>
+              <p className="hp-premium-label">Questa funzione è disponibile nel piano premium.</p>
+              <Link href="/pricing" className="hp-cta-primary" style={{ marginTop: "0.75rem" }}>
+                Scopri i piani
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </Link>
+            </div>
+
+            <div className="hp-premium-preview-content" aria-hidden="true">
+              <div className="hp-premium-mock-field">
+                <div className="hp-premium-mock-label">Tipo di cliente</div>
+                <div className="hp-premium-mock-input">Founder di startup SaaS B2B</div>
+              </div>
+              <div className="hp-premium-mock-field">
+                <div className="hp-premium-mock-label">Settore</div>
+                <div className="hp-premium-mock-input">Software / SaaS</div>
+              </div>
+              <div className="hp-premium-mock-field">
+                <div className="hp-premium-mock-label">Area geografica</div>
+                <div className="hp-premium-mock-input">Italia</div>
+              </div>
+              <div className="hp-premium-mock-btn">Trova clienti →</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
           5. COME FUNZIONA
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">

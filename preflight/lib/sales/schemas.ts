@@ -172,6 +172,15 @@ export const dailyPlanSchema = z.object({
   }),
 });
 
+export const followupSchema = z.object({
+  analisi_situazione: z.string(),
+  messaggio_followup: z.string(),
+  variante_breve: z.string(),
+  variante_diretta: z.string(),
+  tempistica: z.string(),
+  prossimi_passi: z.string(),
+});
+
 export const onboardingInputSchema = z.object({
   servizio: z.string().min(1),
   cliente_ideale: z.string().min(1),
@@ -193,10 +202,21 @@ export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
 export type SimulatorJson = z.infer<typeof simulatorSchema>;
 export type FindClientsJson = z.infer<typeof findClientsSchema>;
 export type DailyPlanJson = z.infer<typeof dailyPlanSchema>;
+export type FollowupJson = z.infer<typeof followupSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
 export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 
-export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding";
+export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding" | "followup";
+
+export type AnalyzedContact = {
+  id: string;
+  linkedin_url: string;
+  nome: string;
+  ruolo: string;
+  azienda: string;
+  analyzed_at: string;
+  result: Record<string, string>;
+};
 
 export type UserProfileData = {
   onboarding: OnboardingInput | null;

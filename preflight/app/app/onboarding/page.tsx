@@ -118,7 +118,7 @@ export default function OnboardingPage() {
       <section className="onb-hero">
         <h2 className="onb-hero-title">Imposta il tuo sistema</h2>
         <p className="onb-hero-subtitle">
-          Più Preflight conosce il tuo lavoro, più i suggerimenti saranno utili e personalizzati.
+          Più Preflight conosce il tuo lavoro, più i consigli saranno precisi.
         </p>
       </section>
 

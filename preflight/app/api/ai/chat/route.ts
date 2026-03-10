@@ -121,6 +121,9 @@ ${formatProfileContext(profile)}
 Rispondi SEMPRE in italiano.
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
+  "nome_contatto": "<nome della persona analizzata, se desumibile>",
+  "ruolo_contatto": "<ruolo o titolo professionale della persona, se desumibile>",
+  "azienda_contatto": "<azienda della persona, se desumibile>",
   "chi_e": "<breve lettura del profilo: chi è, cosa fa, che ruolo ha>",
   "potenziale": "<valutazione: Alto potenziale / Potenziale medio / Potenziale basso — con spiegazione>",
   "perche_parlarle": "<motivi concreti basati su profilo e contesto per cui ha senso contattarla>",
