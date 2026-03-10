@@ -75,6 +75,10 @@ export const defaultPostBuilder = (objective: string, dmKeyword: string): PostBu
   cta: `Se vuoi lo schema, commenta '${dmKeyword || "audit"}' e ti scrivo in DM.`,
   comment_starter: "Qual e oggi il punto piu difficile nel passare da commento a conversazione privata?",
   next_step: `Pubblica la versione direct e rispondi ai primi 3 commenti con domanda aperta. Obiettivo: 1 DM in 24h (${objective}).`,
+  suggerimento_immagine: {
+    tipo: "Foto reale: una foto di te mentre lavori o del tuo ambiente di lavoro. Le immagini autentiche funzionano meglio delle grafiche su LinkedIn.",
+    perche_funziona: "Le foto reali aumentano la fiducia e l'engagement perché mostrano la persona dietro il contenuto.",
+  },
 });
 
 export const defaultCommentAssistant: CommentAssistantJson = {
