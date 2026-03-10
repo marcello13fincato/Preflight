@@ -7,6 +7,7 @@ type NavItem = { href: string; label: string };
 
 const topItems: NavItem[] = [
   { href: "/app", label: "Dashboard" },
+  { href: "/app/oggi", label: "Cosa fare oggi" },
 ];
 
 const toolItems: NavItem[] = [

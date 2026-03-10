@@ -19,8 +19,8 @@ type DashMode =
   | "followup"
   | "image";
 
-/* ─── Tool definitions (Sezione Strumenti operativi) ─── */
-const TOOLS: {
+/* ─── Tool definitions — Primary (most visible) ─── */
+const PRIMARY_TOOLS: {
   id: DashMode & string;
   icon: string;
   title: string;
@@ -38,6 +38,15 @@ const TOOLS: {
     title: "Chiedimi un consiglio",
     desc: "Descrivi una situazione e scopri come muoverti.",
   },
+];
+
+/* ─── Tool definitions — Secondary ─── */
+const SECONDARY_TOOLS: {
+  id: DashMode & string;
+  icon: string;
+  title: string;
+  desc: string;
+}[] = [
   {
     id: "post",
     icon: "✍️",
@@ -79,14 +88,6 @@ const TOOLS: {
 export default function AppTodayPage() {
   const { data: session } = useSession();
   const [dashMode, setDashMode] = useState<DashMode>(null);
-
-  /* ── Daily plan state ── */
-  const [dailyPlan, setDailyPlan] = useState<{
-    persone_da_contattare: { tipo_profili: string; link_ricerca: string; criteri_scelta: string; primo_messaggio: string; strategia: string };
-    contenuto_consigliato: { idea_post: string; struttura: string; esempio_testo: string; suggerimento_immagine: string };
-    conversazioni_da_seguire: { followup_da_fare: string; quando_scrivere: string; cosa_chiedere: string; esempio_followup: string };
-  } | null>(null);
-  const [dailyPlanLoading, setDailyPlanLoading] = useState(false);
 
   /* ── Profile analysis state ── */
   const [quickLinkedinUrl, setQuickLinkedinUrl] = useState("");
@@ -352,25 +353,6 @@ export default function AppTodayPage() {
     }
   }
 
-  async function handleGenerateDailyPlan() {
-    if (dailyPlanLoading) return;
-    setDailyPlanLoading(true);
-    setDailyPlan(null);
-    try {
-      const res = await fetch("/api/ai/daily-plan", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profile: profile.onboarding || undefined }),
-      });
-      if (!res.ok) throw new Error("Errore");
-      setDailyPlan(await res.json());
-    } catch {
-      setDailyPlan(null);
-    } finally {
-      setDailyPlanLoading(false);
-    }
-  }
-
   async function handlePost() {
     if (!postDraft.trim() || postLoading) return;
     setPostLoading(true);
@@ -600,129 +582,83 @@ export default function AppTodayPage() {
             PAGE HEADING
         ══════════════════════════════════════════════════════ */}
         <div className="dash-hero">
-          <h2 className="dash-hero-title">Cosa fare oggi</h2>
-          <p className="dash-hero-sub">Preflight ti aiuta a trovare persone da contattare, capire come scriverle, generare contenuti e gestire le conversazioni.</p>
+          <h2 className="dash-hero-title">Dashboard</h2>
+          <p className="dash-hero-sub">Una vista rapida su cosa fare oggi, chi contattare e quali strumenti usare.</p>
         </div>
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 1 — PIANO DI OGGI
+            SEZIONE 1 — RIASSUNTO DI OGGI
         ══════════════════════════════════════════════════════ */}
         <section className="dash-section">
-          <div className="dp-header">
-            <div>
-              <h3 className="dp-title">Cosa fare oggi</h3>
-              <p className="dp-subtitle">In base al tuo servizio e ai clienti che cerchi, Preflight ti suggerisce cosa fare oggi su LinkedIn.</p>
+          <div className="dash-today-summary">
+            <div className="dash-today-summary-content">
+              <div className="dash-today-summary-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
+              </div>
+              <div>
+                <h3 className="dash-today-summary-title">Oggi hai 3 azioni ad alto potenziale</h3>
+                <ul className="dash-today-summary-list">
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    3 profili da cercare
+                  </li>
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    2 conversazioni da seguire
+                  </li>
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    1 contenuto da pubblicare
+                  </li>
+                </ul>
+              </div>
             </div>
-            <button
-              type="button"
-              onClick={handleGenerateDailyPlan}
-              disabled={dailyPlanLoading}
-              className="btn-primary"
-            >
-              {dailyPlanLoading ? (
-                <><span className="qa-spinner" aria-hidden="true" />Genero il piano…</>
-              ) : (
-                <>{dailyPlan ? "Rigenera piano" : "Genera il piano di oggi"} <span className="dash-btn-arrow">→</span></>
-              )}
-            </button>
+            <Link href="/app/oggi" className="dash-today-summary-cta">
+              Apri il piano di oggi <span className="dash-btn-arrow">→</span>
+            </Link>
           </div>
-
-          {dailyPlan && (
-            <div className="dp-grid">
-              {/* Blocco 1: Persone da contattare */}
-              <div className="dp-card">
-                <div className="dp-card-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                </div>
-                <h4 className="dp-card-title">Persone da contattare oggi</h4>
-                {dailyPlan.persone_da_contattare.tipo_profili && (
-                  <div className="dp-block"><span className="dp-block-label">Tipo profilo suggerito</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.tipo_profili}</p></div>
-                )}
-                {dailyPlan.persone_da_contattare.link_ricerca && (
-                  <div className="dp-block"><span className="dp-block-label">Ricerca LinkedIn</span><p className="dp-block-text"><a href={dailyPlan.persone_da_contattare.link_ricerca} target="_blank" rel="noopener noreferrer" className="qa-result-link">{dailyPlan.persone_da_contattare.link_ricerca}</a></p></div>
-                )}
-                {dailyPlan.persone_da_contattare.primo_messaggio && (
-                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Messaggio iniziale suggerito</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.primo_messaggio}</p></div>
-                )}
-                {dailyPlan.persone_da_contattare.strategia && (
-                  <div className="dp-block"><span className="dp-block-label">Strategia</span><p className="dp-block-text">{dailyPlan.persone_da_contattare.strategia}</p></div>
-                )}
-                <button type="button" className="qa-cta-secondary dp-cta" onClick={() => setDashMode("profile")}>
-                  Analizza questo profilo →
-                </button>
-              </div>
-
-              {/* Blocco 2: Contenuto da pubblicare */}
-              <div className="dp-card">
-                <div className="dp-card-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </div>
-                <h4 className="dp-card-title">Contenuto consigliato per oggi</h4>
-                {dailyPlan.contenuto_consigliato.idea_post && (
-                  <div className="dp-block"><span className="dp-block-label">Idea contenuto</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.idea_post}</p></div>
-                )}
-                {dailyPlan.contenuto_consigliato.struttura && (
-                  <div className="dp-block"><span className="dp-block-label">Struttura post</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.struttura}</p></div>
-                )}
-                {dailyPlan.contenuto_consigliato.esempio_testo && (
-                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Esempio di testo</span><p className="dp-block-text dp-block-pre">{dailyPlan.contenuto_consigliato.esempio_testo}</p></div>
-                )}
-                {dailyPlan.contenuto_consigliato.suggerimento_immagine && (
-                  <div className="dp-block"><span className="dp-block-label">Suggerimento immagine</span><p className="dp-block-text">{dailyPlan.contenuto_consigliato.suggerimento_immagine}</p><p className="qa-microcopy" style={{ marginTop: ".35rem" }}>📸 Preferisci sempre foto reali: foto mentre lavori, il tuo ambiente, screenshot del tuo lavoro.</p></div>
-                )}
-              </div>
-
-              {/* Blocco 3: Conversazioni da seguire */}
-              <div className="dp-card">
-                <div className="dp-card-icon">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <h4 className="dp-card-title">Conversazioni da seguire</h4>
-                {dailyPlan.conversazioni_da_seguire.followup_da_fare && (
-                  <div className="dp-block"><span className="dp-block-label">Follow-up da fare</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.followup_da_fare}</p></div>
-                )}
-                {dailyPlan.conversazioni_da_seguire.cosa_chiedere && (
-                  <div className="dp-block"><span className="dp-block-label">Domande da fare</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.cosa_chiedere}</p></div>
-                )}
-                {dailyPlan.conversazioni_da_seguire.quando_scrivere && (
-                  <div className="dp-block dp-block-highlight"><span className="dp-block-label">Quando proporre call</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.quando_scrivere}</p></div>
-                )}
-                {dailyPlan.conversazioni_da_seguire.esempio_followup && (
-                  <div className="dp-block"><span className="dp-block-label">Esempio follow-up</span><p className="dp-block-text">{dailyPlan.conversazioni_da_seguire.esempio_followup}</p></div>
-                )}
-              </div>
-            </div>
-          )}
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 2 — STRUMENTI OPERATIVI
+            SEZIONE 2 — STRUMENTI PRINCIPALI
         ══════════════════════════════════════════════════════ */}
         <section className="dash-section">
-          <h3 className="dash-section-title">Strumenti</h3>
+          <h3 className="dash-section-title">Strumenti principali</h3>
 
-          {/* Mini promemoria "Cosa fare oggi" integrato nel flusso strumenti */}
-          {!dailyPlan && (
-            <div className="dp-inline-reminder" style={{ marginBottom: "1.25rem", padding: "1rem 1.25rem", borderRadius: ".75rem", border: "1px solid var(--border-secondary, #e5e5e5)", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "1.25rem" }}>📋</span>
-              <span style={{ flex: 1, fontSize: ".9rem", color: "var(--fg-secondary, #666)" }}>Non hai ancora generato il piano di oggi. Parti da lì per sapere cosa fare su LinkedIn.</span>
-              <button type="button" onClick={handleGenerateDailyPlan} disabled={dailyPlanLoading} className="btn-secondary" style={{ whiteSpace: "nowrap" }}>
-                {dailyPlanLoading ? "Genero…" : "Genera il piano di oggi →"}
+          {/* Trova Clienti — Card prominente */}
+          <div className="dash-find-prominent" onClick={() => {
+            const el = document.querySelector('.find-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }}>
+            <div className="dash-find-prominent-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div className="dash-find-prominent-body">
+              <h4 className="dash-find-prominent-title">Trova clienti su LinkedIn</h4>
+              <p className="dash-find-prominent-desc">Descrivi il cliente ideale e genera una ricerca LinkedIn pronta all&apos;uso.</p>
+            </div>
+            <span className="dash-find-prominent-arrow">→</span>
+          </div>
+
+          {/* Primary tools */}
+          <div className="tools-grid-primary">
+            {PRIMARY_TOOLS.map((tool) => (
+              <button
+                key={tool.id}
+                type="button"
+                className={`tool-card tool-card-lg${dashMode === tool.id ? " tool-card-active" : ""}`}
+                onClick={() => setDashMode(dashMode === tool.id ? null : tool.id)}
+              >
+                <span className="tool-card-icon">{tool.icon}</span>
+                <h4 className="tool-card-title">{tool.title}</h4>
+                <p className="tool-card-desc">{tool.desc}</p>
               </button>
-            </div>
-          )}
+            ))}
+          </div>
 
-          {dailyPlan && (
-            <div className="dp-inline-reminder" style={{ marginBottom: "1.25rem", padding: "1rem 1.25rem", borderRadius: ".75rem", border: "1px solid var(--border-secondary, #e5e5e5)", display: "flex", alignItems: "center", gap: "1rem", flexWrap: "wrap" }}>
-              <span style={{ fontSize: "1.25rem" }}>✅</span>
-              <span style={{ flex: 1, fontSize: ".9rem", color: "var(--fg-secondary, #666)" }}>
-                <strong>Piano di oggi attivo</strong> — {dailyPlan.persone_da_contattare.tipo_profili ? `Contatta: ${dailyPlan.persone_da_contattare.tipo_profili.substring(0, 80)}${dailyPlan.persone_da_contattare.tipo_profili.length > 80 ? "…" : ""}` : "Usa gli strumenti qui sotto per eseguire il piano."}
-              </span>
-            </div>
-          )}
-
-          <div className="tools-grid">
-            {TOOLS.map((tool) => (
+          {/* Secondary tools */}
+          <div className="tools-grid" style={{ marginTop: '1rem' }}>
+            {SECONDARY_TOOLS.map((tool) => (
               <button
                 key={tool.id}
                 type="button"
@@ -1362,23 +1298,34 @@ export default function AppTodayPage() {
           )}
         </section>
 
-        {/* ── Configura il sistema ── */}
-        {!profile.onboarding_complete && (
-          <section className="dash-section">
-            <div className="dash-start-grid" style={{ gridTemplateColumns: "1fr" }}>
-              <div className="dash-start-card">
-                <div className="dash-start-card-icon">
+        {/* ── IL TUO SISTEMA ── */}
+        <section className="dash-section">
+          <h3 className="dash-section-title">Il tuo sistema</h3>
+          <div className="dash-system-card">
+            <div className="dash-system-status">
+              <div className="dash-system-status-icon">
+                {profile.onboarding_complete ? (
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                ) : (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                </div>
-                <h4 className="dash-start-card-title">Imposta il tuo sistema</h4>
-                <p className="dash-start-card-desc">Più l&apos;AI conosce il tuo lavoro, più i consigli saranno precisi.</p>
-                <Link href="/app/onboarding" className="dash-btn-primary dash-btn-full">
-                  Configura il tuo sistema <span className="dash-btn-arrow">→</span>
-                </Link>
+                )}
+              </div>
+              <div>
+                <h4 className="dash-system-status-title">
+                  {profile.onboarding_complete ? "Sistema configurato" : "Sistema non ancora configurato"}
+                </h4>
+                <p className="dash-system-status-desc">
+                  {profile.onboarding_complete
+                    ? "L'AI conosce il tuo servizio e il tuo cliente ideale. I consigli sono personalizzati."
+                    : "Configura il tuo sistema per ricevere consigli più precisi e personalizzati."}
+                </p>
               </div>
             </div>
-          </section>
-        )}
+            <Link href="/app/onboarding" className={profile.onboarding_complete ? "btn-secondary" : "btn-primary"}>
+              {profile.onboarding_complete ? "Modifica configurazione" : "Configura il tuo sistema"} <span className="dash-btn-arrow">→</span>
+            </Link>
+          </div>
+        </section>
       </div>
     </>
   );

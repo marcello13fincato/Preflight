@@ -155,17 +155,25 @@ export const findClientsSchema = z.object({
 });
 
 export const dailyPlanSchema = z.object({
+  priorita_oggi: z.object({
+    azione_1: z.string(),
+    azione_2: z.string(),
+    azione_3: z.string(),
+  }),
   persone_da_contattare: z.object({
     tipo_profili: z.string(),
     link_ricerca: z.string(),
     criteri_scelta: z.string(),
     primo_messaggio: z.string(),
     strategia: z.string(),
+    perche_oggi: z.string(),
   }),
   contenuto_consigliato: z.object({
     idea_post: z.string(),
+    angolo_post: z.string(),
     struttura: z.string(),
     esempio_testo: z.string(),
+    cta_post: z.string(),
     suggerimento_immagine: z.string(),
   }),
   conversazioni_da_seguire: z.object({
@@ -173,6 +181,8 @@ export const dailyPlanSchema = z.object({
     quando_scrivere: z.string(),
     cosa_chiedere: z.string(),
     esempio_followup: z.string(),
+    segnali_da_osservare: z.string(),
+    errori_da_evitare: z.string(),
   }),
 });
 

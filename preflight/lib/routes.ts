@@ -8,6 +8,7 @@ export const marketingCTA = { label: "Prova l'assistente", href: "/app" };
 
 export const dashboardNav = [
   { label: "Dashboard", href: "/app" },
+  { label: "Cosa fare oggi", href: "/app/oggi" },
   { label: "Analizza profilo", href: "/app/prospect" },
   { label: "Chiedi un consiglio", href: "/app/dm" },
   { label: "Configura", href: "/app/onboarding" },
