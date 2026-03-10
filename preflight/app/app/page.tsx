@@ -99,7 +99,7 @@ export default function AppTodayPage() {
     nome_contatto?: string; ruolo_contatto?: string; azienda_contatto?: string;
     chi_e: string; ruolo_e_contesto: string; perche_buon_contatto: string;
     strategia_contatto: string; primo_messaggio: string; followup_consigliato: string;
-    step_successivi: string; segnali_da_osservare: string;
+    step_successivi: string; segnali_da_osservare: string; errori_da_evitare: string;
   } | null>(null);
   const [quickProfileLoading, setQuickProfileLoading] = useState(false);
 
@@ -280,7 +280,7 @@ export default function AppTodayPage() {
         chi_e: "Si è verificato un errore. Riprova più tardi.",
         ruolo_e_contesto: "", perche_buon_contatto: "", strategia_contatto: "",
         primo_messaggio: "", followup_consigliato: "", step_successivi: "",
-        segnali_da_osservare: "",
+        segnali_da_osservare: "", errori_da_evitare: "",
       });
     } finally {
       setQuickProfileLoading(false);
@@ -686,9 +686,14 @@ export default function AppTodayPage() {
                 Torna agli strumenti
               </button>
 
-              <div className="qa-section-header">
-                <h4 className="qa-section-title">Analizza questo profilo</h4>
-                <p className="qa-section-sub">Scopri se vale la pena contattare questa persona e come muoverti.</p>
+              <div className="qa-section-header qa-section-header-hero">
+                <div className="qa-section-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <h3 className="qa-section-title qa-section-title-lg">Analizza questo profilo</h3>
+                <p className="qa-section-sub">
+                  Scopri se vale la pena contattare questa persona e come muoverti per iniziare la conversazione.
+                </p>
               </div>
 
               <div className="qa-field">
@@ -697,8 +702,13 @@ export default function AppTodayPage() {
               </div>
 
               <div className="qa-field">
-                <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
-                <p className="qa-microcopy">Se vuoi un&apos;analisi più precisa, puoi caricare anche il PDF del profilo.</p>
+                <label className="qa-label">
+                  Carica il PDF del profilo
+                  <span className="qa-label-opt">(facoltativo)</span>
+                </label>
+                <p className="qa-microcopy">
+                  Se vuoi un&apos;analisi più precisa, puoi caricare anche il PDF del profilo.
+                </p>
                 <label className="qa-file-upload">
                   <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setQuickPdfFile(e.target.files?.[0] || null)} />
                   <span className="qa-file-label">
@@ -730,8 +740,8 @@ export default function AppTodayPage() {
               </div>
 
               <div className="qa-field">
-                <label className="qa-label">Descrizione della persona <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea value={quickProfileDesc} onChange={(e) => setQuickProfileDesc(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder SaaS B2B che pubblica su crescita aziendale." />
+                <label className="qa-label">Contesto opzionale <span className="qa-label-opt">(facoltativo)</span></label>
+                <textarea value={quickProfileDesc} onChange={(e) => setQuickProfileDesc(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder SaaS che pubblica su crescita aziendale." />
               </div>
 
               <button onClick={handleDashProfile} disabled={quickProfileLoading || (!quickLinkedinUrl.trim() && !quickWebsiteUrl.trim() && !quickProfileDesc.trim())} className="qa-btn">
@@ -744,10 +754,11 @@ export default function AppTodayPage() {
                   {quickProfileResult.ruolo_e_contesto && <ResultBlock icon="info" label="Ruolo e contesto" text={quickProfileResult.ruolo_e_contesto} />}
                   {quickProfileResult.perche_buon_contatto && <ResultBlock icon="bulb" label="Perché potrebbe essere un buon contatto" text={quickProfileResult.perche_buon_contatto} variant="valutazione" />}
                   {quickProfileResult.strategia_contatto && <ResultBlock icon="search" label="Strategia di contatto" text={quickProfileResult.strategia_contatto} />}
-                  {quickProfileResult.primo_messaggio && <ResultBlock icon="chat" label="Primo messaggio consigliato" text={quickProfileResult.primo_messaggio} variant="reply" />}
+                  {quickProfileResult.primo_messaggio && <ResultBlock icon="chat" label="Primo messaggio suggerito" text={quickProfileResult.primo_messaggio} variant="reply" />}
                   {quickProfileResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up consigliato" text={quickProfileResult.followup_consigliato} variant="reply" />}
                   {quickProfileResult.step_successivi && <ResultBlock icon="arrow" label="Step successivi" text={quickProfileResult.step_successivi} />}
                   {quickProfileResult.segnali_da_osservare && <ResultBlock icon="warn" label="Segnali da osservare" text={quickProfileResult.segnali_da_osservare} />}
+                  {quickProfileResult.errori_da_evitare && <ResultBlock icon="warn" label="Errori da evitare" text={quickProfileResult.errori_da_evitare} />}
                 </div>
               )}
 
@@ -765,14 +776,29 @@ export default function AppTodayPage() {
                 Torna agli strumenti
               </button>
 
-              <div className="qa-section-header">
-                <h4 className="qa-section-title">Chiedimi un consiglio</h4>
-                <p className="qa-section-sub">Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.</p>
+              <div className="qa-section-header qa-section-header-hero">
+                <div className="qa-section-icon">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 className="qa-section-title qa-section-title-lg">Chiedimi un consiglio</h3>
+                <p className="qa-section-sub">
+                  Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.
+                </p>
               </div>
 
               <div className="qa-field">
                 <label className="qa-label">Spiegami la situazione</label>
-                <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho scritto a un founder SaaS ma mi ha risposto in modo abbastanza generico.\nNon so se continuare la conversazione o cosa scrivere."} />
+                <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho scritto a un founder SaaS e mi ha risposto in modo abbastanza generico.\nNon so come continuare la conversazione."} />
+              </div>
+
+              <div className="qa-examples">
+                <p className="qa-examples-title">Esempi di situazioni:</p>
+                <ul className="qa-examples-list">
+                  <li>Qualcuno ha commentato un mio post</li>
+                  <li>Ho ricevuto un messaggio su LinkedIn</li>
+                  <li>Voglio capire se è il momento giusto per proporre una call</li>
+                  <li>Non so come continuare una conversazione</li>
+                </ul>
               </div>
 
               <div className="qa-field">
@@ -803,9 +829,9 @@ export default function AppTodayPage() {
               {quickAdviceResult && (
                 <div className="qa-result">
                   {quickAdviceResult.lettura_situazione && <ResultBlock icon="info" label="Lettura della situazione" text={quickAdviceResult.lettura_situazione} />}
-                  {quickAdviceResult.strategia && <ResultBlock icon="check" label="Strategia" text={quickAdviceResult.strategia} />}
+                  {quickAdviceResult.strategia && <ResultBlock icon="check" label="Strategia consigliata" text={quickAdviceResult.strategia} />}
                   {quickAdviceResult.risposta_consigliata && <ResultBlock icon="chat" label="Risposta suggerita" text={quickAdviceResult.risposta_consigliata} variant="reply" />}
-                  {quickAdviceResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up" text={quickAdviceResult.followup_consigliato} variant="reply" />}
+                  {quickAdviceResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up consigliato" text={quickAdviceResult.followup_consigliato} variant="reply" />}
                   {quickAdviceResult.step_successivi && <ResultBlock icon="arrow" label="Step successivi" text={quickAdviceResult.step_successivi} />}
                   {quickAdviceResult.errori_da_evitare && <ResultBlock icon="warn" label="Errori da evitare" text={quickAdviceResult.errori_da_evitare} />}
                 </div>

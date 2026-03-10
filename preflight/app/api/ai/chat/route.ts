@@ -131,7 +131,8 @@ Rispondi SOLO con un oggetto JSON con questa struttura:
   "primo_messaggio": "<primo messaggio consigliato, naturale e non aggressivo>",
   "followup_consigliato": "<messaggio follow-up naturale da inviare se non risponde entro 3-5 giorni>",
   "step_successivi": "<sequenza chiara di passi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
-  "segnali_da_osservare": "<segnali concreti nel profilo o nel comportamento da osservare: segnali positivi, segnali deboli, cosa monitorare>"
+  "segnali_da_osservare": "<segnali concreti nel profilo o nel comportamento da osservare: segnali positivi, segnali deboli, cosa monitorare>",
+  "errori_da_evitare": "<cosa NON fare con questa persona e perché, errori comuni da evitare nel primo contatto>"
 }
 
 Richiesta dell'utente:

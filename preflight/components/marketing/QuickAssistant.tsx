@@ -28,12 +28,16 @@ export default function QuickAssistant() {
   const [linkedinUrl, setLinkedinUrl] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
   const [showPdfGuide, setShowPdfGuide] = useState(false);
+  const [websiteUrl, setWebsiteUrl] = useState("");
   const [profileReason, setProfileReason] = useState("");
   const [profileResult, setProfileResult] = useState<ProfileAnalysisOutput | null>(null);
   const [profileLoading, setProfileLoading] = useState(false);
 
   // Advice state
   const [situation, setSituation] = useState("");
+  const [adviceLinkedinUrl, setAdviceLinkedinUrl] = useState("");
+  const [advicePdfFile, setAdvicePdfFile] = useState<File | null>(null);
+  const [adviceWebsiteUrl, setAdviceWebsiteUrl] = useState("");
   const [adviceResult, setAdviceResult] = useState<AdviceOutput | null>(null);
   const [adviceLoading, setAdviceLoading] = useState(false);
 
@@ -53,16 +57,20 @@ export default function QuickAssistant() {
       if (pdfFile) {
         pdfText = `[PDF caricato: ${pdfFile.name}]`;
       }
+      const inputParts: string[] = [`Profilo LinkedIn: ${linkedinUrl}`];
+      if (websiteUrl.trim()) inputParts.push(`Sito web: ${websiteUrl}`);
+      if (profileReason.trim()) inputParts.push(`Contesto: ${profileReason}`);
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          message: `Analizza questo profilo LinkedIn: ${linkedinUrl}${profileReason ? `\n\nMotivo del contatto: ${profileReason}` : ""}`,
+          message: `Analizza questo profilo:\n${inputParts.join("\n")}`,
           advice: true,
           demo: true,
           assistantMode: "profile",
           linkedinUrl: linkedinUrl.trim(),
-          profileInfo: pdfText || undefined,
+          profileInfo: [pdfText, websiteUrl.trim() ? `Sito web: ${websiteUrl}` : ""].filter(Boolean).join("\n") || undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore nella richiesta");
@@ -90,6 +98,15 @@ export default function QuickAssistant() {
     setAdviceLoading(true);
     setAdviceResult(null);
     try {
+      let pdfText = "";
+      if (advicePdfFile) {
+        pdfText = `[PDF caricato: ${advicePdfFile.name}]`;
+      }
+      const extraParts: string[] = [];
+      if (adviceLinkedinUrl.trim()) extraParts.push(`Profilo LinkedIn: ${adviceLinkedinUrl}`);
+      if (pdfText) extraParts.push(pdfText);
+      if (adviceWebsiteUrl.trim()) extraParts.push(`Sito web: ${adviceWebsiteUrl}`);
+
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -98,6 +115,7 @@ export default function QuickAssistant() {
           advice: true,
           demo: true,
           assistantMode: "advice",
+          profileInfo: extraParts.length ? extraParts.join("\n") : undefined,
         }),
       });
       if (!res.ok) throw new Error("Errore nella richiesta");
@@ -163,8 +181,11 @@ export default function QuickAssistant() {
           Torna alle opzioni
         </button>
 
-        <div className="qa-section-header">
-          <h3 className="qa-section-title">Analizza questo profilo</h3>
+        <div className="qa-section-header qa-section-header-hero">
+          <div className="qa-section-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <h3 className="qa-section-title qa-section-title-lg">Analizza questo profilo</h3>
           <p className="qa-section-sub">
             Scopri se vale la pena contattare questa persona e come muoverti per iniziare la conversazione.
           </p>
@@ -225,7 +246,21 @@ export default function QuickAssistant() {
 
         <div className="qa-field">
           <label className="qa-label">
-            Perché vorresti contattare questa persona?
+            Link sito web
+            <span className="qa-label-opt">(facoltativo, se azienda)</span>
+          </label>
+          <input
+            type="url"
+            value={websiteUrl}
+            onChange={(e) => setWebsiteUrl(e.target.value)}
+            className="qa-input"
+            placeholder="https://azienda.com"
+          />
+        </div>
+
+        <div className="qa-field">
+          <label className="qa-label">
+            Contesto opzionale
             <span className="qa-label-opt">(facoltativo)</span>
           </label>
           <textarea
@@ -233,7 +268,7 @@ export default function QuickAssistant() {
             onChange={(e) => setProfileReason(e.target.value)}
             className="qa-input qa-input-lg"
             rows={3}
-            placeholder="Credo che questa persona possa essere interessata a migliorare LinkedIn come canale per trovare clienti."
+            placeholder="Founder SaaS che pubblica su crescita aziendale."
           />
         </div>
 
@@ -285,9 +320,13 @@ export default function QuickAssistant() {
                 Per vedere l&apos;analisi completa accedi alla dashboard.
               </div>
               <ul className="qa-locked-list">
+                <li>Ruolo e contesto</li>
                 <li>Strategia di contatto consigliata</li>
                 <li>Primo messaggio pronto da usare</li>
+                <li>Follow-up consigliato</li>
                 <li>Step successivi per arrivare a una call</li>
+                <li>Segnali da osservare</li>
+                <li>Errori da evitare</li>
               </ul>
               <Link href="/signup" className="qa-locked-cta">
                 Sblocca l&apos;analisi completa
@@ -308,8 +347,11 @@ export default function QuickAssistant() {
         Torna alle opzioni
       </button>
 
-      <div className="qa-section-header">
-        <h3 className="qa-section-title">Chiedimi un consiglio</h3>
+      <div className="qa-section-header qa-section-header-hero">
+        <div className="qa-section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3 className="qa-section-title qa-section-title-lg">Chiedimi un consiglio</h3>
         <p className="qa-section-sub">
           Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.
         </p>
@@ -322,7 +364,7 @@ export default function QuickAssistant() {
           onChange={(e) => setSituation(e.target.value)}
           className="qa-input qa-input-lg"
           rows={6}
-          placeholder={"Ho pubblicato un post su LinkedIn.\nUna persona ha commentato dicendo che anche loro hanno questo problema.\nNon ci siamo mai scritti prima.\nCome mi conviene rispondere per continuare la conversazione?"}
+          placeholder={"Ho scritto a un founder SaaS e mi ha risposto in modo abbastanza generico.\nNon so come continuare la conversazione."}
         />
       </div>
 
@@ -334,6 +376,53 @@ export default function QuickAssistant() {
           <li>Voglio capire se è il momento giusto per proporre una call</li>
           <li>Non so come continuare una conversazione</li>
         </ul>
+      </div>
+
+      <div className="qa-field">
+        <label className="qa-label">
+          Link profilo LinkedIn della persona coinvolta
+          <span className="qa-label-opt">(facoltativo)</span>
+        </label>
+        <input
+          type="url"
+          value={adviceLinkedinUrl}
+          onChange={(e) => setAdviceLinkedinUrl(e.target.value)}
+          className="qa-input"
+          placeholder="https://linkedin.com/in/nomecognome"
+        />
+      </div>
+
+      <div className="qa-field">
+        <label className="qa-label">
+          Carica il PDF del profilo
+          <span className="qa-label-opt">(facoltativo)</span>
+        </label>
+        <label className="qa-file-upload">
+          <input
+            type="file"
+            accept=".pdf"
+            className="qa-file-input"
+            onChange={(e) => setAdvicePdfFile(e.target.files?.[0] || null)}
+          />
+          <span className="qa-file-label">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            {advicePdfFile ? advicePdfFile.name : "Scegli un file PDF"}
+          </span>
+        </label>
+      </div>
+
+      <div className="qa-field">
+        <label className="qa-label">
+          Link sito web azienda
+          <span className="qa-label-opt">(facoltativo)</span>
+        </label>
+        <input
+          type="url"
+          value={adviceWebsiteUrl}
+          onChange={(e) => setAdviceWebsiteUrl(e.target.value)}
+          className="qa-input"
+          placeholder="https://azienda.com"
+        />
       </div>
 
       <button
@@ -384,8 +473,11 @@ export default function QuickAssistant() {
               Per vedere il consiglio completo accedi alla dashboard.
             </div>
             <ul className="qa-locked-list">
-              <li>Risposta consigliata pronta da usare</li>
+              <li>Strategia consigliata</li>
+              <li>Risposta suggerita pronta da usare</li>
+              <li>Follow-up consigliato</li>
               <li>Step successivi per portare avanti la conversazione</li>
+              <li>Errori da evitare</li>
             </ul>
             <Link href="/signup" className="qa-locked-cta">
               Sblocca il consiglio completo
