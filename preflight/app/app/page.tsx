@@ -12,6 +12,7 @@ type DashMode =
   | null
   | "profile"
   | "advice"
+  | "find"
   | "post"
   | "comment"
   | "dm"
@@ -19,70 +20,50 @@ type DashMode =
   | "followup"
   | "image";
 
-/* ─── Tool definitions — Primary (most visible) ─── */
-const PRIMARY_TOOLS: {
+/* ─── Core Actions — Primary (3 most important) ─── */
+const CORE_ACTIONS: {
   id: DashMode & string;
   icon: string;
   title: string;
   desc: string;
+  iconClass: string;
 }[] = [
   {
     id: "profile",
     icon: "👤",
-    title: "Analizza questo profilo",
+    title: "Analizza un profilo",
     desc: "Incolla un profilo LinkedIn e scopri se contattarlo e come.",
+    iconClass: "dash-core-card-icon-profile",
   },
   {
     id: "advice",
     icon: "💬",
     title: "Chiedimi un consiglio",
     desc: "Descrivi una situazione e scopri come muoverti.",
+    iconClass: "dash-core-card-icon-advice",
+  },
+  {
+    id: "find",
+    icon: "🔍",
+    title: "Trova clienti su LinkedIn",
+    desc: "Descrivi il cliente ideale e genera una ricerca LinkedIn pronta all'uso.",
+    iconClass: "dash-core-card-icon-find",
   },
 ];
 
-/* ─── Tool definitions — Secondary ─── */
+/* ─── Secondary Tools ─── */
 const SECONDARY_TOOLS: {
   id: DashMode & string;
   icon: string;
   title: string;
   desc: string;
 }[] = [
-  {
-    id: "post",
-    icon: "✍️",
-    title: "Scrivi un post",
-    desc: "Genera un post LinkedIn efficace con hook e CTA.",
-  },
-  {
-    id: "image",
-    icon: "🖼️",
-    title: "Genera immagine per il post",
-    desc: "Crea un'immagine professionale per il tuo post.",
-  },
-  {
-    id: "comment",
-    icon: "💡",
-    title: "Scrivi un commento",
-    desc: "Rispondi a un commento in modo strategico.",
-  },
-  {
-    id: "dm",
-    icon: "✉️",
-    title: "Scrivi un messaggio DM",
-    desc: "Ottieni la risposta migliore per una conversazione DM.",
-  },
-  {
-    id: "conversation",
-    icon: "🗣️",
-    title: "Gestisci conversazione",
-    desc: "Analizza una conversazione in corso e scopri come portarla avanti.",
-  },
-  {
-    id: "followup",
-    icon: "🔄",
-    title: "Scrivi follow-up",
-    desc: "Genera un follow-up naturale per riprendere una conversazione.",
-  },
+  { id: "post", icon: "✍️", title: "Scrivi un post", desc: "Genera un post LinkedIn efficace." },
+  { id: "image", icon: "🖼️", title: "Genera immagine", desc: "Immagine professionale per il post." },
+  { id: "comment", icon: "💡", title: "Scrivi un commento", desc: "Rispondi in modo strategico." },
+  { id: "dm", icon: "✉️", title: "Scrivi un DM", desc: "La risposta migliore per un DM." },
+  { id: "conversation", icon: "🗣️", title: "Gestisci conversazione", desc: "Porta avanti una conversazione." },
+  { id: "followup", icon: "🔄", title: "Scrivi follow-up", desc: "Riprendi una conversazione ferma." },
 ];
 
 export default function AppTodayPage() {
@@ -576,98 +557,116 @@ export default function AppTodayPage() {
         </div>
       )}
 
-      <div className="dash-page">
+      <div className="dash-page-v2">
 
         {/* ══════════════════════════════════════════════════════
-            PAGE HEADING
+            ZONE 1 — DAILY PLAN HERO
         ══════════════════════════════════════════════════════ */}
-        <div className="dash-hero">
-          <h2 className="dash-hero-title">Dashboard</h2>
-          <p className="dash-hero-sub">Una vista rapida su cosa fare oggi, chi contattare e quali strumenti usare.</p>
-        </div>
+        <section className="dash-daily-hero">
+          <div className="dash-daily-eyebrow">
+            <span className="dash-daily-eyebrow-dot" />
+            Piano giornaliero
+          </div>
+          <h2 className="dash-daily-title">Il tuo piano per oggi</h2>
+          <p className="dash-daily-subtitle">
+            In base al tuo servizio, ai clienti target e alle azioni precedenti, ecco cosa conta oggi.
+          </p>
 
-        {/* ══════════════════════════════════════════════════════
-            SEZIONE 1 — RIASSUNTO DI OGGI
-        ══════════════════════════════════════════════════════ */}
-        <section className="dash-section">
-          <div className="dash-today-summary">
-            <div className="dash-today-summary-content">
-              <div className="dash-today-summary-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>
+          <div className="dash-daily-actions">
+            <div className="dash-daily-action">
+              <div className="dash-daily-action-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
               <div>
-                <h3 className="dash-today-summary-title">Oggi hai 3 azioni ad alto potenziale</h3>
-                <ul className="dash-today-summary-list">
-                  <li>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    3 profili da cercare
-                  </li>
-                  <li>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    2 conversazioni da seguire
-                  </li>
-                  <li>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    1 contenuto da pubblicare
-                  </li>
-                </ul>
+                <div className="dash-daily-action-title">3 profili da cercare</div>
+                <div className="dash-daily-action-text">Cerca e analizza nuovi potenziali clienti.</div>
               </div>
             </div>
-            <Link href="/app/oggi" className="dash-today-summary-cta">
-              Apri il piano di oggi <span className="dash-btn-arrow">→</span>
-            </Link>
+            <div className="dash-daily-action">
+              <div className="dash-daily-action-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div>
+                <div className="dash-daily-action-title">2 conversazioni da seguire</div>
+                <div className="dash-daily-action-text">Riprendi le conversazioni in corso.</div>
+              </div>
+            </div>
+            <div className="dash-daily-action">
+              <div className="dash-daily-action-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div>
+                <div className="dash-daily-action-title">1 contenuto da pubblicare</div>
+                <div className="dash-daily-action-text">Pubblica per mantenere la visibilità.</div>
+              </div>
+            </div>
           </div>
+
+          <div className="dash-daily-extras">
+            <div className="dash-daily-extra">
+              <div className="dash-daily-extra-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              Tema outreach suggerito
+            </div>
+            <div className="dash-daily-extra">
+              <div className="dash-daily-extra-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              </div>
+              Follow-up suggeriti
+            </div>
+            <div className="dash-daily-extra">
+              <div className="dash-daily-extra-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              Angolo contenuto suggerito
+            </div>
+          </div>
+
+          <Link href="/app/oggi" className="dash-daily-cta">
+            Apri il piano completo <span className="dash-btn-arrow">→</span>
+          </Link>
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 2 — STRUMENTI PRINCIPALI
+            ZONE 2 — CORE ACTIONS
         ══════════════════════════════════════════════════════ */}
-        <section className="dash-section">
-          <h3 className="dash-section-title">Strumenti principali</h3>
-
-          {/* Trova Clienti — Card prominente */}
-          <div className="dash-find-prominent" onClick={() => {
-            const el = document.querySelector('.find-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }}>
-            <div className="dash-find-prominent-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <div className="dash-find-prominent-body">
-              <h4 className="dash-find-prominent-title">Trova clienti su LinkedIn</h4>
-              <p className="dash-find-prominent-desc">Descrivi il cliente ideale e genera una ricerca LinkedIn pronta all&apos;uso.</p>
-            </div>
-            <span className="dash-find-prominent-arrow">→</span>
+        <section className="dash-v2-section">
+          <div className="dash-v2-section-head">
+            <h3 className="dash-v2-section-title">Azioni principali</h3>
+            <p className="dash-v2-section-sub">Gli strumenti più importanti per trovare clienti e iniziare conversazioni.</p>
           </div>
 
-          {/* Primary tools */}
-          <div className="tools-grid-primary">
-            {PRIMARY_TOOLS.map((tool) => (
+          <div className="dash-core-grid">
+            {CORE_ACTIONS.map((action) => (
               <button
-                key={tool.id}
+                key={action.id}
                 type="button"
-                className={`tool-card tool-card-lg${dashMode === tool.id ? " tool-card-active" : ""}`}
-                onClick={() => setDashMode(dashMode === tool.id ? null : tool.id)}
+                className={`dash-core-card${dashMode === action.id ? " dash-core-card-active" : ""}`}
+                onClick={() => setDashMode(dashMode === action.id ? null : action.id)}
               >
-                <span className="tool-card-icon">{tool.icon}</span>
-                <h4 className="tool-card-title">{tool.title}</h4>
-                <p className="tool-card-desc">{tool.desc}</p>
+                <div className={`dash-core-card-icon ${action.iconClass}`}>{action.icon}</div>
+                <h4 className="dash-core-card-title">{action.title}</h4>
+                <p className="dash-core-card-desc">{action.desc}</p>
+                <span className="dash-core-card-arrow">→</span>
               </button>
             ))}
           </div>
 
-          {/* Secondary tools */}
-          <div className="tools-grid" style={{ marginTop: '1rem' }}>
+          <p className="dash-secondary-label">Altri strumenti</p>
+          <div className="dash-secondary-grid">
             {SECONDARY_TOOLS.map((tool) => (
               <button
                 key={tool.id}
                 type="button"
-                className={`tool-card${dashMode === tool.id ? " tool-card-active" : ""}`}
+                className={`dash-sec-card${dashMode === tool.id ? " dash-sec-card-active" : ""}`}
                 onClick={() => setDashMode(dashMode === tool.id ? null : tool.id)}
               >
-                <span className="tool-card-icon">{tool.icon}</span>
-                <h4 className="tool-card-title">{tool.title}</h4>
-                <p className="tool-card-desc">{tool.desc}</p>
+                <div className="dash-sec-card-icon">{tool.icon}</div>
+                <div className="dash-sec-card-body">
+                  <h4 className="dash-sec-card-title">{tool.title}</h4>
+                  <p className="dash-sec-card-desc">{tool.desc}</p>
+                </div>
               </button>
             ))}
           </div>
@@ -838,6 +837,68 @@ export default function AppTodayPage() {
               )}
 
               {quickAdviceResult && !profile.onboarding_complete && <OnboardingCallout />}
+            </div>
+          </section>
+        )}
+
+        {/* ── TROVA CLIENTI SU LINKEDIN ── */}
+        {dashMode === "find" && (
+          <section className="dash-v2-section">
+            <div className="qa-container qa-container-dash">
+              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setFindResult(null); }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Torna agli strumenti
+              </button>
+
+              <div className="qa-section-header qa-section-header-hero">
+                <div className="qa-section-icon" style={{ background: "var(--color-success-bg)", color: "var(--color-success)" }}>
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </div>
+                <h3 className="qa-section-title qa-section-title-lg">Trova clienti su LinkedIn</h3>
+                <p className="qa-section-sub">
+                  Descrivi il tipo di cliente che vuoi trovare e Preflight genera la ricerca LinkedIn giusta.
+                </p>
+              </div>
+
+              <div className="qa-field">
+                <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
+                <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={2} placeholder="Es: Founder di startup SaaS B2B, CEO di agenzie di marketing, responsabili vendite in PMI" />
+              </div>
+
+              <div className="find-section-row">
+                <div className="qa-field" style={{ flex: 1 }}>
+                  <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
+                  <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
+                </div>
+                <div className="qa-field" style={{ flex: 1 }}>
+                  <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
+                  <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa" />
+                </div>
+              </div>
+
+              <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
+                {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
+              </button>
+
+              {findResult && (
+                <div className="qa-result">
+                  {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
+                  {findResult.come_cercarlo && <ResultBlock icon="search" label="Keyword di ricerca" text={findResult.come_cercarlo} />}
+                  {findResult.link_ricerca_linkedin && (
+                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
+                  )}
+                  {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti filtri" text={findResult.suggerimenti_filtri} />}
+                  {findResult.profili_simili && <ResultBlock icon="user" label="Ruoli simili" text={findResult.profili_simili} />}
+                  {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
+                  <div style={{ marginTop: "1rem" }}>
+                    <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
+                      Analizza un profilo trovato →
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {findResult && !profile.onboarding_complete && <OnboardingCallout />}
             </div>
           </section>
         )}
@@ -1232,89 +1293,39 @@ export default function AppTodayPage() {
         )}
 
         {/* ══════════════════════════════════════════════════════
-            SEZIONE 3 — TROVA CLIENTI SU LINKEDIN
+            ZONE 4 — CONTATTI ANALIZZATI
         ══════════════════════════════════════════════════════ */}
-        <section className="dash-section find-section">
-          <div className="find-section-header">
-            <div className="find-section-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <div>
-              <h3 className="find-section-title">Trova clienti su LinkedIn</h3>
-              <p className="find-section-sub">Descrivi il tipo di cliente che vuoi trovare e Preflight genera la ricerca LinkedIn giusta.</p>
-            </div>
+        <section className="dash-v2-section">
+          <div className="dash-v2-section-head">
+            <h3 className="dash-v2-section-title">Contatti analizzati</h3>
+            <p className="dash-v2-section-sub">I contatti vengono salvati automaticamente quando usi &quot;Analizza un profilo&quot;.</p>
           </div>
-
-          <div className="find-section-form">
-            <div className="qa-field">
-              <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
-              <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={2} placeholder="Es: Founder di startup SaaS B2B, CEO di agenzie di marketing, responsabili vendite in PMI" />
-            </div>
-
-            <div className="find-section-row">
-              <div className="qa-field" style={{ flex: 1 }}>
-                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
-              </div>
-              <div className="qa-field" style={{ flex: 1 }}>
-                <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa" />
-              </div>
-            </div>
-
-            <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
-              {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
-            </button>
-          </div>
-
-          {findResult && (
-            <div className="qa-result">
-              {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
-              {findResult.come_cercarlo && <ResultBlock icon="search" label="Keyword di ricerca" text={findResult.come_cercarlo} />}
-              {findResult.link_ricerca_linkedin && (
-                <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
-              )}
-              {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti filtri" text={findResult.suggerimenti_filtri} />}
-              {findResult.profili_simili && <ResultBlock icon="user" label="Ruoli simili" text={findResult.profili_simili} />}
-              {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
-              <div style={{ marginTop: "1rem" }}>
-                <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
-                  Analizza questo profilo →
-                </button>
-              </div>
-            </div>
-          )}
-
-          {findResult && !profile.onboarding_complete && <OnboardingCallout />}
-        </section>
-
-        {/* ══════════════════════════════════════════════════════
-            SEZIONE 4 — CONTATTI ANALIZZATI
-        ══════════════════════════════════════════════════════ */}
-        <section className="dash-section">
-          <h3 className="dash-section-title">Contatti analizzati</h3>
           {contacts.length === 0 ? (
-            <div className="dash-empty">
-              <div className="dash-empty-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div className="dash-empty-v2">
+              <div className="dash-empty-v2-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
               </div>
-              <p className="dash-empty-text">Nessun contatto analizzato.</p>
-              <p className="dash-empty-sub">Quando usi &quot;Analizza questo profilo&quot;, i contatti vengono salvati automaticamente qui.</p>
+              <p className="dash-empty-v2-title">Nessun contatto analizzato</p>
+              <p className="dash-empty-v2-text">Quando analizzi un profilo LinkedIn, il contatto viene salvato automaticamente qui per rivederlo o chiedere un consiglio.</p>
             </div>
           ) : (
-            <div className="contacts-list">
+            <div className="dash-contacts-grid">
               {contacts.map((c) => (
-                <div key={c.id} className="contact-card">
-                  <div className="contact-card-avatar">{c.nome.charAt(0).toUpperCase()}</div>
-                  <div className="contact-card-info">
-                    <h4 className="contact-card-name">{c.nome}</h4>
-                    <p className="contact-card-role">{c.ruolo}{c.azienda && c.azienda !== "—" ? ` · ${c.azienda}` : ""}</p>
-                    {c.linkedin_url && (
-                      <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer" className="contact-card-link">LinkedIn ↗</a>
-                    )}
-                    <span className="contact-card-date">{new Date(c.analyzed_at).toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" })}</span>
+                <div key={c.id} className="dash-contact-v2">
+                  <div className="dash-contact-v2-top">
+                    <div className="dash-contact-v2-avatar">{c.nome.charAt(0).toUpperCase()}</div>
+                    <div className="dash-contact-v2-info">
+                      <h4 className="dash-contact-v2-name">{c.nome}</h4>
+                      <p className="dash-contact-v2-role">{c.ruolo}{c.azienda && c.azienda !== "—" ? ` · ${c.azienda}` : ""}</p>
+                    </div>
                   </div>
-                  <div className="contact-card-actions">
+                  <div className="dash-contact-v2-meta">
+                    <span className="dash-contact-v2-date">{new Date(c.analyzed_at).toLocaleDateString("it-IT", { day: "numeric", month: "short", year: "numeric" })}</span>
+                    {c.linkedin_url && (
+                      <a href={c.linkedin_url} target="_blank" rel="noopener noreferrer" className="dash-contact-v2-link">LinkedIn ↗</a>
+                    )}
+                  </div>
+                  <div className="dash-contact-v2-actions">
                     <button type="button" className="btn-secondary" onClick={() => openContactAnalysis(c)}>Rivedi analisi</button>
                     <button type="button" className="btn-secondary" onClick={() => openContactAdvice(c)}>Chiedi consiglio</button>
                   </div>
@@ -1324,23 +1335,27 @@ export default function AppTodayPage() {
           )}
         </section>
 
-        {/* ── IL TUO SISTEMA ── */}
-        <section className="dash-section">
-          <h3 className="dash-section-title">Il tuo sistema</h3>
-          <div className="dash-system-card">
-            <div className="dash-system-status">
-              <div className="dash-system-status-icon">
+        {/* ══════════════════════════════════════════════════════
+            ZONE 5 — SYSTEM STATUS
+        ══════════════════════════════════════════════════════ */}
+        <section className="dash-v2-section">
+          <div className="dash-v2-section-head">
+            <h3 className="dash-v2-section-title">Stato del sistema</h3>
+          </div>
+          <div className={`dash-setup-v2 ${profile.onboarding_complete ? "dash-setup-v2-configured" : "dash-setup-v2-pending"}`}>
+            <div className="dash-setup-v2-inner">
+              <div className={`dash-setup-v2-icon ${profile.onboarding_complete ? "dash-setup-v2-icon-ok" : "dash-setup-v2-icon-pending"}`}>
                 {profile.onboarding_complete ? (
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 ) : (
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                 )}
               </div>
               <div>
-                <h4 className="dash-system-status-title">
+                <h4 className="dash-setup-v2-title">
                   {profile.onboarding_complete ? "Sistema configurato" : "Sistema non ancora configurato"}
                 </h4>
-                <p className="dash-system-status-desc">
+                <p className="dash-setup-v2-desc">
                   {profile.onboarding_complete
                     ? "L'AI conosce il tuo servizio e il tuo cliente ideale. I consigli sono personalizzati."
                     : "Configura il tuo sistema per ricevere consigli più precisi e personalizzati."}

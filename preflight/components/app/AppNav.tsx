@@ -15,8 +15,11 @@ const toolItems: NavItem[] = [
   { href: "/app/dm", label: "Chiedi un consiglio" },
 ];
 
-const bottomItems: NavItem[] = [
+const configItems: NavItem[] = [
   { href: "/app/onboarding", label: "Configura il tuo sistema" },
+];
+
+const bottomItems: NavItem[] = [
   { href: "/app/settings", label: "Impostazioni" },
 ];
 
@@ -48,7 +51,11 @@ export default function AppNav() {
       </div>
       <div className="dash-nav-divider" />
       <div className="dash-nav-group">
-        <span className="dash-nav-label">Area personale</span>
+        <span className="dash-nav-label">Configurazione</span>
+        {configItems.map(navLink)}
+      </div>
+      <div className="dash-nav-divider" />
+      <div className="dash-nav-group">
         {bottomItems.map(navLink)}
       </div>
     </nav>
