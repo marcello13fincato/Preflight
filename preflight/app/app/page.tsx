@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
@@ -10,9 +11,6 @@ const MODAL_DISMISSED_KEY = "onboarding-modal-dismissed";
 
 type DashMode =
   | null
-  | "profile"
-  | "advice"
-  | "find"
   | "post"
   | "comment"
   | "dm"
@@ -22,32 +20,40 @@ type DashMode =
 
 /* ─── Core Actions — Primary (3 most important) ─── */
 const CORE_ACTIONS: {
-  id: DashMode & string;
+  id: string;
+  href: string;
   icon: string;
   title: string;
   desc: string;
+  cta: string;
   iconClass: string;
 }[] = [
   {
+    id: "find",
+    href: "/app/find-clients",
+    icon: "🔍",
+    title: "Trova le persone giuste da contattare",
+    desc: "Definisci il tipo di cliente che cerchi e ottieni ricerche LinkedIn mirate, con suggerimenti su come iniziare la conversazione.",
+    cta: "Inizia a cercare",
+    iconClass: "dash-core-card-icon-find",
+  },
+  {
     id: "profile",
+    href: "/app/prospect",
     icon: "👤",
-    title: "Analizza un profilo",
-    desc: "Incolla un profilo LinkedIn e scopri se contattarlo e come.",
+    title: "Capisci se vale la pena contattare questa persona",
+    desc: "Analizza il profilo LinkedIn o il sito aziendale e scopri come muoverti per aprire una conversazione utile.",
+    cta: "Analizza il profilo",
     iconClass: "dash-core-card-icon-profile",
   },
   {
     id: "advice",
+    href: "/app/dm",
     icon: "💬",
-    title: "Chiedimi un consiglio",
-    desc: "Descrivi una situazione e scopri come muoverti.",
+    title: "Chiedi un consiglio su una situazione reale",
+    desc: "Descrivi una conversazione o un dubbio e ricevi indicazioni strategiche su cosa fare adesso.",
+    cta: "Chiedi un consiglio",
     iconClass: "dash-core-card-icon-advice",
-  },
-  {
-    id: "find",
-    icon: "🔍",
-    title: "Trova clienti su LinkedIn",
-    desc: "Descrivi il cliente ideale e genera una ricerca LinkedIn pronta all'uso.",
-    iconClass: "dash-core-card-icon-find",
   },
 ];
 
@@ -68,44 +74,8 @@ const SECONDARY_TOOLS: {
 
 export default function AppTodayPage() {
   const { data: session } = useSession();
+  const router = useRouter();
   const [dashMode, setDashMode] = useState<DashMode>(null);
-
-  /* ── Profile analysis state ── */
-  const [quickLinkedinUrl, setQuickLinkedinUrl] = useState("");
-  const [quickPdfFile, setQuickPdfFile] = useState<File | null>(null);
-  const [quickShowGuide, setQuickShowGuide] = useState(false);
-  const [quickWebsiteUrl, setQuickWebsiteUrl] = useState("");
-  const [quickProfileDesc, setQuickProfileDesc] = useState("");
-  const [quickProfileResult, setQuickProfileResult] = useState<{
-    nome_contatto?: string; ruolo_contatto?: string; azienda_contatto?: string;
-    chi_e: string; ruolo_e_contesto: string; perche_buon_contatto: string;
-    strategia_contatto: string; primo_messaggio: string; followup_consigliato: string;
-    step_successivi: string; segnali_da_osservare: string; errori_da_evitare: string;
-  } | null>(null);
-  const [quickProfileLoading, setQuickProfileLoading] = useState(false);
-
-  /* ── Advice state ── */
-  const [quickSituation, setQuickSituation] = useState("");
-  const [quickAdviceLinkedinUrl, setQuickAdviceLinkedinUrl] = useState("");
-  const [quickAdvicePdfFile, setQuickAdvicePdfFile] = useState<File | null>(null);
-  const [quickAdviceWebsiteUrl, setQuickAdviceWebsiteUrl] = useState("");
-  const [quickAdviceResult, setQuickAdviceResult] = useState<{
-    lettura_situazione: string; strategia: string;
-    risposta_consigliata: string; followup_consigliato: string;
-    step_successivi: string; errori_da_evitare: string;
-  } | null>(null);
-  const [quickAdviceLoading, setQuickAdviceLoading] = useState(false);
-
-  /* ── Find clients state ── */
-  const [findTipoCliente, setFindTipoCliente] = useState("");
-  const [findSettore, setFindSettore] = useState("");
-  const [findArea, setFindArea] = useState("");
-  const [findResult, setFindResult] = useState<{
-    tipo_cliente_ideale: string; come_cercarlo: string;
-    link_ricerca_linkedin: string; suggerimenti_filtri: string;
-    profili_simili: string; cosa_fare_dopo: string;
-  } | null>(null);
-  const [findLoading, setFindLoading] = useState(false);
 
   /* ── Post state ── */
   const [postDraft, setPostDraft] = useState("");
@@ -223,116 +193,6 @@ export default function AppTodayPage() {
     },
     [repo, userId],
   );
-
-  async function handleDashProfile() {
-    if (!quickLinkedinUrl.trim() && !quickWebsiteUrl.trim() && !quickProfileDesc.trim()) return;
-    if (quickProfileLoading) return;
-    setQuickProfileLoading(true);
-    setQuickProfileResult(null);
-    try {
-      let pdfText = "";
-      if (quickPdfFile) pdfText = `[PDF caricato: ${quickPdfFile.name}]`;
-
-      const inputParts: string[] = [];
-      if (quickLinkedinUrl.trim()) inputParts.push(`Profilo LinkedIn: ${quickLinkedinUrl}`);
-      if (quickWebsiteUrl.trim()) inputParts.push(`Sito web: ${quickWebsiteUrl}`);
-      if (quickProfileDesc.trim()) inputParts.push(`Descrizione persona: ${quickProfileDesc}`);
-
-      const res = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: `Analizza questo profilo:\n${inputParts.join("\n")}`,
-          advice: true,
-          assistantMode: "profile",
-          profile: profile.onboarding || undefined,
-          linkedinUrl: quickLinkedinUrl.trim() || undefined,
-          profileInfo: [pdfText, quickWebsiteUrl.trim() ? `Sito web: ${quickWebsiteUrl}` : ""].filter(Boolean).join("\n") || undefined,
-        }),
-      });
-      if (!res.ok) throw new Error("Errore");
-      const data = await res.json();
-      if (data.structured) {
-        setQuickProfileResult(data.structured);
-        if (quickLinkedinUrl.trim()) saveContact(data.structured, quickLinkedinUrl.trim());
-      }
-    } catch {
-      setQuickProfileResult({
-        chi_e: "Si è verificato un errore. Riprova più tardi.",
-        ruolo_e_contesto: "", perche_buon_contatto: "", strategia_contatto: "",
-        primo_messaggio: "", followup_consigliato: "", step_successivi: "",
-        segnali_da_osservare: "", errori_da_evitare: "",
-      });
-    } finally {
-      setQuickProfileLoading(false);
-    }
-  }
-
-  async function handleDashAdvice() {
-    if (!quickSituation.trim() || quickAdviceLoading) return;
-    setQuickAdviceLoading(true);
-    setQuickAdviceResult(null);
-    try {
-      let pdfText = "";
-      if (quickAdvicePdfFile) pdfText = `[PDF caricato: ${quickAdvicePdfFile.name}]`;
-
-      const extraParts: string[] = [];
-      if (quickAdviceLinkedinUrl.trim()) extraParts.push(`Profilo LinkedIn: ${quickAdviceLinkedinUrl}`);
-      if (pdfText) extraParts.push(pdfText);
-      if (quickAdviceWebsiteUrl.trim()) extraParts.push(`Sito web: ${quickAdviceWebsiteUrl}`);
-
-      const res = await fetch("/api/ai/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: quickSituation,
-          advice: true,
-          assistantMode: "advice",
-          profile: profile.onboarding || undefined,
-          profileInfo: extraParts.length ? extraParts.join("\n") : undefined,
-        }),
-      });
-      if (!res.ok) throw new Error("Errore");
-      const data = await res.json();
-      if (data.structured) setQuickAdviceResult(data.structured);
-    } catch {
-      setQuickAdviceResult({
-        lettura_situazione: "Si è verificato un errore. Riprova più tardi.",
-        strategia: "", risposta_consigliata: "", followup_consigliato: "",
-        step_successivi: "", errori_da_evitare: "",
-      });
-    } finally {
-      setQuickAdviceLoading(false);
-    }
-  }
-
-  async function handleFindClients() {
-    if (!findTipoCliente.trim() || findLoading) return;
-    setFindLoading(true);
-    setFindResult(null);
-    try {
-      const res = await fetch("/api/ai/find-clients", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tipo_cliente: findTipoCliente,
-          settore: findSettore || undefined,
-          area_geografica: findArea || undefined,
-          profile: profile.onboarding || undefined,
-        }),
-      });
-      if (!res.ok) throw new Error("Errore");
-      setFindResult(await res.json());
-    } catch {
-      setFindResult({
-        tipo_cliente_ideale: "Si è verificato un errore. Riprova più tardi.",
-        come_cercarlo: "", link_ricerca_linkedin: "",
-        suggerimenti_filtri: "", profili_simili: "", cosa_fare_dopo: "",
-      });
-    } finally {
-      setFindLoading(false);
-    }
-  }
 
   async function handlePost() {
     if (!postDraft.trim() || postLoading) return;
@@ -513,15 +373,12 @@ export default function AppTodayPage() {
     }
   }
 
-  function openContactAnalysis(contact: AnalyzedContact) {
-    setQuickLinkedinUrl(contact.linkedin_url);
-    setQuickProfileResult(contact.result as typeof quickProfileResult);
-    setDashMode("profile");
+  function openContactAnalysis(_contact: AnalyzedContact) {
+    router.push("/app/prospect");
   }
 
-  function openContactAdvice(contact: AnalyzedContact) {
-    setQuickSituation(`Vorrei un consiglio su come continuare la conversazione con ${contact.nome} (${contact.ruolo} presso ${contact.azienda}).`);
-    setDashMode("advice");
+  function openContactAdvice(_contact: AnalyzedContact) {
+    router.push("/app/dm");
   }
 
   /* ═══════════════════════════════════════════════════════════
@@ -633,23 +490,22 @@ export default function AppTodayPage() {
         ══════════════════════════════════════════════════════ */}
         <section className="dash-v2-section">
           <div className="dash-v2-section-head">
-            <h3 className="dash-v2-section-title">Azioni principali</h3>
-            <p className="dash-v2-section-sub">Gli strumenti più importanti per trovare clienti e iniziare conversazioni.</p>
+            <h3 className="dash-v2-section-title">Servizi principali</h3>
+            <p className="dash-v2-section-sub">Le azioni strategiche per trovare clienti, capire chi contattare e sapere sempre cosa fare.</p>
           </div>
 
           <div className="dash-core-grid">
             {CORE_ACTIONS.map((action) => (
-              <button
+              <Link
                 key={action.id}
-                type="button"
-                className={`dash-core-card${dashMode === action.id ? " dash-core-card-active" : ""}`}
-                onClick={() => setDashMode(dashMode === action.id ? null : action.id)}
+                href={action.href}
+                className="dash-core-card"
               >
                 <div className={`dash-core-card-icon ${action.iconClass}`}>{action.icon}</div>
                 <h4 className="dash-core-card-title">{action.title}</h4>
                 <p className="dash-core-card-desc">{action.desc}</p>
-                <span className="dash-core-card-arrow">→</span>
-              </button>
+                <span className="dash-core-card-cta">{action.cta} <span className="dash-core-card-arrow">→</span></span>
+              </Link>
             ))}
           </div>
 
@@ -673,235 +529,8 @@ export default function AppTodayPage() {
         </section>
 
         {/* ══════════════════════════════════════════════════════
-            ACTIVE TOOL PANEL
+            ACTIVE TOOL PANEL (secondary tools only — core services navigate to dedicated pages)
         ══════════════════════════════════════════════════════ */}
-
-        {/* ── ANALIZZA PROFILO ── */}
-        {dashMode === "profile" && (
-          <section className="dash-section">
-            <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickProfileResult(null); }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Torna agli strumenti
-              </button>
-
-              <div className="qa-section-header qa-section-header-hero">
-                <div className="qa-section-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-                <h3 className="qa-section-title qa-section-title-lg">Analizza questo profilo</h3>
-                <p className="qa-section-sub">
-                  Scopri se vale la pena contattare questa persona e come muoverti per iniziare la conversazione.
-                </p>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Link al profilo LinkedIn</label>
-                <input type="url" value={quickLinkedinUrl} onChange={(e) => setQuickLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">
-                  Carica il PDF del profilo
-                  <span className="qa-label-opt">(facoltativo)</span>
-                </label>
-                <p className="qa-microcopy">
-                  Se vuoi un&apos;analisi più precisa, puoi caricare anche il PDF del profilo.
-                </p>
-                <label className="qa-file-upload">
-                  <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setQuickPdfFile(e.target.files?.[0] || null)} />
-                  <span className="qa-file-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    {quickPdfFile ? quickPdfFile.name : "Scegli un file PDF"}
-                  </span>
-                </label>
-              </div>
-
-              <button type="button" className="qa-guide-toggle" onClick={() => setQuickShowGuide(!quickShowGuide)}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                Come scaricare il PDF del profilo LinkedIn
-              </button>
-
-              {quickShowGuide && (
-                <div className="qa-guide">
-                  <ol className="qa-guide-steps">
-                    <li>Vai sul profilo LinkedIn della persona</li>
-                    <li>Clicca sui tre puntini accanto alla foto del profilo</li>
-                    <li>Seleziona &quot;Salva come PDF&quot;</li>
-                    <li>Carica il file qui</li>
-                  </ol>
-                </div>
-              )}
-
-              <div className="qa-field">
-                <label className="qa-label">Link sito web <span className="qa-label-opt">(facoltativo, se azienda)</span></label>
-                <input type="url" value={quickWebsiteUrl} onChange={(e) => setQuickWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://azienda.com" />
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Contesto opzionale <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea value={quickProfileDesc} onChange={(e) => setQuickProfileDesc(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder SaaS che pubblica su crescita aziendale." />
-              </div>
-
-              <button onClick={handleDashProfile} disabled={quickProfileLoading || (!quickLinkedinUrl.trim() && !quickWebsiteUrl.trim() && !quickProfileDesc.trim())} className="qa-btn">
-                {quickProfileLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto analizzando…</>) : (<>Analizza profilo <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
-              </button>
-
-              {quickProfileResult && (
-                <div className="qa-result">
-                  {quickProfileResult.chi_e && <ResultBlock icon="user" label="Chi è questa persona" text={quickProfileResult.chi_e} />}
-                  {quickProfileResult.ruolo_e_contesto && <ResultBlock icon="info" label="Ruolo e contesto" text={quickProfileResult.ruolo_e_contesto} />}
-                  {quickProfileResult.perche_buon_contatto && <ResultBlock icon="bulb" label="Perché potrebbe essere un buon contatto" text={quickProfileResult.perche_buon_contatto} variant="valutazione" />}
-                  {quickProfileResult.strategia_contatto && <ResultBlock icon="search" label="Strategia di contatto" text={quickProfileResult.strategia_contatto} />}
-                  {quickProfileResult.primo_messaggio && <ResultBlock icon="chat" label="Primo messaggio suggerito" text={quickProfileResult.primo_messaggio} variant="reply" />}
-                  {quickProfileResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up consigliato" text={quickProfileResult.followup_consigliato} variant="reply" />}
-                  {quickProfileResult.step_successivi && <ResultBlock icon="arrow" label="Step successivi" text={quickProfileResult.step_successivi} />}
-                  {quickProfileResult.segnali_da_osservare && <ResultBlock icon="warn" label="Segnali da osservare" text={quickProfileResult.segnali_da_osservare} />}
-                  {quickProfileResult.errori_da_evitare && <ResultBlock icon="warn" label="Errori da evitare" text={quickProfileResult.errori_da_evitare} />}
-                </div>
-              )}
-
-              {quickProfileResult && !profile.onboarding_complete && <OnboardingCallout />}
-            </div>
-          </section>
-        )}
-
-        {/* ── CHIEDIMI UN CONSIGLIO ── */}
-        {dashMode === "advice" && (
-          <section className="dash-section">
-            <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setQuickAdviceResult(null); }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Torna agli strumenti
-              </button>
-
-              <div className="qa-section-header qa-section-header-hero">
-                <div className="qa-section-icon">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <h3 className="qa-section-title qa-section-title-lg">Chiedimi un consiglio</h3>
-                <p className="qa-section-sub">
-                  Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.
-                </p>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Spiegami la situazione</label>
-                <textarea value={quickSituation} onChange={(e) => setQuickSituation(e.target.value)} className="qa-input qa-input-lg" rows={6} placeholder={"Ho scritto a un founder SaaS e mi ha risposto in modo abbastanza generico.\nNon so come continuare la conversazione."} />
-              </div>
-
-              <div className="qa-examples">
-                <p className="qa-examples-title">Esempi di situazioni:</p>
-                <ul className="qa-examples-list">
-                  <li>Qualcuno ha commentato un mio post</li>
-                  <li>Ho ricevuto un messaggio su LinkedIn</li>
-                  <li>Voglio capire se è il momento giusto per proporre una call</li>
-                  <li>Non so come continuare una conversazione</li>
-                </ul>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Link profilo LinkedIn della persona coinvolta <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="url" value={quickAdviceLinkedinUrl} onChange={(e) => setQuickAdviceLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
-                <label className="qa-file-upload">
-                  <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setQuickAdvicePdfFile(e.target.files?.[0] || null)} />
-                  <span className="qa-file-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    {quickAdvicePdfFile ? quickAdvicePdfFile.name : "Scegli un file PDF"}
-                  </span>
-                </label>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Link sito web azienda <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="url" value={quickAdviceWebsiteUrl} onChange={(e) => setQuickAdviceWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://azienda.com" />
-              </div>
-
-              <button onClick={handleDashAdvice} disabled={quickAdviceLoading || !quickSituation.trim()} className="qa-btn">
-                {quickAdviceLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto analizzando…</>) : (<>Chiedi un consiglio <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
-              </button>
-
-              {quickAdviceResult && (
-                <div className="qa-result">
-                  {quickAdviceResult.lettura_situazione && <ResultBlock icon="info" label="Lettura della situazione" text={quickAdviceResult.lettura_situazione} />}
-                  {quickAdviceResult.strategia && <ResultBlock icon="check" label="Strategia consigliata" text={quickAdviceResult.strategia} />}
-                  {quickAdviceResult.risposta_consigliata && <ResultBlock icon="chat" label="Risposta suggerita" text={quickAdviceResult.risposta_consigliata} variant="reply" />}
-                  {quickAdviceResult.followup_consigliato && <ResultBlock icon="repeat" label="Follow-up consigliato" text={quickAdviceResult.followup_consigliato} variant="reply" />}
-                  {quickAdviceResult.step_successivi && <ResultBlock icon="arrow" label="Step successivi" text={quickAdviceResult.step_successivi} />}
-                  {quickAdviceResult.errori_da_evitare && <ResultBlock icon="warn" label="Errori da evitare" text={quickAdviceResult.errori_da_evitare} />}
-                </div>
-              )}
-
-              {quickAdviceResult && !profile.onboarding_complete && <OnboardingCallout />}
-            </div>
-          </section>
-        )}
-
-        {/* ── TROVA CLIENTI SU LINKEDIN ── */}
-        {dashMode === "find" && (
-          <section className="dash-v2-section">
-            <div className="qa-container qa-container-dash">
-              <button type="button" className="qa-back-btn" onClick={() => { setDashMode(null); setFindResult(null); }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                Torna agli strumenti
-              </button>
-
-              <div className="qa-section-header qa-section-header-hero">
-                <div className="qa-section-icon" style={{ background: "var(--color-success-bg)", color: "var(--color-success)" }}>
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </div>
-                <h3 className="qa-section-title qa-section-title-lg">Trova clienti su LinkedIn</h3>
-                <p className="qa-section-sub">
-                  Descrivi il tipo di cliente che vuoi trovare e Preflight genera la ricerca LinkedIn giusta.
-                </p>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Che tipo di cliente vuoi trovare?</label>
-                <textarea value={findTipoCliente} onChange={(e) => setFindTipoCliente(e.target.value)} className="qa-input qa-input-lg" rows={2} placeholder="Es: Founder di startup SaaS B2B, CEO di agenzie di marketing, responsabili vendite in PMI" />
-              </div>
-
-              <div className="find-section-row">
-                <div className="qa-field" style={{ flex: 1 }}>
-                  <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
-                  <input type="text" value={findSettore} onChange={(e) => setFindSettore(e.target.value)} className="qa-input" placeholder="Software / SaaS" />
-                </div>
-                <div className="qa-field" style={{ flex: 1 }}>
-                  <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
-                  <input type="text" value={findArea} onChange={(e) => setFindArea(e.target.value)} className="qa-input" placeholder="Italia / Europa" />
-                </div>
-              </div>
-
-              <button onClick={handleFindClients} disabled={findLoading || !findTipoCliente.trim()} className="qa-btn">
-                {findLoading ? (<><span className="qa-spinner" aria-hidden="true" />Sto cercando…</>) : (<>Trova clienti <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
-              </button>
-
-              {findResult && (
-                <div className="qa-result">
-                  {findResult.tipo_cliente_ideale && <ResultBlock icon="user" label="Cliente ideale" text={findResult.tipo_cliente_ideale} variant="valutazione" />}
-                  {findResult.come_cercarlo && <ResultBlock icon="search" label="Keyword di ricerca" text={findResult.come_cercarlo} />}
-                  {findResult.link_ricerca_linkedin && (
-                    <div className="qa-result-block qa-result-reply"><div className="qa-result-label"><RIcon type="link" /> Link di ricerca LinkedIn</div><p className="qa-result-text"><a href={findResult.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="qa-result-link">{findResult.link_ricerca_linkedin}</a></p></div>
-                  )}
-                  {findResult.suggerimenti_filtri && <ResultBlock icon="info" label="Suggerimenti filtri" text={findResult.suggerimenti_filtri} />}
-                  {findResult.profili_simili && <ResultBlock icon="user" label="Ruoli simili" text={findResult.profili_simili} />}
-                  {findResult.cosa_fare_dopo && <ResultBlock icon="arrow" label="Cosa fare dopo" text={findResult.cosa_fare_dopo} />}
-                  <div style={{ marginTop: "1rem" }}>
-                    <button type="button" className="qa-cta-secondary" onClick={() => { setDashMode("profile"); setFindResult(null); }}>
-                      Analizza un profilo trovato →
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {findResult && !profile.onboarding_complete && <OnboardingCallout />}
-            </div>
-          </section>
-        )}
 
         {/* ── SCRIVI UN POST ── */}
         {dashMode === "post" && (
@@ -1402,15 +1031,6 @@ function ResultBlock({ icon, label, text, variant }: { icon: string; label: stri
     <div className={cls}>
       <div className="qa-result-label"><RIcon type={icon} /> {label}</div>
       <p className="qa-result-text">{text}</p>
-    </div>
-  );
-}
-
-function OnboardingCallout() {
-  return (
-    <div className="qa-callout">
-      <p className="qa-callout-text">💡 Questa analisi può essere ancora più precisa se configuri il tuo sistema.</p>
-      <Link href="/app/onboarding" className="qa-callout-link">Configura il tuo sistema →</Link>
     </div>
   );
 }

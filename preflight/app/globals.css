@@ -1084,6 +1084,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   color:var(--color-text);text-decoration:none;
   transition:background 0.15s,color 0.15s}
 .dash-nav-link:hover{background:var(--color-soft);color:var(--color-primary)}
+.dash-nav-link-core{font-weight:700}
 .dash-nav-link-active{background:var(--color-primary);color:#fff}
 .dash-nav-link-active:hover{background:var(--color-primary-dark);color:#fff}
 
@@ -2695,25 +2696,25 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 
 /* ── Core Actions grid v2 ── */
 .dash-core-grid{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;
 }
 @media(max-width:900px){.dash-core-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:540px){.dash-core-grid{grid-template-columns:1fr}}
 .dash-core-card{
   position:relative;
-  display:flex;flex-direction:column;gap:0.75rem;
+  display:flex;flex-direction:column;gap:0.85rem;
   background:var(--color-surface);
   border:1.5px solid var(--color-border);
   border-radius:var(--radius-lg);
-  padding:1.75rem 1.5rem;
-  cursor:pointer;text-align:left;
+  padding:2rem 1.75rem 1.75rem;
+  cursor:pointer;text-align:left;text-decoration:none;
   transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s;
-  min-height:160px;
+  min-height:200px;
 }
 .dash-core-card:hover{
   border-color:var(--color-primary);
-  box-shadow:var(--shadow-md);
-  transform:translateY(-3px);
+  box-shadow:0 8px 24px rgba(10,102,194,0.10), var(--shadow-md);
+  transform:translateY(-4px);
 }
 .dash-core-card-active{
   border-color:var(--color-primary);
@@ -2721,25 +2722,32 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   box-shadow:0 0 0 3px rgba(10,102,194,0.12);
 }
 .dash-core-card-icon{
-  width:52px;height:52px;border-radius:14px;
+  width:56px;height:56px;border-radius:16px;
   display:flex;align-items:center;justify-content:center;
-  font-size:1.5rem;flex-shrink:0;
+  font-size:1.6rem;flex-shrink:0;
 }
 .dash-core-card-icon-profile{background:var(--color-soft);color:var(--color-primary)}
 .dash-core-card-icon-advice{background:#FFF7ED;color:#EA580C}
 .dash-core-card-icon-find{background:#F0FDF4;color:#16A34A}
 .dash-core-card-title{
-  font-size:1rem;font-weight:700;color:var(--color-text);margin:0;
+  font-size:1.05rem;font-weight:700;color:var(--color-text);margin:0;
+  line-height:1.35;
 }
 .dash-core-card-desc{
-  font-size:0.82rem;color:var(--color-muted);line-height:1.5;margin:0;
+  font-size:0.82rem;color:var(--color-muted);line-height:1.55;margin:0;
+  flex:1;
 }
+.dash-core-card-cta{
+  display:inline-flex;align-items:center;gap:0.35rem;
+  font-size:0.82rem;font-weight:700;color:var(--color-primary);
+  margin-top:auto;transition:gap 0.15s;
+}
+.dash-core-card:hover .dash-core-card-cta{gap:0.55rem}
 .dash-core-card-arrow{
-  position:absolute;top:1.5rem;right:1.25rem;
-  color:var(--color-muted);transition:transform 0.15s,color 0.15s;
+  transition:transform 0.15s;
 }
 .dash-core-card:hover .dash-core-card-arrow{
-  transform:translateX(3px);color:var(--color-primary);
+  transform:translateX(3px);
 }
 
 /* ── Secondary tools grid v2 ── */
