@@ -1,52 +1,56 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import Link from "next/link";
 import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
-import { dmAssistantSchema, type DmAssistantJson } from "@/lib/sales/schemas";
+import { adviceSchema, type AdviceJson } from "@/lib/sales/schemas";
 
 export default function DmPage() {
-  const params = useSearchParams();
   const { data: session } = useSession();
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = repo.profile.getProfile(userId);
 
-  const [pastedChatThread, setPastedChatThread] = useState(params.get("pasted_chat_thread") || "");
-  const [conversationGoal, setConversationGoal] = useState<"understand_fit" | "continue_conversation" | "move_to_dm" | "propose_call" | "follow_up">("understand_fit");
-  const [prospectProfileText, setProspectProfileText] = useState(params.get("prospect_profile_text") || "");
-  const [output, setOutput] = useState<DmAssistantJson | null>(null);
+  const [situation, setSituation] = useState("");
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [output, setOutput] = useState<AdviceJson | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function generate() {
+    if (!situation.trim() || loading) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/ai/dm", {
+      let pdfText = "";
+      if (pdfFile) {
+        pdfText = `[PDF caricato: ${pdfFile.name}]`;
+      }
+      const res = await fetch("/api/ai/advice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           profile: profile.onboarding,
-          pasted_chat_thread: pastedChatThread,
-          conversation_goal: conversationGoal,
-          prospect_profile_text: prospectProfileText,
+          situation: situation.trim(),
+          linkedin_url: linkedinUrl.trim(),
+          website_url: websiteUrl.trim(),
+          pdf_text: pdfText,
         }),
       });
       const json: Record<string, unknown> = await res.json().catch(() => ({}));
       if (!res.ok) {
         throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
       }
-      const parsed = dmAssistantSchema.safeParse(json);
+      const parsed = adviceSchema.safeParse(json);
       if (!parsed.success) {
         throw new Error("Risposta AI non valida. Riprova.");
       }
       setOutput(parsed.data);
-      repo.interaction.addInteraction(userId, "dm", pastedChatThread, parsed.data);
+      repo.interaction.addInteraction(userId, "dm", situation, parsed.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
@@ -54,87 +58,134 @@ export default function DmPage() {
     }
   }
 
-  const heatColors: Record<string, string> = {
-    Cold: "badge-blue",
-    Warm: "badge-amber",
-    Hot: "badge-red",
-  };
+  function fillExample(text: string) {
+    setSituation(text);
+  }
+
+  const heatBadge = (level: string) =>
+    level === "Hot" ? "badge-red" : level === "Warm" ? "badge-amber" : "badge-blue";
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-2xl font-bold">Gestisci i messaggi DM</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
-          Rispondi in modo strategico per arrivare alla call.
+    <div className="qa-container qa-container-dash">
+      {/* ── Hero header ── */}
+      <div className="qa-section-header qa-section-header-hero">
+        <div className="qa-section-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3 className="qa-section-title qa-section-title-lg">Chiedimi un consiglio</h3>
+        <p className="qa-section-sub">
+          Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.
         </p>
       </div>
 
-      {/* Guide box */}
-      <div className="callout">
-        <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold">✅ Cosa fai:</span> gestisci conversazioni DM per qualificare i lead</div>
-          <div><span className="font-semibold">📋 Cosa inserire:</span> conversazione DM e profilo contatto</div>
-          <div><span className="font-semibold">🎯 Cosa ottieni:</span> risposta consigliata, versione breve, diretta, follow-up</div>
-          <div><span className="font-semibold">➡️ Prossima mossa:</span> proponi una call o aggiungi in pipeline</div>
-        </div>
-      </div>
-
-      {/* Two-column layout */}
-      <div className="grid gap-5 lg:grid-cols-2">
-        {/* INPUT */}
+      {/* ── Two-column layout: INPUT + OUTPUT ── */}
+      <div className="grid gap-6 lg:grid-cols-2 items-start">
+        {/* INPUT PANEL */}
         <div
-          className="rounded-xl p-5 space-y-4"
+          className="rounded-xl p-6 space-y-1"
           style={{
             background: "var(--color-surface)",
             border: "1px solid var(--color-border)",
             boxShadow: "var(--shadow-sm)",
           }}
         >
-          <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
-            Input
-          </h3>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Conversazione DM</span>
+          <div className="qa-field">
+            <label className="qa-label">Spiegami la situazione</label>
             <textarea
-              rows={7}
-              className="input w-full resize-none"
-              placeholder="Es. Ciao Marco, grazie per la connessione. Ho visto che lavori sulla crescita SaaS."
-              value={pastedChatThread}
-              onChange={(e) => setPastedChatThread(e.target.value)}
+              value={situation}
+              onChange={(e) => setSituation(e.target.value)}
+              className="qa-input qa-input-lg"
+              rows={6}
+              placeholder={"Ho scritto a un founder SaaS e mi ha risposto in modo abbastanza generico.\nNon so come continuare la conversazione."}
             />
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Obiettivo conversazione</span>
-            <select
-              className="input w-full"
-              value={conversationGoal}
-              onChange={(e) => setConversationGoal(e.target.value as typeof conversationGoal)}
-            >
-              <option value="understand_fit">Capire se è un cliente in target</option>
-              <option value="continue_conversation">Continuare conversazione</option>
-              <option value="move_to_dm">Spostare la conversazione in DM</option>
-              <option value="propose_call">Proporre una call</option>
-              <option value="follow_up">Fare follow-up</option>
-            </select>
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">
-              Profilo contatto{" "}
-              <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
-            </span>
-            <textarea
-              rows={4}
-              className="input w-full resize-none"
-              value={prospectProfileText}
-              onChange={(e) => setProspectProfileText(e.target.value)}
+          </div>
+
+          <div className="qa-examples">
+            <p className="qa-examples-title">Esempi di situazioni:</p>
+            <div className="qa-examples-chips">
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Qualcuno ha commentato un mio post e sembra interessato a quello che faccio.")}>
+                Qualcuno ha commentato un mio post
+              </button>
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Ho ricevuto un messaggio su LinkedIn da qualcuno che non conosco.")}>
+                Ho ricevuto un messaggio su LinkedIn
+              </button>
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Voglio capire se è il momento giusto per proporre una call a un contatto con cui sto parlando.")}>
+                Voglio capire se è il momento giusto per proporre una call
+              </button>
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Non so come continuare una conversazione che si è fermata dopo il mio ultimo messaggio.")}>
+                Non so come continuare una conversazione
+              </button>
+            </div>
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Link profilo LinkedIn della persona coinvolta
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <input
+              type="url"
+              value={linkedinUrl}
+              onChange={(e) => setLinkedinUrl(e.target.value)}
+              className="qa-input"
+              placeholder="https://linkedin.com/in/nomecognome"
             />
-          </label>
-          <button onClick={generate} disabled={loading} className="btn-primary w-full">
-            {loading ? "Generazione in corso…" : "Genera risposta →"}
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Carica il PDF del profilo
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <label className="qa-file-upload">
+              <input
+                type="file"
+                accept=".pdf"
+                className="qa-file-input"
+                onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+              />
+              <span className="qa-file-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                {pdfFile ? pdfFile.name : "Scegli un file PDF"}
+              </span>
+            </label>
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Link sito web azienda
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <input
+              type="url"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              className="qa-input"
+              placeholder="https://azienda.com"
+            />
+          </div>
+
+          <button
+            onClick={generate}
+            disabled={loading || !situation.trim()}
+            className="qa-btn"
+            style={{ marginTop: "0.75rem" }}
+          >
+            {loading ? (
+              <>
+                <span className="qa-spinner" aria-hidden="true" />
+                Sto analizzando…
+              </>
+            ) : (
+              <>
+                Chiedi un consiglio
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </>
+            )}
           </button>
         </div>
 
-        {/* OUTPUT */}
+        {/* OUTPUT PANEL */}
         <div>
           {error ? (
             <div className="callout-danger rounded-xl p-5">
@@ -142,81 +193,31 @@ export default function DmPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div
-              className="rounded-xl p-5 space-y-4"
-              style={{
-                background: "var(--color-surface)",
-                border: "1px solid var(--color-border)",
-                boxShadow: "var(--shadow-sm)",
-              }}
-            >
-              <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="qa-result">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
                 <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
-                  Risultato
+                  Consiglio completo
                 </h3>
-                <CopyButton text={`${output.best_reply}\n\n${output.alternatives.short}\n\n${output.alternatives.assertive}`} />
+                <CopyButton text={`${output.risposta_suggerita}\n\n${output.followup_consigliato}`} />
               </div>
 
-              {/* Heat + risk */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div
-                  className="rounded-lg p-3 text-sm flex items-center gap-2"
-                  style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-                >
-                  <span className="font-medium">🌡️ Livello interesse:</span>
-                  <span className={`badge ${heatColors[output.client_heat_level] || "badge-blue"}`}>
-                    {output.client_heat_level}
-                  </span>
-                </div>
-                <div
-                  className={`rounded-lg p-3 text-sm ${
-                    output.message_risk_warning && output.message_risk_warning !== "nessuno"
-                      ? "callout-warning"
-                      : ""
-                  }`}
-                  style={
-                    !output.message_risk_warning || output.message_risk_warning === "nessuno"
-                      ? {
-                          background: "var(--color-soft-2)",
-                          border: "1px solid var(--color-border)",
-                          borderRadius: "var(--radius-sm)",
-                        }
-                      : {}
-                  }
-                >
-                  <span className="font-medium">⚠️ Rischio: </span>
-                  <span>{output.message_risk_warning || "nessuno"}</span>
-                </div>
+              {/* Heat badge */}
+              <div
+                className="rounded-lg p-3 text-sm flex items-center gap-2"
+                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
+              >
+                <span className="font-medium">🌡️ Livello interesse:</span>
+                <span className={`badge ${heatBadge(output.client_heat_level)}`}>
+                  {output.client_heat_level}
+                </span>
               </div>
 
-              <OutputCard title="✉️ Risposta consigliata" text={output.best_reply} accent />
-
-              <div className="grid gap-3 sm:grid-cols-2">
-                <OutputCard title="📝 Versione breve" text={output.alternatives.short} />
-                <OutputCard title="🎯 Versione diretta" text={output.alternatives.assertive} />
-              </div>
-
-              <OutputCard title="❓ Domande qualificanti" text={output.qualifying_questions.join("\n")} />
-
-              <div>
-                <div className="mb-2 text-sm font-semibold">Follow-up programmati</div>
-                <div className="grid gap-2 md:grid-cols-3">
-                  <OutputCard title="⏱ 48 ore" text={output.followups["48h"]} />
-                  <OutputCard title="📅 5 giorni" text={output.followups["5d"]} />
-                  <OutputCard title="🗓 10 giorni" text={output.followups["10d"]} />
-                </div>
-              </div>
-
-              <div className="callout-success text-sm rounded-lg">
-                <span className="font-semibold">➡️ Prossima azione: </span>
-                {output.next_action}
-              </div>
-
-              <div className="flex flex-wrap gap-2 pt-1">
-                <Link href="/app/pipeline" className="btn-primary">
-                  + Aggiungi in Pipeline
-                </Link>
-              </div>
+              <ResultBlock icon="🔍" label="Lettura della situazione" text={output.lettura_situazione} />
+              <ResultBlock icon="🎯" label="Strategia consigliata" text={output.strategia_consigliata} />
+              <ResultBlock icon="✉️" label="Risposta suggerita" text={output.risposta_suggerita} highlight />
+              <ResultBlock icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} />
+              <ResultBlock icon="📋" label="Step successivi" text={output.step_successivi} />
+              <ResultBlock icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} />
             </div>
           ) : (
             <div
@@ -227,12 +228,12 @@ export default function DmPage() {
                 minHeight: "320px",
               }}
             >
-              <p className="text-4xl mb-3">✉️</p>
+              <p className="text-4xl mb-3">💬</p>
               <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
                 Il risultato apparirà qui
               </p>
               <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
-                Incolla la conversazione DM e clicca &quot;Genera risposta&quot;
+                Descrivi la situazione e clicca &quot;Chiedi un consiglio&quot;
               </p>
             </div>
           )}
@@ -255,17 +256,14 @@ export default function DmPage() {
   );
 }
 
-function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
+function ResultBlock({ icon, label, text, highlight }: { icon: string; label: string; text: string; highlight?: boolean }) {
   return (
-    <div
-      className="rounded-lg p-3 text-sm"
-      style={{
-        background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
-        border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,
-      }}
-    >
-      <div className="font-semibold mb-1">{title}</div>
-      <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
+    <div className={`qa-result-block ${highlight ? "qa-result-reply" : ""}`}>
+      <div className="qa-result-label">
+        <span>{icon}</span>
+        {label}
+      </div>
+      <p className="qa-result-text">{text}</p>
     </div>
   );
 }

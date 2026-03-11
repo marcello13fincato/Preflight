@@ -117,28 +117,17 @@ export const defaultDmAssistant: DmAssistantJson = {
 };
 
 export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
-  likely_pains: [
-    "Lead non qualificati in ingresso",
-    "Conversazioni LinkedIn non convertite in call",
-    "Processo outbound poco costante",
-  ],
-  angles: [
-    "Framework di qualificazione in DM",
-    "Piano 14 giorni con azioni giornaliere",
-    "Messaggi basati su obiezioni reali",
-  ],
-  connection_opener: "Ciao, ho letto il tuo profilo e il focus su crescita commerciale: ti va uno scambio rapido su come gestite oggi LinkedIn inbound/outbound?",
-  dm1: "Domanda diretta: qual e il collo di bottiglia principale tra commenti, DM e call prenotate?",
-  smart_questions: [
-    "Quante conversazioni LinkedIn aprite a settimana?",
-    "Qual e il tasso attuale commento -> DM?",
-    "Chi gestisce oggi follow-up e timing?",
-    "Che tipo di prospect risponde meglio?",
-    "Quale obiezione blocca piu spesso la call?",
-  ],
+  chi_e: "Professionista del settore B2B con focus su crescita commerciale e gestione pipeline.",
+  ruolo_contesto: "Fondatore o responsabile commerciale in un'azienda con 5-50 dipendenti. Gestisce il processo di acquisizione clienti su LinkedIn.",
+  perche_buon_contatto: "Ha un'esigenza concreta di sistematizzare il processo outbound. Il profilo mostra segnali di interesse verso tematiche di crescita e automazione.",
+  strategia_contatto: "Approccio educativo: partire da un contenuto di valore legato al suo problema specifico. Evitare la vendita diretta nel primo messaggio.",
+  primo_messaggio: "Ciao, ho letto il tuo profilo e il focus su crescita commerciale: ti va uno scambio rapido su come gestite oggi LinkedIn inbound/outbound?",
+  followup_consigliato: "Se non risponde entro 48h: \"Riprendo il messaggio — ho un caso studio simile al tuo scenario. Ti interessa se te lo condivido?\"",
+  step_successivi: "1. Invia il primo messaggio oggi. 2. Se accetta, aspetta 24h e poi manda un follow-up di valore. 3. Proponi una call di 15 minuti dopo il secondo scambio.",
+  segnali_da_osservare: "Risponde con domande specifiche (caldo). Visualizza senza rispondere (tiepido). Non accetta la connessione (freddo).",
+  errori_da_evitare: "Non proporre subito una call. Non mandare messaggi troppo lunghi. Non parlare del proprio servizio nel primo messaggio.",
   client_heat_level: "Cold",
   priority_signal: "medium",
-  next_action: "Invia il connection_opener oggi e, dopo accettazione, manda dm1 entro 24 ore.",
 };
 
 export const defaultOpportunityFinder: OpportunityFinderJson = {

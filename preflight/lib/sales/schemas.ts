@@ -110,15 +110,28 @@ export const dmAssistantSchema = z.object({
   next_action: z.string(),
 });
 
+export const adviceSchema = z.object({
+  lettura_situazione: z.string(),
+  strategia_consigliata: z.string(),
+  risposta_suggerita: z.string(),
+  followup_consigliato: z.string(),
+  step_successivi: z.string(),
+  errori_da_evitare: z.string(),
+  client_heat_level: heatLevelSchema,
+});
+
 export const prospectAnalyzerSchema = z.object({
-  likely_pains: z.tuple([z.string(), z.string(), z.string()]),
-  angles: z.tuple([z.string(), z.string(), z.string()]),
-  connection_opener: z.string(),
-  dm1: z.string(),
-  smart_questions: z.tuple([z.string(), z.string(), z.string(), z.string(), z.string()]),
+  chi_e: z.string(),
+  ruolo_contesto: z.string(),
+  perche_buon_contatto: z.string(),
+  strategia_contatto: z.string(),
+  primo_messaggio: z.string(),
+  followup_consigliato: z.string(),
+  step_successivi: z.string(),
+  segnali_da_osservare: z.string(),
+  errori_da_evitare: z.string(),
   client_heat_level: heatLevelSchema,
   priority_signal: z.enum(["high", "medium", "low"]),
-  next_action: z.string(),
 });
 
 export const idealProfileSchema = z.object({
@@ -210,6 +223,7 @@ export type PlanJson = z.infer<typeof planSchema>;
 export type PostBuilderJson = z.infer<typeof postBuilderSchema>;
 export type CommentAssistantJson = z.infer<typeof commentAssistantSchema>;
 export type DmAssistantJson = z.infer<typeof dmAssistantSchema>;
+export type AdviceJson = z.infer<typeof adviceSchema>;
 export type ProspectAnalyzerJson = z.infer<typeof prospectAnalyzerSchema>;
 export type IdealProfileJson = z.infer<typeof idealProfileSchema>;
 export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
