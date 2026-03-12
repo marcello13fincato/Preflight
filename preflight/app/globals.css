@@ -2101,25 +2101,28 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .fc-form{display:flex;flex-direction:column;gap:.85rem}
 .fc-required{color:var(--color-danger);font-weight:600}
 
-/* Segmented controls */
-.fc-segmented{
-  display:flex;flex-wrap:wrap;gap:4px;
-  background:var(--color-bg);border:1.5px solid var(--color-border);
-  border-radius:var(--radius-sm);padding:3px;
+/* Pill selector buttons */
+.fc-pills{
+  display:flex;flex-wrap:wrap;gap:6px;
 }
-.fc-seg-btn{
-  flex:1;min-width:0;
-  padding:5px 8px;font-size:.72rem;font-weight:500;
-  color:var(--color-muted);background:transparent;
-  border:none;border-radius:4px;cursor:pointer;
-  transition:all .15s;white-space:nowrap;text-align:center;
+.fc-pill{
+  padding:6px 14px;font-size:.78rem;font-weight:500;
+  color:var(--color-muted);
+  background:var(--color-bg);
+  border:1.5px solid var(--color-border);
+  border-radius:999px;cursor:pointer;
+  transition:all .15s;white-space:nowrap;
 }
-.fc-seg-btn:hover{color:var(--color-text);background:rgba(10,102,194,.04)}
-.fc-seg-active{
+.fc-pill:hover{
+  color:var(--color-text);
+  border-color:rgba(10,102,194,.35);
+  background:rgba(10,102,194,.04);
+}
+.fc-pill-active{
   color:var(--color-primary)!important;
-  background:var(--color-surface)!important;
+  background:rgba(10,102,194,.08)!important;
+  border-color:var(--color-primary)!important;
   font-weight:600;
-  box-shadow:0 1px 3px rgba(0,0,0,.08);
 }
 
 /* Generate button */
@@ -2199,10 +2202,6 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   border-color:rgba(22,163,74,.25);
   background:linear-gradient(135deg,rgba(22,163,74,.02) 0%,var(--color-surface) 100%);
 }
-.fc-result-cta-section{
-  text-align:center;
-  padding:1.75rem;
-}
 
 /* Section badges */
 .fc-result-badge{
@@ -2251,13 +2250,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 .fc-filter-value{font-size:.82rem;color:var(--color-text);line-height:1.5}
 
-/* Search query box */
-.fc-search-query{
-  display:flex;align-items:center;gap:.75rem;
-  background:var(--color-bg);border:1px solid var(--color-border);
-  border-radius:var(--radius-sm);padding:.75rem 1rem;
+/* LinkedIn list section */
+.fc-result-linkedin{
+  border-color:rgba(10,102,194,.25);
+  background:linear-gradient(135deg,rgba(10,102,194,.03) 0%,var(--color-surface) 100%);
+  text-align:center;
+  padding:1.75rem;
 }
-.fc-search-query-text{flex:1;font-size:.88rem;font-weight:500;color:var(--color-text)}
+.fc-linkedin-desc{
+  font-size:.88rem;color:var(--color-muted);line-height:1.6;
+  margin:0 auto .75rem;max-width:440px;
+}
 
 /* LinkedIn CTA button */
 .fc-linkedin-btn{

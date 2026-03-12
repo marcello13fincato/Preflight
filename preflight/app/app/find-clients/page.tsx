@@ -171,37 +171,37 @@ export default function FindClientsPage() {
                 </div>
               </div>
 
-              {/* 5 + 6. Dimensione + Fase */}
-              <div className="find-section-row">
-                <div className="qa-field" style={{ flex: 1 }}>
-                  <label className="qa-label">Dimensione azienda</label>
-                  <div className="fc-segmented">
-                    {DIMENSIONE_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        className={`fc-seg-btn${dimensione === opt.value ? " fc-seg-active" : ""}`}
-                        onClick={() => setDimensione(opt.value)}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+              {/* 5. Dimensione azienda */}
+              <div className="qa-field">
+                <label className="qa-label">Dimensione azienda</label>
+                <div className="fc-pills">
+                  {DIMENSIONE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`fc-pill${dimensione === opt.value ? " fc-pill-active" : ""}`}
+                      onClick={() => setDimensione(opt.value)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
-                <div className="qa-field" style={{ flex: 1 }}>
-                  <label className="qa-label">Fase azienda</label>
-                  <div className="fc-segmented">
-                    {FASE_OPTIONS.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        className={`fc-seg-btn${faseAzienda === opt.value ? " fc-seg-active" : ""}`}
-                        onClick={() => setFaseAzienda(opt.value)}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
+              </div>
+
+              {/* 6. Fase azienda */}
+              <div className="qa-field">
+                <label className="qa-label">Fase azienda</label>
+                <div className="fc-pills">
+                  {FASE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`fc-pill${faseAzienda === opt.value ? " fc-pill-active" : ""}`}
+                      onClick={() => setFaseAzienda(opt.value)}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -339,37 +339,30 @@ export default function FindClientsPage() {
                 </div>
               </div>
 
-              {/* SECTION 5 — RICERCA LINKEDIN PRONTA */}
-              <div className="fc-result-section">
-                <div className="fc-result-badge">5</div>
+              {/* SECTION 5 — LISTA PRONTA SU LINKEDIN */}
+              <div className="fc-result-section fc-result-linkedin">
+                <div className="fc-result-badge fc-result-badge-cta">5</div>
                 <div className="fc-result-header">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                  <h3 className="fc-result-title">Ricerca LinkedIn pronta</h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <h3 className="fc-result-title">Lista pronta su LinkedIn</h3>
                 </div>
-                <div className="fc-search-query">
-                  <span className="fc-search-query-text">{output.ricerca_linkedin_pronta}</span>
-                  <CopyButton text={output.ricerca_linkedin_pronta} />
-                </div>
-              </div>
-
-              {/* SECTION 6 — BOTTONE CLICCABILE */}
-              <div className="fc-result-section fc-result-cta-section">
-                <div className="fc-result-badge fc-result-badge-cta">6</div>
+                <p className="fc-linkedin-desc">
+                  Abbiamo preparato una ricerca LinkedIn coerente con il cliente che stai cercando. Aprila e inizia dai profili più rilevanti.
+                </p>
                 <a
                   href={output.link_ricerca_linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="fc-linkedin-btn"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  Apri la ricerca su LinkedIn
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  Apri la lista su LinkedIn
                 </a>
-                <CopyButton text={output.link_ricerca_linkedin} />
               </div>
 
-              {/* SECTION 7 — COME SCEGLIERE I PROFILI */}
+              {/* SECTION 6 — COME SCEGLIERE I PROFILI */}
               <div className="fc-result-section">
-                <div className="fc-result-badge">7</div>
+                <div className="fc-result-badge">6</div>
                 <div className="fc-result-header">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                   <h3 className="fc-result-title">Come scegliere i profili migliori</h3>
@@ -394,9 +387,9 @@ export default function FindClientsPage() {
                 </div>
               </div>
 
-              {/* SECTION 8 — STRATEGIA DI CONTATTO */}
+              {/* SECTION 7 — STRATEGIA DI CONTATTO */}
               <div className="fc-result-section">
-                <div className="fc-result-badge">8</div>
+                <div className="fc-result-badge">7</div>
                 <div className="fc-result-header">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
                   <h3 className="fc-result-title">Strategia di contatto</h3>
@@ -405,9 +398,9 @@ export default function FindClientsPage() {
                 <CopyButton text={output.strategia_contatto} />
               </div>
 
-              {/* SECTION 9 — PRIMO MESSAGGIO */}
+              {/* SECTION 8 — PRIMO MESSAGGIO */}
               <div className="fc-result-section fc-result-message">
-                <div className="fc-result-badge">9</div>
+                <div className="fc-result-badge">8</div>
                 <div className="fc-result-header">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   <h3 className="fc-result-title">Primo messaggio consigliato</h3>
@@ -418,9 +411,9 @@ export default function FindClientsPage() {
                 <CopyButton text={output.primo_messaggio} />
               </div>
 
-              {/* SECTION 10 — PROSSIMO STEP */}
+              {/* SECTION 9 — PROSSIMO STEP */}
               <div className="fc-result-section fc-result-next">
-                <div className="fc-result-badge">10</div>
+                <div className="fc-result-badge">9</div>
                 <div className="fc-result-header">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                   <h3 className="fc-result-title">Prossimo step</h3>
