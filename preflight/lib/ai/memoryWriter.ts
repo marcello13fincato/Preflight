@@ -108,7 +108,7 @@ export function summarizeOutput(taskType: string, output: Record<string, unknown
     case "analyze_profile":
       return `${output.chi_e || "Profilo analizzato"} — ${output.client_heat_level || "N/A"}`;
     case "find_clients":
-      return String(output.tipo_cliente_ideale || "Clienti trovati");
+      return String(output.profilo_ideale || "Clienti trovati");
     case "ask_advice":
       return String(output.lettura_situazione || "Consiglio fornito").slice(0, 200);
     default:

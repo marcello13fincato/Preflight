@@ -71,7 +71,7 @@ function extractPattern(
       return null;
     }
     case "find_clients": {
-      const tipo = response.tipo_cliente_ideale;
+      const tipo = response.profilo_ideale;
       if (tipo) {
         return `[${timestamp}] Ricerca clienti: ${String(tipo).slice(0, 80)}`;
       }

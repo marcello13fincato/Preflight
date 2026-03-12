@@ -8,6 +8,19 @@ import type { DailyPlanJson } from "@/lib/sales/schemas";
 
 const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan";
 const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-date";
+const TARGETING_STORAGE_KEY = "preflight:last-targeting";
+
+function loadLastTargeting(userId: string): Record<string, unknown> | null {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(`${TARGETING_STORAGE_KEY}:${userId}`);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { result: Record<string, unknown> };
+    return parsed.result || null;
+  } catch {
+    return null;
+  }
+}
 
 function todayKey() {
   return new Date().toISOString().slice(0, 10);
@@ -57,10 +70,14 @@ export default function CosaFareOggiPage() {
     setLoading(true);
     setPlan(null);
     try {
+      const lastTargeting = loadLastTargeting(userId);
       const res = await fetch("/api/ai/daily-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ profile: profile.onboarding || undefined }),
+        body: JSON.stringify({
+          profile: profile.onboarding || undefined,
+          targeting: lastTargeting || undefined,
+        }),
       });
       if (!res.ok) throw new Error("Errore");
       const data = await res.json() as DailyPlanJson;
@@ -240,7 +257,7 @@ export default function CosaFareOggiPage() {
                 <Link href="/app/prospect" className="btn-primary">
                   Analizza un profilo →
                 </Link>
-                <Link href="/app" className="btn-secondary">
+                <Link href="/app/find-clients" className="btn-secondary">
                   Trova clienti su LinkedIn
                 </Link>
               </div>

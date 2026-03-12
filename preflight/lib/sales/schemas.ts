@@ -159,12 +159,29 @@ export const simulatorSchema = z.object({
 });
 
 export const findClientsSchema = z.object({
-  tipo_cliente_ideale: z.string(),
-  come_cercarlo: z.string(),
+  profilo_ideale: z.string(),
+  ruoli_da_cercare: z.object({
+    principali: z.array(z.string()),
+    alternativi: z.array(z.string()),
+  }),
+  keyword_consigliate: z.array(z.string()),
+  filtri_linkedin: z.object({
+    settore: z.string(),
+    geografia: z.string(),
+    dimensione_azienda: z.string(),
+    segnali: z.string(),
+  }),
+  ricerca_linkedin_pronta: z.string(),
   link_ricerca_linkedin: z.string(),
-  suggerimenti_filtri: z.string(),
-  profili_simili: z.string(),
-  cosa_fare_dopo: z.string(),
+  come_scegliere_profili: z.object({
+    ruolo_decisionale: z.string(),
+    segnali_attivita: z.string(),
+    allineamento_tematico: z.string(),
+    fit_servizio: z.string(),
+  }),
+  strategia_contatto: z.string(),
+  primo_messaggio: z.string(),
+  prossimo_step: z.string(),
 });
 
 export const dailyPlanSchema = z.object({

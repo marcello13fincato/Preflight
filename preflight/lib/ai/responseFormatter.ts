@@ -72,19 +72,24 @@ function formatAnalyzeProfile(raw: Record<string, unknown>): AIResponse {
 }
 
 function formatFindClients(raw: Record<string, unknown>): AIResponse {
+  const ruoli = raw.ruoli_da_cercare as Record<string, unknown> | undefined;
+  const filtri = raw.filtri_linkedin as Record<string, unknown> | undefined;
   return {
-    summary: String(raw.tipo_cliente_ideale || "Ricerca clienti completata"),
+    summary: String(raw.profilo_ideale || "Targeting completato"),
     sections: [
-      { title: "Cliente ideale", content: String(raw.tipo_cliente_ideale || "") },
-      { title: "Come cercarlo", content: String(raw.come_cercarlo || "") },
+      { title: "Profilo ideale", content: String(raw.profilo_ideale || "") },
+      { title: "Ruoli da cercare", content: ruoli ? `Principali: ${String(ruoli.principali || "")}. Alternativi: ${String(ruoli.alternativi || "")}` : "" },
+      { title: "Keyword consigliate", content: Array.isArray(raw.keyword_consigliate) ? raw.keyword_consigliate.join(", ") : "" },
+      { title: "Filtri LinkedIn", content: filtri ? `Settore: ${filtri.settore || ""}. Geografia: ${filtri.geografia || ""}. Dimensione: ${filtri.dimensione_azienda || ""}` : "" },
+      { title: "Ricerca LinkedIn pronta", content: String(raw.ricerca_linkedin_pronta || "") },
       { title: "Link ricerca LinkedIn", content: String(raw.link_ricerca_linkedin || "") },
-      { title: "Filtri suggeriti", content: String(raw.suggerimenti_filtri || "") },
-      { title: "Profili simili", content: String(raw.profili_simili || "") },
-      { title: "Cosa fare dopo", content: String(raw.cosa_fare_dopo || "") },
+      { title: "Strategia di contatto", content: String(raw.strategia_contatto || "") },
+      { title: "Primo messaggio", content: String(raw.primo_messaggio || "") },
+      { title: "Prossimo step", content: String(raw.prossimo_step || "") },
     ],
     suggested_actions: [
       "Apri il link di ricerca LinkedIn",
-      String(raw.cosa_fare_dopo || "Analizza i profili trovati"),
+      String(raw.prossimo_step || "Analizza i profili trovati"),
     ],
     metadata: { task_type: "find_clients" },
     raw,

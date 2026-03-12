@@ -7,6 +7,7 @@ export const runtime = "nodejs";
 
 const requestSchema = z.object({
   profile: z.unknown().optional(),
+  targeting: z.unknown().optional(),
 });
 
 export async function POST(req: Request) {
@@ -20,14 +21,28 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { profile } = parsed.data;
+    const { profile, targeting } = parsed.data;
     const profileCtx = formatProfileContext(profile);
+
+    let targetingCtx = "";
+    if (targeting && typeof targeting === "object") {
+      const t = targeting as Record<string, unknown>;
+      const lines: string[] = [];
+      if (t.profilo_ideale) lines.push(`- Profilo ideale identificato: ${t.profilo_ideale}`);
+      if (t.ricerca_linkedin_pronta) lines.push(`- Ricerca LinkedIn pronta: ${t.ricerca_linkedin_pronta}`);
+      if (t.link_ricerca_linkedin) lines.push(`- Link ricerca: ${t.link_ricerca_linkedin}`);
+      if (t.primo_messaggio) lines.push(`- Primo messaggio suggerito: ${t.primo_messaggio}`);
+      if (t.strategia_contatto) lines.push(`- Strategia contatto: ${t.strategia_contatto}`);
+      if (lines.length > 0) {
+        targetingCtx = `\n\nTARGETING RECENTE (generato da Trova Clienti):\n${lines.join("\n")}\nUsa queste informazioni per personalizzare il piano di oggi. Integra il targeting nelle azioni prioritarie e nei contatti da fare.`;
+      }
+    }
 
     const prompt = `${salesRules}
 
 Sei l'Assistente Preflight. L'utente ti chiede di generare il suo piano giornaliero per oggi su LinkedIn per trovare clienti.
 
-${profileCtx || "NOTA: L'utente non ha ancora configurato il suo profilo. Genera suggerimenti generici ma utili."}
+${profileCtx || "NOTA: L'utente non ha ancora configurato il suo profilo. Genera suggerimenti generici ma utili."}${targetingCtx}
 
 Il tuo compito è generare un piano concreto per oggi con le priorità e 3 blocchi operativi. Sii chiaro, concreto, naturale. Non essere aggressivo e non fare marketing.
 

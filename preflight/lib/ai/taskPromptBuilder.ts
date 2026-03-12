@@ -41,12 +41,16 @@ Genera:
 
 Rispondi con un JSON con ESATTAMENTE questi campi:
 {
-  "tipo_cliente_ideale": "<sintesi del profilo cliente ideale>",
-  "come_cercarlo": "<keyword per LinkedIn, separate da virgola>",
+  "profilo_ideale": "<descrizione precisa di chi contattare>",
+  "ruoli_da_cercare": { "principali": ["<ruolo1>", "<ruolo2>"], "alternativi": ["<ruolo1>", "<ruolo2>"] },
+  "keyword_consigliate": ["<keyword1>", "<keyword2>", "<keyword3>"],
+  "filtri_linkedin": { "settore": "<settore>", "geografia": "<area>", "dimensione_azienda": "<dimensione>", "segnali": "<segnali>" },
+  "ricerca_linkedin_pronta": "<query leggibile>",
   "link_ricerca_linkedin": "<URL LinkedIn pronto con %20 per spazi>",
-  "suggerimenti_filtri": "<filtri LinkedIn utili: settore, località, titolo, ecc.>",
-  "profili_simili": "<ruoli simili o alternativi da cercare>",
-  "cosa_fare_dopo": "<step concreti numerati>"
+  "come_scegliere_profili": { "ruolo_decisionale": "<criteri>", "segnali_attivita": "<segnali>", "allineamento_tematico": "<criteri>", "fit_servizio": "<criteri>" },
+  "strategia_contatto": "<strategia in step>",
+  "primo_messaggio": "<messaggio breve e naturale>",
+  "prossimo_step": "<cosa fare dopo>"
 }`,
 
   ask_advice: `COMPITO: L'utente chiede un consiglio strategico su una situazione commerciale.
