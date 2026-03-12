@@ -68,12 +68,13 @@ export default function DmPage() {
   return (
     <div className="qa-container qa-container-dash">
       {/* ── Hero header ── */}
-      <div className="qa-section-header qa-section-header-hero">
-        <div className="qa-section-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        </div>
-        <h3 className="qa-section-title qa-section-title-lg">Chiedimi un consiglio</h3>
-        <p className="qa-section-sub">
+      <div className="page-hero" style={{ marginBottom: "1.5rem" }}>
+        <span className="page-hero-eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Consulenza
+        </span>
+        <h1 className="page-hero-title">Chiedimi un consiglio</h1>
+        <p className="page-hero-subtitle">
           Descrivi una situazione reale su LinkedIn e scopri come conviene muoverti.
         </p>
       </div>

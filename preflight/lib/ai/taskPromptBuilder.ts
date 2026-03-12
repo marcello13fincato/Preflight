@@ -29,28 +29,28 @@ Rispondi con un JSON con ESATTAMENTE questi campi:
   "priority_signal": "<high | medium | low>"
 }`,
 
-  find_clients: `COMPITO: Aiuta l'utente a trovare potenziali clienti su LinkedIn.
+  find_clients: `COMPITO: Identifica le categorie di persone più utili da contattare su LinkedIn adesso.
 
-Genera:
-1. Profilo del cliente ideale basato sui dati dell'utente
-2. Keyword per la ricerca LinkedIn
-3. Link di ricerca LinkedIn pronto (formato: https://www.linkedin.com/search/results/people/?keywords=...)
-4. Filtri consigliati
-5. Ruoli alternativi da cercare
-6. Prossimi passi concreti
+NON generare una singola ricerca troppo specifica.
+Genera 3 CATEGORIE di prospect (1 prioritaria + 2 alternative), ognuna con un link di ricerca LinkedIn.
+Aggiungi guida alla selezione profili, strategia di contatto e primo messaggio.
+
+REGOLE PER I LINK LINKEDIN:
+- Formato: https://www.linkedin.com/search/results/people/?keywords=...
+- Usa SOLO ruolo + 1-2 qualificatori + geografia se rilevante
+- NON concatenare tutto — la ricerca deve restituire risultati reali
+- Se troppo stretto, allarga: sinonimo ruolo, regione invece di città
 
 Rispondi con un JSON con ESATTAMENTE questi campi:
 {
-  "profilo_ideale": "<descrizione precisa di chi contattare>",
-  "ruoli_da_cercare": { "principali": ["<ruolo1>", "<ruolo2>"], "alternativi": ["<ruolo1>", "<ruolo2>"] },
-  "keyword_consigliate": ["<keyword1>", "<keyword2>", "<keyword3>"],
-  "filtri_linkedin": { "settore": "<settore>", "geografia": "<area>", "dimensione_azienda": "<dimensione>", "segnali": "<segnali>" },
-  "ricerca_linkedin_pronta": "<query leggibile>",
-  "link_ricerca_linkedin": "<URL LinkedIn pronto con %20 per spazi>",
-  "come_scegliere_profili": { "ruolo_decisionale": "<criteri>", "segnali_attivita": "<segnali>", "allineamento_tematico": "<criteri>", "fit_servizio": "<criteri>" },
-  "strategia_contatto": "<strategia in step>",
-  "primo_messaggio": "<messaggio breve e naturale>",
-  "prossimo_step": "<cosa fare dopo>"
+  "categoria_prioritaria": { "titolo": "<nome categoria>", "descrizione": "<chi sono>", "perche_ora": "<perché contattarli ora>", "link_ricerca_linkedin": "<URL>" },
+  "categorie_alternative": [
+    { "titolo": "<nome>", "descrizione": "<chi sono>", "perche_ora": "<perché>", "link_ricerca_linkedin": "<URL>" },
+    { "titolo": "<nome>", "descrizione": "<chi sono>", "perche_ora": "<perché>", "link_ricerca_linkedin": "<URL>" }
+  ],
+  "come_scegliere_profili": { "ruolo_decisionale": "<criteri>", "chiarezza_profilo": "<criteri>", "attivita_recente": "<segnali>", "rilevanza_problema": "<criteri>", "contesto_aziendale": "<criteri>", "chi_evitare": "<chi non contattare>" },
+  "strategia_contatto": { "approccio": "<step concreti>", "primo_messaggio": "<messaggio breve e naturale>", "angolo_followup": "<angolo per il follow-up>" },
+  "prossimo_step": "<suggerimento chiaro su cosa fare dopo>"
 }`,
 
   ask_advice: `COMPITO: L'utente chiede un consiglio strategico su una situazione commerciale.

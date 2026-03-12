@@ -419,6 +419,17 @@ export default function AppTodayPage() {
         {/* ══════════════════════════════════════════════════════
             ZONE 1 — DAILY PLAN HERO
         ══════════════════════════════════════════════════════ */}
+        <div className="page-hero" style={{ marginBottom: "0" }}>
+          <span className="page-hero-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Dashboard
+          </span>
+          <h1 className="page-hero-title">La tua centrale operativa</h1>
+          <p className="page-hero-subtitle">
+            Tutto quello che ti serve per trovare clienti, gestire conversazioni e far crescere il tuo business su LinkedIn.
+          </p>
+        </div>
+
         <section className="dash-daily-hero">
           <div className="dash-daily-eyebrow">
             <span className="dash-daily-eyebrow-dot" />

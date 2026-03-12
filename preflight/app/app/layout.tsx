@@ -1,60 +1,38 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import getServerAuthSession from "@/lib/getServerAuthSession";
-import AppNav from "@/components/app/AppNav";
+import AppSidebar from "@/components/app/AppSidebar";
 import SystemBanner from "@/components/app/SystemBanner";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
 
   return (
-    <section className="min-h-screen">
-      {/* Top header bar */}
-      <header
-        className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl px-5 py-3"
-        style={{
-          background: "var(--color-primary)",
-          boxShadow: "0 2px 8px rgba(10,102,194,0.25)",
-        }}
-      >
-        <div className="flex items-center gap-3">
-          <div
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-sm font-bold"
-            style={{ background: "var(--color-primary-bg-light)", color: "white" }}
-          >
-            P
+    <div className="app-shell">
+      <AppSidebar />
+      <div className="app-main">
+        {/* Top bar */}
+        <header className="app-topbar">
+          <div className="app-topbar-left">
+            <div className="app-topbar-status">
+              <span className="app-topbar-dot" />
+              <span className="app-topbar-status-text">Sistema attivo</span>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "var(--color-primary-text-dim)" }}>
-              Preflight
-            </p>
-            <h1 className="text-base font-bold leading-tight" style={{ color: "white" }}>
-              Assistente LinkedIn
-            </h1>
+          <div className="app-topbar-right">
+            <span className="app-topbar-user">
+              {session?.user?.email || session?.user?.name || "Guest mode"}
+            </span>
+            {session ? (
+              <Link href="/api/auth/signout" className="app-topbar-btn">
+                Esci
+              </Link>
+            ) : null}
           </div>
-        </div>
-        <div className="flex items-center gap-3 text-sm">
-          <span className="hidden sm:block" style={{ color: "var(--color-primary-text-muted)" }}>
-            {session?.user?.email || session?.user?.name || "Guest mode"}
-          </span>
-          {session ? (
-            <Link
-              href="/api/auth/signout"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium transition-all"
-              style={{
-                background: "var(--color-primary-bg-light)",
-                color: "white",
-                border: "1px solid var(--color-primary-bg-border)",
-              }}
-            >
-              Esci
-            </Link>
-          ) : null}
-        </div>
-      </header>
-      <SystemBanner />
-      <AppNav />
-      <main className="pb-12">{children}</main>
-    </section>
+        </header>
+        <SystemBanner />
+        <main className="app-content">{children}</main>
+      </div>
+    </div>
   );
 }

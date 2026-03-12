@@ -108,16 +108,16 @@ export default function CosaFareOggiPage() {
   return (
     <div className="oggi-page">
       {/* ── PAGE HEADER ── */}
-      <div className="oggi-header">
+      <div className="page-hero" style={{ marginBottom: "1.5rem" }}>
         <div className="oggi-header-top">
-          <Link href="/app" className="oggi-back">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Dashboard
-          </Link>
           <span className="oggi-date">{today}</span>
         </div>
-        <h1 className="oggi-title">Cosa fare oggi</h1>
-        <p className="oggi-subtitle">
+        <span className="page-hero-eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Piano giornaliero
+        </span>
+        <h1 className="page-hero-title">Cosa fare oggi</h1>
+        <p className="page-hero-subtitle">
           In base al tuo sistema, ai contatti che hai già analizzato e ai consigli precedenti, Preflight ti suggerisce le azioni più utili per oggi.
         </p>
       </div>

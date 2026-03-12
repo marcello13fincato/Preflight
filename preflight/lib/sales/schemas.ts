@@ -158,29 +158,29 @@ export const simulatorSchema = z.object({
   next_action: z.string(),
 });
 
-export const findClientsSchema = z.object({
-  profilo_ideale: z.string(),
-  ruoli_da_cercare: z.object({
-    principali: z.array(z.string()),
-    alternativi: z.array(z.string()),
-  }),
-  keyword_consigliate: z.array(z.string()),
-  filtri_linkedin: z.object({
-    settore: z.string(),
-    geografia: z.string(),
-    dimensione_azienda: z.string(),
-    segnali: z.string(),
-  }),
-  ricerca_linkedin_pronta: z.string(),
+export const findClientsCategorySchema = z.object({
+  titolo: z.string(),
+  descrizione: z.string(),
+  perche_ora: z.string(),
   link_ricerca_linkedin: z.string(),
+});
+
+export const findClientsSchema = z.object({
+  categoria_prioritaria: findClientsCategorySchema,
+  categorie_alternative: z.tuple([findClientsCategorySchema, findClientsCategorySchema]),
   come_scegliere_profili: z.object({
     ruolo_decisionale: z.string(),
-    segnali_attivita: z.string(),
-    allineamento_tematico: z.string(),
-    fit_servizio: z.string(),
+    chiarezza_profilo: z.string(),
+    attivita_recente: z.string(),
+    rilevanza_problema: z.string(),
+    contesto_aziendale: z.string(),
+    chi_evitare: z.string(),
   }),
-  strategia_contatto: z.string(),
-  primo_messaggio: z.string(),
+  strategia_contatto: z.object({
+    approccio: z.string(),
+    primo_messaggio: z.string(),
+    angolo_followup: z.string(),
+  }),
   prossimo_step: z.string(),
 });
 

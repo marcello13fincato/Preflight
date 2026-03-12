@@ -71,9 +71,10 @@ function extractPattern(
       return null;
     }
     case "find_clients": {
-      const tipo = response.profilo_ideale;
-      if (tipo) {
-        return `[${timestamp}] Ricerca clienti: ${String(tipo).slice(0, 80)}`;
+      const cat = response.categoria_prioritaria as Record<string, unknown> | undefined;
+      const titolo = cat?.titolo;
+      if (titolo) {
+        return `[${timestamp}] Ricerca clienti: ${String(titolo).slice(0, 80)}`;
       }
       return null;
     }

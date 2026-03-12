@@ -92,7 +92,7 @@ export function summarizeInput(taskType: string, input: Record<string, unknown>)
     case "analyze_profile":
       return `Analisi profilo: ${input.linkedin_url || "profilo sconosciuto"}`;
     case "find_clients":
-      return `Ricerca clienti: ${input.tipo_cliente || input.query || "ricerca generica"}`;
+      return `Ricerca clienti: ${input.ruolo_target || input.tipo_cliente || input.query || "ricerca generica"}`;
     case "ask_advice":
       return `Consiglio: ${String(input.situation || input.query || "").slice(0, 100)}`;
     default:
@@ -107,8 +107,10 @@ export function summarizeOutput(taskType: string, output: Record<string, unknown
   switch (taskType) {
     case "analyze_profile":
       return `${output.chi_e || "Profilo analizzato"} — ${output.client_heat_level || "N/A"}`;
-    case "find_clients":
-      return String(output.profilo_ideale || "Clienti trovati");
+    case "find_clients": {
+      const cat = output.categoria_prioritaria as Record<string, unknown> | undefined;
+      return String(cat?.titolo || "Categorie prospect identificate");
+    }
     case "ask_advice":
       return String(output.lettura_situazione || "Consiglio fornito").slice(0, 200);
     default:

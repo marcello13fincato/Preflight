@@ -28,13 +28,28 @@ export async function POST(req: Request) {
     if (targeting && typeof targeting === "object") {
       const t = targeting as Record<string, unknown>;
       const lines: string[] = [];
-      if (t.profilo_ideale) lines.push(`- Profilo ideale identificato: ${t.profilo_ideale}`);
-      if (t.ricerca_linkedin_pronta) lines.push(`- Ricerca LinkedIn pronta: ${t.ricerca_linkedin_pronta}`);
-      if (t.link_ricerca_linkedin) lines.push(`- Link ricerca: ${t.link_ricerca_linkedin}`);
-      if (t.primo_messaggio) lines.push(`- Primo messaggio suggerito: ${t.primo_messaggio}`);
-      if (t.strategia_contatto) lines.push(`- Strategia contatto: ${t.strategia_contatto}`);
+      // New find_clients structure
+      const cat = t.categoria_prioritaria as Record<string, unknown> | undefined;
+      if (cat?.titolo) lines.push(`- Categoria prospect prioritaria: ${cat.titolo}`);
+      if (cat?.descrizione) lines.push(`  Descrizione: ${cat.descrizione}`);
+      if (cat?.link_ricerca_linkedin) lines.push(`  Link ricerca: ${cat.link_ricerca_linkedin}`);
+      const alts = t.categorie_alternative as Record<string, unknown>[] | undefined;
+      if (Array.isArray(alts)) {
+        alts.forEach((a, i) => {
+          if (a.titolo) lines.push(`- Categoria alternativa ${i + 1}: ${a.titolo}`);
+        });
+      }
+      const strategia = t.strategia_contatto as Record<string, unknown> | undefined;
+      if (strategia?.primo_messaggio) lines.push(`- Primo messaggio suggerito: ${strategia.primo_messaggio}`);
+      if (strategia?.approccio) lines.push(`- Strategia contatto: ${strategia.approccio}`);
+      // Backward compat: old structure
+      if (!cat && t.profilo_ideale) lines.push(`- Profilo ideale identificato: ${t.profilo_ideale}`);
+      if (!cat && t.ricerca_linkedin_pronta) lines.push(`- Ricerca LinkedIn pronta: ${t.ricerca_linkedin_pronta}`);
+      if (!cat && t.link_ricerca_linkedin) lines.push(`- Link ricerca: ${t.link_ricerca_linkedin}`);
+      if (!strategia && t.primo_messaggio) lines.push(`- Primo messaggio suggerito: ${t.primo_messaggio}`);
+      if (!strategia && t.strategia_contatto && typeof t.strategia_contatto === "string") lines.push(`- Strategia contatto: ${t.strategia_contatto}`);
       if (lines.length > 0) {
-        targetingCtx = `\n\nTARGETING RECENTE (generato da Trova Clienti):\n${lines.join("\n")}\nUsa queste informazioni per personalizzare il piano di oggi. Integra il targeting nelle azioni prioritarie e nei contatti da fare.`;
+        targetingCtx = `\n\nTARGETING RECENTE (generato da Trova Clienti):\n${lines.join("\n")}\nUsa queste informazioni per personalizzare il piano di oggi. Integra il targeting nelle azioni prioritarie e nei contatti da fare. Indica quale categoria di prospect lavorare per prima oggi e che azione di outreach fare.`;
       }
     }
 

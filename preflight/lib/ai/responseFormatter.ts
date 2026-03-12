@@ -72,24 +72,33 @@ function formatAnalyzeProfile(raw: Record<string, unknown>): AIResponse {
 }
 
 function formatFindClients(raw: Record<string, unknown>): AIResponse {
-  const ruoli = raw.ruoli_da_cercare as Record<string, unknown> | undefined;
-  const filtri = raw.filtri_linkedin as Record<string, unknown> | undefined;
+  const cat = raw.categoria_prioritaria as Record<string, unknown> | undefined;
+  const alts = raw.categorie_alternative as Record<string, unknown>[] | undefined;
+  const strategia = raw.strategia_contatto as Record<string, unknown> | undefined;
+  const sections: { title: string; content: string }[] = [
+    { title: "Categoria prioritaria", content: cat ? `${cat.titolo}: ${cat.descrizione}` : "" },
+    { title: "Perché ora", content: String(cat?.perche_ora || "") },
+  ];
+  if (alts && Array.isArray(alts)) {
+    alts.forEach((a, i) => {
+      sections.push({ title: `Alternativa ${i + 1}`, content: `${a.titolo}: ${a.descrizione}` });
+    });
+  }
+  if (strategia) {
+    sections.push({ title: "Approccio consigliato", content: String(strategia.approccio || "") });
+    sections.push({ title: "Primo messaggio", content: String(strategia.primo_messaggio || "") });
+    sections.push({ title: "Angolo follow-up", content: String(strategia.angolo_followup || "") });
+  }
+  if (raw.prossimo_step) {
+    sections.push({ title: "Prossimo step", content: String(raw.prossimo_step) });
+  }
   return {
-    summary: String(raw.profilo_ideale || "Targeting completato"),
-    sections: [
-      { title: "Profilo ideale", content: String(raw.profilo_ideale || "") },
-      { title: "Ruoli da cercare", content: ruoli ? `Principali: ${String(ruoli.principali || "")}. Alternativi: ${String(ruoli.alternativi || "")}` : "" },
-      { title: "Keyword consigliate", content: Array.isArray(raw.keyword_consigliate) ? raw.keyword_consigliate.join(", ") : "" },
-      { title: "Filtri LinkedIn", content: filtri ? `Settore: ${filtri.settore || ""}. Geografia: ${filtri.geografia || ""}. Dimensione: ${filtri.dimensione_azienda || ""}` : "" },
-      { title: "Ricerca LinkedIn pronta", content: String(raw.ricerca_linkedin_pronta || "") },
-      { title: "Link ricerca LinkedIn", content: String(raw.link_ricerca_linkedin || "") },
-      { title: "Strategia di contatto", content: String(raw.strategia_contatto || "") },
-      { title: "Primo messaggio", content: String(raw.primo_messaggio || "") },
-      { title: "Prossimo step", content: String(raw.prossimo_step || "") },
-    ],
+    summary: String(cat?.titolo || "Categorie prospect identificate"),
+    sections,
     suggested_actions: [
-      "Apri il link di ricerca LinkedIn",
-      String(raw.prossimo_step || "Analizza i profili trovati"),
+      "Apri la lista su LinkedIn",
+      "Analizza uno di questi profili",
+      "Vai al piano di oggi",
     ],
     metadata: { task_type: "find_clients" },
     raw,

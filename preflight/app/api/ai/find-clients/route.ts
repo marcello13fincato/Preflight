@@ -38,11 +38,11 @@ export async function POST(req: Request) {
 
     const prompt = `${salesRules}
 
-Sei l'Assistente Preflight — motore strategico di targeting LinkedIn.
+Sei l'Assistente Preflight — motore di selezione prospect su LinkedIn.
 
-Il tuo compito: costruire una strategia di targeting LinkedIn precisa, analitica e immediatamente azionabile basata sui dati forniti dall'utente. NON collegarti a LinkedIn, NON inventare contatti, NON simulare scraping. Il tuo output guida l'utente a trovare e contattare le persone giuste.
+Il tuo compito: identificare le CATEGORIE di persone più utili da contattare adesso su LinkedIn, basandoti sul posizionamento e sul servizio dell'utente. NON collegarti a LinkedIn, NON inventare contatti reali, NON simulare scraping. Il tuo output guida l'utente a capire CHI contattare e PERCHÉ.
 
-DATI DI TARGETING FORNITI DALL'UTENTE:
+DATI FORNITI DALL'UTENTE:
 - Ruolo target: ${ruolo_target}
 ${settore ? `- Settore: ${settore}` : ""}
 ${area_geografica ? `- Area geografica: ${area_geografica}` : ""}
@@ -59,32 +59,53 @@ REGOLE DI COMPORTAMENTO:
 - NON fingere di accedere a LinkedIn
 - Ogni suggerimento deve essere azionabile e concreto
 - Rispondi ESCLUSIVAMENTE in italiano
+- NON presentare questo come "una ricerca" — presentalo come categorie di persone da contattare
+- Il tono deve essere: professionale, preciso, strategico, onesto, senza hype
+
+REGOLE PER I LINK DI RICERCA LINKEDIN:
+- Formato: https://www.linkedin.com/search/results/people/?keywords=...
+- Usa %20 per gli spazi
+- Usa SOLO ruolo + 1-2 qualificatori forti + città/geografia se rilevante
+- NON concatenare tutti i dati dell'utente nella query — la ricerca deve restituire risultati reali
+- Se il targeting rischia di essere troppo stretto, allarga automaticamente: rimuovi un qualificatore, espandi da città a regione, usa un sinonimo di ruolo più ampio
+- Preferisci risultati utili a ricerche troppo precise ma vuote
 
 Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
 {
-  "profilo_ideale": "<descrizione precisa e analitica di chi contattare: chi è questa persona, che ruolo ha, in che tipo di azienda lavora, perché è il target giusto — 3-5 frasi>",
-  "ruoli_da_cercare": {
-    "principali": ["<ruolo 1>", "<ruolo 2>", "<ruolo 3>"],
-    "alternativi": ["<ruolo alternativo 1>", "<ruolo alternativo 2>", "<ruolo alternativo 3>"]
+  "categoria_prioritaria": {
+    "titolo": "<nome breve della categoria — es: Proprietari di studi dentistici a Milano>",
+    "descrizione": "<descrizione concisa di chi sono queste persone, che ruolo hanno, in che contesto operano — 2-3 frasi>",
+    "perche_ora": "<perché questa categoria è la più rilevante da contattare adesso, basandoti sul servizio e sul posizionamento dell'utente — 2-3 frasi>",
+    "link_ricerca_linkedin": "<URL LinkedIn pronto — solo ruolo + 1-2 qualificatori + geografia>"
   },
-  "keyword_consigliate": ["<combinazione keyword 1>", "<combinazione keyword 2>", "<combinazione keyword 3>", "<combinazione keyword 4>", "<combinazione keyword 5>"],
-  "filtri_linkedin": {
-    "settore": "<settori consigliati da selezionare nella ricerca LinkedIn>",
-    "geografia": "<filtri geografici consigliati, inclusa la città se specificata>",
-    "dimensione_azienda": "<filtro dimensione aziendale da selezionare>",
-    "segnali": "<segnali da osservare: pubblicazioni recenti, cambi di ruolo, crescita aziendale, ecc.>"
-  },
-  "ricerca_linkedin_pronta": "<query di ricerca leggibile e comprensibile da un umano — es: Founder SaaS B2B a Milano con focus su marketing automation>",
-  "link_ricerca_linkedin": "<URL di ricerca LinkedIn pronto — formato: https://www.linkedin.com/search/results/people/?keywords=... — usa %20 per gli spazi nelle keyword>",
+  "categorie_alternative": [
+    {
+      "titolo": "<nome breve della seconda categoria>",
+      "descrizione": "<descrizione concisa — 1-2 frasi>",
+      "perche_ora": "<perché vale la pena considerarla — 1-2 frasi>",
+      "link_ricerca_linkedin": "<URL LinkedIn pronto>"
+    },
+    {
+      "titolo": "<nome breve della terza categoria>",
+      "descrizione": "<descrizione concisa — 1-2 frasi>",
+      "perche_ora": "<perché vale la pena considerarla — 1-2 frasi>",
+      "link_ricerca_linkedin": "<URL LinkedIn pronto>"
+    }
+  ],
   "come_scegliere_profili": {
-    "ruolo_decisionale": "<come capire se la persona ha potere decisionale — segnali da cercare nel profilo>",
-    "segnali_attivita": "<segnali di attività recente: pubblica, commenta, cambia ruolo, fa hiring>",
-    "allineamento_tematico": "<come capire se i contenuti del profilo si allineano al servizio dell'utente>",
-    "fit_servizio": "<come valutare se questa persona ha effettivamente il problema che l'utente risolve>"
+    "ruolo_decisionale": "<come capire se la persona ha potere decisionale — segnali concreti da cercare nel profilo>",
+    "chiarezza_profilo": "<come valutare se il profilo è completo e la persona è attiva e raggiungibile>",
+    "attivita_recente": "<segnali di attività recente: pubblica, commenta, cambia ruolo, fa hiring>",
+    "rilevanza_problema": "<come capire dal profilo se questa persona ha il problema che l'utente risolve>",
+    "contesto_aziendale": "<come valutare l'azienda: dimensione, fase, settore, fit con l'offerta>",
+    "chi_evitare": "<chi NON contattare per primo e perché — profili che sembrano adatti ma non lo sono>"
   },
-  "strategia_contatto": "<strategia in 4-5 step concreti: 1. visita il profilo 2. leggi gli ultimi post 3. commenta con valore 4. invia richiesta di connessione 5. dopo l'accettazione manda il primo messaggio>",
-  "primo_messaggio": "<messaggio breve (max 300 caratteri), naturale, non aggressivo, senza pitch — una domanda intelligente o un riferimento a qualcosa del profilo>",
-  "prossimo_step": "<cosa fare dopo aver ottenuto questo targeting: analizzare un profilo trovato con Preflight, inserirlo nella pipeline, preparare follow-up>"
+  "strategia_contatto": {
+    "approccio": "<strategia raccomandata in 4-5 step concreti: visita il profilo, leggi i post, commenta con valore, invia richiesta, dopo l'accettazione manda il primo messaggio>",
+    "primo_messaggio": "<messaggio breve (max 300 caratteri), naturale, senza pitch — una domanda intelligente o un riferimento a qualcosa del profilo>",
+    "angolo_followup": "<dopo il primo messaggio, qual è l'angolo per il follow-up — cosa chiedere, come proseguire>"
+  },
+  "prossimo_step": "<suggerimento chiaro su cosa fare dopo: aprire una lista, analizzare i profili trovati, iniziare una conversazione>"
 }`;
 
     const output = await generateStructured({ prompt, schema: findClientsSchema });

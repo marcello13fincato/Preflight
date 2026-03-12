@@ -67,12 +67,13 @@ export default function ProspectPage() {
   return (
     <div className="qa-container qa-container-dash">
       {/* ── Hero header ── */}
-      <div className="qa-section-header qa-section-header-hero">
-        <div className="qa-section-icon">
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        </div>
-        <h3 className="qa-section-title qa-section-title-lg">Analizza questo profilo</h3>
-        <p className="qa-section-sub">
+      <div className="page-hero" style={{ marginBottom: "1.5rem" }}>
+        <span className="page-hero-eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Analisi profilo
+        </span>
+        <h1 className="page-hero-title">Analizza questo profilo</h1>
+        <p className="page-hero-subtitle">
           Scopri se vale la pena contattare questa persona e come muoverti per iniziare la conversazione.
         </p>
       </div>
