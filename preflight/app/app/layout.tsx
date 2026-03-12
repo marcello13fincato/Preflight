@@ -31,7 +31,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
         <SystemBanner />
-        <main className="app-content">{children}</main>
+        <main className="app-content">
+          {children}
+        </main>
       </div>
     </div>
   );
