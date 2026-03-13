@@ -11,15 +11,56 @@ export default function SettingsPage() {
   const profile = repo.profile.getProfile(userId);
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Settings</h2>
-      <div className="rounded-lg border border-app p-4 text-sm">
-        <div><strong>Utente:</strong> {userId}</div>
-        <div><strong>Onboarding completato:</strong> {profile.onboarding_complete ? "Si" : "No"}</div>
+    <div className="settings-page">
+      {/* Hero */}
+      <div className="page-hero">
+        <span className="page-hero-eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Impostazioni
+        </span>
+        <h1 className="page-hero-title">Impostazioni</h1>
+        <p className="page-hero-subtitle">
+          Gestisci il tuo account e le preferenze del sistema.
+        </p>
       </div>
-      <div className="rounded-lg border border-app p-4 text-sm">
-        <h3 className="font-semibold">Account/Billing (MVP)</h3>
-        <p className="text-muted">Gestione account e fatturazione semplificata. Collegamento provider pagamenti in step successivo.</p>
+
+      {/* Account info */}
+      <div className="v3-card-flat settings-card">
+        <h3 className="settings-card-label">Account</h3>
+        <div className="settings-grid">
+          <div className="settings-item">
+            <div className="settings-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <span className="settings-item-label">Utente</span>
+              <span className="settings-item-value">{userId}</span>
+            </div>
+          </div>
+          <div className="settings-item">
+            <div className="settings-item-icon">
+              {profile.onboarding_complete ? (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              ) : (
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              )}
+            </div>
+            <div>
+              <span className="settings-item-label">Onboarding</span>
+              <span className={`badge ${profile.onboarding_complete ? "badge-green" : "badge-amber"}`}>
+                {profile.onboarding_complete ? "Completato" : "Da completare"}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Billing */}
+      <div className="v3-card-flat settings-card">
+        <h3 className="settings-card-label">Abbonamento e fatturazione</h3>
+        <p className="settings-card-text">
+          Gestione account e fatturazione semplificata. Il collegamento al provider di pagamento sarà disponibile nel prossimo aggiornamento.
+        </p>
       </div>
     </div>
   );

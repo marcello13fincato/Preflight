@@ -1,6 +1,7 @@
 "use client";
 
 import type {
+  AnalyzedContact,
   InteractionType,
   Lead,
   LeadStatus,
@@ -35,6 +36,11 @@ export interface LeadRepository {
   deleteLead(userId: string, leadId: string): void;
   listLeads(userId: string): Lead[];
   listByStatus(userId: string): Record<LeadStatus, Lead[]>;
+}
+
+export interface ContactRepository {
+  saveContact(userId: string, contact: Omit<AnalyzedContact, "id">): AnalyzedContact;
+  listContacts(userId: string): AnalyzedContact[];
 }
 
 function key(userId: string, suffix: string) {
@@ -178,12 +184,29 @@ export const localLeadRepository: LeadRepository = {
   },
 };
 
+export const localContactRepository: ContactRepository = {
+  saveContact(userId, contact) {
+    const current = safeRead<AnalyzedContact[]>(key(userId, "contacts"), []);
+    const created: AnalyzedContact = {
+      ...contact,
+      id: crypto.randomUUID(),
+    };
+    current.unshift(created);
+    safeWrite(key(userId, "contacts"), current.slice(0, 200));
+    return created;
+  },
+  listContacts(userId) {
+    return safeRead<AnalyzedContact[]>(key(userId, "contacts"), []);
+  },
+};
+
 export function getRepositoryBundle() {
   // MVP fallback: local repositories are always available and require no external service.
   return {
     profile: localProfileRepository,
     interaction: localInteractionRepository,
     lead: localLeadRepository,
+    contact: localContactRepository,
   };
 }
 
