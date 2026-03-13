@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const freeFeatures = [
-  "Accesso alla dashboard",
-  "Primi test dei moduli principali",
-  "Visione generale del sistema",
-  "Alcune risposte e suggerimenti (limitati)",
+  "Accesso alla dashboard e panoramica del sistema",
+  "Primi test su analisi profilo e commenti",
+  "Visione del metodo e del flusso operativo",
+  "Risposte limitate per capire il livello di profondit\u00e0",
 ];
 
 const proFeatures = [
@@ -20,15 +20,15 @@ const proFeatures = [
 ];
 
 const comparisonRows = [
-  { label: "Piano contenuti personalizzato", free: false, pro: true },
-  { label: "Scrittura post", free: "Limitata", pro: "Illimitata" },
-  { label: "Risposte ai commenti", free: "Base", pro: "Illimitate" },
-  { label: "Gestione messaggi", free: false, pro: true },
-  { label: "Follow-up", free: false, pro: true },
-  { label: "Analisi potenziali clienti", free: false, pro: true },
-  { label: "Pipeline clienti", free: false, pro: true },
-  { label: "Trova opportunità", free: false, pro: true },
-  { label: "Allenamento conversazioni", free: false, pro: true },
+  { label: "Sistema commerciale personalizzato", free: false, pro: true },
+  { label: "Targeting clienti e ricerche LinkedIn", free: false, pro: true },
+  { label: "Analisi profilo", free: "Base", pro: "Completa con strategia" },
+  { label: "Risposte a commenti e messaggi", free: "Limitate", pro: "Illimitate" },
+  { label: "Scrittura post strategici", free: "Limitata", pro: "Illimitata" },
+  { label: "Piano giornaliero", free: false, pro: true },
+  { label: "Pipeline clienti e follow-up", free: false, pro: true },
+  { label: "Consulenza situazionale", free: false, pro: true },
+  { label: "Simulazione conversazioni", free: false, pro: true },
 ];
 
 const faqs = [
@@ -56,12 +56,12 @@ export default function PricingPage() {
             Piani
           </div>
           <h1 className="hp-hero-title">
-            Scegli come usare LinkedIn<br />
-            <span className="hp-hero-title-accent">per trovare clienti con metodo</span>
+            Non stai pagando per degli strumenti.<br />
+            <span className="hp-hero-title-accent">Stai sbloccando un sistema commerciale.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Non stai pagando per dei contenuti.<br />
-            Stai sbloccando un sistema per sapere chi contattare, cosa scrivere e quando fare il passo successivo.
+            La differenza tra i piani non è il numero di funzionalità.<br />
+            È il livello di chiarezza commerciale che ottieni su LinkedIn.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/app/onboarding" className="hp-cta-primary">
@@ -90,9 +90,9 @@ export default function PricingPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Piano base</div>
-          <h2 className="hp-section-title">Puoi iniziare a capire il sistema anche dal piano base</h2>
+          <h2 className="hp-section-title">Esplora il metodo con il piano base</h2>
           <p className="hp-section-subtitle">
-            Con il piano gratuito hai accesso a una versione ridotta di Preflight. Sufficiente per capire come funziona il metodo.
+            Il piano gratuito ti fa capire come funziona il sistema. Vedi il flusso, provi gli strumenti e capisci se fa per te.
           </p>
 
           <div className="prc-base-wrap">
@@ -136,10 +136,11 @@ export default function PricingPage() {
         <div className="hp-container">
           <div className="hp-section-label hp-section-label-light">Piano completo</div>
           <h2 className="hp-section-title hp-title-white">
-            Quando sblocchi il piano completo, il sistema cambia livello
+            Il piano completo sblocca il sistema operativo
           </h2>
           <p className="hp-section-subtitle hp-subtitle-light">
-            Qui inizi davvero a vendere meglio. Ogni modulo è pensato per aiutarti a trovare, gestire e convertire clienti da LinkedIn.
+            Targeting clienti, analisi profili, indicazioni strategiche illimitate, pipeline e piano giornaliero.
+            Tutto ciò che serve per trasformare LinkedIn in un canale prevedibile.
           </p>
 
           <div className="prc-pro-grid">
@@ -171,9 +172,9 @@ export default function PricingPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Confronto</div>
-          <h2 className="hp-section-title">Cosa cambia davvero</h2>
+          <h2 className="hp-section-title">Base vs Completo: cosa cambia</h2>
           <p className="hp-section-subtitle">
-            Un confronto semplice tra il piano base e quello completo.
+            La differenza non è nelle funzionalità sbloccate. È nel livello di profondità e direzione commerciale.
           </p>
 
           <div className="prc-compare-table-wrap">
@@ -220,14 +221,14 @@ export default function PricingPage() {
             <div className="hp-profile-content">
               <div className="hp-section-label hp-section-label-light">Il valore</div>
               <h2 className="hp-section-title hp-title-white">
-                Un sistema clienti costa meno di un cliente perso
+                Un sistema clienti costa meno di un&apos;opportunità persa
               </h2>
               <p className="hp-profile-subtitle">
-                Bastano poche conversazioni gestite meglio per ripagare l&apos;abbonamento.
+                Bastano poche conversazioni gestite con metodo per ripagare l&apos;abbonamento.
               </p>
               <p className="hp-profile-subtitle" style={{ marginTop: "0.5rem" }}>
-                Il punto non è &ldquo;spendere meno&rdquo;.<br />
-                Il punto è smettere di perdere opportunità per mancanza di metodo.
+                Il punto non è spendere meno.<br />
+                È smettere di perdere clienti per mancanza di direzione.
               </p>
             </div>
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}>
@@ -250,7 +251,7 @@ export default function PricingPage() {
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
           <div className="hp-section-label">Domande frequenti</div>
-          <h2 className="hp-section-title" style={{ textAlign: "center" }}>Domande reali, risposte dirette</h2>
+          <h2 className="hp-section-title" style={{ textAlign: "center" }}>Domande frequenti</h2>
 
           <div className="prc-faq-grid">
             {faqs.map((faq) => (
@@ -269,10 +270,10 @@ export default function PricingPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container hp-dato-principale">
           <div className="hp-section-label">Il contesto</div>
-          <h2 className="hp-section-title">Quando LinkedIn diventa il tuo canale per trovare clienti</h2>
+          <h2 className="hp-section-title">LinkedIn è già il tuo canale più importante</h2>
           <p className="hp-dato-body">
-            Consulenti e freelance che usano LinkedIn con metodo non aspettano che i clienti arrivino.<br />
-            Sanno chi contattare, cosa scrivere e quando ricontattare.
+            Professionisti e consulenti che usano LinkedIn con un sistema non aspettano che i clienti arrivino.<br />
+            Sanno chi contattare, cosa scrivere e quando passare allo step successivo.
           </p>
         </div>
       </section>
@@ -284,11 +285,11 @@ export default function PricingPage() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            Scegli il piano e costruisci<br />il tuo sistema clienti
+            Scegli il livello di chiarezza<br />che vuoi avere su LinkedIn.
           </h2>
           <p className="hp-final-subtitle">
-            Se usi LinkedIn per trovare clienti, il metodo fa la differenza.<br />
-            Non un generatore di contenuti. Un sistema per arrivare alla call.
+            Non un generatore di contenuti. Non un bot.<br />
+            Un sistema per sapere chi contattare, cosa scrivere e come arrivare alla call.
           </p>
           <Link href="/app/onboarding" className="hp-cta-primary hp-cta-large">
             Inizia adesso

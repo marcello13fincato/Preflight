@@ -20,15 +20,15 @@ export default async function Home() {
         <div className="hp-container hp-hero-inner">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
-            LinkedIn ha oltre 1 miliardo di professionisti. Sai già con chi dovresti parlare?
+            LinkedIn è il canale. Ti manca il sistema.
           </div>
           <h1 className="hp-hero-title">
-            Smetti di scorrere LinkedIn senza sapere<br />
-            <span className="hp-hero-title-accent">chi contattare e cosa scrivere.</span>
+            Trasforma LinkedIn in un sistema<br />
+            <span className="hp-hero-title-accent">prevedibile di acquisizione clienti.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Preflight ti dice chi vale la pena contattare, come aprire la conversazione
-            e quali passi fare per arrivare a una call — senza improvvisare.
+            La maggior parte dei professionisti pubblica, commenta e aspetta.
+            Preflight introduce metodo: sai chi contattare, cosa scrivere e come portare ogni conversazione verso una call.
           </p>
           <div className="hp-hero-ctas">
             <a href="#assistente" className="hp-cta-primary">
@@ -49,7 +49,7 @@ export default async function Home() {
       <section className="hp-section hp-section-light">
         <div className="hp-container hp-dato-principale">
           <h2 className="hp-dato-title">
-            I tuoi prossimi clienti sono già su LinkedIn.<br />Il problema è trovarli e iniziare la conversazione giusta.
+            La maggior parte dei professionisti usa LinkedIn senza un sistema.<br />Pubblicano senza intento commerciale. Conversano senza direzione.
           </h2>
         </div>
       </section>
@@ -59,9 +59,9 @@ export default async function Home() {
           <div className="hp-section-label">I numeri</div>
           <div className="hp-stats-grid hp-stats-grid-3">
             {[
-              { value: "80%", label: "dei lead B2B dai social nasce su LinkedIn", sub: "Chi vende servizi non può ignorarlo" },
-              { value: "5–8", label: "interazioni servono prima che un contatto diventi cliente", sub: "Servono conversazioni, non solo contenuti" },
-              { value: "23M", label: "professionisti su LinkedIn in Italia", sub: "Il tuo prossimo cliente è probabilmente tra loro" },
+              { value: "80%", label: "dei lead B2B dai social arriva da LinkedIn", sub: "Ma solo se sai come muoverti" },
+              { value: "5–8", label: "touchpoint servono prima di una vendita", sub: "Servono conversazioni strutturate, non interazioni casuali" },
+              { value: "23M", label: "professionisti su LinkedIn in Italia", sub: "Il problema non è trovare persone. È sapere quali contattare" },
             ].map((stat) => (
               <div key={stat.value} className="hp-stat-card hp-stat-card-lg">
                 <div className="hp-stat-value">{stat.value}</div>
@@ -71,8 +71,8 @@ export default async function Home() {
             ))}
           </div>
           <p className="hp-dato-body" style={{ textAlign: "center", marginTop: "2rem" }}>
-            La maggior parte dei professionisti pubblica, aspetta, e non succede nulla.<br />
-            Non perché LinkedIn non funziona — ma perché manca un metodo per passare dal post al cliente.
+            Il problema non è LinkedIn. È l&apos;assenza di un metodo per trasformare<br />
+            contenuti e conversazioni in un percorso che porta al cliente.
           </p>
         </div>
       </section>
@@ -83,7 +83,7 @@ export default async function Home() {
       <section id="assistente" className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Provalo ora</div>
-          <h2 className="hp-section-title">Analizza un profilo o chiedi un consiglio su una situazione reale</h2>
+          <h2 className="hp-section-title">Prova il sistema su un caso reale</h2>
           <QuickAssistant />
         </div>
       </section>
@@ -93,20 +93,21 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
-          <div className="hp-section-label">Il tuo sistema</div>
-          <h2 className="hp-section-title">I suggerimenti cambiano quando il sistema conosce il tuo lavoro.</h2>
+          <div className="hp-section-label">Il metodo</div>
+          <h2 className="hp-section-title">Non è uno strumento. È un sistema che parte da te.</h2>
           <p className="hp-section-subtitle">
-            Configura chi sei, cosa vendi e chi cerchi. Da lì ogni consiglio è calibrato:
+            Configuri il tuo posizionamento, il tuo servizio e il tipo di clienti che cerchi.
+            Da lì, ogni indicazione ha una direzione precisa.
           </p>
           <div className="hp-ai-explain-grid">
             <div className="hp-ai-explain-text">
               <ul className="hp-ai-explain-list">
-                <li><span className="hp-ai-explain-check">✓</span>I servizi che offri</li>
-                <li><span className="hp-ai-explain-check">✓</span>Il tipo di clienti che cerchi</li>
-                <li><span className="hp-ai-explain-check">✓</span>Il tuo posizionamento</li>
-                <li><span className="hp-ai-explain-check">✓</span>Il tempo che dedichi a LinkedIn</li>
+                <li><span className="hp-ai-explain-check">✓</span>Il servizio che offri</li>
+                <li><span className="hp-ai-explain-check">✓</span>Il tipo di clienti che vuoi raggiungere</li>
+                <li><span className="hp-ai-explain-check">✓</span>Il problema che risolvi per loro</li>
+                <li><span className="hp-ai-explain-check">✓</span>Il tempo che puoi dedicare a LinkedIn</li>
               </ul>
-              <p className="hp-ai-explain-note">Più configuri, più i consigli sono concreti e rilevanti per la tua attività.</p>
+              <p className="hp-ai-explain-note">Più il sistema conosce il tuo contesto, più le indicazioni sono precise e azionabili.</p>
               <Link href="/app/onboarding" className="hp-cta-primary" style={{ marginTop: "1rem" }}>
                 Configura il tuo sistema
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -115,7 +116,7 @@ export default async function Home() {
             <div className="hp-ai-explain-visual">
               <div className="hp-ai-explain-card">
                 <div className="hp-ai-explain-card-icon">⚙️</div>
-                <div className="hp-ai-explain-card-label">Il tuo profilo</div>
+                <div className="hp-ai-explain-card-label">Il tuo profilo commerciale</div>
                 <div className="hp-mock-lines" style={{ padding: "8px 0" }}>
                   <div className="hp-mock-line hp-mock-line-w70" />
                   <div className="hp-mock-line hp-mock-line-w50" />
@@ -125,7 +126,7 @@ export default async function Home() {
               <div className="hp-ai-explain-arrow" aria-hidden="true">→</div>
               <div className="hp-ai-explain-card hp-ai-explain-card-accent">
                 <div className="hp-ai-explain-card-icon">🤖</div>
-                <div className="hp-ai-explain-card-label">Suggerimenti personalizzati</div>
+                <div className="hp-ai-explain-card-label">Indicazioni operative</div>
                 <div className="hp-mock-lines" style={{ padding: "8px 0" }}>
                   <div className="hp-mock-line hp-mock-line-w80" />
                   <div className="hp-mock-line hp-mock-line-w60" />
@@ -184,29 +185,29 @@ export default async function Home() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Come funziona</div>
-          <h2 className="hp-section-title">Tre step per iniziare</h2>
+          <h2 className="hp-section-title">Un metodo in tre fasi</h2>
           <div className="hp-problem-grid">
             {[
               {
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 ),
-                title: "Analizza una persona",
-                desc: "Incolla un profilo LinkedIn e scopri se vale la pena contattarlo.",
+                title: "Identifica chi contattare",
+                desc: "Definisci il tuo target e ottieni categorie di prospect con ricerche LinkedIn pronte.",
               },
               {
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 ),
-                title: "Scopri come iniziare",
-                desc: "Ricevi una strategia di contatto e un primo messaggio suggerito.",
+                title: "Gestisci ogni conversazione",
+                desc: "Analizza profili, rispondi a commenti e messaggi con indicazioni precise su come muoverti.",
               },
               {
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 ),
-                title: "Porta avanti la conversazione",
-                desc: "Ricevi consigli sui prossimi step fino alla call.",
+                title: "Arriva alla call",
+                desc: "Follow-up, pipeline e prossimi passi: sai sempre cosa fare per chiudere.",
               },
             ].map((item) => (
               <article key={item.title} className="hp-problem-card">
@@ -225,7 +226,7 @@ export default async function Home() {
       <section className="hp-section hp-section-target">
         <div className="hp-container">
           <div className="hp-section-label">Target</div>
-          <h2 className="hp-section-title hp-target-title">Per chi usa LinkedIn per trovare clienti.</h2>
+          <h2 className="hp-section-title hp-target-title">Per chi usa LinkedIn come canale di acquisizione clienti.</h2>
 
           <div className="hp-target-grid">
             <article className="hp-target-card hp-target-card-positive">
@@ -234,9 +235,10 @@ export default async function Home() {
                 {[
                   "Consulenti",
                   "Freelance",
-                  "Coach",
+                  "Coach e formatori",
                   "Fractional manager",
                   "Agenzie B2B",
+                  "Professionisti B2B",
                 ].map((item) => (
                   <li key={item} className="hp-target-item hp-target-item-positive">
                     <span className="hp-target-icon hp-target-icon-positive" aria-hidden="true">
@@ -255,6 +257,7 @@ export default async function Home() {
                   "Cercare lavoro",
                   "Recruiting",
                   "Crescita follower",
+                  "Social media management",
                 ].map((item) => (
                   <li key={item} className="hp-target-item hp-target-item-neutral">
                     <span className="hp-target-icon hp-target-icon-neutral" aria-hidden="true">
@@ -276,13 +279,14 @@ export default async function Home() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            Ogni giorno perdi contatti che potresti trasformare in clienti.
+            LinkedIn funziona. Ti manca il sistema per trasformarlo in un canale clienti.
           </h2>
           <p className="hp-final-subtitle">
-            Preflight ti mostra chi contattare, cosa scrivere e quando fare il passo successivo.
+            Preflight ti dà metodo, direzione e chiarezza.
+            Tu ci metti competenza e 20 minuti al giorno.
           </p>
           <a href="#assistente" className="hp-cta-primary hp-cta-large">
-            Prova l&apos;assistente
+            Configura il tuo sistema
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
           <p className="hp-final-trust">Setup in 5 minuti · Nessuna carta di credito · Inizia gratis</p>
