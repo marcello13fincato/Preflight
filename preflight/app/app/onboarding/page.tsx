@@ -307,7 +307,7 @@ export default function OnboardingPage() {
             <StepHeader emoji="📎" title="Materiali del tuo servizio" />
             <p className="text-xs" style={{ color: "var(--color-muted)", lineHeight: 1.5 }}>
               Carica presentazioni o documenti che spiegano il tuo servizio.
-              L&apos;AI li userà per capire meglio cosa fai e come parlarne.
+              Il sistema li userà per capire meglio cosa fai e come presentarti.
             </p>
             <label className="qa-file-upload">
               <input

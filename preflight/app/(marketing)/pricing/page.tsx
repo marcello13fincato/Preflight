@@ -56,12 +56,12 @@ export default function PricingPage() {
             Piani
           </div>
           <h1 className="hp-hero-title">
-            Scegli il piano per usare LinkedIn<br />
-            <span className="hp-hero-title-accent">in modo più commerciale</span>
+            Scegli come usare LinkedIn<br />
+            <span className="hp-hero-title-accent">per trovare clienti con metodo</span>
           </h1>
           <p className="hp-hero-subtitle">
             Non stai pagando per dei contenuti.<br />
-            Stai sbloccando un sistema per trovare clienti con più metodo, più continuità e più controllo.
+            Stai sbloccando un sistema per sapere chi contattare, cosa scrivere e quando fare il passo successivo.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/app/onboarding" className="hp-cta-primary">
@@ -250,7 +250,7 @@ export default function PricingPage() {
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
           <div className="hp-section-label">Domande frequenti</div>
-          <h2 className="hp-section-title" style={{ textAlign: "center" }}>Hai qualche dubbio?</h2>
+          <h2 className="hp-section-title" style={{ textAlign: "center" }}>Domande reali, risposte dirette</h2>
 
           <div className="prc-faq-grid">
             {faqs.map((faq) => (
@@ -269,10 +269,10 @@ export default function PricingPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container hp-dato-principale">
           <div className="hp-section-label">Il contesto</div>
-          <h2 className="hp-section-title">Quando LinkedIn diventa un vero canale clienti</h2>
+          <h2 className="hp-section-title">Quando LinkedIn diventa il tuo canale per trovare clienti</h2>
           <p className="hp-dato-body">
-            Se LinkedIn è una delle principali fonti di clienti per consulenti e freelance,<br />
-            avere un sistema chiaro per gestire conversazioni e opportunità diventa fondamentale.
+            Consulenti e freelance che usano LinkedIn con metodo non aspettano che i clienti arrivino.<br />
+            Sanno chi contattare, cosa scrivere e quando ricontattare.
           </p>
         </div>
       </section>
@@ -287,8 +287,8 @@ export default function PricingPage() {
             Scegli il piano e costruisci<br />il tuo sistema clienti
           </h2>
           <p className="hp-final-subtitle">
-            Se usi LinkedIn per trovare clienti, qui trovi un metodo.<br />
-            Non un generatore.
+            Se usi LinkedIn per trovare clienti, il metodo fa la differenza.<br />
+            Non un generatore di contenuti. Un sistema per arrivare alla call.
           </p>
           <Link href="/app/onboarding" className="hp-cta-primary hp-cta-large">
             Inizia adesso

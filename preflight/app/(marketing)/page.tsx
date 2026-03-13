@@ -20,15 +20,15 @@ export default async function Home() {
         <div className="hp-container hp-hero-inner">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
-            Oltre 1 miliardo di professionisti su LinkedIn. Con chi dovresti parlare?
+            LinkedIn ha oltre 1 miliardo di professionisti. Sai già con chi dovresti parlare?
           </div>
           <h1 className="hp-hero-title">
-            Scopri chi contattare su LinkedIn<br />
-            <span className="hp-hero-title-accent">e come iniziare la conversazione giusta.</span>
+            Smetti di scorrere LinkedIn senza sapere<br />
+            <span className="hp-hero-title-accent">chi contattare e cosa scrivere.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Analizza un profilo LinkedIn o descrivi una situazione reale.
-            Preflight ti aiuta a capire come trasformarla in una conversazione che può portare a una call.
+            Preflight ti dice chi vale la pena contattare, come aprire la conversazione
+            e quali passi fare per arrivare a una call — senza improvvisare.
           </p>
           <div className="hp-hero-ctas">
             <a href="#assistente" className="hp-cta-primary">
@@ -49,19 +49,19 @@ export default async function Home() {
       <section className="hp-section hp-section-light">
         <div className="hp-container hp-dato-principale">
           <h2 className="hp-dato-title">
-            LinkedIn è il posto dove nascono le conversazioni B2B.
+            I tuoi prossimi clienti sono già su LinkedIn.<br />Il problema è trovarli e iniziare la conversazione giusta.
           </h2>
         </div>
       </section>
 
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
-          <div className="hp-section-label">I dati</div>
+          <div className="hp-section-label">I numeri</div>
           <div className="hp-stats-grid hp-stats-grid-3">
             {[
-              { value: "80%", label: "dei lead B2B provenienti dai social arriva da LinkedIn", sub: "Il canale principale per il B2B" },
-              { value: "89%", label: "dei marketer B2B usa LinkedIn per generare lead", sub: "La piattaforma più usata nel B2B" },
-              { value: "1 mld+", label: "professionisti sulla piattaforma", sub: "Un bacino enorme di potenziali clienti" },
+              { value: "80%", label: "dei lead B2B dai social nasce su LinkedIn", sub: "Chi vende servizi non può ignorarlo" },
+              { value: "5–8", label: "interazioni servono prima che un contatto diventi cliente", sub: "Servono conversazioni, non solo contenuti" },
+              { value: "23M", label: "professionisti su LinkedIn in Italia", sub: "Il tuo prossimo cliente è probabilmente tra loro" },
             ].map((stat) => (
               <div key={stat.value} className="hp-stat-card hp-stat-card-lg">
                 <div className="hp-stat-value">{stat.value}</div>
@@ -71,8 +71,8 @@ export default async function Home() {
             ))}
           </div>
           <p className="hp-dato-body" style={{ textAlign: "center", marginTop: "2rem" }}>
-            Il problema non è pubblicare.<br />
-            Il problema è capire con chi parlare e come iniziare la conversazione giusta.
+            La maggior parte dei professionisti pubblica, aspetta, e non succede nulla.<br />
+            Non perché LinkedIn non funziona — ma perché manca un metodo per passare dal post al cliente.
           </p>
         </div>
       </section>
@@ -82,8 +82,8 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section id="assistente" className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Assistente</div>
-          <h2 className="hp-section-title">Prova subito l&apos;assistente</h2>
+          <div className="hp-section-label">Provalo ora</div>
+          <h2 className="hp-section-title">Analizza un profilo o chiedi un consiglio su una situazione reale</h2>
           <QuickAssistant />
         </div>
       </section>
@@ -93,10 +93,10 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
-          <div className="hp-section-label">AI personalizzata</div>
-          <h2 className="hp-section-title">L&apos;AI funziona meglio quando conosce il tuo lavoro.</h2>
+          <div className="hp-section-label">Il tuo sistema</div>
+          <h2 className="hp-section-title">I suggerimenti cambiano quando il sistema conosce il tuo lavoro.</h2>
           <p className="hp-section-subtitle">
-            Configurando il tuo sistema, Preflight può adattare i suggerimenti in base a:
+            Configura chi sei, cosa vendi e chi cerchi. Da lì ogni consiglio è calibrato:
           </p>
           <div className="hp-ai-explain-grid">
             <div className="hp-ai-explain-text">
@@ -106,7 +106,7 @@ export default async function Home() {
                 <li><span className="hp-ai-explain-check">✓</span>Il tuo posizionamento</li>
                 <li><span className="hp-ai-explain-check">✓</span>Il tempo che dedichi a LinkedIn</li>
               </ul>
-              <p className="hp-ai-explain-note">Più l&apos;AI ti conosce, più i consigli saranno precisi.</p>
+              <p className="hp-ai-explain-note">Più configuri, più i consigli sono concreti e rilevanti per la tua attività.</p>
               <Link href="/app/onboarding" className="hp-cta-primary" style={{ marginTop: "1rem" }}>
                 Configura il tuo sistema
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -142,9 +142,9 @@ export default async function Home() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Trova clienti</div>
-          <h2 className="hp-section-title">Trova clienti su LinkedIn</h2>
+          <h2 className="hp-section-title">Non sai chi cercare? Te lo dice il sistema.</h2>
           <p className="hp-section-subtitle">
-            Descrivi il tipo di cliente che cerchi e Preflight genera ricerche LinkedIn pronte all&apos;uso con keyword, filtri e suggerimenti.
+            Descrivi il tipo di cliente che vuoi raggiungere e ottieni ricerche LinkedIn pronte, con keyword, filtri e strategia di approccio.
           </p>
 
           <div className="hp-premium-preview">
@@ -152,7 +152,7 @@ export default async function Home() {
               <div className="hp-premium-lock-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </div>
-              <p className="hp-premium-label">Questa funzione è disponibile nel piano premium.</p>
+              <p className="hp-premium-label">Disponibile nel piano completo.</p>
               <Link href="/pricing" className="hp-cta-primary" style={{ marginTop: "0.75rem" }}>
                 Scopri i piani
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -276,10 +276,10 @@ export default async function Home() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            Pronto a scoprire chi contattare<br />e come iniziare la conversazione?
+            Ogni giorno perdi contatti che potresti trasformare in clienti.
           </h2>
           <p className="hp-final-subtitle">
-            Prova l&apos;assistente Preflight: analizza un profilo o chiedi un consiglio su una situazione reale.
+            Preflight ti mostra chi contattare, cosa scrivere e quando fare il passo successivo.
           </p>
           <a href="#assistente" className="hp-cta-primary hp-cta-large">
             Prova l&apos;assistente

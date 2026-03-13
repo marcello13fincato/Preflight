@@ -20,7 +20,7 @@ export default function HowItWorksPage() {
           </h1>
           <p className="hp-hero-subtitle">
             Non è un insieme di strumenti.<br />
-            È un sistema guidato per trasformare LinkedIn in un canale clienti.
+            È un sistema per sapere chi contattare, cosa scrivere e come arrivare alla call.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/app/onboarding" className="hp-cta-primary">
@@ -52,14 +52,14 @@ export default function HowItWorksPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Il problema</div>
-          <h2 className="hp-section-title">Pubblicare non basta.</h2>
+          <h2 className="hp-section-title">Pubblicare non basta. Serve sapere cosa fare dopo.</h2>
           <p className="hp-section-subtitle">
-            Su LinkedIn molti si fermano ai contenuti. Pubblicano. Ottengono qualche like.
-            Ogni tanto un commento. E lì finisce tutto.
+            Su LinkedIn molti pubblicano e aspettano. Ottengono qualche like,
+            ogni tanto un commento. Ma non sanno come trasformare quell&apos;interazione in una conversazione reale.
           </p>
           <p className="hp-section-subtitle" style={{ marginTop: "0.5rem" }}>
             Il problema non è la piattaforma.<br />
-            Il problema è che manca un sistema.
+            Il problema è che manca un metodo per passare dal post al cliente.
           </p>
 
           <div className="hiw-versus-grid">
@@ -151,8 +151,8 @@ export default function HowItWorksPage() {
             {[
               {
                 number: "01",
-                title: "Attirare clienti",
-                text: "Crei contenuti che parlano al cliente giusto e aprono conversazioni utili.",
+                title: "Attirare le persone giuste",
+                text: "Crei contenuti mirati al tuo cliente ideale. Non per ottenere like, ma per aprire conversazioni utili.",
                 modules: ["Contenuti", "Scrivi un post", "Trova opportunità"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -160,18 +160,18 @@ export default function HowItWorksPage() {
               },
               {
                 number: "02",
-                title: "Parlare con i clienti",
-                text: "Gestisci commenti, messaggi e profili con più chiarezza, senza improvvisare.",
-                modules: ["Rispondi ai commenti", "Rispondi ai messaggi", "Analizza un potenziale cliente", "Allenati alle conversazioni"],
+                title: "Gestire conversazioni con metodo",
+                text: "Rispondi a commenti e messaggi sapendo cosa scrivere. Il sistema ti guida verso la call.",
+                modules: ["Rispondi ai commenti", "Scrivi messaggi", "Analizza un potenziale cliente", "Allenati alle conversazioni"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                 ),
               },
               {
                 number: "03",
-                title: "Gestire i clienti",
-                text: "Segui le conversazioni, ricontatta le persone giuste e non perdi occasioni.",
-                modules: ["Clienti in corso"],
+                title: "Non perdere nessun contatto",
+                text: "Tieni traccia di ogni conversazione e fai follow-up al momento giusto.",
+                modules: ["Pipeline clienti", "Follow-up"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
                 ),
@@ -237,7 +237,7 @@ export default function HowItWorksPage() {
           <div className="hp-section-label">Funzionalità</div>
           <h2 className="hp-section-title">Cosa trovi dentro Preflight</h2>
           <p className="hp-section-subtitle">
-            Non solo suggerimenti. Un sistema completo per trovare, gestire e convertire contatti LinkedIn.
+            Ogni strumento ha un ruolo preciso nel percorso da contatto a cliente.
           </p>
 
           <div className="hiw-features-grid">
@@ -320,10 +320,10 @@ export default function HowItWorksPage() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            Trasforma LinkedIn nella tua<br />macchina commerciale
+            Sai sempre cosa fare su LinkedIn.<br />Ogni giorno.
           </h2>
           <p className="hp-final-subtitle">
-            Non servono più ore. Serve più chiarezza.
+            Non servono più ore. Serve sapere chi contattare e come.
           </p>
           <Link href="/app/onboarding" className="hp-cta-primary hp-cta-large">
             Crea il tuo sistema clienti

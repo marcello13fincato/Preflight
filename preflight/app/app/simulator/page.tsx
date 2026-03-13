@@ -49,7 +49,7 @@ export default function SimulatorPage() {
       <div className="tool-page-hero">
         <h2>Simulatore di conversazione</h2>
         <p>
-          Allenati a gestire conversazioni commerciali LinkedIn con un coach AI.
+          Allenati a gestire conversazioni commerciali su LinkedIn prima di rispondere dal vivo.
         </p>
       </div>
 

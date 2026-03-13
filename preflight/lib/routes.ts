@@ -4,7 +4,7 @@ export const marketingNav = [
   { label: "Piani", href: "/pricing" },
 ];
 
-export const marketingCTA = { label: "Prova l'assistente", href: "/app" };
+export const marketingCTA = { label: "Prova il sistema", href: "/app" };
 
 export const dashboardNav = [
   { label: "Dashboard", href: "/app" },

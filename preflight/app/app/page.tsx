@@ -32,27 +32,27 @@ const CORE_ACTIONS: {
     id: "find",
     href: "/app/find-clients",
     icon: "🔍",
-    title: "Trova le persone giuste da contattare",
-    desc: "Definisci il tipo di cliente che cerchi e ottieni ricerche LinkedIn mirate, con suggerimenti su come iniziare la conversazione.",
-    cta: "Inizia a cercare",
+    title: "Chi contattare oggi su LinkedIn",
+    desc: "Descrivi il tipo di cliente che cerchi. Il sistema genera ricerche LinkedIn mirate con keyword, filtri e strategia di approccio.",
+    cta: "Trova chi contattare",
     iconClass: "dash-core-card-icon-find",
   },
   {
     id: "profile",
     href: "/app/prospect",
     icon: "👤",
-    title: "Capisci se vale la pena contattare questa persona",
-    desc: "Analizza il profilo LinkedIn o il sito aziendale e scopri come muoverti per aprire una conversazione utile.",
-    cta: "Analizza il profilo",
+    title: "Analizza un profilo prima di scrivere",
+    desc: "Incolla il profilo LinkedIn di una persona e scopri se vale la pena contattarla, come presentarti e quale messaggio inviare.",
+    cta: "Analizza profilo",
     iconClass: "dash-core-card-icon-profile",
   },
   {
     id: "advice",
     href: "/app/dm",
     icon: "💬",
-    title: "Chiedi un consiglio su una situazione reale",
-    desc: "Descrivi una conversazione o un dubbio e ricevi indicazioni strategiche su cosa fare adesso.",
-    cta: "Chiedi un consiglio",
+    title: "Non sai cosa fare? Chiedi un consiglio",
+    desc: "Hai una conversazione aperta e non sai come proseguire? Descrivi la situazione e ricevi indicazioni su cosa scrivere adesso.",
+    cta: "Chiedi consiglio",
     iconClass: "dash-core-card-icon-advice",
   },
 ];
@@ -64,12 +64,12 @@ const SECONDARY_TOOLS: {
   title: string;
   desc: string;
 }[] = [
-  { id: "post", icon: "✍️", title: "Scrivi un post", desc: "Genera un post LinkedIn efficace." },
-  { id: "image", icon: "🖼️", title: "Genera immagine", desc: "Immagine professionale per il post." },
-  { id: "comment", icon: "💡", title: "Scrivi un commento", desc: "Rispondi in modo strategico." },
-  { id: "dm", icon: "✉️", title: "Scrivi un DM", desc: "La risposta migliore per un DM." },
-  { id: "conversation", icon: "🗣️", title: "Gestisci conversazione", desc: "Porta avanti una conversazione." },
-  { id: "followup", icon: "🔄", title: "Scrivi follow-up", desc: "Riprendi una conversazione ferma." },
+  { id: "post", icon: "✍️", title: "Scrivi un post", desc: "Post mirato al tuo cliente ideale." },
+  { id: "image", icon: "🖼️", title: "Genera immagine", desc: "Immagine per accompagnare il post." },
+  { id: "comment", icon: "💡", title: "Rispondi a un commento", desc: "Trasforma un commento in conversazione." },
+  { id: "dm", icon: "✉️", title: "Scrivi un messaggio", desc: "La risposta giusta per un DM ricevuto." },
+  { id: "conversation", icon: "🗣️", title: "Porta avanti una conversazione", desc: "Il prossimo passo in una conversazione aperta." },
+  { id: "followup", icon: "🔄", title: "Scrivi follow-up", desc: "Riprendi un contatto fermo." },
 ];
 
 export default function AppTodayPage() {
@@ -393,10 +393,10 @@ export default function AppTodayPage() {
         <div className="dash-modal-overlay">
           <div className="dash-modal">
             <div className="dash-modal-icon">⚙️</div>
-            <h2 className="dash-modal-title">Configura il tuo sistema clienti</h2>
+            <h2 className="dash-modal-title">Configura il sistema per ricevere suggerimenti più utili</h2>
             <p className="dash-modal-desc">
               Preflight funziona meglio quando conosce il tuo lavoro.<br />
-              Ti bastano pochi passaggi per personalizzare l&apos;AI.
+              Inserisci cosa vendi e chi cerchi: bastano pochi minuti.
             </p>
             <div className="dash-modal-actions">
               <Link
@@ -424,9 +424,9 @@ export default function AppTodayPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             Dashboard
           </span>
-          <h1 className="page-hero-title">La tua centrale operativa</h1>
+          <h1 className="page-hero-title">Il tuo punto di partenza</h1>
           <p className="page-hero-subtitle">
-            Tutto quello che ti serve per trovare clienti, gestire conversazioni e far crescere il tuo business su LinkedIn.
+            Da qui puoi capire chi contattare, come scrivere il primo messaggio e cosa fare per portare ogni conversazione verso la call.
           </p>
         </div>
 
@@ -437,7 +437,7 @@ export default function AppTodayPage() {
           </div>
           <h2 className="dash-daily-title">Il tuo piano per oggi</h2>
           <p className="dash-daily-subtitle">
-            In base al tuo servizio, ai clienti target e alle azioni precedenti, ecco cosa conta oggi.
+            In base al tuo servizio, ai clienti target e alle conversazioni in corso, ecco le azioni più utili per oggi.
           </p>
 
           <div className="dash-daily-actions">
@@ -446,8 +446,8 @@ export default function AppTodayPage() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
               <div>
-                <div className="dash-daily-action-title">3 profili da cercare</div>
-                <div className="dash-daily-action-text">Cerca e analizza nuovi potenziali clienti.</div>
+                <div className="dash-daily-action-title">3 profili da analizzare</div>
+                <div className="dash-daily-action-text">Trova e valuta nuovi contatti da raggiungere.</div>
               </div>
             </div>
             <div className="dash-daily-action">
@@ -455,8 +455,8 @@ export default function AppTodayPage() {
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               </div>
               <div>
-                <div className="dash-daily-action-title">2 conversazioni da seguire</div>
-                <div className="dash-daily-action-text">Riprendi le conversazioni in corso.</div>
+                <div className="dash-daily-action-title">2 conversazioni da portare avanti</div>
+                <div className="dash-daily-action-text">Rispondi o fai follow-up sui contatti aperti.</div>
               </div>
             </div>
             <div className="dash-daily-action">
@@ -465,7 +465,7 @@ export default function AppTodayPage() {
               </div>
               <div>
                 <div className="dash-daily-action-title">1 contenuto da pubblicare</div>
-                <div className="dash-daily-action-text">Pubblica per mantenere la visibilità.</div>
+                <div className="dash-daily-action-text">Pubblica un post mirato al tuo cliente ideale.</div>
               </div>
             </div>
           </div>
@@ -502,7 +502,7 @@ export default function AppTodayPage() {
         <section className="dash-v2-section">
           <div className="dash-v2-section-head">
             <h3 className="dash-v2-section-title">Servizi principali</h3>
-            <p className="dash-v2-section-sub">Le azioni strategiche per trovare clienti, capire chi contattare e sapere sempre cosa fare.</p>
+            <p className="dash-v2-section-sub">Le tre azioni fondamentali: trovare contatti, capire se vale la pena scrivere, e sapere sempre cosa fare dopo.</p>
           </div>
 
           <div className="dash-core-grid">

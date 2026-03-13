@@ -105,7 +105,7 @@ export default function AppSidebar() {
           <span className="sb-logo-icon">P</span>
           <div className="sb-logo-text">
             <span className="sb-logo-name">Preflight</span>
-            <span className="sb-logo-tag">AI Sales Intelligence</span>
+            <span className="sb-logo-tag">LinkedIn Client System</span>
           </div>
         </div>
       </div>
@@ -140,7 +140,7 @@ export default function AppSidebar() {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
           </svg>
-          AI-powered
+          AI-assisted
         </div>
       </div>
     </aside>

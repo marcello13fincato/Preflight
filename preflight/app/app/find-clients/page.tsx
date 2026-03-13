@@ -108,7 +108,7 @@ export default function FindClientsPage() {
         </span>
         <h1 className="page-hero-title">Chi contattare su LinkedIn</h1>
         <p className="page-hero-subtitle">
-          Preflight analizza il tuo posizionamento e il tuo servizio per identificare le categorie di persone più utili da contattare adesso — con link pronti e strategia di approccio.
+          Identifica le categorie di persone da contattare su LinkedIn in base al tuo servizio — con link pronti e strategia di approccio.
         </p>
       </div>
 

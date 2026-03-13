@@ -6,37 +6,37 @@ const targets = [
   {
     emoji: "🎯",
     title: "Freelance",
-    desc: "Designer, developer, copywriter, marketer: vendi competenze specifiche e hai bisogno di un flusso costante di clienti da LinkedIn.",
+    desc: "Designer, developer, copywriter, marketer: sai fare il tuo lavoro, ma trovare nuovi clienti su LinkedIn è un problema diverso.",
   },
   {
     emoji: "🎤",
     title: "Coach e Formatori",
-    desc: "Costruisci autorevolezza con i contenuti e converti l'attenzione in sessioni di coaching, corsi o percorsi formativi.",
+    desc: "Pubblichi contenuti, costruisci autorità. Ma i commenti non diventano sessioni di coaching né iscrizioni ai corsi.",
   },
   {
     emoji: "📋",
     title: "Consulenti",
-    desc: "Strategici, fiscali, HR, IT: trasformi la tua expertise in progetti ad alto valore grazie a relazioni coltivate su LinkedIn.",
+    desc: "Strategici, fiscali, HR, IT: hai l\u2019expertise, ma le relazioni su LinkedIn non si trasformano in progetti.",
   },
   {
     emoji: "⚡",
     title: "Fractional Manager",
-    desc: "CFO, CMO, CTO part-time: gestisci più mandati e hai bisogno di pipeline sempre attiva per nuovi incarichi.",
+    desc: "CFO, CMO, CTO part-time: gestisci più mandati e ti serve un flusso costante di nuove opportunità.",
   },
   {
     emoji: "🏢",
     title: "Micro-agenzie",
-    desc: "Team da 2-10 persone che usano LinkedIn come canale primario di acquisizione clienti per servizi B2B.",
+    desc: "Team da 2-10 persone che usano LinkedIn per acquisire clienti B2B ma non hanno un processo strutturato.",
   },
 ];
 
 const problems = [
-  "Pubblichi su LinkedIn ma non ricevi richieste concrete",
-  "Non sai come rispondere ai commenti per creare conversazioni",
+  "Non sai chi contattare su LinkedIn tra migliaia di profili",
+  "Pubblichi contenuti ma non ricevi richieste di lavoro concrete",
   "I tuoi messaggi in DM vengono ignorati o suonano troppo commerciali",
-  "Non hai un metodo per trasformare i contatti in clienti",
-  "Perdi traccia delle conversazioni e delle opportunità",
-  "Non sai cosa pubblicare per attirare il tuo cliente ideale",
+  "Non riesci a passare da un commento a una conversazione privata",
+  "Perdi traccia delle conversazioni e non fai follow-up al momento giusto",
+  "Non hai un metodo chiaro per trasformare un contatto LinkedIn in un cliente",
 ];
 
 const notFor = [
@@ -131,9 +131,9 @@ export default function PerChiEPage() {
       <section className="hp-section hp-section-dark">
         <div className="hp-container">
           <div className="hp-section-label hp-section-label-light">Come funziona</div>
-          <h2 className="hp-section-title hp-title-white">Un sistema AI che si adatta a te</h2>
+          <h2 className="hp-section-title hp-title-white">Un sistema che si adatta al tuo modo di lavorare</h2>
           <p className="hp-section-subtitle hp-subtitle-light">
-            Configuri il tuo profilo professionale, il tuo target e il tuo tono di voce.<br />
+            Configuri chi sei, cosa vendi e chi cerchi.<br />
             Da lì, ogni suggerimento è calibrato sulla tua realtà.
           </p>
           <div className="pce-ai-grid">
@@ -145,12 +145,12 @@ export default function PerChiEPage() {
             <div className="pce-ai-card">
               <span className="pce-ai-step">2</span>
               <h3 className="pce-ai-title">Ricevi suggerimenti personalizzati</h3>
-              <p className="pce-ai-desc">Post, commenti, messaggi, follow-up: tutto calibrato sul tuo profilo e obiettivi.</p>
+              <p className="pce-ai-desc">Chi contattare, come scrivere il primo messaggio, quando fare follow-up: tutto basato sul tuo profilo e obiettivi.</p>
             </div>
             <div className="pce-ai-card">
               <span className="pce-ai-step">3</span>
-              <h3 className="pce-ai-title">Costruisci relazioni che convertono</h3>
-              <p className="pce-ai-desc">Pipeline, prospect, opportunità: gestisci tutto da un unico punto di controllo.</p>
+              <h3 className="pce-ai-title">Converti contatti in clienti</h3>
+              <p className="pce-ai-desc">Pipeline, follow-up, prossimi passi: sai sempre chi ricontattare e quando.</p>
             </div>
           </div>
           <div style={{ textAlign: "center", marginTop: "2rem" }}>

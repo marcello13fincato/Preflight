@@ -118,7 +118,7 @@ export default function CosaFareOggiPage() {
         </span>
         <h1 className="page-hero-title">Cosa fare oggi</h1>
         <p className="page-hero-subtitle">
-          In base al tuo sistema, ai contatti che hai già analizzato e ai consigli precedenti, Preflight ti suggerisce le azioni più utili per oggi.
+          Le azioni più utili per oggi, in base al tuo sistema, ai contatti analizzati e alle conversazioni in corso.
         </p>
       </div>
 
