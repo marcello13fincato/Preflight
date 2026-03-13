@@ -88,16 +88,16 @@ export default function PipelinePage() {
   }
 
   return (
-    <div className="space-y-5" key={version}>
-      <div>
-        <h2 className="text-2xl font-bold">Pipeline — Clienti in corso</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+    <div className="tool-page" key={version}>
+      <div className="tool-page-hero">
+        <h2>Pipeline — Clienti in corso</h2>
+        <p>
           Tieni traccia di ogni conversazione commerciale e non perdere nessun follow-up.
         </p>
       </div>
 
       {/* Guide box */}
-      <div className="callout">
+      <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
           <div><span className="font-semibold">✅ Cosa fai:</span> gestisci lead e conversazioni commerciali</div>
           <div><span className="font-semibold">📋 Cosa inserire:</span> nome, stato, note e data prossima azione</div>

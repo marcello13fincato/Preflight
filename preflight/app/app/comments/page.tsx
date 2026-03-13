@@ -63,16 +63,16 @@ export default function CommentsPage() {
   };
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-2xl font-bold">Rispondi ai commenti</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+    <div className="tool-page">
+      <div className="tool-page-hero">
+        <h2>Rispondi ai commenti</h2>
+        <p>
           Trasforma i commenti ricevuti in conversazioni commerciali.
         </p>
       </div>
 
       {/* Guide box */}
-      <div className="callout">
+      <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
           <div><span className="font-semibold">✅ Cosa fai:</span> rispondi ai commenti in modo strategico</div>
           <div><span className="font-semibold">📋 Cosa inserire:</span> post originale e commento ricevuto</div>
@@ -82,19 +82,10 @@ export default function CommentsPage() {
       </div>
 
       {/* Two-column layout: input + output */}
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="tool-page-grid">
         {/* INPUT */}
-        <div
-          className="rounded-xl p-5 space-y-4"
-          style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            boxShadow: "var(--shadow-sm)",
-          }}
-        >
-          <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
-            Input
-          </h3>
+        <div className="tool-page-panel space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
             <span className="mb-1 block font-medium">Post originale</span>
             <textarea
@@ -154,16 +145,9 @@ export default function CommentsPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div
-              className="rounded-xl p-5 space-y-4"
-              style={{
-                background: "var(--color-surface)",
-                border: "1px solid var(--color-border)",
-                boxShadow: "var(--shadow-sm)",
-              }}
-            >
+            <div className="tool-page-panel space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+                <h3 className="tool-page-panel-header" style={{ margin: 0 }}>
                   Risultato
                 </h3>
                 <CopyButton text={`${output.replies.soft}\n\n${output.replies.authority}\n\n${output.replies.dm_pivot}`} />
@@ -229,19 +213,12 @@ export default function CommentsPage() {
               </div>
             </div>
           ) : (
-            <div
-              className="rounded-xl p-8 flex flex-col items-center justify-center text-center h-full"
-              style={{
-                background: "var(--color-soft-2)",
-                border: "1.5px dashed var(--color-border)",
-                minHeight: "320px",
-              }}
-            >
-              <p className="text-4xl mb-3">💬</p>
-              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+            <div className="tool-page-empty">
+              <p className="tool-page-empty-icon">💬</p>
+              <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>
-              <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+              <p className="tool-page-empty-text">
                 Inserisci il post e il commento, poi clicca &quot;Genera risposte&quot;
               </p>
             </div>
@@ -250,14 +227,7 @@ export default function CommentsPage() {
       </div>
 
       {/* History */}
-      <div
-        className="rounded-xl p-5"
-        style={{
-          background: "var(--color-surface)",
-          border: "1px solid var(--color-border)",
-          boxShadow: "var(--shadow-sm)",
-        }}
-      >
+      <div className="tool-page-panel">
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="comments" />
       </div>
@@ -268,7 +238,7 @@ export default function CommentsPage() {
 function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
   return (
     <div
-      className="rounded-lg p-3 text-sm"
+      className="rounded-lg p-4 text-sm"
       style={{
         background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
         border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,

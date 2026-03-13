@@ -66,9 +66,9 @@ export default function DmPage() {
     level === "Hot" ? "badge-red" : level === "Warm" ? "badge-amber" : "badge-blue";
 
   return (
-    <div className="qa-container qa-container-dash">
+    <div className="tool-page">
       {/* ── Hero header ── */}
-      <div className="page-hero" style={{ marginBottom: "1.5rem" }}>
+      <div className="page-hero" style={{ marginBottom: "0.5rem" }}>
         <span className="page-hero-eyebrow">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Consulenza
@@ -80,16 +80,9 @@ export default function DmPage() {
       </div>
 
       {/* ── Two-column layout: INPUT + OUTPUT ── */}
-      <div className="grid gap-6 lg:grid-cols-2 items-start">
+      <div className="tool-page-grid">
         {/* INPUT PANEL */}
-        <div
-          className="rounded-xl p-6 space-y-1"
-          style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            boxShadow: "var(--shadow-sm)",
-          }}
-        >
+        <div className="tool-page-panel space-y-1">
           <div className="qa-field">
             <label className="qa-label">Spiegami la situazione</label>
             <textarea
@@ -221,19 +214,12 @@ export default function DmPage() {
               <ResultBlock icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} />
             </div>
           ) : (
-            <div
-              className="rounded-xl p-8 flex flex-col items-center justify-center text-center h-full"
-              style={{
-                background: "var(--color-soft-2)",
-                border: "1.5px dashed var(--color-border)",
-                minHeight: "320px",
-              }}
-            >
-              <p className="text-4xl mb-3">💬</p>
-              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+            <div className="tool-page-empty">
+              <p className="tool-page-empty-icon">💬</p>
+              <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>
-              <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+              <p className="tool-page-empty-text">
                 Descrivi la situazione e clicca &quot;Chiedi un consiglio&quot;
               </p>
             </div>
@@ -242,14 +228,7 @@ export default function DmPage() {
       </div>
 
       {/* History */}
-      <div
-        className="rounded-xl p-5"
-        style={{
-          background: "var(--color-surface)",
-          border: "1px solid var(--color-border)",
-          boxShadow: "var(--shadow-sm)",
-        }}
-      >
+      <div className="tool-page-panel">
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="dm" />
       </div>

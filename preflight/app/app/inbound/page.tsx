@@ -12,16 +12,16 @@ export default function InboundPage() {
   const profile = repo.profile.getProfile(userId);
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-2xl font-bold">Contenuti</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+    <div className="tool-page">
+      <div className="tool-page-hero">
+        <h2>Contenuti</h2>
+        <p>
           Crea contenuti strategici che aprono conversazioni con clienti ideali.
         </p>
       </div>
 
       {/* Guide box */}
-      <div className="callout">
+      <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
           <div><span className="font-semibold">✅ Cosa fai:</span> crei contenuti che attraggono clienti</div>
           <div><span className="font-semibold">📋 Cosa usare:</span> i temi e gli hook del tuo piano commerciale</div>

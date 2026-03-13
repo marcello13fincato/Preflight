@@ -85,16 +85,16 @@ export default function PostPage() {
   }
 
   return (
-    <div className="space-y-5">
-      <div>
-        <h2 className="text-2xl font-bold">Scrivi un post che genera conversazioni</h2>
-        <p className="mt-1 text-sm" style={{ color: "var(--color-muted)" }}>
+    <div className="tool-page">
+      <div className="tool-page-hero">
+        <h2>Scrivi un post che genera conversazioni</h2>
+        <p>
           Trasforma un&apos;idea in un post LinkedIn strategico pronto da pubblicare.
         </p>
       </div>
 
       {/* Guide box */}
-      <div className="callout">
+      <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
           <div><span className="font-semibold">✅ Cosa fai:</span> scrivi un post che apre conversazioni utili</div>
           <div><span className="font-semibold">📋 Cosa inserire:</span> bozza o idea del post, obiettivo e parola chiave DM</div>
@@ -104,19 +104,10 @@ export default function PostPage() {
       </div>
 
       {/* Two-column layout */}
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="tool-page-grid">
         {/* INPUT */}
-        <div
-          className="rounded-xl p-5 space-y-4"
-          style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            boxShadow: "var(--shadow-sm)",
-          }}
-        >
-          <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
-            Input
-          </h3>
+        <div className="tool-page-panel space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
             <span className="mb-1 block font-medium">Bozza o idea del post</span>
             <textarea rows={7} className="input w-full resize-none" placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso..." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
@@ -148,16 +139,9 @@ export default function PostPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div
-              className="rounded-xl p-5 space-y-4"
-              style={{
-                background: "var(--color-surface)",
-                border: "1px solid var(--color-border)",
-                boxShadow: "var(--shadow-sm)",
-              }}
-            >
+            <div className="tool-page-panel space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
+                <h3 className="tool-page-panel-header" style={{ margin: 0 }}>
                   Post pronto
                 </h3>
                 <CopyButton text={`${output.post_versions.clean}\n\n${output.cta}`} />
@@ -180,19 +164,12 @@ export default function PostPage() {
               </div>
             </div>
           ) : (
-            <div
-              className="rounded-xl p-8 flex flex-col items-center justify-center text-center h-full"
-              style={{
-                background: "var(--color-soft-2)",
-                border: "1.5px dashed var(--color-border)",
-                minHeight: "320px",
-              }}
-            >
-              <p className="text-4xl mb-3">✍️</p>
-              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+            <div className="tool-page-empty">
+              <p className="tool-page-empty-icon">✍️</p>
+              <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>
-              <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+              <p className="tool-page-empty-text">
                 Inserisci la bozza e clicca &quot;Genera post&quot;
               </p>
             </div>
@@ -246,14 +223,7 @@ export default function PostPage() {
       )}
 
       {/* History */}
-      <div
-        className="rounded-xl p-5"
-        style={{
-          background: "var(--color-surface)",
-          border: "1px solid var(--color-border)",
-          boxShadow: "var(--shadow-sm)",
-        }}
-      >
+      <div className="tool-page-panel">
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="post" />
       </div>
@@ -264,7 +234,7 @@ export default function PostPage() {
 function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
   return (
     <div
-      className="rounded-lg p-3 text-sm"
+      className="rounded-lg p-4 text-sm"
       style={{
         background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
         border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,

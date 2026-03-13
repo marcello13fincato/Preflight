@@ -65,9 +65,9 @@ export default function ProspectPage() {
     level === "high" ? "badge-red" : level === "medium" ? "badge-amber" : "badge-blue";
 
   return (
-    <div className="qa-container qa-container-dash">
+    <div className="tool-page">
       {/* ── Hero header ── */}
-      <div className="page-hero" style={{ marginBottom: "1.5rem" }}>
+      <div className="page-hero" style={{ marginBottom: "0.5rem" }}>
         <span className="page-hero-eyebrow">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           Analisi profilo
@@ -79,16 +79,9 @@ export default function ProspectPage() {
       </div>
 
       {/* ── Two-column layout: INPUT + OUTPUT ── */}
-      <div className="grid gap-6 lg:grid-cols-2 items-start">
+      <div className="tool-page-grid">
         {/* INPUT PANEL */}
-        <div
-          className="rounded-xl p-6 space-y-1"
-          style={{
-            background: "var(--color-surface)",
-            border: "1px solid var(--color-border)",
-            boxShadow: "var(--shadow-sm)",
-          }}
-        >
+        <div className="tool-page-panel space-y-1">
           <div className="qa-field">
             <label className="qa-label">Link al profilo LinkedIn</label>
             <input
@@ -239,19 +232,12 @@ export default function ProspectPage() {
               <ResultBlock icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} />
             </div>
           ) : (
-            <div
-              className="rounded-xl p-8 flex flex-col items-center justify-center text-center h-full"
-              style={{
-                background: "var(--color-soft-2)",
-                border: "1.5px dashed var(--color-border)",
-                minHeight: "320px",
-              }}
-            >
-              <p className="text-4xl mb-3">🔎</p>
-              <p className="font-semibold" style={{ color: "var(--color-primary)" }}>
+            <div className="tool-page-empty">
+              <p className="tool-page-empty-icon">🔎</p>
+              <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>
-              <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+              <p className="tool-page-empty-text">
                 Inserisci il link LinkedIn e clicca &quot;Analizza profilo&quot;
               </p>
             </div>
@@ -260,14 +246,7 @@ export default function ProspectPage() {
       </div>
 
       {/* History */}
-      <div
-        className="rounded-xl p-5"
-        style={{
-          background: "var(--color-surface)",
-          border: "1px solid var(--color-border)",
-          boxShadow: "var(--shadow-sm)",
-        }}
-      >
+      <div className="tool-page-panel">
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="prospect" />
       </div>
