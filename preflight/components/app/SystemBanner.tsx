@@ -34,27 +34,21 @@ export default function SystemBanner() {
 
   return (
     <div className="sys-banner">
+      <span className="sys-banner-icon">⚙️</span>
       <div className="sys-banner-content">
-        <div className="sys-banner-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div>
-          <p className="sys-banner-title">Il tuo sistema non è ancora configurato.</p>
-          <p className="sys-banner-text">
-            Preflight funziona molto meglio quando conosce il tuo lavoro.
-            Completa l&apos;impostazione del sistema per ricevere suggerimenti più precisi.
-          </p>
-        </div>
+        <p className="sys-banner-title">Sistema non configurato</p>
+        <p className="sys-banner-text">
+          Configura il tuo servizio e il cliente ideale per risultati più precisi.
+        </p>
       </div>
-      <Link href="/app/onboarding" className="sys-banner-cta">
-        Configura il tuo sistema
-        <span>→</span>
-      </Link>
       {pct > 0 && (
         <div className="sys-banner-progress">
           <div className="sys-banner-progress-bar" style={{ width: `${pct}%` }} />
         </div>
       )}
+      <Link href="/app/onboarding" className="sys-banner-cta">
+        Configura ora →
+      </Link>
     </div>
   );
 }

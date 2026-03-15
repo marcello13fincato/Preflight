@@ -14,9 +14,22 @@ export default function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={copy}
-      className="text-xs rounded-xl border border-app px-3 py-1.5 text-app hover:bg-soft2 transition"
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.3rem",
+        fontSize: "0.75rem",
+        fontWeight: 600,
+        color: copied ? "var(--color-success)" : "var(--color-primary)",
+        background: copied ? "var(--color-success-bg)" : "rgba(10,102,194,0.04)",
+        border: `1.5px solid ${copied ? "rgba(22,163,74,0.2)" : "rgba(10,102,194,0.12)"}`,
+        borderRadius: "8px",
+        padding: "0.3rem 0.75rem",
+        cursor: "pointer",
+        transition: "all 150ms cubic-bezier(.4,0,.2,1)",
+      }}
     >
-      {copied ? "Copiato!" : "Copia"}
+      {copied ? "✓ Copiato" : "Copia"}
     </button>
   );
 }
