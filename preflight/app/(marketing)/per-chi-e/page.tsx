@@ -6,55 +6,55 @@ const targets = [
   {
     emoji: "🎯",
     title: "Consulenti",
-    desc: "Strategici, fiscali, HR, IT: hai competenze di alto livello, ma le relazioni su LinkedIn restano superficiali. Ti serve un metodo per trasformare interazioni in mandati.",
+    desc: "Hai competenze di alto livello, ma le relazioni su LinkedIn restano superficiali. Ti serve qualcuno che ti dica: contatta questa persona, con questo messaggio, per questa ragione.",
   },
   {
     emoji: "🛠",
     title: "Freelance",
-    desc: "Designer, developer, copywriter: il tuo lavoro parla da solo. Ma trovare il prossimo cliente non dovrebbe dipendere dal passaparola o dalla fortuna.",
+    desc: "Sai fare bene il tuo lavoro, ma trovare il prossimo cliente non dovrebbe dipendere dal passaparola. Il sistema ti guida verso le persone giuste, ogni giorno.",
   },
   {
     emoji: "🎓",
     title: "Coach e Formatori",
-    desc: "Offri percorsi ad alto valore. Pubblichi, costruisci autorità. Ma i commenti non diventano sessioni di coaching, e i post non generano iscrizioni.",
+    desc: "Pubblichi contenuti e costruisci autorità. Ma i commenti non diventano clienti da soli — ti serve un percorso chiaro dal post alla sessione di coaching.",
   },
   {
     emoji: "⚡",
     title: "Fractional Manager",
-    desc: "CFO, CMO, CTO part-time: gestisci più mandati in parallelo. Ti serve un flusso costante di nuove opportunità senza dedicare ore alla ricerca.",
+    desc: "Gestisci più mandati in parallelo e hai poco tempo. Il sistema ti mostra chi contattare oggi e ti prepara il messaggio — in 10 minuti sei operativo.",
   },
   {
     emoji: "📈",
     title: "Professionisti B2B",
-    desc: "Account manager, business developer, sales: usi LinkedIn come canale commerciale ma ti manca una struttura per passare dalla connessione alla call.",
+    desc: "Usi LinkedIn come canale commerciale ma ti manca una struttura per passare dalla connessione alla conversazione, e dalla conversazione alla call.",
   },
   {
     emoji: "🏢",
     title: "Micro-agenzie",
-    desc: "Team da 2-10 persone che vendono servizi B2B. LinkedIn è il vostro canale principale, ma nessuno ha tempo di gestirlo con metodo.",
+    desc: "Team da 2-10 persone che vendono servizi B2B. Nessuno ha tempo di gestire LinkedIn con metodo — il sistema vi dà la direzione senza portarvi via giornate.",
   },
 ];
 
 const problems = [
-  "Pubblichi su LinkedIn ma non ricevi richieste concrete di lavoro",
-  "Non sai quali profili contattare tra migliaia di risultati di ricerca",
-  "I tuoi messaggi in DM vengono ignorati o suonano troppo commerciali",
-  "Le conversazioni si fermano dopo il primo scambio di battute",
-  "Non hai un metodo per passare dal commento alla conversazione privata",
-  "Perdi traccia dei contatti e non fai follow-up al momento giusto",
-  "Non sai quando è il momento di proporre una call",
-  "Usi LinkedIn ogni giorno ma non riesci a collegarlo a risultati commerciali",
+  "Apri LinkedIn ogni giorno ma non sai bene da dove partire",
+  "Scrivi messaggi che vengono ignorati o suonano troppo commerciali",
+  "Non sai quali profili contattare tra le centinaia che vedi",
+  "Le conversazioni si fermano dopo il primo scambio e non sai come riprenderle",
+  "Pubblichi post ma non riesci a collegare i commenti a conversazioni concrete",
+  "Perdi traccia dei contatti e non fai follow-up quando dovresti",
+  "Non sai quando è il momento giusto di proporre una call",
+  "Senti che LinkedIn potrebbe funzionare, ma ti manca una guida passo passo",
 ];
 
 const notFor = [
-  "Chi cerca lavoro come dipendente",
-  "Recruiter e HR che cercano candidati",
-  "Chi vuole crescere come influencer o creator",
-  "Chi cerca uno strumento di social media management",
-  "Chi vuole automazioni e messaggi di massa",
-  "Aziende enterprise con team commerciali già strutturati",
-  "Chi vende prodotti fisici al consumatore finale",
-  "Chi non è disposto a dedicare 20 minuti al giorno a LinkedIn",
+  "Chi cerca lavoro come dipendente — non è un tool per candidature",
+  "Recruiter e HR — il sistema è per chi vende, non per chi assume",
+  "Chi vuole crescere come influencer — qui si parla di clienti, non di follower",
+  "Chi cerca automazioni e messaggi di massa — Preflight è l'opposto",
+  "Aziende enterprise con team sales strutturati — non serve un sistema personale",
+  "Chi vende prodotti fisici al consumatore finale — LinkedIn B2B è un altro mondo",
+  "Chi non è disposto a dedicare 20 minuti al giorno — il sistema funziona solo se lo usi",
+  "Chi vuole risultati senza fare nessuno sforzo — nessun sistema può farlo",
 ];
 
 export default function PerChiEPage() {
@@ -70,12 +70,12 @@ export default function PerChiEPage() {
             Per chi è
           </div>
           <h1 className="hp-hero-title">
-            Per chi è Preflight.<br />
-            <span className="hp-hero-title-accent">E per chi no.</span>
+            Un sistema pensato per chi vende.<br />
+            <span className="hp-hero-title-accent">Non per tutti.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Preflight è un sistema di acquisizione clienti su LinkedIn.<br />
-            Funziona per chi vende servizi e competenze — non per tutti.
+            Preflight guida passo passo professionisti che vogliono trovare clienti su LinkedIn.<br />
+            Se vendi servizi e competenze, è costruito intorno al tuo modo di lavorare.
           </p>
         </div>
       </section>
@@ -84,10 +84,10 @@ export default function PerChiEPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Chi aiutiamo</div>
-          <h2 className="hp-section-title">Costruito per chi vende competenze e servizi ad alto valore</h2>
+          <h2 className="hp-section-title">Pensato per professionisti che vendono competenze e servizi</h2>
           <p className="hp-section-subtitle">
-            Ogni funzionalità di Preflight è pensata per professionisti che usano LinkedIn
-            come canale principale di acquisizione clienti.
+            Ogni parte del sistema è costruita intorno a un obiettivo preciso:
+            aiutarti a trovare i clienti giusti e a portare avanti le conversazioni con chiarezza.
           </p>
           <div className="pce-target-grid">
             {targets.map((t) => (
@@ -104,8 +104,8 @@ export default function PerChiEPage() {
       {/* ── PROBLEMI RISOLTI ── */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
-          <div className="hp-section-label">Problemi risolti</div>
-          <h2 className="hp-section-title">Se ti riconosci in almeno due di queste situazioni, Preflight è per te</h2>
+          <div className="hp-section-label">Ti riconosci?</div>
+          <h2 className="hp-section-title">Se ti ritrovi in almeno due di queste situazioni, Preflight fa per te</h2>
           <div className="pce-problems-grid">
             {problems.map((p, i) => (
               <div key={i} className="pce-problem-item">
@@ -120,10 +120,10 @@ export default function PerChiEPage() {
       {/* ── PER CHI NON È ── */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Trasparenza</div>
-          <h2 className="hp-section-title">Per chi NON è Preflight</h2>
+          <div className="hp-section-label">Chiarezza</div>
+          <h2 className="hp-section-title">Per chi NON è pensato</h2>
           <p className="hp-section-subtitle">
-            Meglio saperlo prima. Se ti riconosci in una di queste situazioni, probabilmente non è lo strumento giusto per te.
+            Meglio saperlo subito. Se ti riconosci in una di queste situazioni, probabilmente non è lo strumento giusto per te — e va bene così.
           </p>
           <div className="pce-notfor-grid">
             {notFor.map((item, i) => (
@@ -139,27 +139,28 @@ export default function PerChiEPage() {
       {/* ── AI PERSONALIZZATA ── */}
       <section className="hp-section hp-section-dark">
         <div className="hp-container">
-          <div className="hp-section-label hp-section-label-light">Come funziona</div>
-          <h2 className="hp-section-title hp-title-white">Come funziona il sistema</h2>
+          <div className="hp-section-label hp-section-label-light">Il percorso</div>
+          <h2 className="hp-section-title hp-title-white">Cosa succede quando inizi</h2>
           <p className="hp-section-subtitle hp-subtitle-light">
-            Configuri il tuo contesto commerciale una volta.<br />
-            Da lì, ogni indicazione è calibrata sulla tua realtà.
+            Configuri il tuo profilo commerciale una volta.
+            Da lì in poi, ogni giorno il sistema ti guida: chi contattare,
+            cosa scrivere, come portare avanti le conversazioni.
           </p>
           <div className="pce-ai-grid">
             <div className="pce-ai-card">
               <span className="pce-ai-step">1</span>
-              <h3 className="pce-ai-title">Imposta il tuo sistema commerciale</h3>
-              <p className="pce-ai-desc">Definisci cosa vendi, a chi, e quale problema risolvi. Il sistema parte da qui.</p>
+              <h3 className="pce-ai-title">Racconti cosa fai e per chi</h3>
+              <p className="pce-ai-desc">Descrivi il tuo servizio, il tuo cliente ideale e il problema che risolvi. Ci vogliono 5 minuti — il sistema parte da qui.</p>
             </div>
             <div className="pce-ai-card">
               <span className="pce-ai-step">2</span>
-              <h3 className="pce-ai-title">Ricevi indicazioni operative</h3>
-              <p className="pce-ai-desc">Chi contattare, come scrivere il primo messaggio, quando fare follow-up — tutto basato sul tuo profilo commerciale.</p>
+              <h3 className="pce-ai-title">Ogni giorno sai cosa fare</h3>
+              <p className="pce-ai-desc">Chi contattare, cosa commentare, quale messaggio inviare. Post, commenti, DM: tutto guidato dal contesto.</p>
             </div>
             <div className="pce-ai-card">
               <span className="pce-ai-step">3</span>
-              <h3 className="pce-ai-title">Porta le conversazioni a risultato</h3>
-              <p className="pce-ai-desc">Pipeline, follow-up, prossimi passi: ogni conversazione ha una direzione chiara verso la call.</p>
+              <h3 className="pce-ai-title">Le conversazioni diventano clienti</h3>
+              <p className="pce-ai-desc">Follow-up, pipeline, prossimi passi: ogni contatto ha una direzione chiara verso la call.</p>
             </div>
           </div>
           <div style={{ textAlign: "center", marginTop: "2rem" }}>
@@ -177,11 +178,11 @@ export default function PerChiEPage() {
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
             Se vendi servizi su LinkedIn,<br />
-            ti serve un sistema, non più tempo
+            Preflight ti guida passo dopo passo
           </h2>
           <p className="hp-final-subtitle">
-            Preflight ti dà metodo e direzione.<br />
-            Tu ci metti la competenza.
+            Non servono più ore o più strumenti.<br />
+            Serve il sistema giusto — e 20 minuti al giorno.
           </p>
           <Link href="/app/onboarding" className="hp-cta-primary hp-cta-large">
             Inizia ora — è gratis

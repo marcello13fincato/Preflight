@@ -12,19 +12,19 @@ export default function HowItWorksPage() {
         <div className="hp-container hp-hero-inner">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
-            Il metodo completo
+            Il percorso completo
           </div>
           <h1 className="hp-hero-title">
-            Come funziona<br />
-            <span className="hp-hero-title-accent">Preflight</span>
+            Ti guidiamo passo dopo passo,<br />
+            <span className="hp-hero-title-accent">dal primo contatto alla call.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Non è un insieme di strumenti separati.<br />
-            È un sistema operativo per trasformare LinkedIn in un canale di acquisizione clienti.
+            Preflight non è una lista di strumenti da imparare.<br />
+            È un percorso che ti dice cosa fare ogni giorno su LinkedIn per trovare clienti.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/app/onboarding" className="hp-cta-primary">
-              Crea il tuo sistema clienti
+              Inizia il tuo percorso
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </Link>
             <Link href="/app" className="hp-cta-ghost">
@@ -42,7 +42,7 @@ export default function HowItWorksPage() {
               </span>
             ))}
           </div>
-          <p className="hp-hero-trust">✓ Pensato per freelance e consulenti &nbsp;&nbsp; ✓ In italiano &nbsp;&nbsp; ✓ Nessuna integrazione complicata</p>
+          <p className="hp-hero-trust">✓ Per freelance e consulenti &nbsp;&nbsp; ✓ In italiano &nbsp;&nbsp; ✓ Nessuna integrazione complicata</p>
         </div>
       </section>
 
@@ -51,14 +51,14 @@ export default function HowItWorksPage() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Il problema</div>
-          <h2 className="hp-section-title">Il problema non è LinkedIn. È l&apos;assenza di metodo.</h2>
+          <div className="hp-section-label">Il vero problema</div>
+          <h2 className="hp-section-title">Non ti mancano gli strumenti. Ti manca sapere cosa fare.</h2>
           <p className="hp-section-subtitle">
-            La maggior parte dei professionisti pubblica contenuti senza intento commerciale,
-            conversa senza direzione e non sa quando è il momento di proporre una call.
+            La maggior parte dei professionisti apre LinkedIn senza un piano.
+            Pubblica senza intento, conversa senza direzione, e non sa mai quando è il momento di proporre una call.
           </p>
           <p className="hp-section-subtitle" style={{ marginTop: "0.5rem" }}>
-            Il risultato: tempo investito, nessun ritorno prevedibile.
+            Preflight cambia questo: ogni giorno ti dice su cosa concentrarti.
           </p>
 
           <div className="hiw-versus-grid">
@@ -96,11 +96,11 @@ export default function HowItWorksPage() {
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
           <div className="hp-section-label">Dati</div>
-          <h2 className="hp-section-title">Perché LinkedIn funziona per chi vende servizi</h2>
+          <h2 className="hp-section-title">LinkedIn funziona già. Serve il percorso giusto per usarlo.</h2>
           <div className="hp-stats-grid hp-stats-grid-2">
             {[
-              { value: "97%", label: "dei professionisti B2B considera LinkedIn tra le prime 3 fonti di clienti", sub: "Il canale c&apos;è. Serve il metodo per usarlo" },
-              { value: "57%", label: "afferma che è la fonte principale di clienti di qualità", sub: "Non contatti generici, ma clienti reali" },
+              { value: "97%", label: "dei professionisti B2B lo considera tra le prime 3 fonti di clienti", sub: "Il canale c'è già. Serve qualcuno che ti guidi" },
+              { value: "57%", label: "afferma che è la fonte principale di clienti di qualità", sub: "Non contatti generici — persone pronte a comprare" },
             ].map((s) => (
               <div key={s.value} className="hp-stat-card hp-stat-card-lg">
                 <div className="hp-stat-value">{s.value}</div>
@@ -110,7 +110,7 @@ export default function HowItWorksPage() {
             ))}
           </div>
           <p className="hp-piattaforma-body">
-            LinkedIn è già il canale. Il problema non è la piattaforma — è l&apos;assenza di un sistema per passare dal contatto al cliente.
+            Non è la piattaforma che manca. È qualcuno che ti dica: contatta questo profilo, con questo messaggio, per questa ragione.
           </p>
         </div>
       </section>
@@ -122,9 +122,9 @@ export default function HowItWorksPage() {
         <div className="hp-container">
           <div className="hp-stats-grid">
             {[
-              { value: "1B+", label: "membri su LinkedIn nel mondo", sub: "La più grande piattaforma B2B al mondo" },
-              { value: "23M", label: "iscritti in Italia", sub: "Un bacino enorme di potenziali clienti" },
-              { value: "5–8", label: "punti di contatto medi prima di una vendita B2B", sub: "Servono contenuti, conversazioni e follow-up" },
+              { value: "1B+", label: "professionisti su LinkedIn nel mondo", sub: "Il più grande bacino B2B che esiste" },
+              { value: "23M", label: "iscritti in Italia", sub: "I tuoi prossimi clienti sono già lì" },
+              { value: "5–8", label: "interazioni prima di una vendita B2B", sub: "Post, commenti, messaggi, follow-up: serve un percorso" },
             ].map((s) => (
               <div key={s.value} className="hp-stat-card">
                 <div className="hp-stat-value">{s.value}</div>
@@ -141,17 +141,17 @@ export default function HowItWorksPage() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-dark">
         <div className="hp-container">
-          <div className="hp-section-label hp-section-label-light">Il metodo</div>
+          <div className="hp-section-label hp-section-label-light">Il percorso</div>
           <h2 className="hp-section-title hp-title-white">
-            Cinque fasi. Un percorso operativo completo.
+            Cinque fasi. Ogni giorno sai cosa fare.
           </h2>
 
           <div className="hiw-method-grid">
             {[
               {
                 number: "01",
-                title: "Imposti il tuo sistema commerciale",
-                text: "Definisci il tuo servizio, il tuo cliente ideale e il problema che risolvi. Il sistema parte dal tuo contesto reale.",
+                title: "Configuri chi sei e per chi lavori",
+                text: "Racconti il tuo servizio, il tuo cliente ideale e il problema che risolvi. Ci vogliono 5 minuti — il sistema parte da qui.",
                 modules: ["Configurazione", "Profilo commerciale"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -159,8 +159,8 @@ export default function HowItWorksPage() {
               },
               {
                 number: "02",
-                title: "Identifichi le categorie di clienti giusti",
-                text: "Il sistema analizza il tuo posizionamento e ti indica quali categorie di professionisti contattare, con ricerche LinkedIn pronte.",
+                title: "Scopri chi contattare e perché",
+                text: "Il sistema ti indica categorie di professionisti da contattare, con ricerche LinkedIn pronte. Non devi inventarti nulla.",
                 modules: ["Chi contattare", "Ricerche LinkedIn"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -168,8 +168,8 @@ export default function HowItWorksPage() {
               },
               {
                 number: "03",
-                title: "Analizzi profili specifici",
-                text: "Prima di contattare qualcuno, capisci se vale la pena scrivergli. Il sistema valuta il profilo e ti dice come muoverti.",
+                title: "Analizzi ogni profilo prima di scrivere",
+                text: "Per ogni persona, sai se vale la pena contattarla. Il sistema ti dice chi è, perché è interessante e come iniziare.",
                 modules: ["Analisi profilo", "Valutazione fit"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -177,8 +177,8 @@ export default function HowItWorksPage() {
               },
               {
                 number: "04",
-                title: "Ricevi indicazioni strategiche personalizzate",
-                text: "Per ogni situazione — commento, messaggio, DM, follow-up — il sistema ti indica cosa scrivere e quale passo fare dopo.",
+                title: "Post, commenti e messaggi: tutto guidato",
+                text: "Per ogni situazione — pubblicare un post, rispondere a un commento, scrivere un DM, fare follow-up — il sistema ti dice cosa scrivere e perché.",
                 modules: ["Risposte ai commenti", "Messaggi", "Consulenza situazionale"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -186,8 +186,8 @@ export default function HowItWorksPage() {
               },
               {
                 number: "05",
-                title: "Porti le conversazioni verso call e opportunità",
-                text: "Pipeline, follow-up e prossimi passi: ogni contatto ha una direzione. Nessuna conversazione si perde.",
+                title: "Le conversazioni diventano call e clienti",
+                text: "Pipeline, prossimi passi, follow-up: ogni contatto ha una direzione. Nessuna conversazione si perde per strada.",
                 modules: ["Pipeline clienti", "Follow-up", "Piano giornaliero"],
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -217,17 +217,17 @@ export default function HowItWorksPage() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Il percorso</div>
-          <h2 className="hp-section-title hiw-timeline-heading">Il percorso operativo completo</h2>
+          <div className="hp-section-label">Il percorso giorno per giorno</div>
+          <h2 className="hp-section-title hiw-timeline-heading">Cosa fai concretamente, ogni giorno</h2>
 
           <div className="hiw-timeline">
             {[
-              { step: "1", label: "Configuri il sistema", desc: "Inserisci il tuo servizio, il cliente ideale e il problema che risolvi.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>) },
-              { step: "2", label: "Identifichi chi contattare", desc: "Ottieni categorie di prospect e ricerche LinkedIn pronte.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>) },
-              { step: "3", label: "Analizzi prima di scrivere", desc: "Per ogni profilo, capisci se vale la pena contattarlo e come.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>) },
-              { step: "4", label: "Gestisci ogni conversazione", desc: "Commenti, messaggi, DM: il sistema ti indica cosa scrivere e quando.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>) },
-              { step: "5", label: "Proponi la call", desc: "Con il messaggio giusto al momento giusto. Nessuna forzatura.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>) },
-              { step: "6", label: "Gestisci pipeline e follow-up", desc: "Ogni contatto ha un prossimo passo. Nessuna conversazione si perde.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>) },
+              { step: "1", label: "Configuri il tuo profilo commerciale", desc: "Descrivi il tuo servizio, il tuo cliente ideale e il problema che risolvi.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>) },
+              { step: "2", label: "Scopri chi contattare oggi", desc: "Ricevi categorie di prospect e ricerche LinkedIn pronte da usare.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>) },
+              { step: "3", label: "Valuti ogni profilo prima di scrivere", desc: "Per ogni persona, sai se vale la pena contattarla e come.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>) },
+              { step: "4", label: "Pubblichi, commenti e scrivi con guida", desc: "Post, commenti, DM: il sistema ti dice cosa scrivere e quando.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>) },
+              { step: "5", label: "Proponi la call al momento giusto", desc: "Con il messaggio giusto, al momento giusto. Senza forzare.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>) },
+              { step: "6", label: "Nessuna conversazione si perde", desc: "Pipeline e follow-up: ogni contatto ha un prossimo passo chiaro.", icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>) },
             ].map((item) => (
               <div key={item.step} className="hiw-timeline-item">
                 <div className="hiw-timeline-number">
@@ -251,22 +251,22 @@ export default function HowItWorksPage() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
-          <div className="hp-section-label">Funzionalità</div>
-          <h2 className="hp-section-title">Tutti gli strumenti del sistema</h2>
+          <div className="hp-section-label">Cosa trovi dentro</div>
+          <h2 className="hp-section-title">Ogni strumento ha un ruolo preciso nel tuo percorso</h2>
           <p className="hp-section-subtitle">
-            Ogni strumento ha un ruolo preciso nel percorso da contatto a cliente.
+            Non sono funzionalità separate. Lavorano insieme per guidarti dal primo contatto al cliente.
           </p>
 
           <div className="hiw-features-grid">
             {[
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>), title: "Configurazione sistema", desc: "Definisci il tuo contesto commerciale. Tutto parte da qui." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>), title: "Configurazione", desc: "Racconti chi sei e cosa offri. Il sistema parte da qui." },
               { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>), title: "Chi contattare", desc: "Categorie di prospect e ricerche LinkedIn pronte da usare." },
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>), title: "Analisi profilo", desc: "Capisci se un contatto è in target prima di scrivergli." },
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>), title: "Risposte ai commenti", desc: "Indicazioni per trasformare i commenti in conversazioni." },
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>), title: "Messaggi e DM", desc: "Template e indicazioni per aprire e continuare conversazioni." },
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>), title: "Piano giornaliero", desc: "Ogni giorno sai chi contattare, cosa pubblicare e chi ricontattare." },
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>), title: "Pipeline clienti", desc: "Gestisci tutti i tuoi contatti in un percorso chiaro e visuale." },
-              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>), title: "Simulazione conversazioni", desc: "Allenati a rispondere a obiezioni e domande prima di farlo dal vivo." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>), title: "Analisi profilo", desc: "Capisci se una persona è in target prima di scriverle." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>), title: "Commenti guidati", desc: "Ti dice come rispondere ai commenti per aprire conversazioni." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>), title: "Messaggi e DM", desc: "Indicazioni per scrivere il primo messaggio e i successivi." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>), title: "Piano giornaliero", desc: "Ogni giorno sai chi contattare, cosa pubblicare e chi seguire." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>), title: "Pipeline clienti", desc: "Ogni contatto ha un percorso chiaro e visuale verso la call." },
+              { icon: (<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>), title: "Simulazione conversazioni", desc: "Allenati a rispondere a obiezioni e domande, prima di farlo dal vivo." },
             ].map((card) => (
               <article key={card.title} className="hiw-feature-card">
                 <div className="hiw-feature-icon">{card.icon}</div>
@@ -285,15 +285,15 @@ export default function HowItWorksPage() {
         <div className="hp-container">
           <div className="hp-profile-grid">
             <div className="hp-profile-content">
-              <div className="hp-section-label hp-section-label-light">Risultato</div>
+              <div className="hp-section-label hp-section-label-light">Il risultato</div>
               <h2 className="hp-section-title hp-title-white">
-                Non entri su LinkedIn per &ldquo;vedere cosa succede&rdquo;.
+                Non apri LinkedIn &ldquo;per vedere&rdquo;.
               </h2>
               <p className="hp-profile-subtitle">
-                Entri con un sistema. Sai esattamente cosa fare.
+                Entri sapendo esattamente cosa fare. Il sistema ti ha già preparato il percorso.
               </p>
               <ul className="hp-profile-list">
-                {["Chi contattare", "Cosa scrivere", "Quando ricontattare", "Come arrivare alla call"].map((item) => (
+                  {["Chi contattare oggi", "Cosa scrivere e perché", "Quando fare follow-up", "Come arrivare alla call"].map((item) => (
                   <li key={item} className="hp-profile-list-item">
                     <span className="hp-check-icon" aria-hidden="true">✓</span>
                     {item}
@@ -336,13 +336,13 @@ export default function HowItWorksPage() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            Un metodo completo per trasformare LinkedIn<br />in un canale di acquisizione clienti.
+            Un percorso completo: dal primo contatto alla call,<br />guidato passo dopo passo.
           </h2>
           <p className="hp-final-subtitle">
-            Configurazione → Targeting → Analisi → Conversazione → Call.
+            Configurazione → Targeting → Analisi → Post e messaggi → Conversazione → Call.
           </p>
           <Link href="/app/onboarding" className="hp-cta-primary hp-cta-large">
-            Crea il tuo sistema clienti
+            Inizia il tuo percorso
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </Link>
           <p className="hp-final-trust">Setup in 5 minuti · Nessuna carta di credito · Inizia gratis</p>

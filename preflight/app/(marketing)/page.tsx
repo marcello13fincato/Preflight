@@ -19,22 +19,22 @@ export default async function Home() {
         <div className="hp-hero-glow" aria-hidden="true" />
         <div className="hp-container hp-hero-inner">
           <h1 className="hp-hero-title">
-            Trasforma LinkedIn in un sistema<br />
-            <span className="hp-hero-title-accent">prevedibile di acquisizione clienti.</span>
+            Il sistema che ti guida, passo dopo passo,<br />
+            <span className="hp-hero-title-accent">ad acquisire clienti su LinkedIn.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Preflight unisce un metodo commerciale strutturato e un&apos;intelligenza artificiale
-            specializzata per aiutarti a identificare, comprendere e contattare
-            i clienti giusti con chiarezza.
+            Preflight ti dice chi contattare, come scrivere il primo messaggio,
+            quando pubblicare un post strategico e come portare la conversazione
+            fino alla call. Ogni giorno, con chiarezza.
           </p>
           <p className="hp-hero-bridge">
-            Non è un tool per generare contenuti o automatizzare messaggi.
-            È un sistema che ti dà direzione commerciale su LinkedIn:
-            chi cercare, come valutarlo, cosa scrivere e quando muoverti.
+            Non devi inventarti nulla. Il sistema ti accompagna
+            dalla scelta del profilo giusto alla gestione della relazione,
+            con il supporto di un&apos;IA specializzata in processi commerciali.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/signup" className="hp-cta-primary">
-              Inizia a usare LinkedIn con un metodo
+              Configura il tuo sistema in 5 minuti
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </Link>
             <Link href="/how-it-works" className="hp-cta-ghost">
@@ -50,13 +50,14 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Cosa fai con Preflight</div>
+          <div className="hp-section-label">Cosa fai ogni giorno con Preflight</div>
           <h2 className="hp-section-title">
-            Trova clienti, analizza profili, muoviti con criterio.
+            Trova chi contattare, analizza il profilo, muoviti con un piano.
           </h2>
           <p className="hp-section-subtitle">
-            Preflight ti aiuta a capire chi cercare, se vale la pena contattarlo
-            e come portare avanti una conversazione su LinkedIn.
+            Ogni giorno Preflight ti guida nelle tre azioni che contano:
+            identificare i clienti giusti, capire se vale la pena scrivergli
+            e sapere esattamente cosa fare dopo.
           </p>
 
           <div className="hp-preview-grid">
@@ -70,7 +71,7 @@ export default async function Home() {
                 <h3 className="hp-preview-card-title">Trova clienti</h3>
               </div>
               <p className="hp-preview-card-copy">
-                Ti guidiamo verso categorie di profili sensati da contattare su LinkedIn.
+                Il sistema analizza il tuo posizionamento e ti indica chi cercare su LinkedIn: ruolo, settore, area geografica. Nessuna improvvisazione.
               </p>
               <div className="hp-preview-mock hp-preview-mock-trova">
                 <div className="hp-preview-mock-row">
@@ -111,7 +112,7 @@ export default async function Home() {
                 <h3 className="hp-preview-card-title">Analizza profilo</h3>
               </div>
               <p className="hp-preview-card-copy">
-                Capisci se un profilo è in target e come iniziare la conversazione.
+                Prima di scrivere a qualcuno, il sistema ti dice chi è, perché è interessante per te e qual è il modo migliore per aprire la conversazione.
               </p>
               <div className="hp-preview-mock hp-preview-mock-analizza">
                 <div className="hp-preview-mock-input-row">
@@ -147,7 +148,7 @@ export default async function Home() {
                 <h3 className="hp-preview-card-title">Chiedi un consiglio</h3>
               </div>
               <p className="hp-preview-card-copy">
-                Descrivi una situazione reale e ricevi indicazioni operative.
+                Un prospect non risponde? Non sai come fare follow-up? Descrivi la situazione e ricevi indicazioni concrete su cosa fare adesso.
               </p>
               <div className="hp-preview-mock hp-preview-mock-consiglio">
                 <div className="hp-preview-mock-textarea">
@@ -181,21 +182,21 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container hp-support-block">
-          <div className="hp-section-label">Il sistema</div>
+          <div className="hp-section-label">Perché funziona</div>
           <h2 className="hp-section-title">
-            Un sistema di acquisizione clienti, non l&apos;ennesimo tool.
+            Non ti serve un altro strumento.<br />Ti serve sapere cosa fare.
           </h2>
           <p className="hp-section-subtitle hp-support-desc">
-            Il problema su LinkedIn non è la mancanza di strumenti.
-            È l&apos;assenza di una direzione chiara: chi contattare, cosa scrivere, quando insistere.
-            Preflight riduce la dispersione e ti dà lucidità strategica
-            in ogni fase del processo commerciale.
+            La maggior parte dei professionisti perde tempo su LinkedIn perché
+            non ha una direzione chiara. Preflight ti toglie il dubbio:
+            ogni giorno sai chi contattare, cosa scrivere — nei post, nei commenti,
+            nei messaggi — e come portare avanti le conversazioni che contano.
           </p>
           <div className="hp-support-points">
             {[
-              { icon: "🎯", text: "Sai chi cercare e perché" },
-              { icon: "🧭", text: "Hai chiarezza su priorità e prossimi passi" },
-              { icon: "💬", text: "Le conversazioni partono dal contesto, non dall'improvvisazione" },
+              { icon: "🎯", text: "Sai chi contattare e perché è il momento giusto" },
+              { icon: "✍️", text: "Hai post, commenti e messaggi guidati dal contesto" },
+              { icon: "🧭", text: "Ogni conversazione ha un prossimo passo chiaro" },
             ].map((point) => (
               <div key={point.text} className="hp-support-point">
                 <span className="hp-support-point-icon" aria-hidden="true">{point.icon}</span>
@@ -211,38 +212,38 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Il metodo</div>
-          <h2 className="hp-section-title">Come funziona nella pratica</h2>
+          <div className="hp-section-label">Il tuo percorso quotidiano</div>
+          <h2 className="hp-section-title">Il sistema ti dice cosa fare, passo dopo passo</h2>
           <p className="hp-section-subtitle">
-            Un flusso strutturato che rispecchia il modo in cui
-            si sviluppa davvero una relazione commerciale su LinkedIn.
+            Non devi pensare alla strategia ogni mattina. Apri Preflight
+            e sai esattamente dove concentrare i tuoi 20 minuti su LinkedIn.
           </p>
           <div className="hp-method-flow">
             {[
               {
                 step: "1",
-                title: "Imposti il tuo sistema",
-                desc: "Definisci chi sei, cosa offri e che tipo di clienti cerchi. Il sistema parte da qui.",
+                title: "Configuri chi sei e cosa offri",
+                desc: "Racconti il tuo servizio, il tuo cliente ideale e il problema che risolvi. Lo fai una volta — il sistema parte da qui.",
               },
               {
                 step: "2",
-                title: "Identifichi categorie di clienti",
-                desc: "Ottieni categorie di prospect e ricerche LinkedIn pronte, basate sul tuo posizionamento reale.",
+                title: "Scopri chi contattare",
+                desc: "Il sistema ti suggerisce categorie di prospect sensate e ti prepara ricerche LinkedIn pronte da usare.",
               },
               {
                 step: "3",
-                title: "Analizzi profili specifici",
-                desc: "L'IA legge profili e segnali per dirti se vale la pena contattare qualcuno e come farlo.",
+                title: "Analizzi ogni profilo prima di scrivere",
+                desc: "Per ogni persona, sai se vale la pena contattarla, perché è interessante e come iniziare.",
               },
               {
                 step: "4",
-                title: "Ricevi indicazioni operative",
-                desc: "Messaggi, commenti, follow-up: ogni azione ha un contesto e una direzione chiara.",
+                title: "Pubblichi, commenti e scrivi con contesto",
+                desc: "Post strategici, commenti che aprono conversazioni, messaggi personalizzati: ogni azione è guidata dal sistema.",
               },
               {
                 step: "5",
-                title: "Porti le conversazioni verso opportunità",
-                desc: "Gestisci la pipeline e trasformi contatti in call e call in clienti.",
+                title: "Porti la conversazione fino alla call",
+                desc: "Follow-up, gestione pipeline, prossimi passi: nessuna conversazione si perde per strada.",
               },
             ].map((item) => (
               <div key={item.step} className="hp-method-step">
@@ -262,34 +263,33 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-soft">
         <div className="hp-container hp-ai-positioning">
-          <div className="hp-section-label">L&apos;intelligenza artificiale</div>
+          <div className="hp-section-label">L&apos;IA che ti supporta</div>
           <h2 className="hp-section-title">
-            Un&apos;IA addestrata su processi commerciali reali.
+            Non genera testo a caso.<br />Ti aiuta a prendere decisioni migliori.
           </h2>
           <p className="hp-section-subtitle hp-ai-pos-desc">
-            L&apos;IA di Preflight non è un assistente generico riadattato.
-            È costruita per supportare decisioni commerciali:
-            interpreta segnali da LinkedIn, valuta profili,
-            e ti aiuta a decidere cosa fare — riducendo il tempo perso
-            su contatti sbagliati.
+            L&apos;IA di Preflight conosce le dinamiche di vendita consulenziale.
+            Non ti scrive un messaggio generico: legge il contesto,
+            interpreta i segnali e ti dice cosa ha senso fare adesso —
+            con calma, con chiarezza.
           </p>
           <div className="hp-ai-pos-grid">
             {[
               {
-                title: "Addestrata su processi reali",
-                desc: "Conosce le dinamiche di vendita consulenziale, non ripete formule generiche. Ogni suggerimento parte dal tuo contesto.",
+                title: "Capisce il tuo contesto",
+                desc: "Conosce il tuo servizio, i tuoi clienti ideali e il tuo modo di lavorare. Ogni suggerimento parte da lì.",
               },
               {
-                title: "Supporto alle decisioni",
-                desc: "Ti dice se un profilo è interessante, perché e cosa fare. Non genera testo a caso: ti aiuta a scegliere.",
+                title: "Ti dice cosa fare, non solo cosa scrivere",
+                desc: "Quando commentare, quando mandare un messaggio, quando proporre una call. Decisioni, non solo parole.",
               },
               {
-                title: "Riduce il tempo perso",
-                desc: "Meno scroll, meno messaggi a vuoto, meno dubbi. Più chiarezza su dove concentrare i tuoi 20 minuti al giorno.",
+                title: "Riduce i dubbi quotidiani",
+                desc: "Questo profilo è in target? Questo messaggio è giusto? L'IA ti dà risposte chiare per ogni situazione.",
               },
               {
-                title: "Interpreta segnali LinkedIn",
-                desc: "Post, cambi di ruolo, assunzioni, commenti: l'IA legge questi segnali e li trasforma in indicazioni operative.",
+                title: "Legge i segnali da LinkedIn",
+                desc: "Post, cambi di ruolo, assunzioni: l'IA trasforma questi segnali in indicazioni operative concrete.",
               },
             ].map((card) => (
               <div key={card.title} className="hp-ai-pos-card">
@@ -306,10 +306,11 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section id="assistente" className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Provalo ora</div>
-          <h2 className="hp-section-title">Prova il sistema su un caso reale</h2>
+          <div className="hp-section-label">Provalo adesso</div>
+          <h2 className="hp-section-title">Fai una prova su un caso tuo</h2>
           <p className="hp-section-subtitle">
-            Analizza un profilo LinkedIn o chiedi un consiglio su una situazione commerciale concreta.
+            Incolla un profilo LinkedIn o descrivi una situazione che stai vivendo.
+            Il sistema ti mostra come lavora — su un caso reale, il tuo.
           </p>
           <QuickAssistant />
         </div>
@@ -320,8 +321,8 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-target">
         <div className="hp-container">
-          <div className="hp-section-label">Per chi è</div>
-          <h2 className="hp-section-title hp-target-title">Per professionisti che usano LinkedIn per trovare clienti.</h2>
+          <div className="hp-section-label">Per chi è pensato</div>
+          <h2 className="hp-section-title hp-target-title">Per chi vende servizi e competenze su LinkedIn.</h2>
 
           <div className="hp-target-grid">
             <article className="hp-target-card hp-target-card-positive">
@@ -374,11 +375,11 @@ export default async function Home() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            LinkedIn funziona. Ti manca il sistema per usarlo come canale clienti.
+            Non devi inventarti nulla.<br />Il sistema ti dice cosa fare.
           </h2>
           <p className="hp-final-subtitle">
-            Preflight ti dà metodo, direzione e chiarezza.
-            Tu ci metti competenza e 20 minuti al giorno.
+            Configura il tuo profilo commerciale, segui il metodo
+            e dedica 20 minuti al giorno a LinkedIn. Il resto lo guida Preflight.
           </p>
           <Link href="/signup" className="hp-cta-primary hp-cta-large">
             Configura il tuo sistema

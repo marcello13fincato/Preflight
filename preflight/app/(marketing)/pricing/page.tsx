@@ -1,44 +1,44 @@
 import Link from "next/link";
 
 const freeFeatures = [
-  "Accesso alla dashboard e panoramica del sistema",
-  "Primi test su analisi profilo e commenti",
-  "Visione del metodo e del flusso operativo",
-  "Risposte limitate per capire il livello di profondit\u00e0",
+  "Accesso alla dashboard per esplorare il sistema",
+  "Primi test su analisi profilo e risposte ai commenti",
+  "Visione del percorso e del flusso operativo",
+  "Risposte limitate per capire il livello di guida",
 ];
 
 const proFeatures = [
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>), label: "Piano contenuti personalizzato" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>), label: "Analisi profilo cliente completa" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>), label: "Risposte ai commenti illimitate" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>), label: "Messaggi e follow-up guidati" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2L3 14h7v8l10-12h-7l0-8z"/></svg>), label: "Temperatura del contatto" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>), label: "Analisi avanzata dei contatti" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>), label: "Pipeline clienti completa" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>), label: "Simulazione conversazioni" },
-  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>), label: "Opportunità da cercare su LinkedIn" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>), label: "Piano giornaliero: sai cosa fare ogni giorno" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>), label: "Il sistema ti dice chi contattare e perché" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>), label: "Post, commenti e messaggi guidati dal contesto" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>), label: "Follow-up e messaggi personalizzati, illimitati" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M13 2L3 14h7v8l10-12h-7l0-8z"/></svg>), label: "Analisi completa di ogni profilo con strategia" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>), label: "Consulenza situazionale per ogni dubbio" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>), label: "Pipeline completa: ogni contatto ha un prossimo passo" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>), label: "Simulazione conversazioni e obiezioni" },
+  { icon: (<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>), label: "Ricerche LinkedIn pronte per trovare prospect" },
 ];
 
 const comparisonRows = [
-  { label: "Sistema commerciale personalizzato", free: false, pro: true },
-  { label: "Targeting clienti e ricerche LinkedIn", free: false, pro: true },
-  { label: "Analisi profilo", free: "Base", pro: "Completa con strategia" },
-  { label: "Risposte a commenti e messaggi", free: "Limitate", pro: "Illimitate" },
+  { label: "Profilo commerciale personalizzato", free: false, pro: true },
+  { label: "Il sistema ti dice chi contattare", free: false, pro: true },
+  { label: "Analisi profilo", free: "Introduttiva", pro: "Completa con strategia" },
+  { label: "Post, commenti e messaggi guidati", free: "Limitati", pro: "Illimitati" },
   { label: "Scrittura post strategici", free: "Limitata", pro: "Illimitata" },
   { label: "Piano giornaliero", free: false, pro: true },
-  { label: "Pipeline clienti e follow-up", free: false, pro: true },
+  { label: "Pipeline e follow-up", free: false, pro: true },
   { label: "Consulenza situazionale", free: false, pro: true },
   { label: "Simulazione conversazioni", free: false, pro: true },
 ];
 
 const faqs = [
-  { q: "Posso iniziare gratis?", a: "Sì. Puoi accedere alla dashboard e testare i moduli principali senza inserire una carta di credito. Il piano base ti permette di capire come funziona il sistema prima di sbloccare tutto." },
-  { q: "Serve collegare LinkedIn?", a: "No. Preflight funziona con un semplice copia e incolla: incolla il commento, il messaggio o il profilo e il sistema ti suggerisce cosa fare. Nessuna integrazione tecnica richiesta." },
-  { q: "È utile anche se parto da zero?", a: "Assolutamente sì. Preflight è pensato per freelance e consulenti che vogliono iniziare a usare LinkedIn in modo commerciale, anche senza esperienza pregressa." },
-  { q: "Posso cambiare piano in seguito?", a: "Sì, puoi passare dal piano base al completo in qualsiasi momento. Nessun vincolo a lungo termine." },
-  { q: "Il sistema scrive tutto da solo?", a: "No. Preflight ti guida e ti suggerisce cosa scrivere, ma sei sempre tu a decidere e personalizzare. L'obiettivo è renderti più efficace, non sostituirti." },
-  { q: "È pensato per italiani?", a: "Sì. Tutto il sistema è in italiano: interfaccia, suggerimenti, contenuti e supporto. Preflight è costruito per il mercato italiano." },
-  { q: "È utile solo per chi vende servizi?", a: "Preflight è progettato per chi usa LinkedIn come strumento commerciale per trovare clienti e vendere servizi o consulenze. Se il tuo obiettivo è vendere, è per te." },
+  { q: "Posso iniziare gratis?", a: "Sì. Puoi esplorare il sistema, testare l'analisi profilo e capire come funziona il percorso — senza inserire una carta di credito. Quando sei pronto per la guida completa, sblocchi tutto." },
+  { q: "Serve collegare LinkedIn?", a: "No. Funziona con un semplice copia-incolla: incolli un profilo, un commento o un messaggio, e il sistema ti dice cosa fare. Nessuna integrazione tecnica." },
+  { q: "È utile anche se parto da zero su LinkedIn?", a: "Sì. Il sistema è pensato per guidarti passo passo, anche se non hai mai usato LinkedIn per trovare clienti. Ti dice esattamente da dove partire." },
+  { q: "Posso cambiare piano?", a: "Certo. Puoi passare al piano completo in qualsiasi momento, senza vincoli. E puoi annullare quando vuoi." },
+  { q: "Il sistema scrive tutto al posto mio?", a: "No. Ti guida e ti suggerisce cosa scrivere, ma sei sempre tu a decidere. L'obiettivo è renderti più lucido e veloce, non sostituirti." },
+  { q: "È pensato per il mercato italiano?", a: "Sì. Interfaccia, suggerimenti, esempi e contesto: tutto è in italiano e calibrato sulle dinamiche commerciali del mercato italiano." },
+  { q: "Funziona solo per chi vende servizi?", a: "Preflight è costruito per chi usa LinkedIn come canale per trovare clienti B2B. Se il tuo obiettivo è vendere servizi o consulenze, è fatto per te." },
 ];
 
 export default function PricingPage() {
@@ -56,12 +56,12 @@ export default function PricingPage() {
             Piani
           </div>
           <h1 className="hp-hero-title">
-            Non stai pagando per degli strumenti.<br />
-            <span className="hp-hero-title-accent">Stai sbloccando un sistema commerciale.</span>
+            Non paghi per funzionalità.<br />
+            <span className="hp-hero-title-accent">Scegli il livello di guida che vuoi.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            La differenza tra i piani non è il numero di funzionalità.<br />
-            È il livello di chiarezza commerciale che ottieni su LinkedIn.
+            La differenza tra i piani non è il numero di strumenti.<br />
+            È quanto il sistema ti accompagna in ogni decisione commerciale su LinkedIn.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/app/onboarding" className="hp-cta-primary">
@@ -89,10 +89,10 @@ export default function PricingPage() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
-          <div className="hp-section-label">Piano base</div>
-          <h2 className="hp-section-title">Esplora il metodo con il piano base</h2>
+          <div className="hp-section-label">Inizia gratis</div>
+          <h2 className="hp-section-title">Esplora il percorso con il piano base</h2>
           <p className="hp-section-subtitle">
-            Il piano gratuito ti fa capire come funziona il sistema. Vedi il flusso, provi gli strumenti e capisci se fa per te.
+            Scopri come funziona il sistema, prova gli strumenti e capisci se è il percorso giusto per te — senza nessun impegno.
           </p>
 
           <div className="prc-base-wrap">
@@ -134,13 +134,13 @@ export default function PricingPage() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-dark">
         <div className="hp-container">
-          <div className="hp-section-label hp-section-label-light">Piano completo</div>
+          <div className="hp-section-label hp-section-label-light">Guida completa</div>
           <h2 className="hp-section-title hp-title-white">
-            Il piano completo sblocca il sistema operativo
+            Il piano completo ti guida in ogni decisione
           </h2>
           <p className="hp-section-subtitle hp-subtitle-light">
-            Targeting clienti, analisi profili, indicazioni strategiche illimitate, pipeline e piano giornaliero.
-            Tutto ciò che serve per trasformare LinkedIn in un canale prevedibile.
+            Ogni giorno sai chi contattare, cosa scrivere — post, commenti, messaggi — e come portare avanti ogni conversazione.
+            Nessun dubbio. Nessuna dispersione.
           </p>
 
           <div className="prc-pro-grid">
@@ -172,9 +172,9 @@ export default function PricingPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Confronto</div>
-          <h2 className="hp-section-title">Base vs Completo: cosa cambia</h2>
+          <h2 className="hp-section-title">Base vs Completo: cosa cambia nella pratica</h2>
           <p className="hp-section-subtitle">
-            La differenza non è nelle funzionalità sbloccate. È nel livello di profondità e direzione commerciale.
+            La differenza non è nel numero di funzionalità. È nel livello di guida e profondità strategica che ricevi ogni giorno.
           </p>
 
           <div className="prc-compare-table-wrap">
@@ -219,26 +219,26 @@ export default function PricingPage() {
         <div className="hp-container">
           <div className="hp-profile-grid">
             <div className="hp-profile-content">
-              <div className="hp-section-label hp-section-label-light">Il valore</div>
+              <div className="hp-section-label hp-section-label-light">Il valore reale</div>
               <h2 className="hp-section-title hp-title-white">
-                Un sistema clienti costa meno di un&apos;opportunità persa
+                Un cliente trovato vale più di mesi di abbonamento
               </h2>
               <p className="hp-profile-subtitle">
-                Bastano poche conversazioni gestite con metodo per ripagare l&apos;abbonamento.
+                Bastano poche conversazioni gestite con il percorso giusto per ripagare l&apos;investimento.
               </p>
               <p className="hp-profile-subtitle" style={{ marginTop: "0.5rem" }}>
                 Il punto non è spendere meno.<br />
-                È smettere di perdere clienti per mancanza di direzione.
+                È smettere di perdere clienti perché non sapevi cosa fare.
               </p>
             </div>
             <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", justifyContent: "center" }}>
               <div className="hp-stat-card" style={{ flex: "1", minWidth: "160px" }}>
                 <div className="hp-stat-value">23M</div>
-                <div className="hp-stat-label">persone su LinkedIn in Italia</div>
+                <div className="hp-stat-label">persone su LinkedIn in Italia — i tuoi clienti sono già lì</div>
               </div>
               <div className="hp-stat-card" style={{ flex: "1", minWidth: "160px" }}>
                 <div className="hp-stat-value">1</div>
-                <div className="hp-stat-label">cliente trovato ripaga mesi di abbonamento</div>
+                <div className="hp-stat-label">solo un cliente trovato ripaga mesi di abbonamento</div>
               </div>
             </div>
           </div>
@@ -270,10 +270,10 @@ export default function PricingPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container hp-dato-principale">
           <div className="hp-section-label">Il contesto</div>
-          <h2 className="hp-section-title">LinkedIn è già il tuo canale più importante</h2>
+          <h2 className="hp-section-title">LinkedIn è già dove sono i tuoi clienti</h2>
           <p className="hp-dato-body">
-            Professionisti e consulenti che usano LinkedIn con un sistema non aspettano che i clienti arrivino.<br />
-            Sanno chi contattare, cosa scrivere e quando passare allo step successivo.
+            Chi usa LinkedIn con un percorso chiaro non aspetta che i clienti arrivino.<br />
+            Sa chi contattare, cosa scrivere e quando passare allo step successivo.
           </p>
         </div>
       </section>
@@ -285,11 +285,11 @@ export default function PricingPage() {
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            Scegli il livello di chiarezza<br />che vuoi avere su LinkedIn.
+            Scegli quanto vuoi essere guidato<br />nel tuo percorso su LinkedIn.
           </h2>
           <p className="hp-final-subtitle">
             Non un generatore di contenuti. Non un bot.<br />
-            Un sistema per sapere chi contattare, cosa scrivere e come arrivare alla call.
+            Un sistema che ogni giorno ti dice cosa fare per trovare clienti.
           </p>
           <Link href="/app/onboarding" className="hp-cta-primary hp-cta-large">
             Inizia adesso
