@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import CopyButton from "@/components/shared/CopyButton";
+import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { OpportunityFinderJson } from "@/lib/sales/schemas";
 import { opportunityFinderSchema } from "@/lib/sales/schemas";
@@ -64,6 +64,27 @@ export default function OpportunityPage() {
       {/* Two-column layout */}
       <div className="tool-page-grid">
         {/* INPUT */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary>✏️ Modifica parametri</summary>
+          <div className="tool-input-body space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Descrizione cliente ideale</span>
+            <textarea
+              rows={6}
+              className="input w-full resize-none"
+              placeholder="Founder SaaS B2B con team 10-50 che vuole aumentare demo call"
+              value={idealClientDescription}
+              onChange={(e) => setIdealClientDescription(e.target.value)}
+            />
+          </label>
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Trova opportunità →"}
+          </button>
+          </div>
+        </details>
+        ) : (
         <div className="tool-page-panel space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -80,6 +101,7 @@ export default function OpportunityPage() {
             {loading ? "Generazione in corso…" : "Trova opportunità →"}
           </button>
         </div>
+        )}
 
         {/* OUTPUT */}
         <div>
@@ -89,101 +111,31 @@ export default function OpportunityPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div className="tool-page-panel space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="tool-page-panel-header" style={{ margin: 0 }}>
-                  Opportunità trovate
-                </h3>
-                <CopyButton text={JSON.stringify(output, null, 2)} />
-              </div>
+            <div className="insight-result">
+              <ResultHeader title="Opportunità trovate" />
 
-              {/* 1. Keywords */}
-              <OpportunitySection
-                title="🔍 Keyword da cercare"
-                items={output.keywords_to_monitor}
-                color="var(--color-primary)"
-                badge
-              />
+              <InsightCard icon="🔍" label="Keyword da cercare" text={output.keywords_to_monitor.map(k => `• ${k}`).join("\n")} variant="strategy" />
+              <InsightCard icon="📌" label="Tipi di post da monitorare" text={output.post_types_to_search.map(k => `• ${k}`).join("\n")} variant="evidence" />
 
-              {/* 2. Post types */}
-              <OpportunitySection
-                title="📌 Tipi di post da monitorare"
-                items={output.post_types_to_search}
-                color="#0B5CAD"
-              />
+              <SectionDivider label="Profili ideali" />
 
-              {/* 3. Ideal profiles */}
-              <div
-                className="rounded-lg p-4"
-                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-              >
-                <div className="text-sm font-semibold mb-3" style={{ color: "#004182" }}>
-                  👤 Profili da cercare
-                </div>
-                <div className="space-y-3">
-                  {output.ideal_profiles.map((profile, i) => (
-                    <div
-                      key={i}
-                      className="rounded-lg p-3 space-y-1.5"
-                      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
-                    >
-                      <div className="flex flex-wrap gap-2 items-center">
-                        <span className="font-semibold text-sm" style={{ color: "var(--color-primary)" }}>
-                          {profile.role}
-                        </span>
-                        <span className="badge badge-blue">{profile.sector}</span>
-                        <span className="badge" style={{ background: "var(--color-soft-2)", color: "var(--color-muted)" }}>
-                          {profile.company_size}
-                        </span>
-                      </div>
-                      <p className="text-xs" style={{ color: "var(--color-muted)" }}>
-                        💡 {profile.why}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {output.ideal_profiles.map((p, i) => (
+                <InsightCard key={i} icon="👤" label={p.role} text={`${p.sector} · ${p.company_size}\n💡 ${p.why}`} variant="summary" />
+              ))}
 
-              {/* 4. Useful signals */}
-              <OpportunitySection
-                title="📡 Segnali utili"
-                items={output.useful_signals}
-                color="#6B7280"
-              />
+              <SectionDivider label="Segnali e ricerche" />
 
-              {/* 5. LinkedIn search queries */}
-              <div
-                className="rounded-lg p-4"
-                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-              >
-                <div className="text-sm font-semibold mb-2" style={{ color: "#004182" }}>
-                  🔗 Come cercarli su LinkedIn
-                </div>
-                <div className="space-y-1.5">
-                  {output.linkedin_search_queries.map((query, i) => (
-                    <div
-                      key={i}
-                      className="flex items-start gap-2 rounded-md px-3 py-2 text-sm font-mono"
-                      style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
-                    >
-                      <span style={{ color: "var(--color-primary)", flexShrink: 0 }}>{i + 1}.</span>
-                      <span>{query}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <InsightCard icon="📡" label="Segnali utili" text={output.useful_signals.map(s => `• ${s}`).join("\n")} variant="evidence" />
 
-              {/* 6. Conversation opportunities */}
-              <OpportunitySection
-                title="💬 Opportunità di conversazione"
-                items={output.conversation_opportunities}
-                color="#004182"
-              />
+              <InsightCard icon="🔗" label="Query LinkedIn" text={output.linkedin_search_queries.map((q, i) => `${i + 1}. ${q}`).join("\n")} variant="strategy" />
 
-              {/* Next action */}
-              <div className="callout-success text-sm rounded-lg">
-                <span className="font-semibold">➡️ Prossima azione: </span>
-                {output.next_action}
+              <SectionDivider label="Azione" />
+
+              <InsightCard icon="💬" label="Opportunità di conversazione" text={output.conversation_opportunities.map(c => `• ${c}`).join("\n")} variant="action" />
+
+              <div className="insight-next-action">
+                <span className="insight-next-action-icon">➡️</span>
+                <div><strong>Prossima azione:</strong> {output.next_action}</div>
               </div>
             </div>
           ) : (
@@ -199,49 +151,6 @@ export default function OpportunityPage() {
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function OpportunitySection({
-  title,
-  items,
-  color,
-  badge = false,
-}: {
-  title: string;
-  items: string[];
-  color: string;
-  badge?: boolean;
-}) {
-  return (
-    <div
-      className="rounded-lg p-4"
-      style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-    >
-      <div className="text-sm font-semibold mb-2" style={{ color }}>
-        {title}
-      </div>
-      {badge ? (
-        <div className="flex flex-wrap gap-1.5">
-          {items.map((item, i) => (
-            <span key={i} className="badge badge-blue">
-              {item}
-            </span>
-          ))}
-        </div>
-      ) : (
-        <ul className="space-y-1.5">
-          {items.map((item, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm">
-              <span className="mt-0.5 font-bold" style={{ color }}>
-                •
-              </span>
-              <span>{item}</span>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }

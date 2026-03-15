@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import type { AnalyzedContact } from "@/lib/sales/schemas";
 
 const MODAL_DISMISSED_KEY = "onboarding-modal-dismissed";
@@ -577,34 +578,36 @@ export default function AppTodayPage() {
               </button>
 
               {postResult && (
-                <div className="qa-result">
-                  <ResultBlock icon="bulb" label="Hook (5 opzioni)" text={postResult.hooks.join("\n\n")} />
-                  <ResultBlock icon="chat" label="Versione pulita" text={postResult.post_versions.clean} variant="reply" />
-                  <ResultBlock icon="arrow" label="Versione diretta" text={postResult.post_versions.direct} variant="reply" />
-                  <ResultBlock icon="check" label="Versione autorevole" text={postResult.post_versions.authority} variant="reply" />
-                  <ResultBlock icon="info" label="CTA" text={postResult.cta} />
-                  <ResultBlock icon="chat" label="Commento starter" text={postResult.comment_starter} />
-                  <ResultBlock icon="arrow" label="Prossimo passo" text={postResult.next_step} />
+                <div className="insight-result">
+                  <ResultHeader title="Post generato" />
+                  <InsightCard icon="💡" label="Hook (5 opzioni)" text={postResult.hooks.join("\n\n")} variant="evidence" />
+                  <SectionDivider label="Versioni" />
+                  <InsightCard icon="✨" label="Versione pulita" text={postResult.post_versions.clean} variant="message" copyable />
+                  <InsightCard icon="🎯" label="Versione diretta" text={postResult.post_versions.direct} variant="message" copyable />
+                  <InsightCard icon="🏆" label="Versione autorevole" text={postResult.post_versions.authority} variant="message" copyable />
+                  <SectionDivider label="Engagement" />
+                  <InsightCard icon="📣" label="CTA" text={postResult.cta} variant="strategy" />
+                  <InsightCard icon="💬" label="Commento starter" text={postResult.comment_starter} variant="strategy" />
+                  <div className="insight-next-action">
+                    <span className="insight-next-action-icon">➡️</span>
+                    <div><strong>Prossimo passo:</strong> {postResult.next_step}</div>
+                  </div>
 
                   {/* Immagine suggerita */}
                   {postResult.suggerimento_immagine && (
-                    <div className="qa-result-block qa-result-valutazione">
-                      <div className="qa-result-label"><RIcon type="image" /> Immagine suggerita per il post</div>
-                      <p className="qa-result-text">{postResult.suggerimento_immagine.tipo}</p>
-                      <p className="qa-result-text" style={{ marginTop: ".35rem", fontStyle: "italic", fontSize: ".82rem" }}>{postResult.suggerimento_immagine.perche_funziona}</p>
-                      <p className="qa-microcopy" style={{ marginTop: ".5rem" }}>📸 Preferisci sempre foto reali: foto mentre lavori, il tuo ambiente, screenshot del tuo lavoro reale.</p>
-                      <button
-                        type="button"
-                        className="qa-cta-secondary"
-                        style={{ marginTop: ".75rem" }}
-                        onClick={() => {
-                          setDashMode("image");
-                          setImageContent(postResult.post_versions.clean);
-                        }}
-                      >
-                        Genera immagine per questo post →
-                      </button>
-                    </div>
+                    <InsightCard icon="🖼️" label="Immagine suggerita" text={`${postResult.suggerimento_immagine.tipo}\n\n${postResult.suggerimento_immagine.perche_funziona}\n\n📸 Preferisci sempre foto reali: foto mentre lavori, il tuo ambiente, screenshot del tuo lavoro reale.`} variant="evidence" />
+                  )}
+                  {postResult.suggerimento_immagine && (
+                    <button
+                      type="button"
+                      className="qa-cta-secondary"
+                      onClick={() => {
+                        setDashMode("image");
+                        setImageContent(postResult.post_versions.clean);
+                      }}
+                    >
+                      Genera immagine per questo post →
+                    </button>
                   )}
                 </div>
               )}
@@ -712,16 +715,24 @@ export default function AppTodayPage() {
               </button>
 
               {commentResult && (
-                <div className="qa-result">
-                  <ResultBlock icon="info" label={`Tipo: ${commentResult.comment_type} · Calore: ${commentResult.client_heat_level}`} text={commentResult.strategy} />
-                  <ResultBlock icon="chat" label="Risposta empatica" text={commentResult.replies.soft} variant="reply" />
-                  <ResultBlock icon="check" label="Risposta autorevole" text={commentResult.replies.authority} variant="reply" />
-                  <ResultBlock icon="arrow" label="Porta in DM" text={commentResult.replies.dm_pivot} variant="reply" />
-                  <ResultBlock icon="chat" label="Messaggio DM suggerito" text={commentResult.suggested_dm} variant="reply" />
+                <div className="insight-result">
+                  <ResultHeader title="Analisi commento" />
+                  <InsightCard icon="🎯" label={`Tipo: ${commentResult.comment_type} · Calore: ${commentResult.client_heat_level}`} text={commentResult.strategy} variant="summary" />
+                  <SectionDivider label="Risposte suggerite" />
+                  <InsightCard icon="💬" label="Risposta empatica" text={commentResult.replies.soft} variant="message" copyable />
+                  <InsightCard icon="✅" label="Risposta autorevole" text={commentResult.replies.authority} variant="message" copyable />
+                  <InsightCard icon="➡️" label="Porta in DM" text={commentResult.replies.dm_pivot} variant="message" copyable />
+                  <InsightCard icon="✉️" label="Messaggio DM suggerito" text={commentResult.suggested_dm} variant="strategy" copyable />
                   {commentResult.message_risk_warning && commentResult.message_risk_warning !== "nessuno" && (
-                    <ResultBlock icon="warn" label="Attenzione" text={commentResult.message_risk_warning} />
+                    <div className="insight-warn-inline">
+                      <span>⚠️</span>
+                      <span>{commentResult.message_risk_warning}</span>
+                    </div>
                   )}
-                  <ResultBlock icon="arrow" label="Prossimo passo" text={commentResult.next_action} />
+                  <div className="insight-next-action">
+                    <span className="insight-next-action-icon">➡️</span>
+                    <div><strong>Prossimo passo:</strong> {commentResult.next_action}</div>
+                  </div>
                 </div>
               )}
             </div>
@@ -789,18 +800,27 @@ export default function AppTodayPage() {
               </button>
 
               {dmResult && (
-                <div className="qa-result">
-                  <ResultBlock icon="chat" label={`Risposta migliore · Calore: ${dmResult.client_heat_level}`} text={dmResult.best_reply} variant="reply" />
-                  <ResultBlock icon="arrow" label="Versione breve" text={dmResult.alternatives.short} variant="reply" />
-                  <ResultBlock icon="check" label="Versione diretta" text={dmResult.alternatives.assertive} variant="reply" />
-                  <ResultBlock icon="bulb" label="Domande qualificanti" text={dmResult.qualifying_questions.join("\n\n")} />
-                  <ResultBlock icon="repeat" label="Follow-up 48h" text={dmResult.followups["48h"]} variant="reply" />
-                  <ResultBlock icon="repeat" label="Follow-up 5 giorni" text={dmResult.followups["5d"]} variant="reply" />
-                  <ResultBlock icon="repeat" label="Follow-up 10 giorni" text={dmResult.followups["10d"]} variant="reply" />
+                <div className="insight-result">
+                  <ResultHeader title="Analisi DM" />
+                  <InsightCard icon="💬" label={`Risposta migliore · Calore: ${dmResult.client_heat_level}`} text={dmResult.best_reply} variant="message" copyable />
+                  <SectionDivider label="Alternative" />
+                  <InsightCard icon="➡️" label="Versione breve" text={dmResult.alternatives.short} variant="message" copyable />
+                  <InsightCard icon="✅" label="Versione diretta" text={dmResult.alternatives.assertive} variant="message" copyable />
+                  <SectionDivider label="Approfondimento" />
+                  <InsightCard icon="💡" label="Domande qualificanti" text={dmResult.qualifying_questions.join("\n\n")} variant="evidence" />
+                  <InsightCard icon="🔄" label="Follow-up 48h" text={dmResult.followups["48h"]} variant="strategy" copyable />
+                  <InsightCard icon="🔄" label="Follow-up 5 giorni" text={dmResult.followups["5d"]} variant="strategy" copyable />
+                  <InsightCard icon="🔄" label="Follow-up 10 giorni" text={dmResult.followups["10d"]} variant="strategy" copyable />
                   {dmResult.message_risk_warning && dmResult.message_risk_warning !== "nessuno" && (
-                    <ResultBlock icon="warn" label="Attenzione" text={dmResult.message_risk_warning} />
+                    <div className="insight-warn-inline">
+                      <span>⚠️</span>
+                      <span>{dmResult.message_risk_warning}</span>
+                    </div>
                   )}
-                  <ResultBlock icon="arrow" label="Prossimo passo" text={dmResult.next_action} />
+                  <div className="insight-next-action">
+                    <span className="insight-next-action-icon">➡️</span>
+                    <div><strong>Prossimo passo:</strong> {dmResult.next_action}</div>
+                  </div>
                 </div>
               )}
             </div>
@@ -868,18 +888,22 @@ export default function AppTodayPage() {
               </button>
 
               {convResult && (
-                <div className="qa-result">
-                  <ResultBlock icon="chat" label={`Risposta migliore · Calore: ${convResult.client_heat_level}`} text={convResult.best_reply} variant="reply" />
-                  <ResultBlock icon="arrow" label="Versione breve" text={convResult.alternatives.short} variant="reply" />
-                  <ResultBlock icon="check" label="Versione diretta" text={convResult.alternatives.assertive} variant="reply" />
-                  <ResultBlock icon="bulb" label="Domande qualificanti" text={convResult.qualifying_questions.join("\n\n")} />
-                  <ResultBlock icon="repeat" label="Follow-up 48h" text={convResult.followups["48h"]} variant="reply" />
-                  <ResultBlock icon="repeat" label="Follow-up 5 giorni" text={convResult.followups["5d"]} variant="reply" />
-                  <ResultBlock icon="repeat" label="Follow-up 10 giorni" text={convResult.followups["10d"]} variant="reply" />
+                <div className="insight-result">
+                  <InsightCard variant="summary" label={`Risposta migliore · Calore: ${convResult.client_heat_level}`} text={convResult.best_reply} copyable />
+                  <div className="insight-reply-grid">
+                    <InsightCard variant="message" label="Versione breve" text={convResult.alternatives.short} copyable />
+                    <InsightCard variant="message" label="Versione diretta" text={convResult.alternatives.assertive} copyable />
+                  </div>
+                  <InsightCard variant="evidence" label="Domande qualificanti" text={convResult.qualifying_questions.join("\n\n")} />
+                  <div className="insight-reply-grid">
+                    <InsightCard variant="message" label="Follow-up 48h" text={convResult.followups["48h"]} copyable />
+                    <InsightCard variant="message" label="Follow-up 5 giorni" text={convResult.followups["5d"]} copyable />
+                    <InsightCard variant="message" label="Follow-up 10 giorni" text={convResult.followups["10d"]} copyable />
+                  </div>
                   {convResult.message_risk_warning && convResult.message_risk_warning !== "nessuno" && (
-                    <ResultBlock icon="warn" label="Attenzione" text={convResult.message_risk_warning} />
+                    <InsightCard variant="warning" label="Attenzione" text={convResult.message_risk_warning} />
                   )}
-                  <ResultBlock icon="arrow" label="Prossimo passo" text={convResult.next_action} />
+                  <InsightCard variant="action" label="Prossimo passo" text={convResult.next_action} />
                 </div>
               )}
             </div>
@@ -919,13 +943,15 @@ export default function AppTodayPage() {
               </button>
 
               {followupResult && (
-                <div className="qa-result">
-                  <ResultBlock icon="info" label="Analisi della situazione" text={followupResult.analisi_situazione} />
-                  <ResultBlock icon="chat" label="Messaggio follow-up" text={followupResult.messaggio_followup} variant="reply" />
-                  <ResultBlock icon="arrow" label="Variante breve" text={followupResult.variante_breve} variant="reply" />
-                  <ResultBlock icon="check" label="Variante diretta" text={followupResult.variante_diretta} variant="reply" />
-                  <ResultBlock icon="clock" label="Tempistica" text={followupResult.tempistica} />
-                  <ResultBlock icon="arrow" label="Prossimi passi" text={followupResult.prossimi_passi} />
+                <div className="insight-result">
+                  <InsightCard variant="summary" label="Analisi della situazione" text={followupResult.analisi_situazione} />
+                  <InsightCard variant="message" label="Messaggio follow-up" text={followupResult.messaggio_followup} copyable />
+                  <div className="insight-reply-grid">
+                    <InsightCard variant="message" label="Variante breve" text={followupResult.variante_breve} copyable />
+                    <InsightCard variant="message" label="Variante diretta" text={followupResult.variante_diretta} copyable />
+                  </div>
+                  <InsightCard variant="evidence" label="Tempistica" text={followupResult.tempistica} />
+                  <InsightCard variant="action" label="Prossimi passi" text={followupResult.prossimi_passi} />
                 </div>
               )}
             </div>
@@ -1012,36 +1038,4 @@ export default function AppTodayPage() {
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   SUB-COMPONENTS
-   ═══════════════════════════════════════════════════════════ */
 
-const ICON_MAP: Record<string, React.ReactElement> = {
-  user: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-  check: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
-  bulb: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a4 4 0 0 1 4 4c0 1.95-2 3-2 5h-4c0-2-2-3.05-2-5a4 4 0 0 1 4-4z"/><line x1="10" y1="17" x2="14" y2="17"/><line x1="10" y1="20" x2="14" y2="20"/></svg>,
-  search: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-  chat: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-  arrow: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>,
-  repeat: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>,
-  lock: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 9V5a3 3 0 0 0-6 0v4"/><path d="M18.8 10H5.2A2.2 2.2 0 0 0 3 12.2v7.6A2.2 2.2 0 0 0 5.2 22h13.6a2.2 2.2 0 0 0 2.2-2.2v-7.6A2.2 2.2 0 0 0 18.8 10z"/></svg>,
-  warn: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
-  clock: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  info: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>,
-  link: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>,
-  image: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
-};
-
-function RIcon({ type }: { type: string }) {
-  return ICON_MAP[type] || null;
-}
-
-function ResultBlock({ icon, label, text, variant }: { icon: string; label: string; text: string; variant?: "reply" | "valutazione" }) {
-  const cls = `qa-result-block${variant === "reply" ? " qa-result-reply" : ""}${variant === "valutazione" ? " qa-result-valutazione" : ""}`;
-  return (
-    <div className={cls}>
-      <div className="qa-result-label"><RIcon type={icon} /> {label}</div>
-      <p className="qa-result-text">{text}</p>
-    </div>
-  );
-}

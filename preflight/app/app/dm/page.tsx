@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { adviceSchema, type AdviceJson } from "@/lib/sales/schemas";
 
@@ -62,9 +62,6 @@ export default function DmPage() {
     setSituation(text);
   }
 
-  const heatBadge = (level: string) =>
-    level === "Hot" ? "badge-red" : level === "Warm" ? "badge-amber" : "badge-blue";
-
   return (
     <div className="tool-page">
       {/* ── Hero header ── */}
@@ -82,6 +79,107 @@ export default function DmPage() {
       {/* ── Two-column layout: INPUT + OUTPUT ── */}
       <div className="tool-page-grid">
         {/* INPUT PANEL */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary>✏️ Modifica parametri</summary>
+          <div className="tool-input-body space-y-1">
+          <div className="qa-field">
+            <label className="qa-label">Spiegami la situazione</label>
+            <textarea
+              value={situation}
+              onChange={(e) => setSituation(e.target.value)}
+              className="qa-input qa-input-lg"
+              rows={6}
+              placeholder={"Ho scritto a un founder SaaS e mi ha risposto in modo abbastanza generico.\nNon so come continuare la conversazione."}
+            />
+          </div>
+
+          <div className="qa-examples">
+            <p className="qa-examples-title">Esempi di situazioni:</p>
+            <div className="qa-examples-chips">
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Qualcuno ha commentato un mio post e sembra interessato a quello che faccio.")}>
+                Qualcuno ha commentato un mio post
+              </button>
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Ho ricevuto un messaggio su LinkedIn da qualcuno che non conosco.")}>
+                Ho ricevuto un messaggio su LinkedIn
+              </button>
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Voglio capire se è il momento giusto per proporre una call a un contatto con cui sto parlando.")}>
+                Voglio capire se è il momento giusto per proporre una call
+              </button>
+              <button type="button" className="qa-example-btn" onClick={() => fillExample("Non so come continuare una conversazione che si è fermata dopo il mio ultimo messaggio.")}>
+                Non so come continuare una conversazione
+              </button>
+            </div>
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Link profilo LinkedIn della persona coinvolta
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <input
+              type="url"
+              value={linkedinUrl}
+              onChange={(e) => setLinkedinUrl(e.target.value)}
+              className="qa-input"
+              placeholder="https://linkedin.com/in/nomecognome"
+            />
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Carica il PDF del profilo
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <label className="qa-file-upload">
+              <input
+                type="file"
+                accept=".pdf"
+                className="qa-file-input"
+                onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+              />
+              <span className="qa-file-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                {pdfFile ? pdfFile.name : "Scegli un file PDF"}
+              </span>
+            </label>
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Link sito web azienda
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <input
+              type="url"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              className="qa-input"
+              placeholder="https://azienda.com"
+            />
+          </div>
+
+          <button
+            onClick={generate}
+            disabled={loading || !situation.trim()}
+            className="qa-btn"
+            style={{ marginTop: "0.75rem" }}
+          >
+            {loading ? (
+              <>
+                <span className="qa-spinner" aria-hidden="true" />
+                Sto analizzando…
+              </>
+            ) : (
+              <>
+                Chiedi un consiglio
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </>
+            )}
+          </button>
+          </div>
+        </details>
+        ) : (
         <div className="tool-page-panel space-y-1">
           <div className="qa-field">
             <label className="qa-label">Spiegami la situazione</label>
@@ -178,6 +276,7 @@ export default function DmPage() {
             )}
           </button>
         </div>
+        )}
 
         {/* OUTPUT PANEL */}
         <div>
@@ -187,31 +286,25 @@ export default function DmPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div className="qa-result">
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
-                <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
-                  Consiglio completo
-                </h3>
-                <CopyButton text={`${output.risposta_suggerita}\n\n${output.followup_consigliato}`} />
-              </div>
+            <div className="insight-result">
+              <ResultHeader title="Analisi situazione" copyText={`${output.risposta_suggerita}\n\n${output.followup_consigliato}`} />
 
-              {/* Heat badge */}
-              <div
-                className="rounded-lg p-3 text-sm flex items-center gap-2"
-                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-              >
-                <span className="font-medium">🌡️ Livello interesse:</span>
-                <span className={`badge ${heatBadge(output.client_heat_level)}`}>
-                  {output.client_heat_level}
-                </span>
-              </div>
+              <MetricRow>
+                <MetricBadge icon="🌡️" label="Interesse" value={output.client_heat_level} color={output.client_heat_level === "Hot" ? "red" : output.client_heat_level === "Warm" ? "amber" : "blue"} />
+              </MetricRow>
 
-              <ResultBlock icon="🔍" label="Lettura della situazione" text={output.lettura_situazione} />
-              <ResultBlock icon="🎯" label="Strategia consigliata" text={output.strategia_consigliata} />
-              <ResultBlock icon="✉️" label="Risposta suggerita" text={output.risposta_suggerita} highlight />
-              <ResultBlock icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} />
-              <ResultBlock icon="📋" label="Step successivi" text={output.step_successivi} />
-              <ResultBlock icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} />
+              <InsightCard icon="🔍" label="Lettura della situazione" text={output.lettura_situazione} variant="summary" />
+
+              <SectionDivider label="Strategia" />
+
+              <InsightCard icon="🎯" label="Strategia consigliata" text={output.strategia_consigliata} variant="strategy" />
+              <InsightCard icon="✉️" label="Risposta suggerita" text={output.risposta_suggerita} variant="message" copyable />
+              <InsightCard icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} variant="message" copyable />
+
+              <SectionDivider label="Prossimi passi" />
+
+              <InsightCard icon="📋" label="Step successivi" text={output.step_successivi} variant="action" />
+              <InsightCard icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} variant="warning" />
             </div>
           ) : (
             <div className="tool-page-empty">
@@ -232,18 +325,6 @@ export default function DmPage() {
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="dm" />
       </div>
-    </div>
-  );
-}
-
-function ResultBlock({ icon, label, text, highlight }: { icon: string; label: string; text: string; highlight?: boolean }) {
-  return (
-    <div className={`qa-result-block ${highlight ? "qa-result-reply" : ""}`}>
-      <div className="qa-result-label">
-        <span>{icon}</span>
-        {label}
-      </div>
-      <p className="qa-result-text">{text}</p>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import CopyButton from "@/components/shared/CopyButton";
+import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
@@ -106,6 +106,35 @@ export default function PostPage() {
       {/* Two-column layout */}
       <div className="tool-page-grid">
         {/* INPUT */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary>✏️ Modifica parametri</summary>
+          <div className="tool-input-body space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Bozza o idea del post</span>
+            <textarea rows={7} className="input w-full resize-none" placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso..." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
+          </label>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium">Obiettivo</span>
+              <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
+                <option value="lead">Aprire conversazioni</option>
+                <option value="call">Portare a call</option>
+                <option value="inbound">Ricevere richieste</option>
+              </select>
+            </label>
+            <label className="block text-sm">
+              <span className="mb-1 block font-medium">Parola chiave per DM</span>
+              <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
+            </label>
+          </div>
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Genera post →"}
+          </button>
+          </div>
+        </details>
+        ) : (
         <div className="tool-page-panel space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -130,6 +159,7 @@ export default function PostPage() {
             {loading ? "Generazione in corso…" : "Genera post →"}
           </button>
         </div>
+        )}
 
         {/* OUTPUT */}
         <div>
@@ -140,27 +170,24 @@ export default function PostPage() {
             </div>
           ) : output ? (
             <div className="tool-page-panel space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="tool-page-panel-header" style={{ margin: 0 }}>
-                  Post pronto
-                </h3>
-                <CopyButton text={`${output.post_versions.clean}\n\n${output.cta}`} />
+              <ResultHeader title="Post pronto" />
+
+              <InsightCard icon="🪝" label="Hooks" text={output.hooks.join("\n")} variant="evidence" />
+
+              <SectionDivider label="Versioni del post" />
+              <div className="insight-reply-grid">
+                <InsightCard icon="✨" label="Versione pulita" text={output.post_versions.clean} variant="message" copyable />
+                <InsightCard icon="🎯" label="Versione diretta" text={output.post_versions.direct} variant="message" copyable />
+                <InsightCard icon="🏆" label="Versione autorevole" text={output.post_versions.authority} variant="message" copyable />
               </div>
 
-              <OutputCard title="🪝 Hooks" text={output.hooks.join("\n")} />
+              <SectionDivider label="Engagement" />
+              <InsightCard icon="📣" label="Call to action" text={output.cta} variant="strategy" copyable />
+              <InsightCard icon="💬" label="Commento di apertura" text={output.comment_starter} variant="strategy" copyable />
 
-              <div className="grid gap-3 md:grid-cols-3">
-                <OutputCard title="✨ Versione pulita" text={output.post_versions.clean} accent />
-                <OutputCard title="🎯 Versione diretta" text={output.post_versions.direct} />
-                <OutputCard title="🏆 Versione autorevole" text={output.post_versions.authority} />
-              </div>
-
-              <OutputCard title="📣 Call to action" text={output.cta} />
-              <OutputCard title="💬 Commento di apertura" text={output.comment_starter} />
-
-              <div className="callout-success text-sm rounded-lg">
-                <span className="font-semibold">➡️ Prossima azione: </span>
-                {output.next_step}
+              <div className="insight-next-action">
+                <span className="insight-next-action-icon">➡️</span>
+                <div><strong>Prossima azione:</strong> {output.next_step}</div>
               </div>
             </div>
           ) : (
@@ -227,21 +254,6 @@ export default function PostPage() {
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="post" />
       </div>
-    </div>
-  );
-}
-
-function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
-  return (
-    <div
-      className="rounded-lg p-4 text-sm"
-      style={{
-        background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
-        border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,
-      }}
-    >
-      <div className="font-semibold mb-1">{title}</div>
-      <p className="mt-1 whitespace-pre-wrap">{text}</p>
     </div>
   );
 }

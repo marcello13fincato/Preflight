@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import CopyButton from "@/components/shared/CopyButton";
+import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { SimulatorJson } from "@/lib/sales/schemas";
 import { simulatorSchema } from "@/lib/sales/schemas";
@@ -66,6 +66,40 @@ export default function SimulatorPage() {
       {/* Two-column layout */}
       <div className="tool-page-grid">
         {/* INPUT */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary>✏️ Modifica parametri</summary>
+          <div className="tool-input-body space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Tipo di prospect</span>
+            <select className="input w-full" value={prospectType} onChange={(e) => setProspectType(e.target.value as typeof prospectType)}>
+              <option>Founder</option>
+              <option>HR</option>
+              <option>CEO</option>
+              <option>Marketing</option>
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Scenario</span>
+            <select className="input w-full" value={scenario} onChange={(e) => setScenario(e.target.value as typeof scenario)}>
+              <option>Prima risposta dopo connessione</option>
+              <option>Prospect interessato</option>
+              <option>Prospect scettico</option>
+              <option>Nessuna risposta</option>
+              <option>Obiezione</option>
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">La tua risposta</span>
+            <textarea rows={5} className="input w-full resize-none" placeholder="Grazie per la risposta. Posso chiederti qual è oggi il blocco principale nel trovare nuovi clienti su LinkedIn?" value={userAnswer} onChange={(e) => setUserAnswer(e.target.value)} />
+          </label>
+          <button onClick={simulate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Simulazione in corso…" : "Simula conversazione →"}
+          </button>
+          </div>
+        </details>
+        ) : (
         <div className="tool-page-panel space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -95,6 +129,7 @@ export default function SimulatorPage() {
             {loading ? "Simulazione in corso…" : "Simula conversazione →"}
           </button>
         </div>
+        )}
 
         {/* OUTPUT */}
         <div>
@@ -104,36 +139,25 @@ export default function SimulatorPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div className="tool-page-panel space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="tool-page-panel-header" style={{ margin: 0 }}>
-                  Feedback coach
-                </h3>
-                <CopyButton text={JSON.stringify(output, null, 2)} />
-              </div>
+            <div className="insight-result">
+              <ResultHeader title="Feedback coach" />
 
-              <OutputCard title="💬 Risposta del prospect" text={output.prospect_reply} accent />
-              <OutputCard title="📋 Feedback" text={output.feedback.join("\n")} />
+              <InsightCard icon="💬" label="Risposta del prospect" text={output.prospect_reply} variant="summary" />
 
-              <div
-                className={`rounded-lg p-3 text-sm ${
-                  output.message_risk_warning && output.message_risk_warning !== "nessuno"
-                    ? "callout-warning"
-                    : ""
-                }`}
-                style={
-                  !output.message_risk_warning || output.message_risk_warning === "nessuno"
-                    ? { background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }
-                    : {}
-                }
-              >
-                <span className="font-medium">⚠️ Valutazione messaggio: </span>
-                <span>{output.message_risk_warning || "nessuno"}</span>
-              </div>
+              <SectionDivider label="Valutazione" />
 
-              <div className="callout-success text-sm rounded-lg">
-                <span className="font-semibold">➡️ Prossima azione: </span>
-                {output.next_action}
+              <InsightCard icon="📋" label="Feedback" text={output.feedback.join("\n")} variant="evidence" />
+
+              {output.message_risk_warning && output.message_risk_warning !== "nessuno" && (
+                <div className="insight-warn-inline">
+                  <span>⚠️</span>
+                  <span><strong>Valutazione messaggio:</strong> {output.message_risk_warning}</span>
+                </div>
+              )}
+
+              <div className="insight-next-action">
+                <span className="insight-next-action-icon">➡️</span>
+                <div><strong>Prossima azione:</strong> {output.next_action}</div>
               </div>
             </div>
           ) : (
@@ -149,21 +173,6 @@ export default function SimulatorPage() {
           )}
         </div>
       </div>
-    </div>
-  );
-}
-
-function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
-  return (
-    <div
-      className="rounded-lg p-4 text-sm"
-      style={{
-        background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
-        border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,
-      }}
-    >
-      <div className="font-semibold mb-1">{title}</div>
-      <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
     </div>
   );
 }

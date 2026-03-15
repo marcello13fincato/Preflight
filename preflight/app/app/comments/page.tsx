@@ -4,8 +4,8 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { commentAssistantSchema, type CommentAssistantJson } from "@/lib/sales/schemas";
 
@@ -84,6 +84,63 @@ export default function CommentsPage() {
       {/* Two-column layout: input + output */}
       <div className="tool-page-grid">
         {/* INPUT */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary>✏️ Modifica parametri</summary>
+          <div className="tool-input-body space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Post originale</span>
+            <textarea
+              rows={5}
+              className="input w-full resize-none"
+              placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso."
+              value={originalPost}
+              onChange={(e) => setOriginalPost(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Commento ricevuto</span>
+            <textarea
+              rows={4}
+              className="input w-full resize-none"
+              placeholder="Es. Interessante. Potremmo avere questo problema."
+              value={receivedComment}
+              onChange={(e) => setReceivedComment(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">
+              Profilo autore commento{" "}
+              <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
+            </span>
+            <textarea
+              rows={3}
+              className="input w-full resize-none"
+              value={commenterProfileText}
+              onChange={(e) => setCommenterProfileText(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Obiettivo conversazione</span>
+            <select
+              className="input w-full"
+              value={conversationGoal}
+              onChange={(e) => setConversationGoal(e.target.value as typeof conversationGoal)}
+            >
+              <option value="understand_fit">Capire se è un cliente in target</option>
+              <option value="continue_conversation">Continuare conversazione</option>
+              <option value="move_to_dm">Spostare la conversazione in DM</option>
+              <option value="propose_call">Proporre una call</option>
+              <option value="follow_up">Fare follow-up</option>
+            </select>
+          </label>
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Genera risposte →"}
+          </button>
+          </div>
+        </details>
+        ) : (
         <div className="tool-page-panel space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -136,6 +193,7 @@ export default function CommentsPage() {
             {loading ? "Generazione in corso…" : "Genera risposte →"}
           </button>
         </div>
+        )}
 
         {/* OUTPUT */}
         <div>
@@ -145,62 +203,33 @@ export default function CommentsPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div className="tool-page-panel space-y-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <h3 className="tool-page-panel-header" style={{ margin: 0 }}>
-                  Risultato
-                </h3>
-                <CopyButton text={`${output.replies.soft}\n\n${output.replies.authority}\n\n${output.replies.dm_pivot}`} />
+            <div className="insight-result">
+              <ResultHeader title="Analisi commento" copyText={`${output.replies.soft}\n\n${output.replies.authority}\n\n${output.replies.dm_pivot}`} />
+
+              <MetricRow>
+                <MetricBadge icon="🌡️" label="Interesse" value={output.client_heat_level} color={heatColors[output.client_heat_level] === "badge-red" ? "red" : heatColors[output.client_heat_level] === "badge-amber" ? "amber" : "blue"} />
+                {output.message_risk_warning && output.message_risk_warning !== "nessuno" && (
+                  <MetricBadge icon="⚠️" label="Rischio" value={output.message_risk_warning} color="amber" />
+                )}
+              </MetricRow>
+
+              <InsightCard icon="🎯" label="Strategia" text={output.strategy} variant="summary" />
+
+              <SectionDivider label="Risposte suggerite" />
+
+              <div className="insight-reply-grid">
+                <InsightCard icon="🟢" label="Risposta soft" text={output.replies.soft} variant="message" copyable />
+                <InsightCard icon="🔵" label="Risposta autorevole" text={output.replies.authority} variant="message" copyable />
+                <InsightCard icon="💌" label="Pivot DM" text={output.replies.dm_pivot} variant="message" copyable />
               </div>
 
-              {/* Heat level + risk warning */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div
-                  className="rounded-lg p-3 text-sm flex items-center gap-2"
-                  style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-                >
-                  <span className="font-medium">🌡️ Livello interesse:</span>
-                  <span className={`badge ${heatColors[output.client_heat_level] || "badge-blue"}`}>
-                    {output.client_heat_level}
-                  </span>
-                </div>
-                <div
-                  className={`rounded-lg p-3 text-sm ${
-                    output.message_risk_warning && output.message_risk_warning !== "nessuno"
-                      ? "callout-warning"
-                      : ""
-                  }`}
-                  style={
-                    !output.message_risk_warning || output.message_risk_warning === "nessuno"
-                      ? { background: "var(--color-soft-2)", border: "1px solid var(--color-border)", borderRadius: "var(--radius-sm)" }
-                      : {}
-                  }
-                >
-                  <span className="font-medium">⚠️ Rischio: </span>
-                  <span>{output.message_risk_warning || "nessuno"}</span>
-                </div>
-              </div>
+              <SectionDivider label="Azione consigliata" />
 
-              <div
-                className="rounded-lg p-3 text-sm"
-                style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-              >
-                <span className="font-semibold">Strategia: </span>
-                {output.strategy}
-              </div>
+              <InsightCard icon="✉️" label="DM suggerito" text={output.suggested_dm} variant="strategy" copyable />
 
-              {/* 3 replies */}
-              <div className="grid gap-3 md:grid-cols-3">
-                <OutputCard title="🟢 Risposta soft" text={output.replies.soft} />
-                <OutputCard title="🔵 Risposta autorevole" text={output.replies.authority} />
-                <OutputCard title="💌 Pivot DM" text={output.replies.dm_pivot} />
-              </div>
-
-              <OutputCard title="DM suggerito" text={output.suggested_dm} accent />
-
-              <div className="callout-success text-sm rounded-lg">
-                <span className="font-semibold">➡️ Prossima azione: </span>
-                {output.next_action}
+              <div className="insight-next-action">
+                <span className="insight-next-action-icon">➡️</span>
+                <div><strong>Prossima azione:</strong> {output.next_action}</div>
               </div>
 
               <div className="flex flex-wrap gap-2 pt-1">
@@ -231,21 +260,6 @@ export default function CommentsPage() {
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="comments" />
       </div>
-    </div>
-  );
-}
-
-function OutputCard({ title, text, accent }: { title: string; text: string; accent?: boolean }) {
-  return (
-    <div
-      className="rounded-lg p-4 text-sm"
-      style={{
-        background: accent ? "var(--color-soft)" : "var(--color-soft-2)",
-        border: `1px solid ${accent ? "var(--color-primary)" : "var(--color-border)"}`,
-      }}
-    >
-      <div className="font-semibold mb-1">{title}</div>
-      <p className="whitespace-pre-wrap leading-relaxed">{text}</p>
     </div>
   );
 }

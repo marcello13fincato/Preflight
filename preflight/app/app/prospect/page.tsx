@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
-import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
 
@@ -59,11 +59,6 @@ export default function ProspectPage() {
     }
   }
 
-  const heatBadge = (level: string) =>
-    level === "Hot" ? "badge-red" : level === "Warm" ? "badge-amber" : "badge-blue";
-  const priorityBadge = (level: string) =>
-    level === "high" ? "badge-red" : level === "medium" ? "badge-amber" : "badge-blue";
-
   return (
     <div className="tool-page">
       {/* ── Hero header ── */}
@@ -81,6 +76,112 @@ export default function ProspectPage() {
       {/* ── Two-column layout: INPUT + OUTPUT ── */}
       <div className="tool-page-grid">
         {/* INPUT PANEL */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary>✏️ Modifica parametri</summary>
+          <div className="tool-input-body space-y-1">
+          <div className="qa-field">
+            <label className="qa-label">Link al profilo LinkedIn</label>
+            <input
+              type="url"
+              value={linkedinUrl}
+              onChange={(e) => setLinkedinUrl(e.target.value)}
+              className="qa-input"
+              placeholder="https://linkedin.com/in/nomecognome"
+            />
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Carica il PDF del profilo
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <p className="qa-microcopy">
+              Se vuoi un&apos;analisi più precisa, puoi caricare anche il PDF del profilo.
+            </p>
+            <label className="qa-file-upload">
+              <input
+                type="file"
+                accept=".pdf"
+                className="qa-file-input"
+                onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
+              />
+              <span className="qa-file-label">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                {pdfFile ? pdfFile.name : "Scegli un file PDF"}
+              </span>
+            </label>
+          </div>
+
+          <button
+            type="button"
+            className="qa-guide-toggle"
+            onClick={() => setShowPdfGuide(!showPdfGuide)}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Come scaricare il PDF del profilo LinkedIn
+          </button>
+
+          {showPdfGuide && (
+            <div className="qa-guide">
+              <ol className="qa-guide-steps">
+                <li>Vai sul profilo LinkedIn della persona</li>
+                <li>Clicca sui tre puntini accanto alla foto del profilo</li>
+                <li>Seleziona &quot;Salva come PDF&quot;</li>
+                <li>Carica il file qui</li>
+              </ol>
+            </div>
+          )}
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Link sito web
+              <span className="qa-label-opt">(facoltativo, se azienda)</span>
+            </label>
+            <input
+              type="url"
+              value={websiteUrl}
+              onChange={(e) => setWebsiteUrl(e.target.value)}
+              className="qa-input"
+              placeholder="https://azienda.com"
+            />
+          </div>
+
+          <div className="qa-field">
+            <label className="qa-label">
+              Contesto opzionale
+              <span className="qa-label-opt">(facoltativo)</span>
+            </label>
+            <textarea
+              value={context}
+              onChange={(e) => setContext(e.target.value)}
+              className="qa-input qa-input-lg"
+              rows={3}
+              placeholder="Founder SaaS che pubblica su crescita aziendale."
+            />
+          </div>
+
+          <button
+            onClick={generate}
+            disabled={loading || !linkedinUrl.trim()}
+            className="qa-btn"
+            style={{ marginTop: "0.75rem" }}
+          >
+            {loading ? (
+              <>
+                <span className="qa-spinner" aria-hidden="true" />
+                Sto analizzando…
+              </>
+            ) : (
+              <>
+                Analizza profilo
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </>
+            )}
+          </button>
+          </div>
+        </details>
+        ) : (
         <div className="tool-page-panel space-y-1">
           <div className="qa-field">
             <label className="qa-label">Link al profilo LinkedIn</label>
@@ -182,6 +283,7 @@ export default function ProspectPage() {
             )}
           </button>
         </div>
+        )}
 
         {/* OUTPUT PANEL */}
         <div>
@@ -191,45 +293,32 @@ export default function ProspectPage() {
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
-            <div className="qa-result">
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-1">
-                <h3 className="font-semibold text-sm uppercase tracking-wide" style={{ color: "var(--color-muted)" }}>
-                  Analisi completa
-                </h3>
-                <CopyButton text={`${output.primo_messaggio}\n\n${output.followup_consigliato}`} />
-              </div>
+            <div className="insight-result">
+              <ResultHeader title="Analisi profilo" copyText={`${output.primo_messaggio}\n\n${output.followup_consigliato}`} />
 
-              {/* Heat + Priority badges */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div
-                  className="rounded-lg p-3 text-sm flex items-center gap-2"
-                  style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-                >
-                  <span className="font-medium">🌡️ Livello interesse:</span>
-                  <span className={`badge ${heatBadge(output.client_heat_level)}`}>
-                    {output.client_heat_level}
-                  </span>
-                </div>
-                <div
-                  className="rounded-lg p-3 text-sm flex items-center gap-2"
-                  style={{ background: "var(--color-soft-2)", border: "1px solid var(--color-border)" }}
-                >
-                  <span className="font-medium">📊 Priorità:</span>
-                  <span className={`badge ${priorityBadge(output.priority_signal)}`}>
-                    {output.priority_signal}
-                  </span>
-                </div>
-              </div>
+              <MetricRow>
+                <MetricBadge icon="🌡️" label="Interesse" value={output.client_heat_level} color={output.client_heat_level === "Hot" ? "red" : output.client_heat_level === "Warm" ? "amber" : "blue"} />
+                <MetricBadge icon="📊" label="Priorità" value={output.priority_signal} color={output.priority_signal === "high" ? "red" : output.priority_signal === "medium" ? "amber" : "blue"} />
+              </MetricRow>
 
-              <ResultBlock icon="👤" label="Chi è questa persona / azienda" text={output.chi_e} />
-              <ResultBlock icon="🏢" label="Ruolo e contesto" text={output.ruolo_contesto} />
-              <ResultBlock icon="✅" label="Perché potrebbe essere un buon contatto" text={output.perche_buon_contatto} highlight />
-              <ResultBlock icon="🎯" label="Strategia di contatto" text={output.strategia_contatto} />
-              <ResultBlock icon="✉️" label="Primo messaggio suggerito" text={output.primo_messaggio} highlight />
-              <ResultBlock icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} />
-              <ResultBlock icon="📋" label="Step successivi" text={output.step_successivi} />
-              <ResultBlock icon="👀" label="Segnali da osservare" text={output.segnali_da_osservare} />
-              <ResultBlock icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} />
+              <InsightCard icon="👤" label="Quadro generale" text={output.chi_e} variant="summary" />
+              <InsightCard icon="🏢" label="Ruolo e contesto" text={output.ruolo_contesto} variant="evidence" />
+
+              <SectionDivider label="Valutazione commerciale" />
+
+              <InsightCard icon="✅" label="Perché è un buon contatto" text={output.perche_buon_contatto} variant="strategy" />
+              <InsightCard icon="👀" label="Segnali da osservare" text={output.segnali_da_osservare} variant="evidence" />
+
+              <SectionDivider label="Azione consigliata" />
+
+              <InsightCard icon="🎯" label="Strategia di contatto" text={output.strategia_contatto} variant="strategy" />
+              <InsightCard icon="✉️" label="Primo messaggio" text={output.primo_messaggio} variant="message" copyable />
+              <InsightCard icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} variant="message" copyable />
+
+              <SectionDivider label="Prossimi passi" />
+
+              <InsightCard icon="📋" label="Step successivi" text={output.step_successivi} variant="action" />
+              <InsightCard icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} variant="warning" />
             </div>
           ) : (
             <div className="tool-page-empty">
@@ -250,18 +339,6 @@ export default function ProspectPage() {
         <h3 className="font-semibold mb-3">Storico</h3>
         <HistoryList userId={userId} type="prospect" />
       </div>
-    </div>
-  );
-}
-
-function ResultBlock({ icon, label, text, highlight }: { icon: string; label: string; text: string; highlight?: boolean }) {
-  return (
-    <div className={`qa-result-block ${highlight ? "qa-result-reply" : ""}`}>
-      <div className="qa-result-label">
-        <span>{icon}</span>
-        {label}
-      </div>
-      <p className="qa-result-text">{text}</p>
     </div>
   );
 }
