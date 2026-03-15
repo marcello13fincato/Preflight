@@ -23,14 +23,14 @@ export default async function Home() {
             <span className="hp-hero-title-accent">prevedibile di acquisizione clienti.</span>
           </h1>
           <p className="hp-hero-subtitle">
-            Preflight unisce metodo commerciale e intelligenza artificiale specializzata
-            per aiutarti a trovare, capire e contattare i clienti giusti
-            con maggiore chiarezza e meno dispersione.
+            Preflight unisce un metodo commerciale strutturato e un&apos;intelligenza artificiale
+            specializzata per aiutarti a identificare, comprendere e contattare
+            i clienti giusti con chiarezza.
           </p>
           <p className="hp-hero-bridge">
-            Molti professionisti sono attivi su LinkedIn senza una direzione commerciale chiara.
-            L&apos;IA di Preflight è costruita intorno a processi di vendita reali e supporta
-            ogni fase: dall&apos;identificazione dei profili alla gestione delle conversazioni.
+            Non è un tool per generare contenuti o automatizzare messaggi.
+            È un sistema che ti dà direzione commerciale su LinkedIn:
+            chi cercare, come valutarlo, cosa scrivere e quando muoverti.
           </p>
           <div className="hp-hero-ctas">
             <Link href="/signup" className="hp-cta-primary">
@@ -46,26 +46,156 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          2. SUPPORT BLOCK — Supporto decisionale
+          2. PRODUCT PREVIEW — Cosa fai con Preflight
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
-        <div className="hp-container hp-support-block">
-          <div className="hp-section-label">Posizionamento</div>
+        <div className="hp-container">
+          <div className="hp-section-label">Cosa fai con Preflight</div>
           <h2 className="hp-section-title">
-            Non è un generatore di contenuti.<br />È un supporto decisionale.
+            Trova clienti, analizza profili, muoviti con criterio.
+          </h2>
+          <p className="hp-section-subtitle">
+            Preflight ti aiuta a capire chi cercare, se vale la pena contattarlo
+            e come portare avanti una conversazione su LinkedIn.
+          </p>
+
+          <div className="hp-preview-grid">
+
+            {/* ── CARD 1 — TROVA CLIENTI (featured) ── */}
+            <div className="hp-preview-card hp-preview-card-featured">
+              <div className="hp-preview-card-header">
+                <div className="hp-preview-card-icon hp-preview-card-icon-primary">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <h3 className="hp-preview-card-title">Trova clienti</h3>
+              </div>
+              <p className="hp-preview-card-copy">
+                Ti guidiamo verso categorie di profili sensati da contattare su LinkedIn.
+              </p>
+              <div className="hp-preview-mock hp-preview-mock-trova">
+                <div className="hp-preview-mock-row">
+                  <span className="hp-preview-mock-label">Ruolo</span>
+                  <span className="hp-preview-mock-value">CEO / Founder</span>
+                </div>
+                <div className="hp-preview-mock-row">
+                  <span className="hp-preview-mock-label">Settore</span>
+                  <span className="hp-preview-mock-value">SaaS B2B</span>
+                </div>
+                <div className="hp-preview-mock-row">
+                  <span className="hp-preview-mock-label">Area</span>
+                  <span className="hp-preview-mock-value">Italia · DACH</span>
+                </div>
+                <div className="hp-preview-mock-divider" />
+                <div className="hp-preview-mock-results">
+                  <div className="hp-preview-mock-result-row">
+                    <span className="hp-preview-mock-result-badge">Categoria 1</span>
+                    <span className="hp-preview-mock-result-text">Founder di SaaS in fase di scaling</span>
+                  </div>
+                  <div className="hp-preview-mock-result-row">
+                    <span className="hp-preview-mock-result-badge">Categoria 2</span>
+                    <span className="hp-preview-mock-result-text">VP Sales in aziende tech 20-100 dip.</span>
+                  </div>
+                </div>
+                <div className="hp-preview-mock-cta-row">
+                  <span className="hp-preview-mock-btn-primary">Apri la ricerca su LinkedIn →</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 2 — ANALIZZA PROFILO ── */}
+            <div className="hp-preview-card">
+              <div className="hp-preview-card-header">
+                <div className="hp-preview-card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h3 className="hp-preview-card-title">Analizza profilo</h3>
+              </div>
+              <p className="hp-preview-card-copy">
+                Capisci se un profilo è in target e come iniziare la conversazione.
+              </p>
+              <div className="hp-preview-mock hp-preview-mock-analizza">
+                <div className="hp-preview-mock-input-row">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                  <span className="hp-preview-mock-input-text">linkedin.com/in/marco-rossi</span>
+                </div>
+                <div className="hp-preview-mock-input-row hp-preview-mock-input-alt">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                  <span className="hp-preview-mock-input-text">profilo.pdf · sito web</span>
+                </div>
+                <div className="hp-preview-mock-divider" />
+                <div className="hp-preview-mock-section">
+                  <span className="hp-preview-mock-section-label">Chi è</span>
+                  <span className="hp-preview-mock-section-text">CEO di una SaaS B2B in fase di crescita, 35 dipendenti…</span>
+                </div>
+                <div className="hp-preview-mock-section">
+                  <span className="hp-preview-mock-section-label">Perché è interessante</span>
+                  <span className="hp-preview-mock-section-text">Sta assumendo in area sales, segnale di espansione…</span>
+                </div>
+                <div className="hp-preview-mock-section">
+                  <span className="hp-preview-mock-section-label">Primo passo</span>
+                  <span className="hp-preview-mock-section-text">Commenta il suo ultimo post sull&apos;hiring…</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── CARD 3 — CHIEDI UN CONSIGLIO ── */}
+            <div className="hp-preview-card">
+              <div className="hp-preview-card-header">
+                <div className="hp-preview-card-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+                <h3 className="hp-preview-card-title">Chiedi un consiglio</h3>
+              </div>
+              <p className="hp-preview-card-copy">
+                Descrivi una situazione reale e ricevi indicazioni operative.
+              </p>
+              <div className="hp-preview-mock hp-preview-mock-consiglio">
+                <div className="hp-preview-mock-textarea">
+                  <span className="hp-preview-mock-textarea-text">
+                    &quot;Ho avuto una prima call con un prospect ma non si è fatto più sentire.
+                    Cosa faccio?&quot;
+                  </span>
+                </div>
+                <div className="hp-preview-mock-divider" />
+                <div className="hp-preview-mock-section">
+                  <span className="hp-preview-mock-section-label">Lettura della situazione</span>
+                  <span className="hp-preview-mock-section-text">Il silenzio post-call è normale. Non è un rifiuto…</span>
+                </div>
+                <div className="hp-preview-mock-section">
+                  <span className="hp-preview-mock-section-label">Cosa fare</span>
+                  <span className="hp-preview-mock-section-text">Riprendi il contatto con un messaggio breve…</span>
+                </div>
+                <div className="hp-preview-mock-section">
+                  <span className="hp-preview-mock-section-label">Prossimi passi</span>
+                  <span className="hp-preview-mock-section-text">1. Scrivi entro 48h · 2. Cita un punto della call · 3. Proponi…</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          3. SUPPORT BLOCK — Supporto decisionale
+      ═══════════════════════════════════════════════════════════ */}
+      <section className="hp-section hp-section-soft">
+        <div className="hp-container hp-support-block">
+          <div className="hp-section-label">Il sistema</div>
+          <h2 className="hp-section-title">
+            Un sistema di acquisizione clienti, non l&apos;ennesimo tool.
           </h2>
           <p className="hp-section-subtitle hp-support-desc">
-            La maggior parte del tempo perso su LinkedIn non dipende dalla mancanza di strumenti,
-            ma dall&apos;assenza di una direzione chiara. Preflight riduce la dispersione
-            e aumenta la lucidità strategica in ogni fase del processo commerciale:
-            dalla scelta di chi contattare, alla gestione della conversazione,
-            fino alla decisione sui prossimi passi.
+            Il problema su LinkedIn non è la mancanza di strumenti.
+            È l&apos;assenza di una direzione chiara: chi contattare, cosa scrivere, quando insistere.
+            Preflight riduce la dispersione e ti dà lucidità strategica
+            in ogni fase del processo commerciale.
           </p>
           <div className="hp-support-points">
             {[
-              { icon: "🎯", text: "Meno tempo sprecato su profili non in target" },
-              { icon: "🧭", text: "Più chiarezza su priorità e prossimi passi" },
-              { icon: "💬", text: "Conversazioni guidate da contesto, non da impulso" },
+              { icon: "🎯", text: "Sai chi cercare e perché" },
+              { icon: "🧭", text: "Hai chiarezza su priorità e prossimi passi" },
+              { icon: "💬", text: "Le conversazioni partono dal contesto, non dall'improvvisazione" },
             ].map((point) => (
               <div key={point.text} className="hp-support-point">
                 <span className="hp-support-point-icon" aria-hidden="true">{point.icon}</span>
@@ -77,76 +207,42 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          2b. AI POSITIONING BLOCK
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-soft">
-        <div className="hp-container hp-ai-positioning">
-          <div className="hp-section-label">L&apos;intelligenza artificiale</div>
-          <h2 className="hp-section-title">
-            Un&apos;IA progettata per il contesto reale,<br />non per generare testi generici.
-          </h2>
-          <p className="hp-section-subtitle hp-ai-pos-desc">
-            L&apos;intelligenza artificiale di Preflight non è un modello generico adattato al marketing.
-            È costruita sulle dinamiche commerciali reali: interpreta situazioni,
-            riconosce segnali di interesse, suggerisce approcci calibrati sul contesto
-            e aiuta a prendere decisioni migliori in meno tempo.
-          </p>
-          <div className="hp-ai-pos-grid">
-            {[
-              {
-                title: "Analisi contestuale",
-                desc: "Legge profili, post e conversazioni per restituire indicazioni operative, non testo preconfezionato.",
-              },
-              {
-                title: "Memoria strategica",
-                desc: "Tiene traccia delle interazioni precedenti e del tuo posizionamento per suggerimenti sempre più mirati.",
-              },
-              {
-                title: "Logica commerciale",
-                desc: "Ragiona in termini di pipeline, priorità e prossimi passi — non di engagement o like.",
-              },
-            ].map((card) => (
-              <div key={card.title} className="hp-ai-pos-card">
-                <h3 className="hp-ai-pos-card-title">{card.title}</h3>
-                <p className="hp-ai-pos-card-desc">{card.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          2c. METHOD BLOCK — Il flusso operativo
+          4. METHOD BLOCK — Il flusso operativo (5 steps)
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Il metodo</div>
           <h2 className="hp-section-title">Come funziona nella pratica</h2>
           <p className="hp-section-subtitle">
-            Preflight segue un flusso strutturato che rispecchia il modo in cui
+            Un flusso strutturato che rispecchia il modo in cui
             si sviluppa davvero una relazione commerciale su LinkedIn.
           </p>
           <div className="hp-method-flow">
             {[
               {
                 step: "1",
-                title: "Configura il tuo contesto",
+                title: "Imposti il tuo sistema",
                 desc: "Definisci chi sei, cosa offri e che tipo di clienti cerchi. Il sistema parte da qui.",
               },
               {
                 step: "2",
-                title: "Identifica i profili giusti",
-                desc: "Ottieni categorie di prospect e ricerche LinkedIn pronte, basate sul tuo posizionamento.",
+                title: "Identifichi categorie di clienti",
+                desc: "Ottieni categorie di prospect e ricerche LinkedIn pronte, basate sul tuo posizionamento reale.",
               },
               {
                 step: "3",
-                title: "Analizza e comprendi",
-                desc: "L'IA legge profili e conversazioni per darti contesto e suggerimenti su come muoverti.",
+                title: "Analizzi profili specifici",
+                desc: "L'IA legge profili e segnali per dirti se vale la pena contattare qualcuno e come farlo.",
               },
               {
                 step: "4",
-                title: "Gestisci la relazione",
-                desc: "Follow-up, messaggi, commenti strategici: ogni interazione ha una direzione chiara verso la call.",
+                title: "Ricevi indicazioni operative",
+                desc: "Messaggi, commenti, follow-up: ogni azione ha un contesto e una direzione chiara.",
+              },
+              {
+                step: "5",
+                title: "Porti le conversazioni verso opportunità",
+                desc: "Gestisci la pipeline e trasformi contatti in call e call in clienti.",
               },
             ].map((item) => (
               <div key={item.step} className="hp-method-step">
@@ -162,77 +258,82 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          3. DEMO — PROVA SUBITO L'ASSISTENTE
+          5. AI POSITIONING BLOCK
       ═══════════════════════════════════════════════════════════ */}
-      <section id="assistente" className="hp-section hp-section-light">
-        <div className="hp-container">
-          <div className="hp-section-label">Provalo ora</div>
-          <h2 className="hp-section-title">Prova il sistema su un caso reale</h2>
-          <QuickAssistant />
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          4b. TROVA CLIENTI (preview premium)
-      ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
-        <div className="hp-container">
-          <div className="hp-section-label">Trova clienti</div>
-          <h2 className="hp-section-title">Non sai chi cercare? Te lo dice il sistema.</h2>
-          <p className="hp-section-subtitle">
-            Descrivi il tipo di cliente che vuoi raggiungere e ottieni ricerche LinkedIn pronte, con keyword, filtri e strategia di approccio.
+      <section className="hp-section hp-section-soft">
+        <div className="hp-container hp-ai-positioning">
+          <div className="hp-section-label">L&apos;intelligenza artificiale</div>
+          <h2 className="hp-section-title">
+            Un&apos;IA addestrata su processi commerciali reali.
+          </h2>
+          <p className="hp-section-subtitle hp-ai-pos-desc">
+            L&apos;IA di Preflight non è un assistente generico riadattato.
+            È costruita per supportare decisioni commerciali:
+            interpreta segnali da LinkedIn, valuta profili,
+            e ti aiuta a decidere cosa fare — riducendo il tempo perso
+            su contatti sbagliati.
           </p>
-
-          <div className="hp-premium-preview">
-            <div className="hp-premium-preview-overlay">
-              <div className="hp-premium-lock-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <div className="hp-ai-pos-grid">
+            {[
+              {
+                title: "Addestrata su processi reali",
+                desc: "Conosce le dinamiche di vendita consulenziale, non ripete formule generiche. Ogni suggerimento parte dal tuo contesto.",
+              },
+              {
+                title: "Supporto alle decisioni",
+                desc: "Ti dice se un profilo è interessante, perché e cosa fare. Non genera testo a caso: ti aiuta a scegliere.",
+              },
+              {
+                title: "Riduce il tempo perso",
+                desc: "Meno scroll, meno messaggi a vuoto, meno dubbi. Più chiarezza su dove concentrare i tuoi 20 minuti al giorno.",
+              },
+              {
+                title: "Interpreta segnali LinkedIn",
+                desc: "Post, cambi di ruolo, assunzioni, commenti: l'IA legge questi segnali e li trasforma in indicazioni operative.",
+              },
+            ].map((card) => (
+              <div key={card.title} className="hp-ai-pos-card">
+                <h3 className="hp-ai-pos-card-title">{card.title}</h3>
+                <p className="hp-ai-pos-card-desc">{card.desc}</p>
               </div>
-              <p className="hp-premium-label">Disponibile nel piano completo.</p>
-              <Link href="/pricing" className="hp-cta-primary" style={{ marginTop: "0.75rem" }}>
-                Scopri i piani
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </Link>
-            </div>
-
-            <div className="hp-premium-preview-content" aria-hidden="true">
-              <div className="hp-premium-mock-field">
-                <div className="hp-premium-mock-label">Tipo di cliente</div>
-                <div className="hp-premium-mock-input">Founder di startup SaaS B2B</div>
-              </div>
-              <div className="hp-premium-mock-field">
-                <div className="hp-premium-mock-label">Settore</div>
-                <div className="hp-premium-mock-input">Software / SaaS</div>
-              </div>
-              <div className="hp-premium-mock-field">
-                <div className="hp-premium-mock-label">Area geografica</div>
-                <div className="hp-premium-mock-input">Italia</div>
-              </div>
-              <div className="hp-premium-mock-btn">Trova clienti →</div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          6. PER CHI È
+          6. DEMO — PROVA SUBITO L'ASSISTENTE
+      ═══════════════════════════════════════════════════════════ */}
+      <section id="assistente" className="hp-section hp-section-light">
+        <div className="hp-container">
+          <div className="hp-section-label">Provalo ora</div>
+          <h2 className="hp-section-title">Prova il sistema su un caso reale</h2>
+          <p className="hp-section-subtitle">
+            Analizza un profilo LinkedIn o chiedi un consiglio su una situazione commerciale concreta.
+          </p>
+          <QuickAssistant />
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          7. PER CHI È
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-section hp-section-target">
         <div className="hp-container">
-          <div className="hp-section-label">Target</div>
-          <h2 className="hp-section-title hp-target-title">Per chi usa LinkedIn come canale di acquisizione clienti.</h2>
+          <div className="hp-section-label">Per chi è</div>
+          <h2 className="hp-section-title hp-target-title">Per professionisti che usano LinkedIn per trovare clienti.</h2>
 
           <div className="hp-target-grid">
             <article className="hp-target-card hp-target-card-positive">
               <h3 className="hp-target-card-title">Perfetto per:</h3>
               <ul className="hp-target-list">
                 {[
-                  "Consulenti",
-                  "Freelance",
-                  "Coach e formatori",
-                  "Fractional manager",
-                  "Agenzie B2B",
-                  "Professionisti B2B",
+                  "Consulenti che vendono servizi ad alto valore",
+                  "Freelance che cercano clienti in modo diretto",
+                  "Coach e formatori con offerte B2B",
+                  "Fractional manager e advisor",
+                  "Agenzie e micro-agenzie B2B",
+                  "Professionisti che vendono competenza, non prodotti",
                 ].map((item) => (
                   <li key={item} className="hp-target-item hp-target-item-positive">
                     <span className="hp-target-icon hp-target-icon-positive" aria-hidden="true">
@@ -248,10 +349,10 @@ export default async function Home() {
               <h3 className="hp-target-card-title">Non pensato per:</h3>
               <ul className="hp-target-list">
                 {[
-                  "Cercare lavoro",
-                  "Recruiting",
-                  "Crescita follower",
+                  "Cercare lavoro o fare recruiting",
+                  "Crescita follower o personal branding",
                   "Social media management",
+                  "Automazione di massa",
                 ].map((item) => (
                   <li key={item} className="hp-target-item hp-target-item-neutral">
                     <span className="hp-target-icon hp-target-icon-neutral" aria-hidden="true">
@@ -267,22 +368,22 @@ export default async function Home() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          7. CTA FINALE
+          8. CTA FINALE
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-final-cta">
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
-            LinkedIn funziona. Ti manca il sistema per trasformarlo in un canale clienti.
+            LinkedIn funziona. Ti manca il sistema per usarlo come canale clienti.
           </h2>
           <p className="hp-final-subtitle">
             Preflight ti dà metodo, direzione e chiarezza.
             Tu ci metti competenza e 20 minuti al giorno.
           </p>
-          <a href="#assistente" className="hp-cta-primary hp-cta-large">
+          <Link href="/signup" className="hp-cta-primary hp-cta-large">
             Configura il tuo sistema
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-          </a>
+          </Link>
           <p className="hp-final-trust">Setup in 5 minuti · Nessuna carta di credito · Inizia gratis</p>
         </div>
       </section>
