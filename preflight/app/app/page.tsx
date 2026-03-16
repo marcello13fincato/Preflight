@@ -495,165 +495,99 @@ export default function AppTodayPage() {
 
       <div className="dash-page-v2 dash-page-rebuild">
 
-        {/* ══════════════════════════════════════════════════════
-            ZONE 1 — DAILY PLAN HERO
-        ══════════════════════════════════════════════════════ */}
-        <section className="dash-workspace-hero">
-          <div className="dash-command-main dash-workspace-intro">
-            <div className="page-hero" style={{ marginBottom: "0" }}>
-              <span className="page-hero-eyebrow">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-                AI Command Center
-              </span>
-              <h1 className="page-hero-title">Centro di controllo LinkedIn</h1>
-              <p className="page-hero-subtitle">
-                Vedi subito cosa conta: priorità della giornata, servizi core e strumenti operativi per far avanzare ogni conversazione.
-              </p>
-            </div>
-
-            <div className="dash-command-metrics" aria-label="Panoramica operativa">
-              <div className="dash-command-metric">
-                <span className="dash-command-metric-value">{CORE_ACTIONS.length}</span>
-                <span className="dash-command-metric-label">Servizi core</span>
-              </div>
-              <div className="dash-command-metric">
-                <span className="dash-command-metric-value">{SECONDARY_TOOLS.length}</span>
-                <span className="dash-command-metric-label">Strumenti operativi</span>
-              </div>
-              <div className="dash-command-metric">
-                <span className="dash-command-metric-value">{contacts.length}</span>
-                <span className="dash-command-metric-label">Contatti analizzati</span>
-              </div>
-            </div>
-          </div>
-
-          <aside className="dash-command-status dash-workspace-status" aria-label="Stato dashboard">
-            <div className="dash-command-pills">
-              <span className={`dash-command-pill ${profile.onboarding_complete ? "dash-command-pill-ok" : "dash-command-pill-warn"}`}>
-                <span className="dash-command-pill-dot" aria-hidden="true" />
-                {profile.onboarding_complete ? "Sistema configurato" : "Setup incompleto"}
-              </span>
-              <span className="dash-command-pill dash-command-pill-neutral">
-                {contacts.length} contatti analizzati
-              </span>
-            </div>
-            <p className="dash-command-status-text">
-              Inizia dal piano di oggi e apri una funzione core per passare subito all&apos;azione.
+        <section className="dash-overview-v3" aria-label="Panoramica dashboard">
+          <div className="dash-overview-v3-copy">
+            <h1 className="dash-overview-v3-title">Dashboard</h1>
+            <p className="dash-overview-v3-subtitle">
+              Organizza la tua giornata commerciale: parti dalle priorità, apri un&apos;azione core e usa gli strumenti operativi quando servono.
             </p>
-            <Link href="/app/oggi" className="dash-command-status-cta">
-              Apri piano di oggi <span className="dash-btn-arrow">→</span>
-            </Link>
-          </aside>
+          </div>
+          <div className="dash-overview-v3-status">
+            <span className={`dash-overview-chip ${profile.onboarding_complete ? "dash-overview-chip-ok" : "dash-overview-chip-warn"}`}>
+              <span className="dash-overview-chip-dot" aria-hidden="true" />
+              {profile.onboarding_complete ? "Sistema configurato" : "Setup incompleto"}
+            </span>
+            <span className="dash-overview-chip dash-overview-chip-neutral">{contacts.length} contatti analizzati</span>
+            <span className="dash-overview-chip dash-overview-chip-neutral">{CORE_ACTIONS.length} azioni principali</span>
+          </div>
         </section>
 
-        <section className="dash-workspace-flow">
-          <section className="dash-daily-hero dash-workspace-daily">
-            <div className="dash-daily-eyebrow">
-              <span className="dash-daily-eyebrow-dot" />
-              Piano giornaliero
-            </div>
-            <h2 className="dash-daily-title">Il tuo piano per oggi</h2>
-            <p className="dash-daily-subtitle">
-              In base al tuo servizio, ai clienti target e alle conversazioni in corso, ecco le azioni più utili per oggi.
-            </p>
+        <section className="dash-plan-v3" aria-label="Cosa fare oggi">
+          <div className="dash-plan-v3-head">
+            <h2 className="dash-plan-v3-title">Cosa fare oggi</h2>
+            <p className="dash-plan-v3-subtitle">Tre priorità concrete per muovere pipeline e conversazioni.</p>
+          </div>
 
-            <div className="dash-daily-actions">
-              <div className="dash-daily-action">
-                <div className="dash-daily-action-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                </div>
-                <div>
-                  <div className="dash-daily-action-title">3 profili da analizzare</div>
-                  <div className="dash-daily-action-text">Trova e valuta nuovi contatti da raggiungere.</div>
-                </div>
-              </div>
-              <div className="dash-daily-action">
-                <div className="dash-daily-action-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                </div>
-                <div>
-                  <div className="dash-daily-action-title">2 conversazioni da portare avanti</div>
-                  <div className="dash-daily-action-text">Rispondi o fai follow-up sui contatti aperti.</div>
-                </div>
-              </div>
-              <div className="dash-daily-action">
-                <div className="dash-daily-action-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </div>
-                <div>
-                  <div className="dash-daily-action-title">1 contenuto da pubblicare</div>
-                  <div className="dash-daily-action-text">Pubblica un post mirato al tuo cliente ideale.</div>
-                </div>
-              </div>
-            </div>
+          <div className="dash-plan-v3-grid">
+            <article className="dash-plan-priority">
+              <h3 className="dash-plan-priority-title">Trova 3 nuovi profili</h3>
+              <p className="dash-plan-priority-why">Perché conta: alimenta il tuo flusso di opportunità e mantiene costante l&apos;outreach.</p>
+              <Link href="/app/find-clients" className="dash-plan-priority-cta">Apri Trova clienti →</Link>
+            </article>
 
-            <div className="dash-daily-extras">
-              <div className="dash-daily-extra">
-                <div className="dash-daily-extra-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <article className="dash-plan-priority">
+              <h3 className="dash-plan-priority-title">Sblocca 2 conversazioni</h3>
+              <p className="dash-plan-priority-why">Perché conta: i follow-up ben guidati trasformano interesse in appuntamenti.</p>
+              <Link href="/app/dm" className="dash-plan-priority-cta">Apri Chiedi un consiglio →</Link>
+            </article>
+
+            <article className="dash-plan-priority">
+              <h3 className="dash-plan-priority-title">Pubblica 1 contenuto mirato</h3>
+              <p className="dash-plan-priority-why">Perché conta: rafforza autorevolezza e crea nuovi ingressi in DM.</p>
+              <button type="button" className="dash-plan-priority-cta dash-plan-priority-cta-btn" onClick={() => setDashMode("post")}>Apri Scrivi un post →</button>
+            </article>
+          </div>
+
+          <div className="dash-plan-signals">
+            <span className="dash-plan-signal">Tema outreach: decision maker inattivi da riattivare</span>
+            <span className="dash-plan-signal">Focus follow-up: conversazioni con ultimo touch &gt; 5 giorni</span>
+            <span className="dash-plan-signal">Angolo contenuto: errori comuni in fase di acquisizione</span>
+          </div>
+        </section>
+
+        <section className="dash-v2-section dash-core-focus-v3">
+          <div className="dash-v2-section-head">
+            <h3 className="dash-v2-section-title">Azioni principali</h3>
+            <p className="dash-v2-section-sub">Le tre azioni centrali del prodotto: trovare contatti, valutarli e sapere cosa scrivere subito.</p>
+          </div>
+
+          <div className="dash-core-grid dash-core-grid-focus-v3">
+            {CORE_ACTIONS.map((action) => (
+              <Link
+                key={action.id}
+                href={action.href}
+                className="dash-core-card dash-core-card-v3"
+              >
+                <div className={`dash-core-card-icon ${action.iconClass}`}>{action.icon}</div>
+                <h4 className="dash-core-card-title">{action.title}</h4>
+                <p className="dash-core-card-desc">{action.desc}</p>
+                <span className="dash-core-card-cta">{action.cta} <span className="dash-core-card-arrow">→</span></span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="dash-v2-section dash-secondary-v3">
+          <div className="dash-v2-section-head">
+            <h3 className="dash-v2-section-title">Strumenti operativi</h3>
+            <p className="dash-v2-section-sub">Usali quando serve per contenuti, risposte e avanzamento conversazioni.</p>
+          </div>
+          <div className="dash-secondary-grid dash-secondary-grid-v3">
+            {SECONDARY_TOOLS.map((tool) => (
+              <button
+                key={tool.id}
+                type="button"
+                className={`dash-sec-card dash-sec-card-v3${dashMode === tool.id ? " dash-sec-card-active" : ""}`}
+                onClick={() => setDashMode(dashMode === tool.id ? null : tool.id)}
+              >
+                <div className="dash-sec-card-icon">{tool.icon}</div>
+                <div className="dash-sec-card-body">
+                  <h4 className="dash-sec-card-title">{tool.title}</h4>
+                  <p className="dash-sec-card-desc">{tool.desc}</p>
                 </div>
-                Tema outreach suggerito
-              </div>
-              <div className="dash-daily-extra">
-                <div className="dash-daily-extra-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-                </div>
-                Follow-up suggeriti
-              </div>
-              <div className="dash-daily-extra">
-                <div className="dash-daily-extra-icon">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </div>
-                Angolo contenuto suggerito
-              </div>
-            </div>
-
-            <Link href="/app/oggi" className="dash-daily-cta">
-              Apri il piano completo <span className="dash-btn-arrow">→</span>
-            </Link>
-          </section>
-
-          <section className="dash-v2-section dash-workspace-tools">
-            <div className="dash-v2-section-head">
-              <h3 className="dash-v2-section-title">Azioni principali</h3>
-              <p className="dash-v2-section-sub">Le tre azioni centrali del tuo workspace commerciale: identifica, valuta, agisci.</p>
-            </div>
-
-            <div className="dash-core-grid dash-core-grid-rebuild">
-              {CORE_ACTIONS.map((action, index) => (
-                <Link
-                  key={action.id}
-                  href={action.href}
-                  className={`dash-core-card${index === 0 ? " dash-core-card-featured" : ""}`}
-                >
-                  <div className={`dash-core-card-icon ${action.iconClass}`}>{action.icon}</div>
-                  <h4 className="dash-core-card-title">{action.title}</h4>
-                  <p className="dash-core-card-desc">{action.desc}</p>
-                  <span className="dash-core-card-cta">{action.cta} <span className="dash-core-card-arrow">→</span></span>
-                </Link>
-              ))}
-            </div>
-
-            <div className="dash-tools-contextual">
-              <p className="dash-secondary-label">Strumenti contestuali</p>
-              <div className="dash-secondary-grid dash-secondary-grid-rebuild">
-                {SECONDARY_TOOLS.map((tool) => (
-                  <button
-                    key={tool.id}
-                    type="button"
-                    className={`dash-sec-card${dashMode === tool.id ? " dash-sec-card-active" : ""}`}
-                    onClick={() => setDashMode(dashMode === tool.id ? null : tool.id)}
-                  >
-                    <div className="dash-sec-card-icon">{tool.icon}</div>
-                    <div className="dash-sec-card-body">
-                      <h4 className="dash-sec-card-title">{tool.title}</h4>
-                      <p className="dash-sec-card-desc">{tool.desc}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </section>
+              </button>
+            ))}
+          </div>
         </section>
 
         {/* ══════════════════════════════════════════════════════
