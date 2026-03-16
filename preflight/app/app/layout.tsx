@@ -18,6 +18,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
               <span className="app-topbar-dot" />
               <span className="app-topbar-status-text">Sistema attivo</span>
             </div>
+            <div className="app-topbar-context" aria-label="Contesto dashboard">
+              <p className="app-topbar-kicker">Control Center</p>
+              <p className="app-topbar-title">Dashboard strategica</p>
+            </div>
           </div>
           <div className="app-topbar-right">
             <span className="app-topbar-user">

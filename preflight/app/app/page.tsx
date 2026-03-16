@@ -499,15 +499,32 @@ export default function AppTodayPage() {
             ZONE 1 — DAILY PLAN HERO
         ══════════════════════════════════════════════════════ */}
         <div className="dash-command-hero">
-          <div className="page-hero" style={{ marginBottom: "0" }}>
-            <span className="page-hero-eyebrow">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-              AI Command Center
-            </span>
-            <h1 className="page-hero-title">Centro di controllo LinkedIn</h1>
-            <p className="page-hero-subtitle">
-              Vedi subito cosa conta: priorità della giornata, servizi core e strumenti operativi per far avanzare ogni conversazione.
-            </p>
+          <div className="dash-command-main">
+            <div className="page-hero" style={{ marginBottom: "0" }}>
+              <span className="page-hero-eyebrow">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                AI Command Center
+              </span>
+              <h1 className="page-hero-title">Centro di controllo LinkedIn</h1>
+              <p className="page-hero-subtitle">
+                Vedi subito cosa conta: priorità della giornata, servizi core e strumenti operativi per far avanzare ogni conversazione.
+              </p>
+            </div>
+
+            <div className="dash-command-metrics" aria-label="Panoramica operativa">
+              <div className="dash-command-metric">
+                <span className="dash-command-metric-value">{CORE_ACTIONS.length}</span>
+                <span className="dash-command-metric-label">Servizi core</span>
+              </div>
+              <div className="dash-command-metric">
+                <span className="dash-command-metric-value">{SECONDARY_TOOLS.length}</span>
+                <span className="dash-command-metric-label">Strumenti operativi</span>
+              </div>
+              <div className="dash-command-metric">
+                <span className="dash-command-metric-value">{contacts.length}</span>
+                <span className="dash-command-metric-label">Contatti analizzati</span>
+              </div>
+            </div>
           </div>
 
           <aside className="dash-command-status" aria-label="Stato dashboard">
