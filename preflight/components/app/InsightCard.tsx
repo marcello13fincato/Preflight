@@ -69,7 +69,7 @@ export default function InsightCard({
   variant = "default",
   copyable,
 }: {
-  icon?: string;
+  icon?: React.ReactNode;
   label: string;
   text: string;
   variant?: InsightVariant;
@@ -112,7 +112,7 @@ export function MetricBadge({
   value,
   color,
 }: {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: string;
   color: "red" | "amber" | "blue" | "green";

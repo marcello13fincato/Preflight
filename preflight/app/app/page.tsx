@@ -23,7 +23,7 @@ type DashMode =
 const CORE_ACTIONS: {
   id: string;
   href: string;
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   desc: string;
   cta: string;
@@ -32,7 +32,12 @@ const CORE_ACTIONS: {
   {
     id: "find",
     href: "/app/find-clients",
-    icon: "🔍",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.6-3.6" />
+      </svg>
+    ),
     title: "Chi contattare oggi su LinkedIn",
     desc: "Descrivi il tipo di cliente che cerchi. Il sistema genera ricerche LinkedIn mirate con keyword, filtri e strategia di approccio.",
     cta: "Trova chi contattare",
@@ -41,7 +46,12 @@ const CORE_ACTIONS: {
   {
     id: "profile",
     href: "/app/prospect",
-    icon: "👤",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <circle cx="12" cy="8" r="3.5" />
+        <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+      </svg>
+    ),
     title: "Analizza un profilo prima di scrivere",
     desc: "Incolla il profilo LinkedIn di una persona e scopri se vale la pena contattarla, come presentarti e quale messaggio inviare.",
     cta: "Analizza profilo",
@@ -50,7 +60,11 @@ const CORE_ACTIONS: {
   {
     id: "advice",
     href: "/app/dm",
-    icon: "💬",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M20 15a3 3 0 0 1-3 3H9l-5 4V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3z" />
+      </svg>
+    ),
     title: "Non sai cosa fare? Chiedi un consiglio",
     desc: "Hai una conversazione aperta e non sai come proseguire? Descrivi la situazione e ricevi indicazioni su cosa scrivere adesso.",
     cta: "Chiedi consiglio",
@@ -61,16 +75,75 @@ const CORE_ACTIONS: {
 /* ─── Secondary Tools ─── */
 const SECONDARY_TOOLS: {
   id: DashMode & string;
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   desc: string;
 }[] = [
-  { id: "post", icon: "✍️", title: "Scrivi un post", desc: "Post mirato al tuo cliente ideale." },
-  { id: "image", icon: "🖼️", title: "Genera immagine", desc: "Immagine per accompagnare il post." },
-  { id: "comment", icon: "💡", title: "Rispondi a un commento", desc: "Trasforma un commento in conversazione." },
-  { id: "dm", icon: "✉️", title: "Scrivi un messaggio", desc: "La risposta giusta per un DM ricevuto." },
-  { id: "conversation", icon: "🗣️", title: "Porta avanti una conversazione", desc: "Il prossimo passo in una conversazione aperta." },
-  { id: "followup", icon: "🔄", title: "Scrivi follow-up", desc: "Riprendi un contatto fermo." },
+  {
+    id: "post",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M3 21h5l11-11a2.12 2.12 0 0 0-3-3L5 18z" />
+      </svg>
+    ),
+    title: "Scrivi un post",
+    desc: "Post mirato al tuo cliente ideale.",
+  },
+  {
+    id: "image",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <circle cx="8" cy="9" r="1.5" />
+        <path d="m21 16-5.5-5.5L8 18" />
+      </svg>
+    ),
+    title: "Genera immagine",
+    desc: "Immagine per accompagnare il post.",
+  },
+  {
+    id: "comment",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M21 15a3 3 0 0 1-3 3H8l-5 4V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3z" />
+        <path d="M8 9h8M8 13h5" />
+      </svg>
+    ),
+    title: "Rispondi a un commento",
+    desc: "Trasforma un commento in conversazione.",
+  },
+  {
+    id: "dm",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="m4 7 8 6 8-6" />
+      </svg>
+    ),
+    title: "Scrivi un messaggio",
+    desc: "La risposta giusta per un DM ricevuto.",
+  },
+  {
+    id: "conversation",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M16 4h1a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-1l-4 3v-3H7a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z" />
+      </svg>
+    ),
+    title: "Porta avanti una conversazione",
+    desc: "Il prossimo passo in una conversazione aperta.",
+  },
+  {
+    id: "followup",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+        <path d="M21 3v6h-6" />
+      </svg>
+    ),
+    title: "Scrivi follow-up",
+    desc: "Riprendi un contatto fermo.",
+  },
 ];
 
 export default function AppTodayPage() {
@@ -393,7 +466,12 @@ export default function AppTodayPage() {
       {modalOpen && (
         <div className="dash-modal-overlay">
           <div className="dash-modal">
-            <div className="dash-modal-icon">⚙️</div>
+            <div className="dash-modal-icon" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 15.2A3.2 3.2 0 1 0 12 8.8a3.2 3.2 0 0 0 0 6.4Z" />
+                <path d="m19.4 15-.8 1.4.3 1.6-1.4.8-1.2-1.1-1.6.4-.8 1.4h-1.6l-.8-1.4-1.6-.4-1.2 1.1-1.4-.8.3-1.6-.8-1.4-1.5-.4v-1.6l1.5-.4.8-1.4-.3-1.6 1.4-.8 1.2 1.1 1.6-.4.8-1.4h1.6l.8 1.4 1.6.4 1.2-1.1 1.4.8-.3 1.6.8 1.4 1.5.4v1.6z" />
+              </svg>
+            </div>
             <h2 className="dash-modal-title">Configura il sistema per ricevere suggerimenti più utili</h2>
             <p className="dash-modal-desc">
               Preflight funziona meglio quando conosce il tuo lavoro.<br />
@@ -420,15 +498,35 @@ export default function AppTodayPage() {
         {/* ══════════════════════════════════════════════════════
             ZONE 1 — DAILY PLAN HERO
         ══════════════════════════════════════════════════════ */}
-        <div className="page-hero" style={{ marginBottom: "0" }}>
-          <span className="page-hero-eyebrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            Dashboard
-          </span>
-          <h1 className="page-hero-title">Il tuo punto di partenza</h1>
-          <p className="page-hero-subtitle">
-            Da qui puoi capire chi contattare, come scrivere il primo messaggio e cosa fare per portare ogni conversazione verso la call.
-          </p>
+        <div className="dash-command-hero">
+          <div className="page-hero" style={{ marginBottom: "0" }}>
+            <span className="page-hero-eyebrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              AI Command Center
+            </span>
+            <h1 className="page-hero-title">Centro di controllo LinkedIn</h1>
+            <p className="page-hero-subtitle">
+              Vedi subito cosa conta: priorità della giornata, servizi core e strumenti operativi per far avanzare ogni conversazione.
+            </p>
+          </div>
+
+          <aside className="dash-command-status" aria-label="Stato dashboard">
+            <div className="dash-command-pills">
+              <span className={`dash-command-pill ${profile.onboarding_complete ? "dash-command-pill-ok" : "dash-command-pill-warn"}`}>
+                <span className="dash-command-pill-dot" aria-hidden="true" />
+                {profile.onboarding_complete ? "Sistema configurato" : "Setup incompleto"}
+              </span>
+              <span className="dash-command-pill dash-command-pill-neutral">
+                {contacts.length} contatti analizzati
+              </span>
+            </div>
+            <p className="dash-command-status-text">
+              Inizia dal piano di oggi e apri una funzione core per passare subito all&apos;azione.
+            </p>
+            <Link href="/app/oggi" className="dash-command-status-cta">
+              Apri piano di oggi <span className="dash-btn-arrow">→</span>
+            </Link>
+          </aside>
         </div>
 
         <section className="dash-daily-hero">
@@ -579,23 +677,23 @@ export default function AppTodayPage() {
 
               {postResult && (
                 <div className="insight-result">
-                  <ResultHeader title="Post generato" />
-                  <InsightCard icon="💡" label="Hook (5 opzioni)" text={postResult.hooks.join("\n\n")} variant="evidence" />
+                  <ResultHeader title="Output strategico" />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.43 1 .96 1.2 1.6h5.6c.2-.64.6-1.17 1.2-1.6A7 7 0 0 0 12 2Z"/></svg>} label="Hook (5 opzioni)" text={postResult.hooks.join("\n\n")} variant="evidence" />
                   <SectionDivider label="Versioni" />
-                  <InsightCard icon="✨" label="Versione pulita" text={postResult.post_versions.clean} variant="message" copyable />
-                  <InsightCard icon="🎯" label="Versione diretta" text={postResult.post_versions.direct} variant="message" copyable />
-                  <InsightCard icon="🏆" label="Versione autorevole" text={postResult.post_versions.authority} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h5l11-11a2.12 2.12 0 0 0-3-3L5 18z"/></svg>} label="Versione pulita" text={postResult.post_versions.clean} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>} label="Versione diretta" text={postResult.post_versions.direct} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M8 21h8"/><path d="M12 17V5"/><path d="M7 9h10"/></svg>} label="Versione autorevole" text={postResult.post_versions.authority} variant="message" copyable />
                   <SectionDivider label="Engagement" />
-                  <InsightCard icon="📣" label="CTA" text={postResult.cta} variant="strategy" />
-                  <InsightCard icon="💬" label="Commento starter" text={postResult.comment_starter} variant="strategy" />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M3 11h6l2-3v10l-2-3H3z"/><path d="M14 9a5 5 0 0 1 0 6"/></svg>} label="CTA" text={postResult.cta} variant="strategy" />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a3 3 0 0 1-3 3H8l-5 4V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3z"/></svg>} label="Commento starter" text={postResult.comment_starter} variant="strategy" />
                   <div className="insight-next-action">
-                    <span className="insight-next-action-icon">➡️</span>
+                    <span className="insight-next-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
                     <div><strong>Prossimo passo:</strong> {postResult.next_step}</div>
                   </div>
 
                   {/* Immagine suggerita */}
                   {postResult.suggerimento_immagine && (
-                    <InsightCard icon="🖼️" label="Immagine suggerita" text={`${postResult.suggerimento_immagine.tipo}\n\n${postResult.suggerimento_immagine.perche_funziona}\n\n📸 Preferisci sempre foto reali: foto mentre lavori, il tuo ambiente, screenshot del tuo lavoro reale.`} variant="evidence" />
+                    <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8" cy="9" r="1.5"/><path d="m21 16-5.5-5.5L8 18"/></svg>} label="Immagine suggerita" text={`${postResult.suggerimento_immagine.tipo}\n\n${postResult.suggerimento_immagine.perche_funziona}\n\nPreferisci sempre foto reali: mentre lavori, del tuo ambiente o screenshot del tuo lavoro reale.`} variant="evidence" />
                   )}
                   {postResult.suggerimento_immagine && (
                     <button
@@ -634,7 +732,7 @@ export default function AppTodayPage() {
                 <textarea value={imageContent} onChange={(e) => setImageContent(e.target.value)} className="qa-input qa-input-lg" rows={5} placeholder="Incolla qui il testo del post per cui vuoi generare l'immagine…" />
               </div>
 
-              <p className="qa-microcopy">📸 Consiglio: usa foto reali quando possibile. L&apos;immagine generata è un punto di partenza.</p>
+              <p className="qa-microcopy">Consiglio: usa foto reali quando possibile. L&apos;immagine generata è un punto di partenza.</p>
 
               <button onClick={() => handleImage()} disabled={imageLoading || !imageContent.trim()} className="qa-btn">
                 {imageLoading ? (<><span className="qa-spinner" aria-hidden="true" />Genero l&apos;immagine…</>) : (<>Genera immagine <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></>)}
@@ -680,7 +778,7 @@ export default function AppTodayPage() {
                       disabled={commentProfileLoading || !commentLinkedinUrl.trim() || commentProfileAnalyzed}
                       onClick={() => analyzeInlineProfile(commentLinkedinUrl, setCommentProfileLoading, setCommentProfileAnalyzed)}
                     >
-                      {commentProfileLoading ? "Analizzo…" : commentProfileAnalyzed ? "✓ Analizzato" : "Analizza profilo"}
+                      {commentProfileLoading ? "Analizzo…" : commentProfileAnalyzed ? "Analisi completata" : "Analizza profilo"}
                     </button>
                   </div>
                 </div>
@@ -717,20 +815,20 @@ export default function AppTodayPage() {
               {commentResult && (
                 <div className="insight-result">
                   <ResultHeader title="Analisi commento" />
-                  <InsightCard icon="🎯" label={`Tipo: ${commentResult.comment_type} · Calore: ${commentResult.client_heat_level}`} text={commentResult.strategy} variant="summary" />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg>} label={`Tipo: ${commentResult.comment_type} · Calore: ${commentResult.client_heat_level}`} text={commentResult.strategy} variant="summary" />
                   <SectionDivider label="Risposte suggerite" />
-                  <InsightCard icon="💬" label="Risposta empatica" text={commentResult.replies.soft} variant="message" copyable />
-                  <InsightCard icon="✅" label="Risposta autorevole" text={commentResult.replies.authority} variant="message" copyable />
-                  <InsightCard icon="➡️" label="Porta in DM" text={commentResult.replies.dm_pivot} variant="message" copyable />
-                  <InsightCard icon="✉️" label="Messaggio DM suggerito" text={commentResult.suggested_dm} variant="strategy" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a3 3 0 0 1-3 3H8l-5 4V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3z"/></svg>} label="Risposta empatica" text={commentResult.replies.soft} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="m20 6-11 11-5-5"/></svg>} label="Risposta autorevole" text={commentResult.replies.authority} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>} label="Porta in DM" text={commentResult.replies.dm_pivot} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>} label="Messaggio DM suggerito" text={commentResult.suggested_dm} variant="strategy" copyable />
                   {commentResult.message_risk_warning && commentResult.message_risk_warning !== "nessuno" && (
                     <div className="insight-warn-inline">
-                      <span>⚠️</span>
+                      <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18.2A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>
                       <span>{commentResult.message_risk_warning}</span>
                     </div>
                   )}
                   <div className="insight-next-action">
-                    <span className="insight-next-action-icon">➡️</span>
+                    <span className="insight-next-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
                     <div><strong>Prossimo passo:</strong> {commentResult.next_action}</div>
                   </div>
                 </div>
@@ -765,7 +863,7 @@ export default function AppTodayPage() {
                       disabled={dmProfileLoading || !dmLinkedinUrl.trim() || dmProfileAnalyzed}
                       onClick={() => analyzeInlineProfile(dmLinkedinUrl, setDmProfileLoading, setDmProfileAnalyzed, setDmProspect)}
                     >
-                      {dmProfileLoading ? "Analizzo…" : dmProfileAnalyzed ? "✓ Analizzato" : "Analizza profilo"}
+                      {dmProfileLoading ? "Analizzo…" : dmProfileAnalyzed ? "Analisi completata" : "Analizza profilo"}
                     </button>
                   </div>
                 </div>
@@ -802,23 +900,23 @@ export default function AppTodayPage() {
               {dmResult && (
                 <div className="insight-result">
                   <ResultHeader title="Analisi DM" />
-                  <InsightCard icon="💬" label={`Risposta migliore · Calore: ${dmResult.client_heat_level}`} text={dmResult.best_reply} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a3 3 0 0 1-3 3H8l-5 4V6a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3z"/></svg>} label={`Risposta migliore · Calore: ${dmResult.client_heat_level}`} text={dmResult.best_reply} variant="message" copyable />
                   <SectionDivider label="Alternative" />
-                  <InsightCard icon="➡️" label="Versione breve" text={dmResult.alternatives.short} variant="message" copyable />
-                  <InsightCard icon="✅" label="Versione diretta" text={dmResult.alternatives.assertive} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>} label="Versione breve" text={dmResult.alternatives.short} variant="message" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="m20 6-11 11-5-5"/></svg>} label="Versione diretta" text={dmResult.alternatives.assertive} variant="message" copyable />
                   <SectionDivider label="Approfondimento" />
-                  <InsightCard icon="💡" label="Domande qualificanti" text={dmResult.qualifying_questions.join("\n\n")} variant="evidence" />
-                  <InsightCard icon="🔄" label="Follow-up 48h" text={dmResult.followups["48h"]} variant="strategy" copyable />
-                  <InsightCard icon="🔄" label="Follow-up 5 giorni" text={dmResult.followups["5d"]} variant="strategy" copyable />
-                  <InsightCard icon="🔄" label="Follow-up 10 giorni" text={dmResult.followups["10d"]} variant="strategy" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.43 1 .96 1.2 1.6h5.6c.2-.64.6-1.17 1.2-1.6A7 7 0 0 0 12 2Z"/></svg>} label="Domande qualificanti" text={dmResult.qualifying_questions.join("\n\n")} variant="evidence" />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>} label="Follow-up 48h" text={dmResult.followups["48h"]} variant="strategy" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>} label="Follow-up 5 giorni" text={dmResult.followups["5d"]} variant="strategy" copyable />
+                  <InsightCard icon={<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>} label="Follow-up 10 giorni" text={dmResult.followups["10d"]} variant="strategy" copyable />
                   {dmResult.message_risk_warning && dmResult.message_risk_warning !== "nessuno" && (
                     <div className="insight-warn-inline">
-                      <span>⚠️</span>
+                      <span aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18.2A2 2 0 0 0 3.5 21h17a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg></span>
                       <span>{dmResult.message_risk_warning}</span>
                     </div>
                   )}
                   <div className="insight-next-action">
-                    <span className="insight-next-action-icon">➡️</span>
+                    <span className="insight-next-action-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
                     <div><strong>Prossimo passo:</strong> {dmResult.next_action}</div>
                   </div>
                 </div>
@@ -853,7 +951,7 @@ export default function AppTodayPage() {
                       disabled={convProfileLoading || !convLinkedinUrl.trim() || convProfileAnalyzed}
                       onClick={() => analyzeInlineProfile(convLinkedinUrl, setConvProfileLoading, setConvProfileAnalyzed, setConvProspect)}
                     >
-                      {convProfileLoading ? "Analizzo…" : convProfileAnalyzed ? "✓ Analizzato" : "Analizza profilo"}
+                      {convProfileLoading ? "Analizzo…" : convProfileAnalyzed ? "Analisi completata" : "Analizza profilo"}
                     </button>
                   </div>
                 </div>
@@ -889,6 +987,7 @@ export default function AppTodayPage() {
 
               {convResult && (
                 <div className="insight-result">
+                  <ResultHeader title="Analisi conversazione" />
                   <InsightCard variant="summary" label={`Risposta migliore · Calore: ${convResult.client_heat_level}`} text={convResult.best_reply} copyable />
                   <div className="insight-reply-grid">
                     <InsightCard variant="message" label="Versione breve" text={convResult.alternatives.short} copyable />
@@ -944,6 +1043,7 @@ export default function AppTodayPage() {
 
               {followupResult && (
                 <div className="insight-result">
+                  <ResultHeader title="Piano follow-up" />
                   <InsightCard variant="summary" label="Analisi della situazione" text={followupResult.analisi_situazione} />
                   <InsightCard variant="message" label="Messaggio follow-up" text={followupResult.messaggio_followup} copyable />
                   <div className="insight-reply-grid">

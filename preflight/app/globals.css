@@ -1258,7 +1258,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   padding:2.75rem 2.25rem;text-align:center;
   box-shadow:var(--shadow-lg);
   animation:dash-slideup 0.3s ease-out}
-.dash-modal-icon{font-size:2.5rem;margin-bottom:0.75rem}
+.dash-modal-icon{
+  width:56px;height:56px;border-radius:16px;
+  margin:0 auto 0.9rem;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--color-soft);color:var(--color-primary);
+}
+.dash-modal-icon svg{width:28px;height:28px}
 .dash-modal-title{font-size:1.35rem;font-weight:800;color:var(--color-text);margin:0 0 0.5rem}
 .dash-modal-desc{font-size:0.9rem;color:var(--color-muted);line-height:1.55;margin:0 0 1.5rem}
 
@@ -1281,7 +1287,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   margin:0.75rem 2.5rem 0;position:relative;overflow:hidden;
 }
 .sys-banner-content{display:flex;align-items:flex-start;gap:0.65rem;flex:1;min-width:240px}
-.sys-banner-icon{flex-shrink:0;color:#D97706;margin-top:0.15rem}
+.sys-banner-icon{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:#D97706;background:rgba(245,158,11,0.12);
+}
+.sys-banner-icon svg{width:18px;height:18px}
 .sys-banner-title{font-size:0.9rem;font-weight:700;color:var(--color-text);margin:0}
 .sys-banner-text{font-size:0.8rem;color:var(--color-muted);margin:0.2rem 0 0;line-height:1.45}
 .sys-banner-cta{
@@ -4124,6 +4135,36 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   line-height:1.7;max-width:700px;
 }
 
+/* ── Command Center Header ── */
+.dash-command-hero{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);
+  gap:1.25rem;align-items:stretch;
+}
+@media(max-width:980px){.dash-command-hero{grid-template-columns:1fr}}
+.dash-command-status{
+  display:flex;flex-direction:column;gap:0.85rem;
+  background:var(--color-surface);
+  border:1px solid rgba(10,102,194,0.14);
+  border-radius:18px;padding:1.15rem 1.2rem;
+  box-shadow:0 10px 28px rgba(10,102,194,0.08),var(--shadow-sm);
+}
+.dash-command-pills{display:flex;flex-wrap:wrap;gap:0.5rem}
+.dash-command-pill{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  border-radius:999px;padding:0.35rem 0.65rem;
+  font-size:0.72rem;font-weight:700;letter-spacing:0.01em;
+}
+.dash-command-pill-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.9}
+.dash-command-pill-ok{background:rgba(22,163,74,0.11);color:#15803D}
+.dash-command-pill-warn{background:rgba(217,119,6,0.12);color:#B45309}
+.dash-command-pill-neutral{background:rgba(10,102,194,0.08);color:var(--color-primary)}
+.dash-command-status-text{margin:0;font-size:0.84rem;line-height:1.55;color:var(--color-muted)}
+.dash-command-status-cta{
+  margin-top:auto;display:inline-flex;align-items:center;gap:0.35rem;
+  font-size:0.82rem;font-weight:700;color:var(--color-primary);text-decoration:none;
+}
+.dash-command-status-cta:hover{text-decoration:underline}
+
 /* ── Enhanced Daily Plan Hero ── */
 .dash-daily-hero{
   background:linear-gradient(135deg,#0A66C2 0%,#003d8f 45%,#002F6C 100%);
@@ -4167,20 +4208,21 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .dash-core-card{
   padding:2rem 1.75rem 1.75rem;
   border-radius:18px;
-  border:1px solid var(--color-border);
+  border:1px solid rgba(208,217,226,0.9);
   min-height:200px;
-  box-shadow:var(--shadow-xs);
+  box-shadow:0 8px 24px rgba(11,18,32,0.04),var(--shadow-xs);
   transition:all var(--duration-normal) var(--ease-out);
 }
 .dash-core-card:hover{
   border-color:var(--color-primary);
-  box-shadow:0 12px 32px rgba(10,102,194,0.12),0 4px 12px rgba(10,102,194,0.06);
+  box-shadow:0 14px 34px rgba(10,102,194,0.14),0 5px 16px rgba(10,102,194,0.08);
   transform:translateY(-6px);
 }
 .dash-core-card-icon{
   width:52px;height:52px;border-radius:14px;
   font-size:1.5rem;
 }
+.dash-core-card-icon svg{width:24px;height:24px}
 .dash-core-card-title{
   font-size:1rem;font-weight:700;
   line-height:1.3;
@@ -4192,20 +4234,22 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .dash-sec-card{
   border-radius:12px;
   padding:1rem 1.2rem;
+  border:1px solid rgba(208,217,226,0.9);
   transition:all var(--duration-fast) var(--ease-out);
 }
 .dash-sec-card:hover{
   border-color:var(--color-primary);
-  box-shadow:0 6px 18px rgba(10,102,194,0.08);
+  box-shadow:0 8px 20px rgba(10,102,194,0.1);
   transform:translateY(-2px);
 }
 .dash-sec-card-active{
-  box-shadow:0 0 0 2px rgba(10,102,194,0.12),var(--shadow-sm);
+  box-shadow:0 0 0 2px rgba(10,102,194,0.12),0 8px 18px rgba(10,102,194,0.07);
 }
 .dash-sec-card-icon{
   width:36px;height:36px;border-radius:9px;
   font-size:1.1rem;
 }
+.dash-sec-card-icon svg{width:18px;height:18px}
 
 /* ── Enhanced QA Input System ── */
 .qa-input{
@@ -4883,7 +4927,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   text-align:center;
 }
 @keyframes modalSlideUp{0%{opacity:0;transform:translateY(20px) scale(0.97)}100%{opacity:1;transform:translateY(0) scale(1)}}
-.dash-modal-icon{font-size:2.5rem;margin-bottom:1rem}
+.dash-modal-icon{
+  width:56px;height:56px;border-radius:16px;
+  margin:0 auto 1rem;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--color-soft);color:var(--color-primary);
+}
+.dash-modal-icon svg{width:28px;height:28px}
 .dash-modal-title{
   font-size:1.35rem;font-weight:800;
   color:var(--color-text);letter-spacing:-0.02em;
@@ -4943,7 +4993,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   background:linear-gradient(90deg,var(--color-warning-bg) 0%,rgba(255,251,235,0.6) 100%);
   border-bottom:1px solid rgba(217,119,6,0.12);
 }
-.sys-banner-icon{font-size:1.1rem;flex-shrink:0}
+.sys-banner-icon{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:#D97706;background:rgba(245,158,11,0.12);
+}
+.sys-banner-icon svg{width:18px;height:18px}
 .sys-banner-content{flex:1;min-width:0}
 .sys-banner-title{
   font-size:0.82rem;font-weight:700;
@@ -5107,30 +5162,32 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 /* ── Result Header ── */
 .result-header{
   display:flex;align-items:center;gap:0.75rem;
-  padding-bottom:0.875rem;margin-bottom:0.5rem;
-  border-bottom:1px solid rgba(0,0,0,0.06);
+  padding:0.25rem 0 1rem;margin-bottom:0.35rem;
+  border-bottom:1px solid rgba(10,102,194,0.12);
 }
 .result-header-bar{
-  width:4px;height:26px;border-radius:2px;flex-shrink:0;
+  width:4px;height:30px;border-radius:2px;flex-shrink:0;
   background:linear-gradient(180deg,#0a66c2 0%,#004182 100%);
 }
 .result-header-title{
-  font-size:0.75rem;font-weight:700;text-transform:uppercase;
-  letter-spacing:0.07em;color:var(--color-muted);flex:1;
+  font-size:0.76rem;font-weight:800;text-transform:uppercase;
+  letter-spacing:0.08em;color:var(--color-primary);flex:1;
 }
 
 /* ── Result Container (replaces qa-result for new pages) ── */
 .insight-result{
-  display:flex;flex-direction:column;gap:0.625rem;
+  display:flex;flex-direction:column;gap:0.85rem;
 }
 
 /* ── Insight Card — base ── */
 .insight-card{
   position:relative;border-radius:14px;
-  border:1px solid rgba(0,0,0,0.06);
-  padding:0.875rem 1.125rem 0.875rem 1.25rem;
+  border:1px solid rgba(0,0,0,0.07);
+  padding:1rem 1.2rem 1rem 1.35rem;
+  background:var(--color-surface);
   transition:border-color 200ms cubic-bezier(.4,0,.2,1),
-             box-shadow 200ms cubic-bezier(.4,0,.2,1);
+             box-shadow 200ms cubic-bezier(.4,0,.2,1),
+             transform 200ms cubic-bezier(.4,0,.2,1);
   overflow:hidden;
 }
 .insight-card::before{
@@ -5140,8 +5197,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   opacity:0.5;transition:opacity 200ms;
 }
 .insight-card:hover{
-  border-color:rgba(0,0,0,0.1);
-  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  border-color:rgba(10,102,194,0.2);
+  box-shadow:0 10px 24px rgba(11,18,32,0.06);
+  transform:translateY(-1px);
 }
 .insight-card:hover::before{opacity:1}
 
@@ -5152,14 +5210,15 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 .insight-label{
   display:flex;align-items:center;gap:0.375rem;
-  font-size:0.6875rem;font-weight:700;text-transform:uppercase;
+  font-size:0.69rem;font-weight:800;text-transform:uppercase;
   letter-spacing:0.05em;color:var(--insight-accent,#6b7280);
 }
-.insight-icon{font-size:0.875rem;line-height:1}
+.insight-icon{width:16px;height:16px;display:flex;align-items:center;justify-content:center;line-height:1}
+.insight-icon svg{width:16px;height:16px}
 
 /* ── Body ── */
 .insight-body{
-  font-size:0.8625rem;line-height:1.7;color:var(--color-text);
+  font-size:0.875rem;line-height:1.72;color:var(--color-text);
 }
 .insight-body p{margin:0}
 .insight-paragraphs p+p{margin-top:0.5rem}
@@ -5303,14 +5362,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 /* ── Next Action callout (premium) ── */
 .insight-next-action{
   display:flex;align-items:flex-start;gap:0.625rem;
-  padding:0.875rem 1.125rem;border-radius:12px;
+  padding:1rem 1.125rem;border-radius:12px;
   background:rgba(22,163,74,0.04);
   border:1px solid rgba(22,163,74,0.1);
   font-size:0.8625rem;line-height:1.6;
 }
 .insight-next-action-icon{
-  font-size:1rem;flex-shrink:0;margin-top:0.1rem;
+  width:18px;height:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:0.05rem;
 }
+.insight-next-action-icon svg{width:18px;height:18px}
 .insight-next-action strong{font-weight:600}
 
 /* ── Reply grid (3 variants side by side) ── */
@@ -5327,6 +5388,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   border:1px solid rgba(217,119,6,0.1);
   font-size:0.8125rem;color:#92400e;
 }
+.insight-warn-inline svg{width:16px;height:16px;margin-top:1px;flex-shrink:0}
 
 /* ── Responsive ── */
 @media(max-width:768px){
