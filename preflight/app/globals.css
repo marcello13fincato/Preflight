@@ -5664,3 +5664,155 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   .dash-daily-hero{padding:1.5rem 1.2rem}
   .dash-v2-section{padding:1rem 0.95rem 1.15rem}
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD SHELL REBUILD — narrative workspace
+═══════════════════════════════════════════════════════════ */
+
+.dash-page-rebuild{
+  max-width:1320px;
+  gap:1.4rem;
+}
+
+.dash-page-rebuild .app-content,
+.app-content .dash-page-rebuild{
+  position:relative;
+}
+
+.dash-page-rebuild .dash-workspace-hero{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(300px,340px);
+  gap:1rem;
+}
+
+.dash-page-rebuild .dash-workspace-intro{
+  border-radius:20px;
+  padding:1.75rem 1.8rem 1.15rem;
+  background:
+    radial-gradient(280px 180px at 95% -10%, rgba(10,102,194,0.16), transparent 70%),
+    linear-gradient(155deg, rgba(255,255,255,0.98), rgba(248,251,255,0.94));
+  border:1px solid rgba(148,163,184,0.2);
+  box-shadow:0 14px 30px rgba(15,23,42,0.07);
+}
+
+.dash-page-rebuild .page-hero-title{
+  font-size:clamp(1.95rem,2.8vw,2.55rem);
+  line-height:1.08;
+  letter-spacing:-0.04em;
+}
+
+.dash-page-rebuild .dash-command-metrics{
+  gap:0.62rem;
+}
+.dash-page-rebuild .dash-command-metric{
+  border-radius:10px;
+  border:1px solid rgba(148,163,184,0.22);
+  background:rgba(255,255,255,0.78);
+  padding:0.7rem 0.82rem;
+}
+.dash-page-rebuild .dash-command-metric-value{
+  font-size:1.1rem;
+}
+
+.dash-page-rebuild .dash-workspace-status{
+  border-radius:20px;
+  padding:1.05rem;
+  border:1px solid rgba(148,163,184,0.2);
+  background:linear-gradient(170deg,#ffffff 0%,#f8fbff 100%);
+  box-shadow:0 10px 24px rgba(15,23,42,0.06);
+}
+
+.dash-page-rebuild .dash-workspace-flow{
+  display:grid;
+  grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);
+  gap:1rem;
+  align-items:start;
+}
+
+.dash-page-rebuild .dash-workspace-daily{
+  border-radius:20px;
+  padding:1.9rem 1.8rem;
+  margin:0;
+  min-height:100%;
+}
+
+.dash-page-rebuild .dash-workspace-tools{
+  border-radius:20px;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fafc 100%);
+  border:1px solid rgba(148,163,184,0.2);
+  box-shadow:0 12px 24px rgba(15,23,42,0.05);
+  padding:1.2rem 1.15rem 1.25rem;
+}
+
+.dash-page-rebuild .dash-core-grid-rebuild{
+  grid-template-columns:1fr;
+  gap:0.75rem;
+}
+
+.dash-page-rebuild .dash-core-card{
+  min-height:170px;
+  padding:1.3rem 1.15rem 1.05rem;
+  border-radius:14px;
+  border:1px solid rgba(148,163,184,0.23);
+  box-shadow:0 8px 18px rgba(15,23,42,0.05);
+}
+
+.dash-page-rebuild .dash-core-card-featured{
+  min-height:205px;
+  background:
+    radial-gradient(300px 120px at 90% -30%, rgba(10,102,194,0.14), transparent 70%),
+    linear-gradient(150deg,#ffffff 0%,#f2f7ff 100%);
+  border-color:rgba(10,102,194,0.3);
+}
+
+.dash-page-rebuild .dash-tools-contextual{
+  margin-top:0.8rem;
+  padding-top:0.9rem;
+  border-top:1px solid rgba(148,163,184,0.22);
+}
+
+.dash-page-rebuild .dash-secondary-label{
+  margin:0 0 0.5rem;
+  font-size:0.66rem;
+  letter-spacing:0.1em;
+}
+
+.dash-page-rebuild .dash-secondary-grid-rebuild{
+  grid-template-columns:1fr;
+  gap:0.55rem;
+}
+
+.dash-page-rebuild .dash-sec-card{
+  padding:0.8rem 0.9rem;
+  border-radius:10px;
+  box-shadow:none;
+  background:rgba(255,255,255,0.86);
+}
+
+.dash-page-rebuild .dash-sec-card-title{
+  font-size:0.82rem;
+}
+
+.dash-page-rebuild .dash-sec-card-desc{
+  white-space:normal;
+  font-size:0.73rem;
+}
+
+.dash-page-rebuild .dash-v2-section-bottom{
+  border-radius:18px;
+  background:rgba(255,255,255,0.92);
+  border:1px solid rgba(148,163,184,0.22);
+}
+
+@media (max-width:1080px){
+  .dash-page-rebuild .dash-workspace-hero{grid-template-columns:1fr}
+  .dash-page-rebuild .dash-workspace-flow{grid-template-columns:1fr}
+  .dash-page-rebuild .dash-secondary-grid-rebuild{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media (max-width:700px){
+  .dash-page-rebuild .dash-workspace-intro{padding:1.25rem 1rem 0.9rem}
+  .dash-page-rebuild .dash-workspace-daily{padding:1.35rem 1rem}
+  .dash-page-rebuild .dash-workspace-tools{padding:1rem 0.9rem}
+  .dash-page-rebuild .dash-secondary-grid-rebuild{grid-template-columns:1fr}
+}
