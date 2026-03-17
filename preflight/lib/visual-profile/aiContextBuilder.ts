@@ -11,6 +11,11 @@ import {
   PHOTO_STRATEGIES,
   TYPOGRAPHY_PRESETS,
   CONTENT_STYLE_PERSONALITIES,
+  StylePresetId,
+  VisualToneId,
+  TypographyPresetId,
+  ContentStylePersonalityId,
+  PhotoStrategyId,
 } from "./constants";
 
 /**
@@ -19,9 +24,9 @@ import {
 export function formatVisualProfileForImagePrompt(profile: VisualProfile | null): string {
   if (!profile) return "";
 
-  const tone = VISUAL_TONES[profile.visualTone as any];
-  const preset = STYLE_PRESETS[profile.stylePreset as any];
-  const photoStrategy = PHOTO_STRATEGIES[profile.photoStrategy as any];
+  const tone = VISUAL_TONES[profile.visualTone as VisualToneId];
+  const preset = STYLE_PRESETS[profile.stylePreset as StylePresetId];
+  const photoStrategy = PHOTO_STRATEGIES[profile.photoStrategy as PhotoStrategyId];
 
   return `
 
@@ -45,9 +50,9 @@ ${photoStrategy?.aiGuidance ? `  Direction: ${photoStrategy.aiGuidance}` : ""}
 export function formatVisualProfileForContentPrompt(profile: VisualProfile | null): string {
   if (!profile) return "";
 
-  const personality = CONTENT_STYLE_PERSONALITIES[profile.contentStylePersonality as any];
-  const typography = TYPOGRAPHY_PRESETS[profile.typographyPreset as any];
-  const preset = STYLE_PRESETS[profile.stylePreset as any];
+  const personality = CONTENT_STYLE_PERSONALITIES[profile.contentStylePersonality as ContentStylePersonalityId];
+  const typography = TYPOGRAPHY_PRESETS[profile.typographyPreset as TypographyPresetId];
+  const preset = STYLE_PRESETS[profile.stylePreset as StylePresetId];
 
   return `
 
@@ -66,7 +71,7 @@ ${personality?.aiGuidance ? `  Strategy: ${personality.aiGuidance}` : ""}
 export function generateCarouselStyleHints(profile: VisualProfile | null): string {
   if (!profile) return "";
 
-  const photoStrategy = PHOTO_STRATEGIES[profile.photoStrategy as any];
+  const photoStrategy = PHOTO_STRATEGIES[profile.photoStrategy as PhotoStrategyId];
 
   return `
 CAROUSEL VISUAL GUIDELINES:
