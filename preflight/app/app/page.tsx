@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
@@ -233,6 +233,77 @@ export default function AppTodayPage() {
   const profile = repo.profile.getProfile(userId);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const contacts = useMemo(() => repo.contact.listContacts(userId), [contactsRefresh, userId, repo]);
+
+  /* ── Activity tracking ── */
+  const todayStr = new Date().toISOString().split("T")[0];
+  const [activityDates, setActivityDates] = useState<string[]>([]);
+  const [markedActiveToday, setMarkedActiveToday] = useState(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const stored: string[] = JSON.parse(localStorage.getItem("preflight-activity-dates") || "[]");
+    setActivityDates(stored);
+    setMarkedActiveToday(stored.includes(todayStr));
+  }, [todayStr]);
+  const markActiveToday = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const stored: string[] = JSON.parse(localStorage.getItem("preflight-activity-dates") || "[]");
+    if (!stored.includes(todayStr)) {
+      const updated = [...stored, todayStr].sort();
+      localStorage.setItem("preflight-activity-dates", JSON.stringify(updated));
+      setActivityDates(updated);
+    }
+    setMarkedActiveToday(true);
+  }, [todayStr]);
+  const streak = useMemo(() => {
+    if (!activityDates.length) return 0;
+    const sorted = [...activityDates].sort().reverse();
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    if (sorted[0] !== todayStr && sorted[0] !== yesterday) return 0;
+    let count = 0;
+    let check = sorted[0];
+    for (const d of sorted) {
+      if (d === check) {
+        count++;
+        check = new Date(new Date(check).getTime() - 86400000).toISOString().split("T")[0];
+      } else { break; }
+    }
+    return count;
+  }, [activityDates, todayStr]);
+  const lastActiveDate = activityDates.length > 0 ? activityDates[activityDates.length - 1] : null;
+  const daysSinceActive = lastActiveDate
+    ? Math.round((new Date(todayStr).getTime() - new Date(lastActiveDate).getTime()) / 86400000)
+    : null;
+  const planFeedback = useMemo((): { badge: string; badgeClass: string; message: string } => {
+    if (markedActiveToday) {
+      if (streak >= 7) return { badge: "Piano completato oggi", badgeClass: "dps-status-active", message: "Eccellente costanza. Stai costruendo un sistema commerciale solido ogni giorno." };
+      if (streak >= 3) return { badge: "Piano completato oggi", badgeClass: "dps-status-active", message: "Buona progressione. La costanza è il motore della crescita commerciale su LinkedIn." };
+      return { badge: "Piano completato oggi", badgeClass: "dps-status-active", message: "Oggi sei operativo. Ogni azione conta." };
+    }
+    if (daysSinceActive === null || daysSinceActive > 3) {
+      return { badge: "Piano non ancora avviato", badgeClass: "dps-status-pending", message: "Nessuna attività recente rilevata. Oggi è il momento giusto per riprendere." };
+    }
+    if (daysSinceActive > 1) {
+      const days = daysSinceActive - 1;
+      return { badge: `Hai saltato ${days} ${days === 1 ? "giorno" : "giorni"}`, badgeClass: "dps-status-missed", message: "La costanza fa la differenza. Bastano 20 minuti al giorno per mantenere il momentum." };
+    }
+    return { badge: "Piano non ancora fatto oggi", badgeClass: "dps-status-pending", message: "Ieri eri operativo. Continua oggi per mantenere la serie attiva." };
+  }, [markedActiveToday, streak, daysSinceActive]);
+  const lastActiveLabel = useMemo(() => {
+    if (!lastActiveDate) return "—";
+    if (lastActiveDate === todayStr) return "Oggi";
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+    if (lastActiveDate === yesterday) return "Ieri";
+    return new Date(lastActiveDate).toLocaleDateString("it-IT", { day: "numeric", month: "short" });
+  }, [lastActiveDate, todayStr]);
+  const activityLevel = useMemo((): string => {
+    const last7 = Array.from({ length: 7 }, (_, i) =>
+      new Date(Date.now() - i * 86400000).toISOString().split("T")[0],
+    );
+    const count = last7.filter((d) => activityDates.includes(d)).length;
+    if (count >= 5) return "Alta";
+    if (count >= 3) return "Media";
+    return "Bassa";
+  }, [activityDates]);
 
   /* ── Onboarding modal ── */
   const [modalDismissed, setModalDismissed] = useState(() => {
@@ -493,97 +564,137 @@ export default function AppTodayPage() {
         </div>
       )}
 
-      <div className="dash-page-v2 dash-page-rebuild">
+      <div className="dash-page-v5">
 
-        <section className="dash-overview-v3" aria-label="Panoramica dashboard">
-          <div className="dash-overview-v3-copy">
-            <h1 className="dash-overview-v3-title">Dashboard</h1>
-            <p className="dash-overview-v3-subtitle">
-              Organizza la tua giornata commerciale: parti dalle priorità, apri un&apos;azione core e usa gli strumenti operativi quando servono.
+        {/* ── DAILY PLAN STATUS ── */}
+        <section className="dps-wrap" aria-label="Piano del giorno">
+          <div className="dps-blur-orb" aria-hidden="true" />
+          <div className="dps-grid">
+            <div className="dps-left">
+              <div className={`dps-status-badge ${planFeedback.badgeClass}`}>
+                <span className="dps-status-dot" aria-hidden="true" />
+                {planFeedback.badge}
+              </div>
+              <h2 className="dps-title">Il tuo piano di oggi</h2>
+              <p className="dps-message">{planFeedback.message}</p>
+              <div className="dps-meta-row">
+                <div className="dps-meta-item">
+                  <span className="dps-meta-value">{streak > 0 ? streak : "—"}</span>
+                  <span className="dps-meta-label">giorni consecutivi</span>
+                </div>
+                <div className="dps-meta-item">
+                  <span className="dps-meta-value">{lastActiveLabel}</span>
+                  <span className="dps-meta-label">ultima attività</span>
+                </div>
+                <div className="dps-meta-item">
+                  <span className="dps-meta-value">{contacts.length}</span>
+                  <span className="dps-meta-label">profili analizzati</span>
+                </div>
+              </div>
+              {!markedActiveToday && (
+                <Link href="/app/find-clients" className="dps-cta" onClick={markActiveToday}>
+                  Inizia il piano di oggi
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </Link>
+              )}
+            </div>
+            <div className="dps-right">
+              <p className="dps-actions-panel-title">Priorità di oggi</p>
+              <Link href="/app/find-clients" className="dps-action-item" onClick={markActiveToday}>
+                <span className="dps-action-item-text">Trova 3 nuovi profili da contattare</span>
+                <span className="dps-action-item-arrow" aria-hidden="true">→</span>
+              </Link>
+              <Link href="/app/dm" className="dps-action-item" onClick={markActiveToday}>
+                <span className="dps-action-item-text">Sblocca 2 conversazioni in corso</span>
+                <span className="dps-action-item-arrow" aria-hidden="true">→</span>
+              </Link>
+              <button
+                type="button"
+                className="dps-action-item"
+                onClick={() => { markActiveToday(); setDashMode("post"); }}
+              >
+                <span className="dps-action-item-text">Pubblica 1 contenuto mirato</span>
+                <span className="dps-action-item-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+          <div className="dps-signals">
+            <span className="dps-signal-chip">Outreach: decision maker inattivi da riattivare</span>
+            <span className="dps-signal-chip">Follow-up: conversazioni con ultimo touch &gt; 5 giorni</span>
+            <span className="dps-signal-chip">Contenuto: errori comuni in fase di acquisizione</span>
+          </div>
+        </section>
+
+        {/* ── ACTIVITY EVALUATION ── */}
+        <div className="dact-section" role="complementary" aria-label="Valutazione attività">
+          <div className="dact-stat">
+            <span className="dact-label">Costanza</span>
+            <span className="dact-value">{activityLevel}</span>
+          </div>
+          <div className="dact-stat">
+            <span className="dact-label">Serie attiva</span>
+            <span className="dact-value">{streak > 0 ? `${streak} gg` : "—"}</span>
+          </div>
+          <div className="dact-stat">
+            <span className="dact-label">Profili analizzati</span>
+            <span className="dact-value">{contacts.length}</span>
+          </div>
+          <div className="dact-stat">
+            <span className="dact-label">Promemoria</span>
+            <p className="dact-reminder-text">
+              {activityLevel === "Alta"
+                ? "Ritmo eccellente. La costanza trasforma l\u2019effort in risultati concreti."
+                : activityLevel === "Media"
+                ? "Buon ritmo. Aumenta la frequenza per consolidare pipeline e presenza commerciale."
+                : "L\u2019azione quotidiana \u00e8 il motore dell\u2019acquisizione. Anche una sessione breve fa la differenza."}
             </p>
           </div>
-          <div className="dash-overview-v3-status">
-            <span className={`dash-overview-chip ${profile.onboarding_complete ? "dash-overview-chip-ok" : "dash-overview-chip-warn"}`}>
-              <span className="dash-overview-chip-dot" aria-hidden="true" />
-              {profile.onboarding_complete ? "Sistema configurato" : "Setup incompleto"}
-            </span>
-            <span className="dash-overview-chip dash-overview-chip-neutral">{contacts.length} contatti analizzati</span>
-            <span className="dash-overview-chip dash-overview-chip-neutral">{CORE_ACTIONS.length} azioni principali</span>
+        </div>
+
+        {/* ── CORE ACTIONS V5 ── */}
+        <section className="dash-core-v5-section" aria-label="Azioni principali">
+          <div className="dash-core-v5-head">
+            <h3 className="dash-core-v5-title">Azioni principali</h3>
+            <p className="dash-core-v5-sub">Le tre leve della tua acquisizione commerciale su LinkedIn.</p>
           </div>
-        </section>
-
-        <section className="dash-plan-v3" aria-label="Cosa fare oggi">
-          <div className="dash-plan-v3-head">
-            <h2 className="dash-plan-v3-title">Cosa fare oggi</h2>
-            <p className="dash-plan-v3-subtitle">Tre priorità concrete per muovere pipeline e conversazioni.</p>
-          </div>
-
-          <div className="dash-plan-v3-grid">
-            <article className="dash-plan-priority">
-              <h3 className="dash-plan-priority-title">Trova 3 nuovi profili</h3>
-              <p className="dash-plan-priority-why">Perché conta: alimenta il tuo flusso di opportunità e mantiene costante l&apos;outreach.</p>
-              <Link href="/app/find-clients" className="dash-plan-priority-cta">Apri Trova clienti →</Link>
-            </article>
-
-            <article className="dash-plan-priority">
-              <h3 className="dash-plan-priority-title">Sblocca 2 conversazioni</h3>
-              <p className="dash-plan-priority-why">Perché conta: i follow-up ben guidati trasformano interesse in appuntamenti.</p>
-              <Link href="/app/dm" className="dash-plan-priority-cta">Apri Chiedi un consiglio →</Link>
-            </article>
-
-            <article className="dash-plan-priority">
-              <h3 className="dash-plan-priority-title">Pubblica 1 contenuto mirato</h3>
-              <p className="dash-plan-priority-why">Perché conta: rafforza autorevolezza e crea nuovi ingressi in DM.</p>
-              <button type="button" className="dash-plan-priority-cta dash-plan-priority-cta-btn" onClick={() => setDashMode("post")}>Apri Scrivi un post →</button>
-            </article>
-          </div>
-
-          <div className="dash-plan-signals">
-            <span className="dash-plan-signal">Tema outreach: decision maker inattivi da riattivare</span>
-            <span className="dash-plan-signal">Focus follow-up: conversazioni con ultimo touch &gt; 5 giorni</span>
-            <span className="dash-plan-signal">Angolo contenuto: errori comuni in fase di acquisizione</span>
-          </div>
-        </section>
-
-        <section className="dash-v2-section dash-core-focus-v3">
-          <div className="dash-v2-section-head">
-            <h3 className="dash-v2-section-title">Azioni principali</h3>
-            <p className="dash-v2-section-sub">Le tre azioni centrali del prodotto: trovare contatti, valutarli e sapere cosa scrivere subito.</p>
-          </div>
-
-          <div className="dash-core-grid dash-core-grid-focus-v3">
+          <div className="dash-core-v5-grid">
             {CORE_ACTIONS.map((action) => (
               <Link
                 key={action.id}
                 href={action.href}
-                className="dash-core-card dash-core-card-v3"
+                className="dash-core-v5-card"
+                onClick={markActiveToday}
               >
-                <div className={`dash-core-card-icon ${action.iconClass}`}>{action.icon}</div>
-                <h4 className="dash-core-card-title">{action.title}</h4>
-                <p className="dash-core-card-desc">{action.desc}</p>
-                <span className="dash-core-card-cta">{action.cta} <span className="dash-core-card-arrow">→</span></span>
+                <div className={`dash-core-v5-icon dash-core-v5-icon-${action.id}`}>{action.icon}</div>
+                <h4 className="dash-core-v5-card-title">{action.title}</h4>
+                <p className="dash-core-v5-card-desc">{action.desc}</p>
+                <span className="dash-core-v5-card-cta">
+                  {action.cta}
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </span>
               </Link>
             ))}
           </div>
         </section>
 
-        <section className="dash-v2-section dash-secondary-v3">
-          <div className="dash-v2-section-head">
-            <h3 className="dash-v2-section-title">Strumenti operativi</h3>
-            <p className="dash-v2-section-sub">Usali quando serve per contenuti, risposte e avanzamento conversazioni.</p>
+        {/* ── SECONDARY OPS V5 ── */}
+        <section className="dash-ops-v5-section" aria-label="Strumenti operativi">
+          <div className="dash-ops-v5-head">
+            <h3 className="dash-ops-v5-title">Strumenti operativi</h3>
+            <p className="dash-ops-v5-sub">Contenuti, risposte e avanzamento conversazioni quando servono.</p>
           </div>
-          <div className="dash-secondary-grid dash-secondary-grid-v3">
+          <div className="dash-ops-v5-grid">
             {SECONDARY_TOOLS.map((tool) => (
               <button
                 key={tool.id}
                 type="button"
-                className={`dash-sec-card dash-sec-card-v3${dashMode === tool.id ? " dash-sec-card-active" : ""}`}
-                onClick={() => setDashMode(dashMode === tool.id ? null : tool.id)}
+                className={`dash-ops-v5-card${dashMode === tool.id ? " dash-ops-v5-card-active" : ""}`}
+                onClick={() => { markActiveToday(); setDashMode(dashMode === tool.id ? null : tool.id); }}
               >
-                <div className="dash-sec-card-icon">{tool.icon}</div>
-                <div className="dash-sec-card-body">
-                  <h4 className="dash-sec-card-title">{tool.title}</h4>
-                  <p className="dash-sec-card-desc">{tool.desc}</p>
+                <div className="dash-ops-v5-icon">{tool.icon}</div>
+                <div className="dash-ops-v5-body">
+                  <h4 className="dash-ops-v5-title-card">{tool.title}</h4>
+                  <p className="dash-ops-v5-desc">{tool.desc}</p>
                 </div>
               </button>
             ))}
