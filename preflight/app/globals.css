@@ -6223,3 +6223,149 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   font-size:0.72rem;color:var(--color-muted);margin:0.1rem 0 0;
   line-height:1.4;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD V6 — Performance Mirror
+═══════════════════════════════════════════════════════════ */
+
+.dash-page-v6{
+  width:100%;max-width:none;
+  display:flex;flex-direction:column;gap:1.9rem;
+  padding-bottom:4.5rem;
+}
+
+.acti-hero{
+  position:relative;overflow:hidden;
+  border-radius:26px;
+  border:1px solid rgba(148,163,184,0.26);
+  background:
+    radial-gradient(950px 380px at -5% -32%, rgba(59,130,246,0.18), transparent 70%),
+    radial-gradient(650px 320px at 100% 5%, rgba(14,165,233,0.12), transparent 68%),
+    linear-gradient(135deg,#0a1730 0%,#10264a 44%,#12386f 100%);
+  box-shadow:0 24px 60px rgba(2,6,23,0.28),0 8px 24px rgba(10,102,194,0.16);
+  padding:2.2rem 2.3rem;
+}
+.acti-hero-grid{display:grid;grid-template-columns:1.25fr 0.9fr;gap:1.35rem;align-items:stretch;position:relative;z-index:1}
+.acti-main-panel,.acti-continuity-panel{
+  border:1px solid rgba(255,255,255,0.16);
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(8px);
+  border-radius:18px;
+  padding:1.4rem 1.5rem;
+}
+.acti-eyebrow{
+  margin:0 0 0.45rem;
+  font-size:0.66rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+  color:rgba(191,219,254,0.86);
+}
+.acti-title{
+  margin:0;
+  font-size:clamp(1.8rem,3vw,2.5rem);
+  line-height:1.08;letter-spacing:-0.03em;
+  color:#fff;font-weight:900;
+}
+.acti-score-row{display:flex;align-items:center;justify-content:space-between;gap:0.9rem;margin-top:1rem}
+.acti-score-block{display:flex;align-items:flex-end;gap:0.35rem}
+.acti-score-value{font-size:3.05rem;line-height:0.94;font-weight:900;color:#fff;letter-spacing:-0.05em}
+.acti-score-over{font-size:1rem;font-weight:600;color:rgba(255,255,255,0.6);padding-bottom:0.26rem}
+.acti-status-badge{
+  display:inline-flex;align-items:center;
+  border-radius:999px;padding:0.35rem 0.78rem;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  border:1px solid transparent;
+}
+.acti-status-high{background:rgba(74,222,128,0.2);color:#86efac;border-color:rgba(74,222,128,0.4)}
+.acti-status-mid{background:rgba(250,204,21,0.18);color:#fde68a;border-color:rgba(250,204,21,0.34)}
+.acti-status-low{background:rgba(248,113,113,0.18);color:#fecaca;border-color:rgba(248,113,113,0.3)}
+.acti-feedback{margin:0.85rem 0 0;font-size:0.94rem;line-height:1.65;color:rgba(226,232,240,0.86);max-width:64ch}
+.acti-trend-row{margin-top:1rem;display:flex;align-items:center;gap:0.62rem;flex-wrap:wrap}
+.acti-trend-pill{
+  display:inline-flex;align-items:center;gap:0.4rem;
+  border-radius:999px;padding:0.32rem 0.78rem;
+  font-size:0.73rem;font-weight:700;
+}
+.acti-trend-up{background:rgba(74,222,128,0.17);color:#86efac;border:1px solid rgba(74,222,128,0.35)}
+.acti-trend-down{background:rgba(248,113,113,0.15);color:#fecaca;border:1px solid rgba(248,113,113,0.28)}
+.acti-trend-meta{font-size:0.75rem;color:rgba(191,219,254,0.82)}
+
+.acti-panel-title{margin:0 0 0.85rem;font-size:0.9rem;color:#dbeafe;font-weight:700;letter-spacing:-0.01em}
+.acti-continuity-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.62rem}
+.acti-kpi-card{
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.14);
+  background:rgba(2,6,23,0.22);
+  padding:0.74rem 0.82rem;
+  display:flex;flex-direction:column;gap:0.16rem;
+}
+.acti-kpi-label{
+  font-size:0.63rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  color:rgba(191,219,254,0.72);
+}
+.acti-kpi-value{font-size:1.04rem;font-weight:800;color:#fff;letter-spacing:-0.02em}
+
+.ops-metrics-wrap{
+  border-radius:18px;
+  border:1px solid rgba(148,163,184,0.28);
+  background:linear-gradient(180deg,rgba(255,255,255,0.96) 0%,rgba(248,250,252,0.98) 100%);
+  box-shadow:0 12px 34px rgba(15,23,42,0.07);
+  padding:1.2rem 1.25rem;
+  display:flex;flex-direction:column;gap:0.95rem;
+}
+.ops-metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0.7rem}
+.ops-metric-card{
+  border-radius:14px;border:1px solid rgba(208,217,226,0.9);
+  background:#fff;padding:0.84rem 0.92rem;
+  display:flex;flex-direction:column;gap:0.2rem;
+}
+.ops-metric-label{font-size:0.66rem;text-transform:uppercase;letter-spacing:0.07em;font-weight:700;color:#64748b}
+.ops-metric-value{font-size:1.7rem;font-weight:900;line-height:1;color:#0b1220;letter-spacing:-0.03em}
+
+.smart-alert{
+  border-radius:14px;padding:0.92rem 1rem;
+  border:1px solid transparent;
+}
+.smart-alert-title{margin:0;font-size:0.84rem;font-weight:800;letter-spacing:-0.01em}
+.smart-alert-body{margin:0.24rem 0 0;font-size:0.8rem;line-height:1.58}
+.smart-alert-positive{background:#f0fdf4;border-color:#86efac;color:#166534}
+.smart-alert-warning{background:#fff7ed;border-color:#fdba74;color:#9a3412}
+.smart-alert-risk{background:#fef2f2;border-color:#fca5a5;color:#991b1b}
+
+.ops-activity-reminder{margin:0;color:#475569;font-size:0.78rem;line-height:1.55}
+
+.main-tools-secondary{display:flex;flex-direction:column;gap:0.82rem}
+.main-tools-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.main-tools-title{margin:0;font-size:1.1rem;font-weight:800;color:#0f172a;letter-spacing:-0.02em}
+.main-tools-sub{margin:0;font-size:0.8rem;color:#64748b}
+.main-tools-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.75rem}
+.main-tool-card{
+  border-radius:14px;border:1px solid rgba(208,217,226,0.88);
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  padding:1.05rem;
+  text-decoration:none;display:flex;flex-direction:column;gap:0.52rem;
+  transition:transform .18s var(--ease-out),box-shadow .18s var(--ease-out),border-color .18s var(--ease-out);
+}
+.main-tool-card:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(15,23,42,0.09);border-color:rgba(59,130,246,0.38);text-decoration:none}
+.main-tool-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.main-tool-icon svg{width:17px;height:17px}
+.main-tool-icon-find{background:#dcfce7;color:#166534}
+.main-tool-icon-profile{background:#dbeafe;color:#1d4ed8}
+.main-tool-icon-advice{background:#ffedd5;color:#c2410c}
+.main-tool-title{margin:0;font-size:0.9rem;color:#0f172a;font-weight:800;letter-spacing:-0.01em}
+.main-tool-desc{margin:0;font-size:0.76rem;color:#64748b;line-height:1.55;flex:1}
+.main-tool-cta{font-size:0.75rem;font-weight:700;color:#0a66c2}
+
+@media (max-width:1100px){
+  .acti-hero-grid{grid-template-columns:1fr}
+  .ops-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+  .acti-hero{padding:1.2rem 1rem;border-radius:18px}
+  .acti-main-panel,.acti-continuity-panel{padding:1rem}
+  .acti-continuity-grid{grid-template-columns:1fr}
+  .ops-metrics-wrap{padding:0.95rem}
+  .main-tools-grid{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .ops-metrics-grid{grid-template-columns:1fr}
+  .acti-score-value{font-size:2.5rem}
+}

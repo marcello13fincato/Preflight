@@ -9,6 +9,14 @@ import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/Insi
 import type { AnalyzedContact } from "@/lib/sales/schemas";
 
 const MODAL_DISMISSED_KEY = "onboarding-modal-dismissed";
+const DASH_METRICS_KEY = "preflight-dashboard-metrics-v1";
+
+type DashboardMetrics = {
+  postsPublished: number;
+  messagesHandled: number;
+  followupsDone: number;
+  aiSessions: number;
+};
 
 type DashMode =
   | null
@@ -38,9 +46,9 @@ const CORE_ACTIONS: {
         <path d="m20 20-3.6-3.6" />
       </svg>
     ),
-    title: "Chi contattare oggi su LinkedIn",
-    desc: "Descrivi il tipo di cliente che cerchi. Il sistema genera ricerche LinkedIn mirate con keyword, filtri e strategia di approccio.",
-    cta: "Trova chi contattare",
+    title: "Trova clienti",
+    desc: "Scopri rapidamente i profili più rilevanti da attivare oggi su LinkedIn.",
+    cta: "Apri strumento",
     iconClass: "dash-core-card-icon-find",
   },
   {
@@ -52,8 +60,8 @@ const CORE_ACTIONS: {
         <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
       </svg>
     ),
-    title: "Analizza un profilo prima di scrivere",
-    desc: "Incolla il profilo LinkedIn di una persona e scopri se vale la pena contattarla, come presentarti e quale messaggio inviare.",
+    title: "Analizza profilo",
+    desc: "Valuta fit, priorità e angolo di attacco prima di iniziare una conversazione.",
     cta: "Analizza profilo",
     iconClass: "dash-core-card-icon-profile",
   },
@@ -65,9 +73,9 @@ const CORE_ACTIONS: {
         <path d="M20 15a3 3 0 0 1-3 3H9l-5 4V6a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3z" />
       </svg>
     ),
-    title: "Non sai cosa fare? Chiedi un consiglio",
-    desc: "Hai una conversazione aperta e non sai come proseguire? Descrivi la situazione e ricevi indicazioni su cosa scrivere adesso.",
-    cta: "Chiedi consiglio",
+    title: "Strategia conversazione",
+    desc: "Ottieni il prossimo messaggio strategico per avanzare la conversazione verso la call.",
+    cta: "Apri strategia",
     iconClass: "dash-core-card-icon-advice",
   },
 ];
@@ -237,12 +245,24 @@ export default function AppTodayPage() {
   /* ── Activity tracking ── */
   const todayStr = new Date().toISOString().split("T")[0];
   const [activityDates, setActivityDates] = useState<string[]>([]);
-  const [markedActiveToday, setMarkedActiveToday] = useState(false);
+  const [, setMarkedActiveToday] = useState(false);
+  const [dashboardMetrics, setDashboardMetrics] = useState<DashboardMetrics>({
+    postsPublished: 0,
+    messagesHandled: 0,
+    followupsDone: 0,
+    aiSessions: 0,
+  });
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stored: string[] = JSON.parse(localStorage.getItem("preflight-activity-dates") || "[]");
     setActivityDates(stored);
     setMarkedActiveToday(stored.includes(todayStr));
+
+    const metrics: DashboardMetrics = JSON.parse(
+      localStorage.getItem(DASH_METRICS_KEY) ||
+      '{"postsPublished":0,"messagesHandled":0,"followupsDone":0,"aiSessions":0}',
+    );
+    setDashboardMetrics(metrics);
   }, [todayStr]);
   const markActiveToday = useCallback(() => {
     if (typeof window === "undefined") return;
@@ -254,6 +274,15 @@ export default function AppTodayPage() {
     }
     setMarkedActiveToday(true);
   }, [todayStr]);
+  const trackDashboardMetric = useCallback((metric: keyof DashboardMetrics, amount = 1) => {
+    setDashboardMetrics((prev) => {
+      const next = { ...prev, [metric]: prev[metric] + amount };
+      if (typeof window !== "undefined") {
+        localStorage.setItem(DASH_METRICS_KEY, JSON.stringify(next));
+      }
+      return next;
+    });
+  }, []);
   const streak = useMemo(() => {
     if (!activityDates.length) return 0;
     const sorted = [...activityDates].sort().reverse();
@@ -273,21 +302,6 @@ export default function AppTodayPage() {
   const daysSinceActive = lastActiveDate
     ? Math.round((new Date(todayStr).getTime() - new Date(lastActiveDate).getTime()) / 86400000)
     : null;
-  const planFeedback = useMemo((): { badge: string; badgeClass: string; message: string } => {
-    if (markedActiveToday) {
-      if (streak >= 7) return { badge: "Piano completato oggi", badgeClass: "dps-status-active", message: "Eccellente costanza. Stai costruendo un sistema commerciale solido ogni giorno." };
-      if (streak >= 3) return { badge: "Piano completato oggi", badgeClass: "dps-status-active", message: "Buona progressione. La costanza è il motore della crescita commerciale su LinkedIn." };
-      return { badge: "Piano completato oggi", badgeClass: "dps-status-active", message: "Oggi sei operativo. Ogni azione conta." };
-    }
-    if (daysSinceActive === null || daysSinceActive > 3) {
-      return { badge: "Piano non ancora avviato", badgeClass: "dps-status-pending", message: "Nessuna attività recente rilevata. Oggi è il momento giusto per riprendere." };
-    }
-    if (daysSinceActive > 1) {
-      const days = daysSinceActive - 1;
-      return { badge: `Hai saltato ${days} ${days === 1 ? "giorno" : "giorni"}`, badgeClass: "dps-status-missed", message: "La costanza fa la differenza. Bastano 20 minuti al giorno per mantenere il momentum." };
-    }
-    return { badge: "Piano non ancora fatto oggi", badgeClass: "dps-status-pending", message: "Ieri eri operativo. Continua oggi per mantenere la serie attiva." };
-  }, [markedActiveToday, streak, daysSinceActive]);
   const lastActiveLabel = useMemo(() => {
     if (!lastActiveDate) return "—";
     if (lastActiveDate === todayStr) return "Oggi";
@@ -304,6 +318,59 @@ export default function AppTodayPage() {
     if (count >= 3) return "Media";
     return "Bassa";
   }, [activityDates]);
+  const currentWeekActiveDays = useMemo(() => {
+    const last7 = Array.from({ length: 7 }, (_, i) =>
+      new Date(Date.now() - i * 86400000).toISOString().split("T")[0],
+    );
+    return last7.filter((d) => activityDates.includes(d)).length;
+  }, [activityDates]);
+  const previousWeekActiveDays = useMemo(() => {
+    const prev7 = Array.from({ length: 7 }, (_, i) =>
+      new Date(Date.now() - (i + 7) * 86400000).toISOString().split("T")[0],
+    );
+    return prev7.filter((d) => activityDates.includes(d)).length;
+  }, [activityDates]);
+  const weeklyDelta = currentWeekActiveDays - previousWeekActiveDays;
+  const activeDaysLast30 = useMemo(() => {
+    const last30 = Array.from({ length: 30 }, (_, i) =>
+      new Date(Date.now() - i * 86400000).toISOString().split("T")[0],
+    );
+    return last30.filter((d) => activityDates.includes(d)).length;
+  }, [activityDates]);
+  const activityIndex = useMemo(() => {
+    const contactsScore = Math.min(25, contacts.length * 2);
+    const conversationsScore = Math.min(25, dashboardMetrics.messagesHandled * 3);
+    const followupsScore = Math.min(15, dashboardMetrics.followupsDone * 4);
+    const postsScore = Math.min(15, dashboardMetrics.postsPublished * 3);
+    const activeDaysScore = Math.min(20, Math.round((activeDaysLast30 / 20) * 20));
+    return Math.max(0, Math.min(100, Math.round(contactsScore + conversationsScore + followupsScore + postsScore + activeDaysScore)));
+  }, [contacts.length, dashboardMetrics, activeDaysLast30]);
+  const activityIndexStatus = useMemo(() => {
+    if (activityIndex >= 80) return { label: "Performance alta", className: "acti-status-high" };
+    if (activityIndex >= 55) return { label: "Performance in sviluppo", className: "acti-status-mid" };
+    return { label: "Performance da rafforzare", className: "acti-status-low" };
+  }, [activityIndex]);
+  const smartAlert = useMemo(() => {
+    if (weeklyDelta >= 2 && activityIndex >= 65) {
+      return {
+        title: "Stai accelerando",
+        body: "La tua intensità settimanale sta crescendo. Mantieni la frequenza per consolidare pipeline e opportunità.",
+        className: "smart-alert-positive",
+      };
+    }
+    if ((daysSinceActive ?? 0) >= 2 || weeklyDelta < 0) {
+      return {
+        title: "Attività in calo",
+        body: "Nell'ultima finestra operativa il ritmo è diminuito. Riparti oggi con un blocco mirato su profili e conversazioni.",
+        className: "smart-alert-warning",
+      };
+    }
+    return {
+      title: "Stai perdendo opportunità",
+      body: "Hai spazio per aumentare la qualità commerciale: più follow-up e più continuità aumentano la probabilità di call.",
+      className: "smart-alert-risk",
+    };
+  }, [weeklyDelta, activityIndex, daysSinceActive]);
 
   /* ── Onboarding modal ── */
   const [modalDismissed, setModalDismissed] = useState(() => {
@@ -356,6 +423,9 @@ export default function AppTodayPage() {
       });
       if (!res.ok) throw new Error("Errore");
       setPostResult(await res.json());
+      trackDashboardMetric("postsPublished");
+      trackDashboardMetric("aiSessions");
+      markActiveToday();
     } catch {
       setPostResult(null);
     } finally {
@@ -389,6 +459,8 @@ export default function AppTodayPage() {
       if (data.structured) {
         saveContact(data.structured, url.trim());
         setAnalyzed(true);
+        trackDashboardMetric("aiSessions");
+        markActiveToday();
         if (setProspectText) {
           const s = data.structured;
           setProspectText(`${s.chi_e || ""} ${s.ruolo_e_contesto || ""} ${s.perche_buon_contatto || ""}`.trim());
@@ -416,6 +488,9 @@ export default function AppTodayPage() {
       });
       if (!res.ok) throw new Error("Errore");
       setCommentResult(await res.json());
+      trackDashboardMetric("messagesHandled");
+      trackDashboardMetric("aiSessions");
+      markActiveToday();
     } catch {
       setCommentResult(null);
     } finally {
@@ -441,6 +516,9 @@ export default function AppTodayPage() {
       });
       if (!res.ok) throw new Error("Errore");
       setDmResult(await res.json());
+      trackDashboardMetric("messagesHandled");
+      trackDashboardMetric("aiSessions");
+      markActiveToday();
     } catch {
       setDmResult(null);
     } finally {
@@ -466,6 +544,9 @@ export default function AppTodayPage() {
       });
       if (!res.ok) throw new Error("Errore");
       setConvResult(await res.json());
+      trackDashboardMetric("messagesHandled");
+      trackDashboardMetric("aiSessions");
+      markActiveToday();
     } catch {
       setConvResult(null);
     } finally {
@@ -489,6 +570,9 @@ export default function AppTodayPage() {
       });
       if (!res.ok) throw new Error("Errore");
       setFollowupResult(await res.json());
+      trackDashboardMetric("followupsDone");
+      trackDashboardMetric("aiSessions");
+      markActiveToday();
     } catch {
       setFollowupResult(null);
     } finally {
@@ -511,6 +595,8 @@ export default function AppTodayPage() {
       if (!res.ok) throw new Error("Errore");
       const data = await res.json();
       setImageUrl(data.url || data.image_url || "");
+      trackDashboardMetric("aiSessions");
+      markActiveToday();
     } catch {
       setImageUrl("");
     } finally {
@@ -518,11 +604,13 @@ export default function AppTodayPage() {
     }
   }
 
-  function openContactAnalysis(_contact: AnalyzedContact) {
+  function openContactAnalysis(contact: AnalyzedContact) {
+    void contact;
     router.push("/app/prospect");
   }
 
-  function openContactAdvice(_contact: AnalyzedContact) {
+  function openContactAdvice(contact: AnalyzedContact) {
+    void contact;
     router.push("/app/dm");
   }
 
@@ -564,114 +652,107 @@ export default function AppTodayPage() {
         </div>
       )}
 
-      <div className="dash-page-v5">
+      <div className="dash-page-v6">
 
-        {/* ── DAILY PLAN STATUS ── */}
-        <section className="dps-wrap" aria-label="Piano del giorno">
-          <div className="dps-blur-orb" aria-hidden="true" />
-          <div className="dps-grid">
-            <div className="dps-left">
-              <div className={`dps-status-badge ${planFeedback.badgeClass}`}>
-                <span className="dps-status-dot" aria-hidden="true" />
-                {planFeedback.badge}
+        {/* ── PRIMARY HERO: ACTIVITY INDEX ── */}
+        <section className="acti-hero" aria-label="Indice attività commerciale">
+          <div className="acti-hero-grid">
+            <div className="acti-main-panel">
+              <p className="acti-eyebrow">Performance mirror</p>
+              <h2 className="acti-title">Indice attività commerciale</h2>
+              <div className="acti-score-row">
+                <div className="acti-score-block">
+                  <span className="acti-score-value">{activityIndex}</span>
+                  <span className="acti-score-over">/100</span>
+                </div>
+                <div className={`acti-status-badge ${activityIndexStatus.className}`}>{activityIndexStatus.label}</div>
               </div>
-              <h2 className="dps-title">Il tuo piano di oggi</h2>
-              <p className="dps-message">{planFeedback.message}</p>
-              <div className="dps-meta-row">
-                <div className="dps-meta-item">
-                  <span className="dps-meta-value">{streak > 0 ? streak : "—"}</span>
-                  <span className="dps-meta-label">giorni consecutivi</span>
+              <p className="acti-feedback">
+                {activityIndex >= 80
+                  ? "Esecuzione commerciale solida: ritmo alto e continuità coerente sulle attività che generano pipeline."
+                  : activityIndex >= 55
+                  ? "Base operativa presente: aumenta la frequenza sulle conversazioni per scalare risultati."
+                  : "La struttura c’è, ma l'intensità è insufficiente: serve più continuità su azioni ad alto impatto."}
+              </p>
+              <div className="acti-trend-row">
+                <span className={`acti-trend-pill ${weeklyDelta >= 0 ? "acti-trend-up" : "acti-trend-down"}`}>
+                  {weeklyDelta >= 0 ? "Trend in crescita" : "Trend in flessione"}
+                  <strong>{weeklyDelta >= 0 ? ` +${weeklyDelta}` : ` ${weeklyDelta}`}</strong>
+                </span>
+                <span className="acti-trend-meta">Ultima attività: {lastActiveLabel}</span>
+              </div>
+            </div>
+
+            <div className="acti-continuity-panel">
+              <h3 className="acti-panel-title">Continuità operativa</h3>
+              <div className="acti-continuity-grid">
+                <div className="acti-kpi-card">
+                  <span className="acti-kpi-label">Streak attivo</span>
+                  <span className="acti-kpi-value">{streak > 0 ? `${streak} gg` : "0 gg"}</span>
                 </div>
-                <div className="dps-meta-item">
-                  <span className="dps-meta-value">{lastActiveLabel}</span>
-                  <span className="dps-meta-label">ultima attività</span>
+                <div className="acti-kpi-card">
+                  <span className="acti-kpi-label">Giorni attivi (30g)</span>
+                  <span className="acti-kpi-value">{activeDaysLast30}</span>
                 </div>
-                <div className="dps-meta-item">
-                  <span className="dps-meta-value">{contacts.length}</span>
-                  <span className="dps-meta-label">profili analizzati</span>
+                <div className="acti-kpi-card">
+                  <span className="acti-kpi-label">Gap recente</span>
+                  <span className="acti-kpi-value">{daysSinceActive && daysSinceActive > 0 ? `${daysSinceActive} gg` : "Nessuno"}</span>
+                </div>
+                <div className="acti-kpi-card">
+                  <span className="acti-kpi-label">Confronto settimana</span>
+                  <span className="acti-kpi-value">{currentWeekActiveDays} vs {previousWeekActiveDays}</span>
                 </div>
               </div>
-              {!markedActiveToday && (
-                <Link href="/app/find-clients" className="dps-cta" onClick={markActiveToday}>
-                  Inizia il piano di oggi
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </Link>
-              )}
             </div>
-            <div className="dps-right">
-              <p className="dps-actions-panel-title">Priorità di oggi</p>
-              <Link href="/app/find-clients" className="dps-action-item" onClick={markActiveToday}>
-                <span className="dps-action-item-text">Trova 3 nuovi profili da contattare</span>
-                <span className="dps-action-item-arrow" aria-hidden="true">→</span>
-              </Link>
-              <Link href="/app/dm" className="dps-action-item" onClick={markActiveToday}>
-                <span className="dps-action-item-text">Sblocca 2 conversazioni in corso</span>
-                <span className="dps-action-item-arrow" aria-hidden="true">→</span>
-              </Link>
-              <button
-                type="button"
-                className="dps-action-item"
-                onClick={() => { markActiveToday(); setDashMode("post"); }}
-              >
-                <span className="dps-action-item-text">Pubblica 1 contenuto mirato</span>
-                <span className="dps-action-item-arrow" aria-hidden="true">→</span>
-              </button>
-            </div>
-          </div>
-          <div className="dps-signals">
-            <span className="dps-signal-chip">Outreach: decision maker inattivi da riattivare</span>
-            <span className="dps-signal-chip">Follow-up: conversazioni con ultimo touch &gt; 5 giorni</span>
-            <span className="dps-signal-chip">Contenuto: errori comuni in fase di acquisizione</span>
           </div>
         </section>
 
-        {/* ── ACTIVITY EVALUATION ── */}
-        <div className="dact-section" role="complementary" aria-label="Valutazione attività">
-          <div className="dact-stat">
-            <span className="dact-label">Costanza</span>
-            <span className="dact-value">{activityLevel}</span>
+        {/* ── OPERATIONAL METRICS + SMART ALERT ── */}
+        <section className="ops-metrics-wrap" aria-label="Metriche operative">
+          <div className="ops-metrics-grid">
+            <div className="ops-metric-card">
+              <span className="ops-metric-label">Profili analizzati</span>
+              <span className="ops-metric-value">{contacts.length}</span>
+            </div>
+            <div className="ops-metric-card">
+              <span className="ops-metric-label">Messaggi gestiti</span>
+              <span className="ops-metric-value">{dashboardMetrics.messagesHandled}</span>
+            </div>
+            <div className="ops-metric-card">
+              <span className="ops-metric-label">Contenuti creati</span>
+              <span className="ops-metric-value">{dashboardMetrics.postsPublished}</span>
+            </div>
+            <div className="ops-metric-card">
+              <span className="ops-metric-label">Sessioni AI strategiche</span>
+              <span className="ops-metric-value">{dashboardMetrics.aiSessions}</span>
+            </div>
           </div>
-          <div className="dact-stat">
-            <span className="dact-label">Serie attiva</span>
-            <span className="dact-value">{streak > 0 ? `${streak} gg` : "—"}</span>
+          <div className={`smart-alert ${smartAlert.className}`} role="status" aria-live="polite">
+            <p className="smart-alert-title">{smartAlert.title}</p>
+            <p className="smart-alert-body">{smartAlert.body}</p>
           </div>
-          <div className="dact-stat">
-            <span className="dact-label">Profili analizzati</span>
-            <span className="dact-value">{contacts.length}</span>
-          </div>
-          <div className="dact-stat">
-            <span className="dact-label">Promemoria</span>
-            <p className="dact-reminder-text">
-              {activityLevel === "Alta"
-                ? "Ritmo eccellente. La costanza trasforma l\u2019effort in risultati concreti."
-                : activityLevel === "Media"
-                ? "Buon ritmo. Aumenta la frequenza per consolidare pipeline e presenza commerciale."
-                : "L\u2019azione quotidiana \u00e8 il motore dell\u2019acquisizione. Anche una sessione breve fa la differenza."}
-            </p>
-          </div>
-        </div>
+          <p className="ops-activity-reminder">
+            {activityLevel === "Alta"
+              ? "Alta continuità rilevata: mantieni ritmo e qualità per trasformare più conversazioni in call."
+              : activityLevel === "Media"
+              ? "Continuità discreta: un incremento di frequenza su follow-up e DM migliora la resa commerciale."
+              : "La continuità quotidiana resta il moltiplicatore principale per l&apos;acquisizione clienti su LinkedIn."}
+          </p>
+        </section>
 
-        {/* ── CORE ACTIONS V5 ── */}
-        <section className="dash-core-v5-section" aria-label="Azioni principali">
-          <div className="dash-core-v5-head">
-            <h3 className="dash-core-v5-title">Azioni principali</h3>
-            <p className="dash-core-v5-sub">Le tre leve della tua acquisizione commerciale su LinkedIn.</p>
+        {/* ── MAIN TOOLS (SECONDARY POSITIONING) ── */}
+        <section className="main-tools-secondary" aria-label="Strumenti principali">
+          <div className="main-tools-head">
+            <h3 className="main-tools-title">Strumenti principali</h3>
+            <p className="main-tools-sub">Disponibili dopo il quadro performance per passare subito all&apos;azione.</p>
           </div>
-          <div className="dash-core-v5-grid">
+          <div className="main-tools-grid">
             {CORE_ACTIONS.map((action) => (
-              <Link
-                key={action.id}
-                href={action.href}
-                className="dash-core-v5-card"
-                onClick={markActiveToday}
-              >
-                <div className={`dash-core-v5-icon dash-core-v5-icon-${action.id}`}>{action.icon}</div>
-                <h4 className="dash-core-v5-card-title">{action.title}</h4>
-                <p className="dash-core-v5-card-desc">{action.desc}</p>
-                <span className="dash-core-v5-card-cta">
-                  {action.cta}
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </span>
+              <Link key={action.id} href={action.href} className="main-tool-card" onClick={markActiveToday}>
+                <div className={`main-tool-icon main-tool-icon-${action.id}`}>{action.icon}</div>
+                <h4 className="main-tool-title">{action.title}</h4>
+                <p className="main-tool-desc">{action.desc}</p>
+                <span className="main-tool-cta">{action.cta} →</span>
               </Link>
             ))}
           </div>
