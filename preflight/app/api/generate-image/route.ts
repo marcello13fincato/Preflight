@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { getServerAuthSession } from "@/lib/getServerAuthSession";
+import getServerAuthSession from "@/lib/getServerAuthSession";
 import prisma from "@/lib/prisma";
 import { formatVisualProfileForImagePrompt } from "@/lib/visual-profile/aiContextBuilder";
 

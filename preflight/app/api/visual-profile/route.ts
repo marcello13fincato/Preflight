@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { getServerAuthSession } from "@/lib/getServerAuthSession";
+import getServerAuthSession from "@/lib/getServerAuthSession";
 import prisma from "@/lib/prisma";
 import { DEFAULT_VISUAL_PROFILE } from "@/lib/visual-profile/constants";
 
