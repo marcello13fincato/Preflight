@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { getServerAuthSession } from "@/lib/getServerAuthSession";
+import prisma from "@/lib/prisma";
+import { formatVisualProfileForImagePrompt } from "@/lib/visual-profile/aiContextBuilder";
 
 export const runtime = "nodejs";
 
@@ -27,15 +30,33 @@ export async function POST(req: Request) {
 
   const { post_content } = parsed.data;
 
+  // Get user's visual profile
+  let visualProfileContext = "";
+  try {
+    const session = await getServerAuthSession();
+    if (session?.user?.email) {
+      const user = await prisma.user.findUnique({
+        where: { email: session.user.email },
+        include: { visualProfile: true },
+      });
+      if (user?.visualProfile) {
+        visualProfileContext = formatVisualProfileForImagePrompt(user.visualProfile as any);
+      }
+    }
+  } catch (err) {
+    console.warn("[generate-image] Could not fetch visual profile:", err);
+  }
+
   // Truncate post content to avoid overly long prompts
   const truncated = post_content.slice(0, 800);
 
   const imagePrompt = [
     "Create a clean, professional LinkedIn post illustration.",
-    "The image should be modern, minimal, corporate-friendly, with a blue colour palette.",
+    "The image should be modern, minimal, corporate-friendly.",
     "No text or words in the image.",
     "Visual concept based on this post content:",
     truncated,
+    visualProfileContext,
   ].join(" ");
 
   try {

@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+import { VisualProfileSetup } from "@/components/visual-profile";
 
 export default function SettingsPage() {
   const { data: session } = useSession();
@@ -52,6 +53,17 @@ export default function SettingsPage() {
               </span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Visual Profile */}
+      <div className="v3-card-flat settings-card">
+        <h3 className="settings-card-label">LinkedIn Visual Profile</h3>
+        <p className="settings-card-text">
+          Create your personalized visual identity. These settings influence your carousel generation, visual content, and post layouts.
+        </p>
+        <div style={{ marginTop: "1.5rem" }}>
+          <VisualProfileSetup compact={true} />
         </div>
       </div>
 
