@@ -1278,40 +1278,89 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .dash-modal-guide-label{font-weight:700;color:var(--color-primary)}
 .dash-modal-actions{display:flex;flex-direction:column;gap:0.5rem}
 
-/* ── SYSTEM BANNER (global, in layout) ── */
-.sys-banner{
-  display:flex;flex-wrap:wrap;align-items:center;gap:1.25rem;
-  background:linear-gradient(135deg,#FFF7ED 0%,#FFFBEB 100%);
-  border:1.5px solid #F59E0B;
-  border-radius:var(--radius-lg);padding:1.15rem 1.5rem;
-  margin:0.75rem 2.5rem 0;position:relative;overflow:hidden;
+/* ── SETUP ACTIVATION CARD (onboarding, in layout) ── */
+.setup-card{margin:0.75rem 2.5rem 0}
+.setup-card-inner{
+  background:linear-gradient(135deg,#f8fbff 0%,#eef4ff 60%,#f0f9ff 100%);
+  border:1.5px solid rgba(59,130,246,0.28);
+  border-radius:var(--radius-lg);
+  padding:1.35rem 1.6rem;
+  position:relative;overflow:hidden;
 }
-.sys-banner-content{display:flex;align-items:flex-start;gap:0.65rem;flex:1;min-width:240px}
-.sys-banner-icon{
-  width:34px;height:34px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;color:#D97706;background:rgba(245,158,11,0.12);
+.setup-card-inner::before{
+  content:"";position:absolute;top:0;right:0;
+  width:200px;height:200px;
+  background:radial-gradient(circle,rgba(59,130,246,0.08) 0%,transparent 70%);
+  pointer-events:none;
 }
-.sys-banner-icon svg{width:18px;height:18px}
-.sys-banner-title{font-size:0.9rem;font-weight:700;color:var(--color-text);margin:0}
-.sys-banner-text{font-size:0.8rem;color:var(--color-muted);margin:0.2rem 0 0;line-height:1.45}
-.sys-banner-cta{
-  display:inline-flex;align-items:center;gap:0.35rem;
-  background:var(--color-primary);color:#fff;
-  font-size:0.82rem;font-weight:600;
-  padding:0.5rem 1rem;border-radius:var(--radius-md);
+.setup-card-header{
+  display:flex;align-items:flex-start;gap:0.85rem;
+  margin-bottom:0.7rem;
+}
+.setup-card-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:rgba(59,130,246,0.12);color:#2563eb;
+}
+.setup-card-icon svg{width:18px;height:18px}
+.setup-card-header-text{flex:1;min-width:0}
+.setup-card-title{
+  margin:0;font-size:0.96rem;font-weight:800;
+  color:#0f172a;letter-spacing:-0.02em;line-height:1.3;
+}
+.setup-card-state{
+  display:inline-block;margin-top:0.28rem;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;
+  border-radius:999px;padding:0.18rem 0.58rem;
+}
+.setup-card-state-empty{background:rgba(100,116,139,0.1);color:#475569}
+.setup-card-state-partial{
+  background:rgba(234,179,8,0.12);color:#a16207;
+  border:1px solid rgba(234,179,8,0.3);
+}
+.setup-card-desc{
+  margin:0 0 0.85rem;font-size:0.83rem;color:#334155;
+  line-height:1.6;max-width:72ch;
+}
+.setup-card-benefits{
+  margin:0 0 1rem;padding:0;list-style:none;
+  display:flex;flex-direction:column;gap:0.3rem;
+}
+.setup-card-benefit{
+  display:flex;align-items:center;gap:0.5rem;
+  font-size:0.79rem;font-weight:600;color:#1e3a5f;
+}
+.setup-ben-dot{
+  width:5px;height:5px;border-radius:50%;flex-shrink:0;
+  background:#2563eb;
+}
+.setup-card-footer{
+  display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;
+}
+.setup-card-progress-wrap{
+  display:flex;align-items:center;gap:0.6rem;flex:1;min-width:120px;
+}
+.setup-card-progress-track{
+  flex:1;height:5px;border-radius:3px;
+  background:rgba(59,130,246,0.15);overflow:hidden;
+}
+.setup-card-progress-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,#3b82f6,#60a5fa);
+  transition:width 0.35s ease;
+}
+.setup-card-progress-label{
+  font-size:0.71rem;font-weight:700;color:#2563eb;white-space:nowrap;
+}
+.setup-card-cta{
+  display:inline-flex;align-items:center;gap:0.3rem;
+  background:#0a66c2;color:#fff;
+  font-size:0.82rem;font-weight:700;
+  padding:0.52rem 1.15rem;border-radius:var(--radius-md);
   text-decoration:none;white-space:nowrap;
-  transition:background 0.15s;
+  transition:background 0.15s;flex-shrink:0;
 }
-.sys-banner-cta:hover{background:var(--color-primary-dark)}
-.sys-banner-progress{
-  width:100%;height:4px;background:rgba(245,158,11,0.2);
-  border-radius:2px;margin-top:0.25rem;
-}
-.sys-banner-progress-bar{
-  height:100%;background:#F59E0B;border-radius:2px;
-  transition:width 0.3s;
-}
+.setup-card-cta:hover{background:#0958a8;text-decoration:none}
 
 /* ── DASHBOARD PROGRESS BAR ── */
 .dash-system-progress{
@@ -4985,41 +5034,15 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 
 /* ═══════════════════════════════════════════════════════════
-   PREMIUM SYSTEM BANNER
+   SETUP CARD — RESPONSIVE OVERRIDES
 ═══════════════════════════════════════════════════════════ */
-.sys-banner{
-  display:flex;align-items:center;gap:1rem;
-  padding:0.65rem 2.5rem;
-  background:linear-gradient(90deg,var(--color-warning-bg) 0%,rgba(255,251,235,0.6) 100%);
-  border-bottom:1px solid rgba(217,119,6,0.12);
+@media (max-width:760px){
+  .setup-card{margin:0.5rem 1rem 0}
+  .setup-card-inner{padding:1.1rem 1.15rem}
+  .setup-card-footer{flex-direction:column;align-items:stretch}
+  .setup-card-progress-wrap{min-width:unset}
+  .setup-card-cta{justify-content:center}
 }
-.sys-banner-icon{
-  width:34px;height:34px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;color:#D97706;background:rgba(245,158,11,0.12);
-}
-.sys-banner-icon svg{width:18px;height:18px}
-.sys-banner-content{flex:1;min-width:0}
-.sys-banner-title{
-  font-size:0.82rem;font-weight:700;
-  color:var(--color-warning);margin:0;
-}
-.sys-banner-text{font-size:0.78rem;color:var(--color-muted);margin:0}
-.sys-banner-progress{
-  width:120px;height:4px;border-radius:2px;
-  background:rgba(217,119,6,0.15);overflow:hidden;
-}
-.sys-banner-progress-bar{
-  height:100%;border-radius:2px;
-  background:var(--color-warning);
-  transition:width var(--duration-slow) var(--ease-out);
-}
-.sys-banner-cta{
-  font-size:0.78rem;font-weight:600;
-  color:var(--color-warning);text-decoration:none;
-  white-space:nowrap;
-}
-.sys-banner-cta:hover{text-decoration:underline}
 
 /* ═══════════════════════════════════════════════════════════
    PREMIUM LOADING STATES

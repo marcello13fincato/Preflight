@@ -338,36 +338,39 @@ export default function AppTodayPage() {
     return last30.filter((d) => activityDates.includes(d)).length;
   }, [activityDates]);
   const activityIndex = useMemo(() => {
-    const contactsScore = Math.min(25, contacts.length * 2);
-    const conversationsScore = Math.min(25, dashboardMetrics.messagesHandled * 3);
-    const followupsScore = Math.min(15, dashboardMetrics.followupsDone * 4);
-    const postsScore = Math.min(15, dashboardMetrics.postsPublished * 3);
-    const activeDaysScore = Math.min(20, Math.round((activeDaysLast30 / 20) * 20));
-    return Math.max(0, Math.min(100, Math.round(contactsScore + conversationsScore + followupsScore + postsScore + activeDaysScore)));
+    // 1. Client research activity: profiles analyzed (max 25)
+    const researchScore = Math.min(25, Math.round(contacts.length * 2.5));
+    // 2. Conversation activity: messages + follow-ups + strategic AI sessions (max 35)
+    const convScore = Math.min(35, dashboardMetrics.messagesHandled * 2 + dashboardMetrics.followupsDone * 3 + dashboardMetrics.aiSessions);
+    // 3. Content activity: posts published (max 20)
+    const contentScore = Math.min(20, dashboardMetrics.postsPublished * 4);
+    // 4. Continuity: active days in last 30 (max 20)
+    const continuityScore = Math.min(20, Math.round((activeDaysLast30 / 20) * 20));
+    return Math.max(0, Math.min(100, Math.round(researchScore + convScore + contentScore + continuityScore)));
   }, [contacts.length, dashboardMetrics, activeDaysLast30]);
   const activityIndexStatus = useMemo(() => {
-    if (activityIndex >= 80) return { label: "Performance alta", className: "acti-status-high" };
-    if (activityIndex >= 55) return { label: "Performance in sviluppo", className: "acti-status-mid" };
-    return { label: "Performance da rafforzare", className: "acti-status-low" };
+    if (activityIndex >= 75) return { label: "Ritmo commerciale solido", className: "acti-status-high" };
+    if (activityIndex >= 45) return { label: "Impegno discontinuo", className: "acti-status-mid" };
+    return { label: "Slancio commerciale basso", className: "acti-status-low" };
   }, [activityIndex]);
   const smartAlert = useMemo(() => {
-    if (weeklyDelta >= 2 && activityIndex >= 65) {
+    if (weeklyDelta >= 2 && activityIndex >= 75) {
       return {
-        title: "Stai accelerando",
-        body: "La tua intensità settimanale sta crescendo. Mantieni la frequenza per consolidare pipeline e opportunità.",
+        title: "Ritmo in crescita",
+        body: "L'intensità settimanale è in aumento. Mantieni la frequenza su ricerca, conversazioni e contenuti per consolidare la pipeline.",
         className: "smart-alert-positive",
       };
     }
     if ((daysSinceActive ?? 0) >= 2 || weeklyDelta < 0) {
       return {
-        title: "Attività in calo",
-        body: "Nell'ultima finestra operativa il ritmo è diminuito. Riparti oggi con un blocco mirato su profili e conversazioni.",
+        title: "Ritmo in calo",
+        body: "L'attività recente è diminuita. Riparti oggi con profili da analizzare e conversazioni ferme da riattivare.",
         className: "smart-alert-warning",
       };
     }
     return {
-      title: "Stai perdendo opportunità",
-      body: "Hai spazio per aumentare la qualità commerciale: più follow-up e più continuità aumentano la probabilità di call.",
+      title: "Opportunità da capitalizzare",
+      body: "Il margine di miglioramento è concreto: più follow-up sistematici e un ritmo di ricerca più costante aumentano la probabilità di call.",
       className: "smart-alert-risk",
     };
   }, [weeklyDelta, activityIndex, daysSinceActive]);
@@ -658,7 +661,7 @@ export default function AppTodayPage() {
         <section className="acti-hero" aria-label="Indice attività commerciale">
           <div className="acti-hero-grid">
             <div className="acti-main-panel">
-              <p className="acti-eyebrow">Performance mirror</p>
+              <p className="acti-eyebrow">Indice attività LinkedIn</p>
               <h2 className="acti-title">Indice attività commerciale</h2>
               <div className="acti-score-row">
                 <div className="acti-score-block">
@@ -668,11 +671,11 @@ export default function AppTodayPage() {
                 <div className={`acti-status-badge ${activityIndexStatus.className}`}>{activityIndexStatus.label}</div>
               </div>
               <p className="acti-feedback">
-                {activityIndex >= 80
-                  ? "Esecuzione commerciale solida: ritmo alto e continuità coerente sulle attività che generano pipeline."
-                  : activityIndex >= 55
-                  ? "Base operativa presente: aumenta la frequenza sulle conversazioni per scalare risultati."
-                  : "La struttura c’è, ma l'intensità è insufficiente: serve più continuità su azioni ad alto impatto."}
+                {activityIndex >= 75
+                  ? "Ricerche, conversazioni e contenuti si muovono insieme: questo è il ritmo che genera pipeline reale."
+                  : activityIndex >= 45
+                  ? "Basi presenti ma l'intensità varia. Aumenta la coerenza tra ricerca clienti e conversazioni attive."
+                  : "L'attività commerciale è sotto la soglia minima di efficienza. Parti oggi con ricerca profili e un follow-up attivo."}
               </p>
               <div className="acti-trend-row">
                 <span className={`acti-trend-pill ${weeklyDelta >= 0 ? "acti-trend-up" : "acti-trend-down"}`}>
@@ -735,8 +738,8 @@ export default function AppTodayPage() {
             {activityLevel === "Alta"
               ? "Alta continuità rilevata: mantieni ritmo e qualità per trasformare più conversazioni in call."
               : activityLevel === "Media"
-              ? "Continuità discreta: un incremento di frequenza su follow-up e DM migliora la resa commerciale."
-              : "La continuità quotidiana resta il moltiplicatore principale per l&apos;acquisizione clienti su LinkedIn."}
+              ? "Continuità discreta: aumenta la frequenza su follow-up e ricerca profili per migliorare la resa commerciale."
+              : "La continuità quotidiana è il principale moltiplicatore per l'acquisizione clienti su LinkedIn."}
           </p>
         </section>
 
