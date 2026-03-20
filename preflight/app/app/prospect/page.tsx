@@ -9,110 +9,113 @@ import { IconLightbulb } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
 
-export default function ProspectPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
-  const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
-
-  const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [showPdfGuide, setShowPdfGuide] = useState(false);
-  const [websiteUrl, setWebsiteUrl] = useState("");
-  const [context, setContext] = useState("");
-  const [output, setOutput] = useState<ProspectAnalyzerJson | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [copiedField, setCopiedField] = useState<string | null>(null);
-
-  function copyText(text: string, field: string) {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
-  }
-
-  async function generate() {
-    if (!linkedinUrl.trim() || loading) return;
-    setLoading(true);
-    setError(null);
-    try {
-      let pdfText = "";
-      if (pdfFile) {
-        pdfText = `[PDF caricato: ${pdfFile.name}]`;
-      }
-      const res = await fetch("/api/ai/prospect", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          profile: profile.onboarding,
-          linkedin_url: linkedinUrl.trim(),
-          website_url: websiteUrl.trim(),
-          context: context.trim(),
-          pdf_text: pdfText,
-        }),
-      });
-      const json: Record<string, unknown> = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
-      }
-      const parsed = prospectAnalyzerSchema.safeParse(json);
-      if (!parsed.success) {
-        throw new Error("Risposta AI non valida. Riprova.");
-      }
-      setOutput(parsed.data);
-      repo.interaction.addInteraction(userId, "prospect", linkedinUrl, parsed.data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function resetAnalysis() {
-    setOutput(null);
-    setError(null);
-  }
-
-  const heatColor = output?.client_heat_level === "Hot" ? "pr-heat-hot" : output?.client_heat_level === "Warm" ? "pr-heat-warm" : "pr-heat-cold";
-  const priorityColor = output?.priority_signal === "high" ? "pr-priority-high" : output?.priority_signal === "medium" ? "pr-priority-medium" : "pr-priority-low";
-
-  /* ── FULLSCREEN RESULTS VIEW ── */
-  if (output) {
-    return (
-      <div className="pr-fullscreen">
-        {/* Top bar with controls */}
-        <div className="pr-topbar">
-          <button onClick={resetAnalysis} className="pr-back-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Nuova analisi
-          </button>
-          <div className="pr-topbar-url">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            {linkedinUrl}
+  // ── STATIC PAGE (INPUT) FULLSCREEN WOW ──
+  return (
+    <div className="pr-fullscreen pr-fullscreen-empty">
+      <div className="pr-score-hero">
+        <div className="pr-score-ring-wrap">
+          <div className="pr-score-ring">
+            <svg viewBox="0 0 120 120" className="pr-score-svg">
+              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+              <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
+                strokeDasharray={`327 327`}
+                transform="rotate(-90 60 60)" className="pr-score-progress" />
+              <defs>
+                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#3b82f6" />
+                  <stop offset="100%" stopColor="#06b6d4" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <div className="pr-score-value">AI</div>
           </div>
-          <div className="pr-topbar-actions">
-            <Link href="/app/dm" className="pr-topbar-link">Scrivi DM</Link>
-            <Link href="/app/find-clients" className="pr-topbar-link">Trova clienti</Link>
-            <Link href="/app/oggi" className="pr-topbar-link">Piano oggi</Link>
+          <span className="pr-score-label">Analisi</span>
+        </div>
+        <div className="pr-score-info">
+          <h1 className="pr-score-title">Analizza un profilo</h1>
+          <p className="pr-score-subtitle">Scopri se vale la pena contattare una persona e ricevi messaggi pronti da copiare per ogni fase.</p>
+        </div>
+      </div>
+      <div className="pr-input-layout">
+        <div className="pr-form-card">
+          <div className="pr-form-header">
+            <div className="pr-form-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <h2 className="pr-form-title">Inserisci i dati del profilo</h2>
+              <p className="pr-form-sub">Più informazioni dai, più precisa sarà l'analisi e i messaggi generati.</p>
+            </div>
+          </div>
+          <div className="pr-form-fields">
+            <div className="qa-field">
+              <label className="qa-label">Link al profilo LinkedIn <span className="fc-required">*</span></label>
+              <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
+            </div>
+            <div className="qa-field">
+              <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
+              <p className="qa-microcopy">Se vuoi un'analisi più precisa, puoi caricare anche il PDF del profilo.</p>
+              <label className="qa-file-upload">
+                <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setPdfFile(e.target.files?.[0] || null)} />
+                <span className="qa-file-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  {pdfFile ? pdfFile.name : "Scegli un file PDF"}
+                </span>
+              </label>
+              <button type="button" className="qa-guide-toggle" onClick={() => setShowPdfGuide(!showPdfGuide)}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                Come scaricare il PDF del profilo LinkedIn
+              </button>
+              {showPdfGuide && (
+                <div className="qa-guide">
+                  <ol className="qa-guide-steps">
+                    <li>Vai sul profilo LinkedIn della persona</li>
+                    <li>Clicca sui tre puntini accanto alla foto</li>
+                    <li>Seleziona "Salva come PDF"</li>
+                    <li>Carica il file qui</li>
+                  </ol>
+                </div>
+              )}
+            </div>
+            <div className="qa-field">
+              <label className="qa-label">Link sito web <span className="qa-label-opt">(facoltativo)</span></label>
+              <input type="url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://azienda.com" />
+            </div>
+            <div className="qa-field">
+              <label className="qa-label">Contesto opzionale <span className="qa-label-opt">(facoltativo)</span></label>
+              <textarea value={context} onChange={(e) => setContext(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder SaaS che pubblica su crescita aziendale." />
+            </div>
+            {error && (
+              <div className="pr-error">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                {error}
+              </div>
+            )}
+            <button onClick={generate} disabled={loading || !linkedinUrl.trim()} className="pr-generate-btn">
+              {loading ? (
+                <><span className="qa-spinner" aria-hidden="true" />Sto analizzando il profilo…</>
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 1-4-4H8a4 4 0 0 1-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  Analizza profilo
+                </>
+              )}
+            </button>
           </div>
         </div>
-
-        {/* Score + Heat hero banner */}
-        <div className="pr-score-hero">
-          <div className="pr-score-ring-wrap">
-            <div className="pr-score-ring">
-              <svg viewBox="0 0 120 120" className="pr-score-svg">
-                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-                <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
-                  strokeDasharray={`${(output.score / 100) * 327} 327`}
-                  transform="rotate(-90 60 60)" className="pr-score-progress" />
-                <defs>
-                  <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="100%" stopColor="#06b6d4" />
-                  </linearGradient>
-                </defs>
-              </svg>
+        <div className="pr-info-side">
+          <div className="pr-info-card">
+            <h3 className="pr-info-title">Cosa otterrai</h3>
+            <div className="pr-info-features">
+              <div className="pr-info-feature">Analisi compatibilità</div>
+              <div className="pr-info-feature">Messaggi pronti da inviare</div>
+              <div className="pr-info-feature">Strategia e warning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
               <div className="pr-score-value">{output.score}</div>
             </div>
             <span className="pr-score-label">Compatibilità</span>
