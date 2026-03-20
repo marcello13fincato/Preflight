@@ -140,6 +140,7 @@ export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
     "Se accetta, aspetta 24h e poi manda un follow-up di valore",
     "Proponi una call di 15 minuti dopo il secondo scambio",
   ],
+  segnali_da_osservare: "Risponde con domande specifiche (caldo). Visualizza senza rispondere (tiepido). Non accetta la connessione (freddo).",
   errori_da_evitare: "Non proporre subito una call. Non mandare messaggi troppo lunghi. Non parlare del proprio servizio nel primo messaggio.",
   client_heat_level: "Cold",
   priority_signal: "medium",
