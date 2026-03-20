@@ -77,13 +77,24 @@ Stai costruendo un piano LinkedIn Sales OS di 14 giorni. Rispondi ESCLUSIVAMENTE
 
 Profilo utente:
 - Servizio: ${d.servizio}
+- Elevator pitch: ${d.elevator_pitch}
+- Settore: ${d.settore}
+- Differenziatore unico: ${d.differenziatore}
 - Cliente ideale: ${d.cliente_ideale}
+- Dimensione azienda target: ${d.dimensione_azienda}
 - Problema del cliente: ${d.problema_cliente}
 - Risultato che porta: ${d.risultato_cliente}
-- Profili LinkedIn da contattare: ${d.linkedin_search_links.filter(Boolean).join(", ") || "non specificato"}
-- Materiali caricati: ${d.materiali_nomi?.filter(Boolean).join(", ") || "nessuno"}
-- Social e sito: ${d.social_links?.filter(Boolean).join(", ") || "non specificato"}
-- Tempo settimanale: ${d.tempo_settimanale}`;
+- Segnali di interesse: ${d.segnali_interesse}
+- Obiezione più frequente: ${d.obiezione_frequente}
+- Modello di vendita: ${d.modello_vendita}
+- Ticket medio: ${d.ticket_medio}
+- Ciclo di vendita: ${d.ciclo_vendita}
+- Tempo settimanale: ${d.tempo_settimanale}
+- CTA preferita: ${d.cta_preferita}
+- Profilo LinkedIn: ${d.linkedin_url}
+- Sito web: ${d.sito_web || "non specificato"}
+- Ricerche LinkedIn: ${d.linkedin_search_links.filter(Boolean).join(", ") || "non specificato"}
+- Materiali caricati: ${d.materiali_nomi?.filter(Boolean).join(", ") || "nessuno"}`;
     const output = await generateStructured({ prompt, schema: planSchema });
     return NextResponse.json(output);
   } catch (err) {

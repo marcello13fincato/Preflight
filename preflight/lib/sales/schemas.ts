@@ -226,14 +226,34 @@ export const followupSchema = z.object({
 });
 
 export const onboardingInputSchema = z.object({
+  /* Step 1 — Posizionamento */
   servizio: z.string().min(1),
+  elevator_pitch: z.string().min(1),
+  settore: z.string().min(1),
+  differenziatore: z.string().min(1),
+
+  /* Step 2 — Il tuo buyer */
   cliente_ideale: z.string().min(1),
+  dimensione_azienda: z.enum(["1_10", "11_50", "51_200", "201_1000", "1000_plus"]),
   problema_cliente: z.string().min(1),
   risultato_cliente: z.string().min(1),
+
+  /* Step 3 — Segnali & Obiezioni */
+  segnali_interesse: z.string().min(1),
+  obiezione_frequente: z.string().min(1),
+
+  /* Step 4 — Il tuo processo */
+  modello_vendita: z.enum(["fast", "consultative", "relationship"]),
+  ticket_medio: z.enum(["under_1k", "1k_5k", "5k_15k", "15k_50k", "over_50k"]),
+  ciclo_vendita: z.enum(["under_1w", "1_4w", "1_3m", "over_3m"]),
+  tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]),
+  cta_preferita: z.enum(["call", "demo", "audit", "preventivo", "altro"]),
+
+  /* Step 5 — Asset */
+  linkedin_url: z.string().min(1),
+  sito_web: z.string().optional().default(""),
   linkedin_search_links: z.array(z.string()).default([]),
   materiali_nomi: z.array(z.string()).default([]),
-  social_links: z.array(z.string()).default([]),
-  tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]),
 });
 
 export type PlanJson = z.infer<typeof planSchema>;

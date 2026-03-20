@@ -107,22 +107,30 @@ export function formatProfileContext(profile: unknown): string {
   const p = profile as Record<string, unknown>;
   const lines: string[] = [];
   if (p.servizio) lines.push(`- Servizio offerto: ${p.servizio}`);
+  if (p.elevator_pitch) lines.push(`- Elevator pitch: ${p.elevator_pitch}`);
+  if (p.settore) lines.push(`- Settore: ${p.settore}`);
+  if (p.differenziatore) lines.push(`- Differenziatore unico: ${p.differenziatore}`);
   if (p.cliente_ideale) lines.push(`- Cliente ideale: ${p.cliente_ideale}`);
+  if (p.dimensione_azienda) lines.push(`- Dimensione azienda target: ${p.dimensione_azienda}`);
   if (p.problema_cliente) lines.push(`- Problema del cliente: ${p.problema_cliente}`);
   if (p.risultato_cliente) lines.push(`- Risultato promesso: ${p.risultato_cliente}`);
+  if (p.segnali_interesse) lines.push(`- Segnali di interesse: ${p.segnali_interesse}`);
+  if (p.obiezione_frequente) lines.push(`- Obiezione più frequente: ${p.obiezione_frequente}`);
+  if (p.modello_vendita) lines.push(`- Modello di vendita: ${p.modello_vendita}`);
+  if (p.ticket_medio) lines.push(`- Ticket medio: ${p.ticket_medio}`);
+  if (p.ciclo_vendita) lines.push(`- Ciclo di vendita: ${p.ciclo_vendita}`);
+  if (p.tempo_settimanale) lines.push(`- Tempo settimanale su LinkedIn: ${p.tempo_settimanale}`);
+  if (p.cta_preferita) lines.push(`- CTA preferita: ${p.cta_preferita}`);
+  if (p.linkedin_url) lines.push(`- Profilo LinkedIn: ${p.linkedin_url}`);
+  if (p.sito_web) lines.push(`- Sito web: ${p.sito_web}`);
   const links = p.linkedin_search_links;
   if (Array.isArray(links) && links.filter(Boolean).length > 0) {
-    lines.push(`- Categorie LinkedIn target: ${links.filter(Boolean).join(", ")}`);
+    lines.push(`- Ricerche LinkedIn target: ${links.filter(Boolean).join(", ")}`);
   }
   const materiali = p.materiali_nomi;
   if (Array.isArray(materiali) && materiali.filter(Boolean).length > 0) {
     lines.push(`- Materiali caricati: ${materiali.filter(Boolean).join(", ")}`);
   }
-  const social = p.social_links;
-  if (Array.isArray(social) && social.filter(Boolean).length > 0) {
-    lines.push(`- Social e sito: ${social.filter(Boolean).join(", ")}`);
-  }
-  if (p.tempo_settimanale) lines.push(`- Tempo settimanale su LinkedIn: ${p.tempo_settimanale}`);
   // Backward compat: old schema fields
   if (!p.servizio && p.offer_one_liner) lines.push(`- Servizio: ${p.offer_one_liner}`);
   if (!p.cliente_ideale && p.icp_role) lines.push(`- Cliente ideale: ${p.icp_role}`);
