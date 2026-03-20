@@ -12,7 +12,7 @@ type Props = {
 export default function MarketingCTA({ className = "", hideSecondary = false, hideTertiary = false }: Props) {
   return (
     <div className={`flex flex-wrap items-center justify-center gap-3 ${className}`}>
-      <Link href="/app/onboarding" aria-label="Crea il mio piano clienti" className="btn-primary px-6 py-3 text-sm font-semibold shadow-sm">Crea il mio piano clienti (5 min)</Link>
+      <Link href="/app/onboarding" aria-label="Configura il tuo sistema" className="btn-primary px-6 py-3 text-sm font-semibold shadow-sm">Configura il tuo sistema (5 min)</Link>
       {!hideSecondary && (
         <Link href="/login" aria-label="Accedi" className="btn-secondary px-5 py-3 text-sm shadow-sm">Accedi</Link>
       )}

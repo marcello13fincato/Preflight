@@ -14,8 +14,8 @@ export default function PercheFunzionaPage() {
           <div className="pt-8"><BackButton /></div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
               <div>
-                <h1 className="text-4xl font-bold">Perché Preflight funziona (quando altri strumenti falliscono)</h1>
-                <p className="mt-4 text-muted max-w-3xl">La maggior parte dei post LinkedIn non fallisce per mancanza di competenze. Fallisce perché il messaggio non è immediatamente chiaro per chi legge. Preflight analizza il tuo contenuto come farebbe un consulente e lo trasforma in un post comprensibile, credibile e orientato all’azione.</p>
+                <h1 className="text-4xl font-bold">Perch&eacute; Preflight funziona (quando altri approcci falliscono)</h1>
+                <p className="mt-4 text-muted max-w-3xl">La maggior parte dei professionisti su LinkedIn non sa chi contattare, cosa scrivere e quando fare il passo successivo. Preflight ti d&agrave; un metodo chiaro per passare dal profilo al cliente, senza improvvisare e senza messaggi a freddo che finiscono nel vuoto.</p>
                 <div className="mt-6"><MarketingCTA /></div>
               </div>
               <div className="hidden md:block relative">
@@ -23,8 +23,8 @@ export default function PercheFunzionaPage() {
                   <svg viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
                     <defs>
                       <linearGradient id="g1" x1="0" x2="1">
-                        <stop offset="0%" stop-color="#0A66C2" stop-opacity="0.12" />
-                        <stop offset="100%" stop-color="#0A66C2" stop-opacity="0.02" />
+                        <stop offset="0%" stopColor="#0A66C2" stopOpacity="0.12" />
+                        <stop offset="100%" stopColor="#0A66C2" stopOpacity="0.02" />
                       </linearGradient>
                     </defs>
                     <rect x="0" y="0" width="600" height="400" rx="20" fill="url(#g1)" />
@@ -39,30 +39,30 @@ export default function PercheFunzionaPage() {
 
       <Section className="py-12 bg-soft border-b border-app">
         <Container>
-          <h2 className="text-2xl font-semibold">Il vero problema non è l’algoritmo</h2>
+          <h2 className="text-2xl font-semibold">Il vero problema non &egrave; la piattaforma</h2>
           <ul className="mt-6 list-none grid gap-4 md:grid-cols-2">
             <li className="flex items-start gap-3">
               <IconBadge><IconTarget className="w-5 h-5" /></IconBadge>
               <div>
-                <div className="font-semibold">Pubblicazioni viste ma senza conversazioni</div>
+                <div className="font-semibold">Non sai chi contattare tra migliaia di profili</div>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <IconBadge><IconChart className="w-5 h-5" /></IconBadge>
               <div>
-                <div className="font-semibold">Profilo chiaro per te, confuso per chi legge</div>
+                <div className="font-semibold">I tuoi messaggi vengono ignorati o suonano generici</div>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <IconBadge><IconSparkles className="w-5 h-5" /></IconBadge>
               <div>
-                <div className="font-semibold">Contenuti utili ma senza risposta</div>
+                <div className="font-semibold">Non riesci a passare dalla conversazione a una call</div>
               </div>
             </li>
             <li className="flex items-start gap-3">
               <IconBadge><IconTarget className="w-5 h-5" /></IconBadge>
               <div>
-                <div className="font-semibold">Nessuna direzione per il lettore</div>
+                <div className="font-semibold">Perdi traccia dei contatti e non fai follow-up</div>
               </div>
             </li>
           </ul>
@@ -77,8 +77,8 @@ export default function PercheFunzionaPage() {
               <div className="flex items-start gap-3">
                 <IconBadge><IconChart className="w-5 h-5" /></IconBadge>
                 <div>
-                  <h3 className="font-semibold">Analizza</h3>
-                  <p className="mt-2 text-muted">Punteggi su hook, chiarezza, prova e CTA.</p>
+                  <h3 className="font-semibold">Identifica</h3>
+                  <p className="mt-2 text-muted">Ti dice chi vale la pena contattare e perch&eacute;.</p>
                 </div>
               </div>
             </Card>
@@ -86,8 +86,8 @@ export default function PercheFunzionaPage() {
               <div className="flex items-start gap-3">
                 <IconBadge><IconSparkles className="w-5 h-5" /></IconBadge>
                 <div>
-                  <h3 className="font-semibold">Spiega</h3>
-                  <p className="mt-2 text-muted">Capisci perché qualcosa non funziona.</p>
+                  <h3 className="font-semibold">Guida</h3>
+                  <p className="mt-2 text-muted">Ti suggerisce il primo messaggio e i passi successivi.</p>
                 </div>
               </div>
             </Card>
@@ -95,8 +95,8 @@ export default function PercheFunzionaPage() {
               <div className="flex items-start gap-3">
                 <IconBadge><IconTarget className="w-5 h-5" /></IconBadge>
                 <div>
-                  <h3 className="font-semibold">Riscrive</h3>
-                  <p className="mt-2 text-muted">Ottieni un post completo pronto da pubblicare.</p>
+                  <h3 className="font-semibold">Converte</h3>
+                  <p className="mt-2 text-muted">Ti accompagna fino alla call con follow-up mirati.</p>
                 </div>
               </div>
             </Card>
@@ -106,8 +106,8 @@ export default function PercheFunzionaPage() {
 
       <Section className="py-12 bg-soft border-b border-app">
         <Container>
-          <h2 className="text-2xl font-semibold">Non è AI generica. È un framework.</h2>
-          <p className="mt-4 text-muted max-w-3xl">Preflight non inventa contenuti. Applica una struttura testata su migliaia di post: attenzione iniziale, chiarezza del messaggio, credibilità e invito all’azione.</p>
+          <h2 className="text-2xl font-semibold">Non &egrave; automazione. &Egrave; metodo.</h2>
+          <p className="mt-4 text-muted max-w-3xl">Preflight non invia messaggi al posto tuo e non automatizza nulla. Ti d&agrave; una struttura: chi contattare, cosa scrivere, quando seguire. Tu decidi e personalizzi ogni passo.</p>
           <div className="mt-6"><MarketingCTA /></div>
         </Container>
       </Section>
@@ -116,10 +116,10 @@ export default function PercheFunzionaPage() {
         <Container>
           <h2 className="text-2xl font-semibold">Cosa cambia concretamente</h2>
           <ul className="mt-6 list-disc list-inside space-y-2">
-            <li>Più commenti</li>
-            <li>Più conversazioni</li>
-            <li>Più messaggi privati</li>
-            <li>Maggiore chiarezza percepita</li>
+            <li>Sai sempre chi contattare e perch&eacute;</li>
+            <li>Ogni messaggio ha uno scopo preciso</li>
+            <li>Le conversazioni avanzano verso la call</li>
+            <li>Non perdi pi&ugrave; contatti caldi per mancanza di follow-up</li>
           </ul>
         </Container>
       </Section>

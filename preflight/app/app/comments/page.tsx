@@ -4,11 +4,11 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconThermometer, IconMail, IconMessageCircle } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { commentAssistantSchema, type CommentAssistantJson } from "@/lib/sales/schemas";
-import { defaultCommentAssistant } from "@/lib/sales/defaults";
 
 export default function CommentsPage() {
   const params = useSearchParams();
@@ -23,9 +23,11 @@ export default function CommentsPage() {
   const [conversationGoal, setConversationGoal] = useState<"understand_fit" | "continue_conversation" | "move_to_dm" | "propose_call" | "follow_up">("continue_conversation");
   const [output, setOutput] = useState<CommentAssistantJson | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function generate() {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch("/api/ai/comments", {
         method: "POST",
@@ -38,72 +40,227 @@ export default function CommentsPage() {
           conversation_goal: conversationGoal,
         }),
       });
-      const json = await res.json();
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+      }
       const parsed = commentAssistantSchema.safeParse(json);
-      const valid = parsed.success ? parsed.data : defaultCommentAssistant;
-      setOutput(valid);
-      repo.interaction.addInteraction(userId, "comments", `${originalPost}\n${receivedComment}`, valid);
+      if (!parsed.success) {
+        throw new Error("Risposta AI non valida. Riprova.");
+      }
+      setOutput(parsed.data);
+      repo.interaction.addInteraction(userId, "comments", `${originalPost}\n${receivedComment}`, parsed.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
       setLoading(false);
     }
   }
 
+  const heatColors: Record<string, string> = {
+    Cold: "badge-blue",
+    Warm: "badge-amber",
+    Hot: "badge-red",
+  };
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Rispondi ai commenti.</h2>
-      <div className="rounded-lg border border-app bg-soft p-4 text-sm">
-        <p><strong>Cosa fa questa pagina</strong>: ti suggerisce come rispondere per continuare la conversazione.</p>
-        <p><strong>Cosa incollare</strong>: il post e il commento ricevuto.</p>
-        <p><strong>Cosa ottieni</strong>: 3 risposte, DM suggerito e prossima azione.</p>
-      </div>
-      <div className="rounded-lg border border-app p-4 space-y-3">
-        <label className="block text-sm"><span className="mb-1 block text-muted">Post originale</span><textarea rows={5} className="input w-full" placeholder="Many SaaS companies lose conversions because onboarding is confusing." value={originalPost} onChange={(e) => setOriginalPost(e.target.value)} /></label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">Commento ricevuto</span><textarea rows={4} className="input w-full" placeholder="Interesting. We might have this issue." value={receivedComment} onChange={(e) => setReceivedComment(e.target.value)} /></label>
-        <label className="block text-sm"><span className="mb-1 block text-muted">Profilo autore commento (opzionale)</span><textarea rows={4} className="input w-full" value={commenterProfileText} onChange={(e) => setCommenterProfileText(e.target.value)} /></label>
-        <label className="block text-sm">
-          <span className="mb-1 block text-muted">Obiettivo conversazione</span>
-          <select className="input w-full" value={conversationGoal} onChange={(e) => setConversationGoal(e.target.value as typeof conversationGoal)}>
-            <option value="understand_fit">Capire se è un cliente in target</option>
-            <option value="continue_conversation">Continuare conversazione</option>
-            <option value="move_to_dm">Spostare la conversazione in DM</option>
-            <option value="propose_call">Proporre una call</option>
-            <option value="follow_up">Fare follow-up</option>
-          </select>
-        </label>
-        <button onClick={generate} disabled={loading} className="btn-primary px-4 py-2">{loading ? "Generazione..." : "Genera"}</button>
+    <div className="tool-page">
+      <div className="tool-page-hero">
+        <h2>Rispondi ai commenti</h2>
+        <p>
+          Trasforma i commenti ricevuti in conversazioni commerciali.
+        </p>
       </div>
 
-      {output && (
-        <section className="rounded-lg border border-app p-4 space-y-4">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold">Risultato</h3>
-            <CopyButton text={`${output.replies.soft}\n\n${output.replies.authority}\n\n${output.replies.dm_pivot}`} />
-          </div>
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="rounded border border-app p-3 text-sm"><strong>Client Heat Level:</strong> {output.client_heat_level}</div>
-            <div className="rounded border border-app p-3 text-sm"><strong>Valutazione messaggio:</strong> {output.message_risk_warning}</div>
-          </div>
-          <div className="rounded border border-app p-3 text-sm"><strong>Strategia:</strong> {output.strategy}</div>
-          <div className="grid gap-3 md:grid-cols-3">
-            <ResultCard title="Risposta soft" text={output.replies.soft} />
-            <ResultCard title="Risposta autorevole" text={output.replies.authority} />
-            <ResultCard title="Risposta con pivot DM" text={output.replies.dm_pivot} />
-          </div>
-          <ResultCard title="DM suggerito" text={output.suggested_dm} />
-          <div className="rounded border border-app bg-soft p-3 text-sm"><strong>Next action:</strong> {output.next_action}</div>
-          <Link href="/app/pipeline" className="inline-block btn-secondary px-3 py-1.5">Aggiungi questo contatto alla pipeline?</Link>
-        </section>
-      )}
-      <section className="rounded-lg border border-app p-4"><h3 className="font-semibold mb-2">Storico</h3><HistoryList userId={userId} type="comments" /></section>
-    </div>
-  );
-}
+      {/* Guide box */}
+      <div className="tool-page-guide">
+        <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> rispondi ai commenti in modo strategico</div>
+          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> post originale e commento ricevuto</div>
+          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> 3 risposte, DM suggerito, prossima azione</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> sposta la conversazione in DM</div>
+        </div>
+      </div>
 
-function ResultCard({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="rounded border border-app p-3 text-sm">
-      <div className="font-semibold">{title}</div>
-      <p className="mt-1 whitespace-pre-wrap">{text}</p>
+      {/* Two-column layout: input + output */}
+      <div className="tool-page-grid">
+        {/* INPUT */}
+        {output ? (
+        <details className="tool-input-collapsed">
+          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
+          <div className="tool-input-body space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Post originale</span>
+            <textarea
+              rows={5}
+              className="input w-full resize-none"
+              placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso."
+              value={originalPost}
+              onChange={(e) => setOriginalPost(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Commento ricevuto</span>
+            <textarea
+              rows={4}
+              className="input w-full resize-none"
+              placeholder="Es. Interessante. Potremmo avere questo problema."
+              value={receivedComment}
+              onChange={(e) => setReceivedComment(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">
+              Profilo autore commento{" "}
+              <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
+            </span>
+            <textarea
+              rows={3}
+              className="input w-full resize-none"
+              value={commenterProfileText}
+              onChange={(e) => setCommenterProfileText(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Obiettivo conversazione</span>
+            <select
+              className="input w-full"
+              value={conversationGoal}
+              onChange={(e) => setConversationGoal(e.target.value as typeof conversationGoal)}
+            >
+              <option value="understand_fit">Capire se è un cliente in target</option>
+              <option value="continue_conversation">Continuare conversazione</option>
+              <option value="move_to_dm">Spostare la conversazione in DM</option>
+              <option value="propose_call">Proporre una call</option>
+              <option value="follow_up">Fare follow-up</option>
+            </select>
+          </label>
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Genera risposte →"}
+          </button>
+          </div>
+        </details>
+        ) : (
+        <div className="tool-page-panel space-y-4">
+          <h3 className="tool-page-panel-header">Input</h3>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Post originale</span>
+            <textarea
+              rows={5}
+              className="input w-full resize-none"
+              placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso."
+              value={originalPost}
+              onChange={(e) => setOriginalPost(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Commento ricevuto</span>
+            <textarea
+              rows={4}
+              className="input w-full resize-none"
+              placeholder="Es. Interessante. Potremmo avere questo problema."
+              value={receivedComment}
+              onChange={(e) => setReceivedComment(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">
+              Profilo autore commento{" "}
+              <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
+            </span>
+            <textarea
+              rows={3}
+              className="input w-full resize-none"
+              value={commenterProfileText}
+              onChange={(e) => setCommenterProfileText(e.target.value)}
+            />
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block font-medium">Obiettivo conversazione</span>
+            <select
+              className="input w-full"
+              value={conversationGoal}
+              onChange={(e) => setConversationGoal(e.target.value as typeof conversationGoal)}
+            >
+              <option value="understand_fit">Capire se è un cliente in target</option>
+              <option value="continue_conversation">Continuare conversazione</option>
+              <option value="move_to_dm">Spostare la conversazione in DM</option>
+              <option value="propose_call">Proporre una call</option>
+              <option value="follow_up">Fare follow-up</option>
+            </select>
+          </label>
+          <button onClick={generate} disabled={loading} className="btn-primary w-full">
+            {loading ? "Generazione in corso…" : "Genera risposte →"}
+          </button>
+        </div>
+        )}
+
+        {/* OUTPUT */}
+        <div>
+          {error ? (
+            <div className="callout-danger rounded-xl p-5">
+              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
+              <p className="text-sm">{error}</p>
+            </div>
+          ) : output ? (
+            <div className="insight-result">
+              <ResultHeader title="Analisi commento" copyText={`${output.replies.soft}\n\n${output.replies.authority}\n\n${output.replies.dm_pivot}`} />
+
+              <MetricRow>
+                <MetricBadge icon={<IconThermometer size={16} />} label="Interesse" value={output.client_heat_level} color={heatColors[output.client_heat_level] === "badge-red" ? "red" : heatColors[output.client_heat_level] === "badge-amber" ? "amber" : "blue"} />
+                {output.message_risk_warning && output.message_risk_warning !== "nessuno" && (
+                  <MetricBadge icon={<IconAlertTriangle size={16} />} label="Rischio" value={output.message_risk_warning} color="amber" />
+                )}
+              </MetricRow>
+
+              <InsightCard icon={<IconTarget size={16} />} label="Strategia" text={output.strategy} variant="summary" />
+
+              <SectionDivider label="Risposte suggerite" />
+
+              <div className="insight-reply-grid">
+                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta soft" text={output.replies.soft} variant="message" copyable />
+                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta autorevole" text={output.replies.authority} variant="message" copyable />
+                <InsightCard icon={<IconMail size={16} />} label="Pivot DM" text={output.replies.dm_pivot} variant="message" copyable />
+              </div>
+
+              <SectionDivider label="Azione consigliata" />
+
+              <InsightCard icon={<IconMail size={16} />} label="DM suggerito" text={output.suggested_dm} variant="strategy" copyable />
+
+              <div className="insight-next-action">
+                <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+                <div><strong>Prossima azione:</strong> {output.next_action}</div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Link href="/app/pipeline" className="btn-primary">
+                  + Aggiungi in Pipeline
+                </Link>
+                <Link href="/app/dm" className="btn-secondary">
+                  Vai ai messaggi DM →
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="tool-page-empty">
+              <p className="tool-page-empty-icon"><IconMessageCircle size={28} /></p>
+              <p className="tool-page-empty-title">
+                Il risultato apparirà qui
+              </p>
+              <p className="tool-page-empty-text">
+                Inserisci il post e il commento, poi clicca &quot;Genera risposte&quot;
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* History */}
+      <div className="tool-page-panel">
+        <h3 className="font-semibold mb-3">Storico</h3>
+        <HistoryList userId={userId} type="comments" />
+      </div>
     </div>
   );
 }

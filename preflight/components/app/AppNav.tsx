@@ -3,39 +3,62 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const nav = [
-  { href: "/app", label: "Oggi" },
-  { href: "/app/onboarding", label: "Imposta il tuo sistema" },
-  { href: "/app/inbound", label: "Contenuti" },
-  { href: "/app/post", label: "Scrivi un post" },
-  { href: "/app/comments", label: "Rispondi ai commenti" },
-  { href: "/app/dm", label: "Rispondi ai messaggi" },
-  { href: "/app/prospect", label: "Analizza un potenziale cliente" },
-  { href: "/app/opportunity", label: "Trova opportunita" },
-  { href: "/app/simulator", label: "Allenati alle conversazioni" },
-  { href: "/app/pipeline", label: "Clienti in corso" },
+type NavItem = { href: string; label: string };
+
+const topItems: NavItem[] = [
+  { href: "/app", label: "Dashboard" },
+  { href: "/app/oggi", label: "Cosa fare oggi" },
+];
+
+const coreItems: NavItem[] = [
+  { href: "/app/find-clients", label: "Trova clienti" },
+  { href: "/app/prospect", label: "Analizza profilo" },
+  { href: "/app/dm", label: "Chiedi un consiglio" },
+];
+
+const configItems: NavItem[] = [
+  { href: "/app/onboarding", label: "Configura il tuo sistema" },
+];
+
+const bottomItems: NavItem[] = [
   { href: "/app/settings", label: "Impostazioni" },
 ];
 
 export default function AppNav() {
   const pathname = usePathname();
 
+  function navLink(item: NavItem, highlight?: boolean) {
+    const active = pathname === item.href;
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        className={`dash-nav-link${active ? " dash-nav-link-active" : ""}${highlight ? " dash-nav-link-core" : ""}`}
+      >
+        {item.label}
+      </Link>
+    );
+  }
+
   return (
-    <nav className="mb-6 flex flex-wrap gap-2">
-      {nav.map((item) => {
-        const active = pathname === item.href;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`rounded-lg border px-3 py-2 text-sm ${
-              active ? "bg-soft border-app" : "border-app hover:bg-soft2"
-            }`}
-          >
-            {item.label}
-          </Link>
-        );
-      })}
+    <nav className="dash-nav">
+      <div className="dash-nav-group">
+        {topItems.map((i) => navLink(i))}
+      </div>
+      <div className="dash-nav-divider" />
+      <div className="dash-nav-group">
+        <span className="dash-nav-label">Servizi principali</span>
+        {coreItems.map((i) => navLink(i, true))}
+      </div>
+      <div className="dash-nav-divider" />
+      <div className="dash-nav-group">
+        <span className="dash-nav-label">Configurazione</span>
+        {configItems.map((i) => navLink(i))}
+      </div>
+      <div className="dash-nav-divider" />
+      <div className="dash-nav-group">
+        {bottomItems.map((i) => navLink(i))}
+      </div>
     </nav>
   );
 }

@@ -3,59 +3,95 @@
 import Link from "next/link";
 import { marketingNav } from "../../lib/routes";
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
+
+/* ── dropdown megamenu content per voce ── */
+const megaPanels: Record<string, { title: string; desc: string; href: string }[]> = {};
 
 export default function MarketingHeader() {
   const { data: session } = useSession();
-  const [open, setOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [activePanel, setActivePanel] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headerRef = useRef<HTMLElement>(null);
+
+  /* chiudi dropdown se click fuori */
+  useEffect(() => {
+    function onClick(e: MouseEvent) {
+      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+        setActivePanel(null);
+      }
+    }
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  function enterNav(href: string) {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (megaPanels[href]) setActivePanel(href);
+    else setActivePanel(null);
+  }
+  function leaveNav() {
+    closeTimer.current = setTimeout(() => setActivePanel(null), 180);
+  }
+  function enterPanel() {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  }
+  function leavePanel() {
+    closeTimer.current = setTimeout(() => setActivePanel(null), 180);
+  }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-app">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between">
-        <Link href="/" className="inline-flex items-center gap-3">
-          <span className="text-lg font-extrabold">Preflight</span>
+    <header ref={headerRef} className="mega-header">
+      <div className="mega-header-inner">
+        {/* ── Logo ── */}
+        <Link href="/" className="mega-logo">
+          Preflight
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm">
+        {/* ── Nav desktop ── */}
+        <nav className="mega-nav">
           {marketingNav.map((item) => (
-            <Link
+            <div
               key={item.href}
-              href={item.href}
-              className="transition-colors duration-200 ease link-primary hover:text-primaryDark"
+              className="mega-nav-item"
+              onMouseEnter={() => enterNav(item.href)}
+              onMouseLeave={leaveNav}
             >
-              {item.label}
-            </Link>
+              <Link href={item.href} className={`mega-nav-link${activePanel === item.href ? " mega-nav-link-active" : ""}`}>
+                {item.label}
+                {megaPanels[item.href] && (
+                  <svg className="mega-nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+                )}
+              </Link>
+            </div>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
-          <Link href="/app/onboarding" className="hidden sm:inline-flex btn-primary rounded-full px-4 py-2 text-sm font-medium shadow-sm">
-            Crea il mio piano clienti (5 min)
-          </Link>
-
+        {/* ── Right side ── */}
+        <div className="mega-actions">
           {session ? (
-            <div className="hidden sm:flex items-center gap-3">
-              <span className="text-sm">Ciao, {session.user?.name || session.user?.email}</span>
-              <button
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="btn-secondary"
-                aria-label="Esci"
-              >
-                Esci
-              </button>
+            <div className="mega-user">
+              <span className="mega-user-name">{session.user?.name || session.user?.email}</span>
+              <button onClick={() => signOut({ callbackUrl: "/" })} className="mega-user-btn" aria-label="Esci">Esci</button>
             </div>
           ) : (
-            <Link href="/app" aria-label="Apri app" className="hidden sm:inline-flex btn-secondary rounded-full px-5 py-2 font-semibold shadow-sm">Apri app</Link>
+            <Link href="/app" className="mega-secondary" aria-label="Accedi">Accedi</Link>
           )}
 
-          {/* Mobile: hamburger */}
+          <Link href="/app" className="mega-cta">
+            Prova il sistema
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </Link>
+
+          {/* ── Hamburger mobile ── */}
           <button
-            onClick={() => setOpen((v) => !v)}
-            className="inline-flex items-center justify-center rounded-md p-2 md:hidden"
-            aria-label={open ? "Chiudi menu" : "Apri menu"}
+            onClick={() => setMobileOpen((v) => !v)}
+            className="mega-hamburger"
+            aria-label={mobileOpen ? "Chiudi menu" : "Apri menu"}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              {open ? (
+              {mobileOpen ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               ) : (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -65,29 +101,43 @@ export default function MarketingHeader() {
         </div>
       </div>
 
-      {/* Mobile menu panel */}
-      {open && (
-        <div className="md:hidden bg-white border-t border-app">
-          <div className="px-4 py-3 space-y-3">
-            {marketingNav.map((item) => (
-              <Link key={item.href} href={item.href} className="block text-base link-primary">
-                {item.label}
+      {/* ── Megamenu dropdown panels ── */}
+      {activePanel && megaPanels[activePanel] && (
+        <div
+          className="mega-dropdown"
+          onMouseEnter={enterPanel}
+          onMouseLeave={leavePanel}
+        >
+          <div className="mega-dropdown-inner">
+            {megaPanels[activePanel].map((card) => (
+              <Link key={card.title} href={card.href} className="mega-card">
+                <span className="mega-card-title">{card.title}</span>
+                <span className="mega-card-desc">{card.desc}</span>
               </Link>
             ))}
-
-            <Link href="/app/onboarding" className="block btn-primary w-full text-center rounded-full px-4 py-2">
-              Crea il mio piano clienti (5 min)
-            </Link>
-
-            {session ? (
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Ciao, {session.user?.name || session.user?.email}</span>
-                <button onClick={() => signOut({ callbackUrl: "/" })} className="btn-secondary">Esci</button>
-              </div>
-            ) : (
-              <Link href="/app" className="block btn-secondary w-full text-center rounded-full px-4 py-2">Apri app</Link>
-            )}
           </div>
+        </div>
+      )}
+
+      {/* ── Mobile panel ── */}
+      {mobileOpen && (
+        <div className="mega-mobile">
+          {marketingNav.map((item) => (
+            <Link key={item.href} href={item.href} className="mega-mobile-link" onClick={() => setMobileOpen(false)}>
+              {item.label}
+            </Link>
+          ))}
+          {session ? (
+            <div className="mega-mobile-user">
+              <span className="text-sm">{session.user?.name || session.user?.email}</span>
+              <button onClick={() => signOut({ callbackUrl: "/" })} className="mega-user-btn">Esci</button>
+            </div>
+          ) : (
+            <Link href="/app" className="mega-mobile-link" onClick={() => setMobileOpen(false)}>Accedi</Link>
+          )}
+          <Link href="/app" className="mega-mobile-cta" onClick={() => setMobileOpen(false)}>
+            Prova il sistema
+          </Link>
         </div>
       )}
     </header>

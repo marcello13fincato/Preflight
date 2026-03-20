@@ -12,47 +12,46 @@ import type {
 export function createDefaultPlan(input: OnboardingInput): PlanJson {
   return {
     positioning: {
-      one_liner: input.offer_one_liner,
-      ideal_customer: `${input.icp_role} in ${input.icp_industry}`,
-      problem: input.icp_main_problem,
-      promise: input.offer_outcome,
+      one_liner: input.servizio,
+      ideal_customer: input.cliente_ideale,
+      problem: input.problema_cliente,
+      promise: input.risultato_cliente,
     },
     linkedin_profile: {
-      headline: `${input.icp_role}: ${input.offer_outcome}`,
-      about: `Aiuto ${input.icp_role} nel settore ${input.icp_industry} a ottenere ${input.offer_outcome} in ${input.offer_delivery_time}.`,
-      cta: "Scrivimi 'audit' in DM per il prossimo step.",
+      headline: `${input.cliente_ideale}: ${input.risultato_cliente}`,
+      about: `Aiuto ${input.cliente_ideale} a ottenere ${input.risultato_cliente}.`,
+      cta: "Scrivimi in DM per il prossimo step.",
     },
     plan_14_days: Array.from({ length: 14 }, (_, idx) => ({
       day: idx + 1,
-      inbound: `Pubblica un contenuto su ${input.icp_main_problem} con CTA verso DM.`,
-      outbound: `Contatta 2 profili ${input.icp_role} con domanda iniziale personalizzata.`,
+      inbound: `Pubblica un contenuto su ${input.problema_cliente} con CTA verso DM.`,
+      outbound: `Contatta 2 profili ${input.cliente_ideale} con domanda iniziale personalizzata.`,
       followup: "Segui 1 conversazione aperta con una domanda di qualificazione.",
     })),
     content_plan: [
-      { week: 1, post_type: "educational", topic: input.icp_main_problem, hook: "Errore che blocca vendite su LinkedIn", cta: "Commenta 'audit'" },
-      { week: 1, post_type: "case-study", topic: input.proof_case_study, hook: "Da zero a conversazioni utili", cta: "Scrivimi in DM" },
-      { week: 2, post_type: "opinion", topic: `Obiezione: ${input.icp_top_objections[0] || "non ho tempo"}`, hook: "La verita sulle obiezioni in DM", cta: "Vuoi lo script?" },
-      { week: 2, post_type: "educational", topic: input.offer_outcome, hook: "Framework in 3 step", cta: "Salva il post e scrivimi" },
+      { week: 1, post_type: "educational" as const, topic: input.problema_cliente, hook: "Errore che blocca vendite su LinkedIn", cta: "Commenta per saperne di più" },
+      { week: 1, post_type: "case-study" as const, topic: input.risultato_cliente, hook: "Da zero a conversazioni utili", cta: "Scrivimi in DM" },
+      { week: 2, post_type: "opinion" as const, topic: input.problema_cliente, hook: "La verità sulle obiezioni in DM", cta: "Vuoi lo script?" },
+      { week: 2, post_type: "educational" as const, topic: input.risultato_cliente, hook: "Framework in 3 step", cta: "Salva il post e scrivimi" },
     ],
     outbound_plan: {
       weekly_targets: { connections: 20, dms: 10, followups: 10 },
-      linkedin_search_queries: [
-        `${input.icp_role} ${input.icp_industry}`,
-        `${input.icp_role} ${input.icp_company_size}`,
-      ],
+      linkedin_search_queries: input.linkedin_search_links.length > 0
+        ? input.linkedin_search_links
+        : [`${input.cliente_ideale}`],
       connection_message_templates: [
-        `Ciao, ho visto che lavori su ${input.icp_main_problem}. Ti va uno scambio rapido su come lo affrontate ora?`,
+        `Ciao, ho visto che lavori su ${input.problema_cliente}. Ti va uno scambio rapido su come lo affrontate ora?`,
       ],
     },
     dm_templates: {
       connect: "Ciao, felice di connettermi. Ho letto il tuo profilo e mi ha colpito il focus sui risultati.",
-      dm1: "Domanda veloce: oggi cosa ti blocca di piu nel trasformare conversazioni LinkedIn in call?",
+      dm1: "Domanda veloce: oggi cosa ti blocca di più nel trasformare conversazioni LinkedIn in call?",
       followup48h: "Ti riprendo qui: vuoi che ti condivida un esempio pratico da usare questa settimana?",
       followup5d: "Se utile, posso inviarti uno schema breve per qualificare meglio i lead in DM.",
       followup10d: "Chiudo il loop: ha senso fare 15 minuti per capire se il mio metodo si adatta al tuo caso?",
     },
     comment_playbook: {
-      lead_comment_reply: "Ottimo punto. La leva e chiarire problema e prossimo step nel primo blocco del post.",
+      lead_comment_reply: "Ottimo punto. La leve è chiarire problema e prossimo step nel primo blocco del post.",
       curious_comment_reply: "Bella domanda. Posso condividere un esempio concreto in DM se ti va.",
       objection_reply: "Obiezione legittima. Dipende da target e messaggio: posso spiegarti il criterio che uso.",
       pivot_to_dm: "Se vuoi, continuo in DM con un esempio sul tuo caso.",
@@ -76,6 +75,10 @@ export const defaultPostBuilder = (objective: string, dmKeyword: string): PostBu
   cta: `Se vuoi lo schema, commenta '${dmKeyword || "audit"}' e ti scrivo in DM.`,
   comment_starter: "Qual e oggi il punto piu difficile nel passare da commento a conversazione privata?",
   next_step: `Pubblica la versione direct e rispondi ai primi 3 commenti con domanda aperta. Obiettivo: 1 DM in 24h (${objective}).`,
+  suggerimento_immagine: {
+    tipo: "Foto reale: una foto di te mentre lavori o del tuo ambiente di lavoro. Le immagini autentiche funzionano meglio delle grafiche su LinkedIn.",
+    perche_funziona: "Le foto reali aumentano la fiducia e l'engagement perché mostrano la persona dietro il contenuto.",
+  },
 });
 
 export const defaultCommentAssistant: CommentAssistantJson = {
@@ -114,37 +117,58 @@ export const defaultDmAssistant: DmAssistantJson = {
 };
 
 export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
-  likely_pains: [
-    "Lead non qualificati in ingresso",
-    "Conversazioni LinkedIn non convertite in call",
-    "Processo outbound poco costante",
+  score: 65,
+  chi_e: "Professionista del settore B2B con focus su crescita commerciale e gestione pipeline.",
+  ruolo_contesto: "Fondatore o responsabile commerciale in un'azienda con 5-50 dipendenti. Gestisce il processo di acquisizione clienti su LinkedIn.",
+  punti_forza: [
+    "Esperienza consolidata nel settore B2B",
+    "Rete di contatti ampia e attiva su LinkedIn",
+    "Pubblica contenuti con regolarità",
   ],
-  angles: [
-    "Framework di qualificazione in DM",
-    "Piano 14 giorni con azioni giornaliere",
-    "Messaggi basati su obiezioni reali",
+  punti_deboli: [
+    "Profilo non ottimizzato per la conversione",
+    "Manca una call-to-action chiara nel sommario",
   ],
-  connection_opener: "Ciao, ho letto il tuo profilo e il focus su crescita commerciale: ti va uno scambio rapido su come gestite oggi LinkedIn inbound/outbound?",
-  dm1: "Domanda diretta: qual e il collo di bottiglia principale tra commenti, DM e call prenotate?",
-  smart_questions: [
-    "Quante conversazioni LinkedIn aprite a settimana?",
-    "Qual e il tasso attuale commento -> DM?",
-    "Chi gestisce oggi follow-up e timing?",
-    "Che tipo di prospect risponde meglio?",
-    "Quale obiezione blocca piu spesso la call?",
+  perche_buon_contatto: "Ha un'esigenza concreta di sistematizzare il processo outbound. Il profilo mostra segnali di interesse verso tematiche di crescita e automazione.",
+  strategia_contatto: "Approccio educativo: partire da un contenuto di valore legato al suo problema specifico. Evitare la vendita diretta nel primo messaggio.",
+  nota_connessione: "Ho visto il tuo post sulla crescita commerciale — mi occupo dello stesso tema. Mi farebbe piacere connetterci.",
+  primo_messaggio: "Ciao, ho letto il tuo profilo e il focus su crescita commerciale: ti va uno scambio rapido su come gestite oggi LinkedIn inbound/outbound?",
+  followup_3g: "Riprendo il messaggio — ho un caso studio simile al tuo scenario. Ti interessa se te lo condivido?",
+  followup_7g: "Chiudo il thread: se vuoi, possiamo fare 15 minuti e capire se c'è fit. Altrimenti nessun problema!",
+  step_successivi: [
+    "Invia il primo messaggio oggi",
+    "Se accetta, aspetta 24h e poi manda un follow-up di valore",
+    "Proponi una call di 15 minuti dopo il secondo scambio",
   ],
+  segnali_da_osservare: "Risponde con domande specifiche (caldo). Visualizza senza rispondere (tiepido). Non accetta la connessione (freddo).",
+  errori_da_evitare: "Non proporre subito una call. Non mandare messaggi troppo lunghi. Non parlare del proprio servizio nel primo messaggio.",
   client_heat_level: "Cold",
   priority_signal: "medium",
-  next_action: "Invia il connection_opener oggi e, dopo accettazione, manda dm1 entro 24 ore.",
 };
 
 export const defaultOpportunityFinder: OpportunityFinderJson = {
+  keywords_to_monitor: ["looking for", "any recommendations", "does anyone know"],
   post_types_to_search: [
     "Post con richieste di raccomandazioni",
     "Post con problema operativo aperto",
     "Post con domanda su tool o consulenti",
   ],
-  keywords_to_monitor: ["looking for", "any recommendations", "does anyone know"],
+  ideal_profiles: [
+    { role: "Founder di SaaS", sector: "Tecnologia B2B", company_size: "5–20 persone", why: "Ha bisogno di scalare senza aumentare il team" },
+    { role: "Marketing Manager", sector: "Aziende B2B", company_size: "10–50 dipendenti", why: "Gestisce il budget e cerca soluzioni operative" },
+    { role: "Consulente HR", sector: "PMI in crescita", company_size: "10–100 persone", why: "Affronta problemi di talent acquisition e retention" },
+  ],
+  useful_signals: [
+    "Pubblica post su problemi operativi ricorrenti",
+    "Cerca raccomandazioni su LinkedIn",
+    "Commenta su contenuti del tuo settore",
+    "Ha cambiato ruolo di recente",
+  ],
+  linkedin_search_queries: [
+    "Founder SaaS B2B Milano",
+    "Marketing Manager azienda tecnologia",
+    "HR Consultant PMI crescita",
+  ],
   conversation_opportunities: [
     "Commenta con una domanda utile e concreta",
     "Condividi mini-esempio pratico senza vendere",

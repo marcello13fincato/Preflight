@@ -1,0 +1,353 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState, useEffect, useCallback } from "react";
+import { useSession } from "next-auth/react";
+import { getRepositoryBundle } from "@/lib/sales/repositories";
+import { IconClipboard } from "@/components/shared/icons";
+import type { DailyPlanJson } from "@/lib/sales/schemas";
+
+const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan";
+const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-date";
+const TARGETING_STORAGE_KEY = "preflight:last-targeting";
+
+function loadLastTargeting(userId: string): Record<string, unknown> | null {
+  if (typeof window === "undefined") return null;
+  const raw = localStorage.getItem(`${TARGETING_STORAGE_KEY}:${userId}`);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw) as { result: Record<string, unknown> };
+    return parsed.result || null;
+  } catch {
+    return null;
+  }
+}
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function loadCachedPlan(): DailyPlanJson | null {
+  if (typeof window === "undefined") return null;
+  const date = localStorage.getItem(DAILY_PLAN_DATE_KEY);
+  if (date !== todayKey()) return null;
+  const raw = localStorage.getItem(DAILY_PLAN_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as DailyPlanJson;
+  } catch {
+    return null;
+  }
+}
+
+function cachePlan(plan: DailyPlanJson) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(DAILY_PLAN_STORAGE_KEY, JSON.stringify(plan));
+  localStorage.setItem(DAILY_PLAN_DATE_KEY, todayKey());
+}
+
+const TIPO_CONFIG: Record<string, { emoji: string; label: string; color: string }> = {
+  outreach:  { emoji: "🎯", label: "Outreach",  color: "oggi-tipo-outreach" },
+  contenuto: { emoji: "✍️", label: "Contenuto", color: "oggi-tipo-contenuto" },
+  followup:  { emoji: "🔄", label: "Follow-up", color: "oggi-tipo-followup" },
+  ricerca:   { emoji: "🔍", label: "Ricerca",   color: "oggi-tipo-ricerca" },
+};
+
+function CopyBtn({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button type="button" onClick={copy} className={`oggi-copy-btn ${copied ? "oggi-copy-done" : ""}`}>
+      {copied ? (
+        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copiato</>
+      ) : (
+        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copia</>
+      )}
+    </button>
+  );
+}
+
+export default function CosaFareOggiPage() {
+  const { data: session } = useSession();
+  const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
+  const repo = useMemo(() => getRepositoryBundle(), []);
+  const profile = repo.profile.getProfile(userId);
+  const contacts = useMemo(() => repo.contact.listContacts(userId), [userId, repo]);
+
+  const [plan, setPlan] = useState<DailyPlanJson | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [autoLoaded, setAutoLoaded] = useState(false);
+  const [checkedActions, setCheckedActions] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const cached = loadCachedPlan();
+    if (cached) {
+      setPlan(cached);
+      setAutoLoaded(true);
+    }
+  }, []);
+
+  const generatePlan = useCallback(async () => {
+    if (loading) return;
+    setLoading(true);
+    setPlan(null);
+    setCheckedActions(new Set());
+    try {
+      const lastTargeting = loadLastTargeting(userId);
+      const res = await fetch("/api/ai/daily-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          profile: profile.onboarding || undefined,
+          targeting: lastTargeting || undefined,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore");
+      const data = (await res.json()) as DailyPlanJson;
+      setPlan(data);
+      cachePlan(data);
+    } catch {
+      setPlan(null);
+    } finally {
+      setLoading(false);
+    }
+  }, [loading, profile.onboarding, userId]);
+
+  useEffect(() => {
+    if (!autoLoaded && !plan && !loading && profile.onboarding_complete) {
+      generatePlan();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoLoaded, profile.onboarding_complete]);
+
+  const toggleAction = (key: string) => {
+    setCheckedActions((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  };
+
+  const completedCount = checkedActions.size;
+  const today = new Date().toLocaleDateString("it-IT", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
+  return (
+    <div className="oggi-page">
+      {/* ── HERO ── */}
+      <div className="oggi-hero">
+        <div className="oggi-hero-top">
+          <span className="oggi-date">{today}</span>
+          {plan && (
+            <span className="oggi-progress-pill">
+              <span className="oggi-progress-fill" style={{ width: `${(completedCount / 5) * 100}%` }} />
+              <span className="oggi-progress-label">{completedCount}/5 completate</span>
+            </span>
+          )}
+        </div>
+        <h1 className="oggi-hero-title">Cosa fare oggi</h1>
+        {plan?.focus_giornata ? (
+          <p className="oggi-hero-focus">{plan.focus_giornata}</p>
+        ) : (
+          <p className="oggi-hero-sub">Le azioni più utili per oggi, pronte da eseguire su LinkedIn.</p>
+        )}
+      </div>
+
+      {/* ── EMPTY STATE ── */}
+      {!plan && !loading && (
+        <section className="oggi-empty">
+          <div className="oggi-empty-icon">📋</div>
+          <h3 className="oggi-empty-title">Il tuo piano di oggi non è ancora pronto</h3>
+          <p className="oggi-empty-desc">
+            {profile.onboarding_complete
+              ? "Genera il piano e ricevi 5 azioni precise con messaggi pronti da copiare."
+              : "Configura il profilo per consigli personalizzati, oppure genera un piano generico."}
+          </p>
+          <div className="oggi-empty-actions">
+            <button type="button" onClick={generatePlan} className="btn-primary oggi-gen-btn">
+              Genera il piano di oggi →
+            </button>
+            {!profile.onboarding_complete && (
+              <Link href="/app/onboarding" className="btn-secondary">
+                Configura profilo
+              </Link>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ── LOADING ── */}
+      {loading && (
+        <section className="oggi-loading-card">
+          <div className="oggi-pulse-ring" />
+          <p className="oggi-loading-title">Sto preparando il tuo piano…</p>
+          <p className="oggi-loading-sub">Analizzo profilo, contatti e conversazioni recenti.</p>
+        </section>
+      )}
+
+      {plan && (
+        <>
+          {/* ── SEZIONE 1: CHECKLIST AZIONI ── */}
+          <section className="oggi-section-card">
+            <div className="oggi-section-head">
+              <span className="oggi-section-num">1</span>
+              <div>
+                <h2 className="oggi-section-title">Le tue 5 azioni di oggi</h2>
+                <p className="oggi-section-sub">Spunta ogni azione completata. Ogni card ha il messaggio pronto da copiare.</p>
+              </div>
+            </div>
+
+            <div className="oggi-actions-list">
+              {(["azione_1", "azione_2", "azione_3", "azione_4", "azione_5"] as const).map((key, i) => {
+                const a = plan.azioni[key];
+                const tipo = TIPO_CONFIG[a.tipo] || TIPO_CONFIG.ricerca;
+                const done = checkedActions.has(key);
+                return (
+                  <div key={key} className={`oggi-action-card ${done ? "oggi-action-done" : ""}`} style={{ animationDelay: `${i * 0.06}s` }}>
+                    <button type="button" className="oggi-check" onClick={() => toggleAction(key)} aria-label={done ? "Segna come non completata" : "Segna come completata"}>
+                      {done ? (
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                      ) : (
+                        <span className="oggi-check-num">{i + 1}</span>
+                      )}
+                    </button>
+                    <div className="oggi-action-body">
+                      <div className="oggi-action-top">
+                        <span className={`oggi-tipo-badge ${tipo.color}`}>{tipo.emoji} {tipo.label}</span>
+                        <h3 className="oggi-action-title">{a.titolo}</h3>
+                      </div>
+                      <p className="oggi-action-steps">{a.istruzioni}</p>
+                      {a.messaggio_pronto && (
+                        <div className="oggi-msg-box">
+                          <div className="oggi-msg-header">
+                            <span className="oggi-msg-label">💬 Messaggio pronto</span>
+                            <CopyBtn text={a.messaggio_pronto} />
+                          </div>
+                          <p className="oggi-msg-text">{a.messaggio_pronto}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+
+          {/* ── SEZIONE 2: MESSAGGI PRONTI ── */}
+          <section className="oggi-section-card">
+            <div className="oggi-section-head">
+              <span className="oggi-section-num">2</span>
+              <div>
+                <h2 className="oggi-section-title">Messaggi pronti da copiare</h2>
+                <p className="oggi-section-sub">Copia e incolla su LinkedIn. Scegli la variante più adatta.</p>
+              </div>
+            </div>
+
+            <div className="oggi-msgs-grid">
+              <MsgCard label="Primo contatto" text={plan.messaggi_pronti.primo_contatto} variant={plan.messaggi_pronti.primo_contatto_variante} />
+              <MsgCard label="Follow-up" text={plan.messaggi_pronti.followup} variant={plan.messaggi_pronti.followup_variante} />
+              <MsgCard label="Commento post" text={plan.messaggi_pronti.commento_post} />
+            </div>
+
+            {plan.link_ricerca_linkedin && (
+              <a href={plan.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="oggi-linkedin-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                Apri ricerca su LinkedIn ↗
+              </a>
+            )}
+          </section>
+
+          {/* ── SEZIONE 3: POST DEL GIORNO ── */}
+          <section className="oggi-section-card">
+            <div className="oggi-section-head">
+              <span className="oggi-section-num">3</span>
+              <div>
+                <h2 className="oggi-section-title">Post del giorno</h2>
+                <p className="oggi-section-sub">Testo completo pronto da pubblicare su LinkedIn.</p>
+              </div>
+            </div>
+
+            <div className="oggi-post-card">
+              <div className="oggi-post-header">
+                <span className="oggi-post-badge">✍️ Post pronto</span>
+                <CopyBtn text={plan.post_del_giorno.testo_completo} />
+              </div>
+              <div className="oggi-post-preview">
+                <p className="oggi-post-hook">{plan.post_del_giorno.hook}</p>
+                <p className="oggi-post-body">{plan.post_del_giorno.corpo}</p>
+                <p className="oggi-post-cta">{plan.post_del_giorno.chiusura}</p>
+              </div>
+              {plan.post_del_giorno.tipo_immagine && (
+                <p className="oggi-post-img-tip">
+                  📷 {plan.post_del_giorno.tipo_immagine}
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* ── SEZIONE 4: STATISTICHE ── */}
+          <section className="oggi-section-card oggi-stats-card">
+            <div className="oggi-stats-grid">
+              <div className="oggi-stat">
+                <span className="oggi-stat-value">{contacts.length}</span>
+                <span className="oggi-stat-label">Contatti analizzati</span>
+              </div>
+              <div className="oggi-stat">
+                <span className="oggi-stat-value">
+                  {contacts.filter((c) => new Date(c.analyzed_at).toDateString() === new Date().toDateString()).length}
+                </span>
+                <span className="oggi-stat-label">Analizzati oggi</span>
+              </div>
+              <div className="oggi-stat">
+                <span className="oggi-stat-value">{completedCount}/5</span>
+                <span className="oggi-stat-label">Azioni fatte</span>
+              </div>
+              <div className="oggi-stat">
+                <span className="oggi-stat-value">{profile.onboarding_complete ? "✓" : "—"}</span>
+                <span className="oggi-stat-label">Profilo configurato</span>
+              </div>
+            </div>
+          </section>
+
+          {/* ── AZIONI VELOCI + RIGENERA ── */}
+          <div className="oggi-bottom-actions">
+            <Link href="/app/prospect" className="btn-secondary">Analizza un profilo →</Link>
+            <Link href="/app/find-clients" className="btn-secondary">Trova clienti</Link>
+            <Link href="/app/dm" className="btn-secondary">Chiedi un consiglio</Link>
+            <button type="button" onClick={generatePlan} disabled={loading} className="btn-ghost">
+              {loading ? "Rigenero…" : "🔄 Rigenera piano"}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+/* ── MsgCard sub-component ── */
+function MsgCard({ label, text, variant }: { label: string; text: string; variant?: string }) {
+  const [showVariant, setShowVariant] = useState(false);
+  const displayed = showVariant && variant ? variant : text;
+  return (
+    <div className="oggi-msg-card">
+      <div className="oggi-msg-card-head">
+        <span className="oggi-msg-card-label">{label}</span>
+        <CopyBtn text={displayed} />
+      </div>
+      <p className="oggi-msg-card-text">{displayed}</p>
+      {variant && (
+        <button type="button" className="oggi-variant-toggle" onClick={() => setShowVariant(!showVariant)}>
+          {showVariant ? "← Versione principale" : "Prova variante →"}
+        </button>
+      )}
+    </div>
+  );
+}
