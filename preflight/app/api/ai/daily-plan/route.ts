@@ -55,45 +55,49 @@ export async function POST(req: Request) {
 
     const prompt = `${salesRules}
 
-Sei l'Assistente Preflight. L'utente ti chiede di generare il suo piano giornaliero per oggi su LinkedIn per trovare clienti.
+Sei l'Assistente Preflight. Genera il piano operativo di oggi per LinkedIn. L'utente deve poter COPIARE e INCOLLARE ogni messaggio direttamente su LinkedIn senza modifiche.
 
-${profileCtx || "NOTA: L'utente non ha ancora configurato il suo profilo. Genera suggerimenti generici ma utili."}${targetingCtx}
+${profileCtx || "NOTA: L'utente non ha ancora configurato il suo profilo. Genera suggerimenti generici ma utili per un consulente/freelance B2B."}${targetingCtx}
 
-Il tuo compito è generare un piano concreto per oggi con le priorità e 3 blocchi operativi. Sii chiaro, concreto, naturale. Non essere aggressivo e non fare marketing.
-
-Rispondi ESCLUSIVAMENTE in italiano.
+REGOLE FONDAMENTALI:
+- Ogni messaggio deve essere PRONTO DA COPIARE: realistico, personale, naturale
+- Non usare placeholder come [nome], [azienda] — scrivi messaggi generici ma credibili
+- Il tipo di ogni azione deve essere UNO tra: outreach, contenuto, followup, ricerca
+- Per "istruzioni": scrivi esattamente cosa fare, passo per passo
+- Per "messaggio_pronto": scrivi il testo completo da copiare/incollare su LinkedIn
+- Il post deve essere COMPLETO e pubblicabile così com'è
+- Rispondi ESCLUSIVAMENTE in italiano
 
 Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
 {
-  "priorita_oggi": {
-    "azione_1": "<prima azione più importante di oggi — concisa, tipo: Trova 3 profili adatti nel tuo settore>",
-    "azione_2": "<seconda azione — tipo: Scrivi a 2 contatti ad alto potenziale>",
-    "azione_3": "<terza azione — tipo: Fai 1 follow-up su una conversazione recente>"
+  "focus_giornata": "<una frase motivante di max 15 parole che riassume la giornata, es: Oggi costruiamo 3 nuove relazioni e rafforziamo la tua autorevolezza>",
+  "azioni": {
+    "azione_1": {
+      "titolo": "<azione concisa di max 8 parole, es: Commenta 3 post di decision-maker>",
+      "tipo": "outreach|contenuto|followup|ricerca",
+      "istruzioni": "<3-4 step precisi su cosa fare, separati da \\n>",
+      "messaggio_pronto": "<il commento o messaggio completo da copiare, pronto all'uso>"
+    },
+    "azione_2": { ... stessa struttura ... },
+    "azione_3": { ... stessa struttura ... },
+    "azione_4": { ... stessa struttura ... },
+    "azione_5": { ... stessa struttura ... }
   },
-  "persone_da_contattare": {
-    "tipo_profili": "<descrivi che tipo di profili contattare oggi, sii specifico>",
-    "link_ricerca": "<genera un URL di ricerca LinkedIn pronto, formato: https://www.linkedin.com/search/results/people/?keywords=... — usa %20 per gli spazi>",
-    "criteri_scelta": "<criteri per scegliere i profili migliori tra quelli trovati>",
-    "primo_messaggio": "<scrivi un primo messaggio da inviare, breve e naturale>",
-    "strategia": "<strategia semplice in 3 step: 1. guarda il profilo 2. se ha pubblicato qualcosa commenta 3. poi invia il messaggio>",
-    "perche_oggi": "<spiega brevemente perché oggi ha senso contattare questi profili>"
+  "messaggi_pronti": {
+    "primo_contatto": "<messaggio completo per un primo contatto LinkedIn, max 300 caratteri, naturale e non commerciale>",
+    "primo_contatto_variante": "<variante diversa del primo contatto, tono leggermente diverso>",
+    "followup": "<messaggio di follow-up per chi non ha risposto dopo 4-5 giorni, max 200 caratteri>",
+    "followup_variante": "<variante del follow-up, approccio diverso>",
+    "commento_post": "<esempio di commento intelligente da lasciare sotto un post di un prospect>"
   },
-  "contenuto_consigliato": {
-    "idea_post": "<idea concreta per un post da pubblicare oggi>",
-    "angolo_post": "<angolo/prospettiva da usare per il post>",
-    "struttura": "<struttura del contenuto: hook, corpo, CTA>",
-    "esempio_testo": "<esempio completo del testo del post>",
-    "cta_post": "<call to action specifica per il post>",
-    "suggerimento_immagine": "<suggerisci il tipo di immagine da usare — preferisci sempre foto reali: foto mentre lavori, del tuo ambiente di lavoro, screenshot di un progetto reale. Evita immagini stock.>"
+  "post_del_giorno": {
+    "hook": "<prima riga del post che cattura l'attenzione, max 20 parole>",
+    "corpo": "<corpo del post, 4-6 frasi>",
+    "chiusura": "<chiusura con CTA morbida, 1-2 frasi>",
+    "testo_completo": "<il post COMPLETO pronto da pubblicare: hook + \\n\\n + corpo + \\n\\n + chiusura>",
+    "tipo_immagine": "<suggerisci UNA foto specifica da scattare/usare — sempre foto reali, mai stock>"
   },
-  "conversazioni_da_seguire": {
-    "followup_da_fare": "<descrivi che tipo di follow-up fare oggi>",
-    "quando_scrivere": "<suggerisci quando scrivere>",
-    "cosa_chiedere": "<cosa chiedere nel follow-up>",
-    "esempio_followup": "<scrivi un esempio di messaggio di follow-up naturale>",
-    "segnali_da_osservare": "<segnali positivi o negativi da osservare nella conversazione>",
-    "errori_da_evitare": "<errori comuni da evitare nelle conversazioni di oggi>"
-  }
+  "link_ricerca_linkedin": "<URL di ricerca LinkedIn pronto, formato: https://www.linkedin.com/search/results/people/?keywords=...&origin=GLOBAL_SEARCH_HEADER — usa %20 per gli spazi>"
 }`;
 
     const output = await generateStructured({ prompt, schema: dailyPlanSchema });

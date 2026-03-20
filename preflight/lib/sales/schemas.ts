@@ -184,36 +184,37 @@ export const findClientsSchema = z.object({
   prossimo_step: z.string(),
 });
 
+export const dailyActionSchema = z.object({
+  titolo: z.string(),
+  tipo: z.string(),
+  istruzioni: z.string(),
+  messaggio_pronto: z.string(),
+});
+
 export const dailyPlanSchema = z.object({
-  priorita_oggi: z.object({
-    azione_1: z.string(),
-    azione_2: z.string(),
-    azione_3: z.string(),
+  focus_giornata: z.string(),
+  azioni: z.object({
+    azione_1: dailyActionSchema,
+    azione_2: dailyActionSchema,
+    azione_3: dailyActionSchema,
+    azione_4: dailyActionSchema,
+    azione_5: dailyActionSchema,
   }),
-  persone_da_contattare: z.object({
-    tipo_profili: z.string(),
-    link_ricerca: z.string(),
-    criteri_scelta: z.string(),
-    primo_messaggio: z.string(),
-    strategia: z.string(),
-    perche_oggi: z.string(),
+  messaggi_pronti: z.object({
+    primo_contatto: z.string(),
+    primo_contatto_variante: z.string(),
+    followup: z.string(),
+    followup_variante: z.string(),
+    commento_post: z.string(),
   }),
-  contenuto_consigliato: z.object({
-    idea_post: z.string(),
-    angolo_post: z.string(),
-    struttura: z.string(),
-    esempio_testo: z.string(),
-    cta_post: z.string(),
-    suggerimento_immagine: z.string(),
+  post_del_giorno: z.object({
+    hook: z.string(),
+    corpo: z.string(),
+    chiusura: z.string(),
+    testo_completo: z.string(),
+    tipo_immagine: z.string(),
   }),
-  conversazioni_da_seguire: z.object({
-    followup_da_fare: z.string(),
-    quando_scrivere: z.string(),
-    cosa_chiedere: z.string(),
-    esempio_followup: z.string(),
-    segnali_da_osservare: z.string(),
-    errori_da_evitare: z.string(),
-  }),
+  link_ricerca_linkedin: z.string(),
 });
 
 export const followupSchema = z.object({
