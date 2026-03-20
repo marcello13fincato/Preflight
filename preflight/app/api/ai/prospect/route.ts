@@ -30,21 +30,41 @@ export async function POST(req: Request) {
 
     const prompt = `${salesRules}
 
-Stai analizzando il profilo LinkedIn di un potenziale cliente. Rispondi ESCLUSIVAMENTE in italiano. Devi essere strategico, pratico e preciso.
+Sei un analista commerciale esperto di LinkedIn B2B. Stai analizzando il profilo di un potenziale cliente.
+Rispondi ESCLUSIVAMENTE in italiano. Sii strategico, pratico e preciso.
 
-Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
+REGOLE per i messaggi (nota_connessione, primo_messaggio, followup_3g, followup_7g):
+- Devono essere PRONTI DA COPIARE e incollare su LinkedIn
+- Personalizzati sul profilo analizzato
+- Tono professionale ma umano, MAI commerciale o insistente
+- La nota di connessione deve essere max 300 caratteri
+- Il primo messaggio deve avere un hook preciso legato al loro profilo
+- I follow-up devono essere naturali, non "hai visto il mio messaggio?"
+
+REGOLE per punteggio (score):
+- 0-30: Contatto freddo, poco allineato
+- 31-60: Potenziale ma serve lavoro
+- 61-80: Buon match, vale la pena investire tempo
+- 81-100: Match eccellente, priorità assoluta
+
+Restituisci SOLO un oggetto JSON con questa struttura:
 {
-  "chi_e": "<stringa: chi è questa persona o azienda, ruolo, settore, posizionamento>",
-  "ruolo_contesto": "<stringa: il ruolo nel dettaglio, contesto aziendale, cosa fa concretamente>",
-  "perche_buon_contatto": "<stringa: perché potrebbe essere un buon contatto per l'utente, punti di allineamento>",
-  "strategia_contatto": "<stringa: strategia dettagliata per avvicinare questa persona, approccio consigliato>",
-  "primo_messaggio": "<stringa: primo messaggio di contatto personalizzato, pronto da usare>",
-  "followup_consigliato": "<stringa: messaggio di follow-up se non risponde, con tempistica>",
-  "step_successivi": "<stringa: passi concreti da fare dopo il primo contatto>",
-  "segnali_da_osservare": "<stringa: segnali positivi e negativi da osservare nella risposta>",
-  "errori_da_evitare": "<stringa: errori comuni da evitare con questo tipo di contatto>",
-  "client_heat_level": "<uno tra: Cold | Warm | Hot>",
-  "priority_signal": "<uno tra: high | medium | low>"
+  "score": <numero 0-100: punteggio compatibilità>,
+  "chi_e": "<chi è, ruolo, settore, posizionamento — max 2 frasi>",
+  "ruolo_contesto": "<ruolo nel dettaglio, cosa fa, contesto aziendale>",
+  "punti_forza": ["<forza 1>", "<forza 2>", "<forza 3>"],
+  "punti_deboli": ["<rischio/debolezza 1>", "<rischio/debolezza 2>"],
+  "perche_buon_contatto": "<perché vale la pena contattarlo>",
+  "strategia_contatto": "<strategia dettagliata step-by-step>",
+  "nota_connessione": "<nota di connessione LinkedIn pronta, max 300 char>",
+  "primo_messaggio": "<primo DM dopo accettazione, pronto da copiare>",
+  "followup_3g": "<follow-up dopo 3 giorni se non risponde>",
+  "followup_7g": "<follow-up dopo 7 giorni, ultimo tentativo>",
+  "step_successivi": ["<step 1>", "<step 2>", "<step 3>"],
+  "segnali_da_osservare": "<segnali positivi e negativi nella risposta>",
+  "errori_da_evitare": "<errori comuni da evitare con questo tipo di contatto>",
+  "client_heat_level": "<Cold | Warm | Hot>",
+  "priority_signal": "<high | medium | low>"
 }
 
 Dati del prospect:

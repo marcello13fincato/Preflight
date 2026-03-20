@@ -121,13 +121,18 @@ export const adviceSchema = z.object({
 });
 
 export const prospectAnalyzerSchema = z.object({
+  score: z.number().min(0).max(100),
   chi_e: z.string(),
   ruolo_contesto: z.string(),
+  punti_forza: z.tuple([z.string(), z.string(), z.string()]),
+  punti_deboli: z.tuple([z.string(), z.string()]),
   perche_buon_contatto: z.string(),
   strategia_contatto: z.string(),
+  nota_connessione: z.string(),
   primo_messaggio: z.string(),
-  followup_consigliato: z.string(),
-  step_successivi: z.string(),
+  followup_3g: z.string(),
+  followup_7g: z.string(),
+  step_successivi: z.tuple([z.string(), z.string(), z.string()]),
   segnali_da_osservare: z.string(),
   errori_da_evitare: z.string(),
   client_heat_level: heatLevelSchema,
