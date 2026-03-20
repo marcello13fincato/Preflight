@@ -117,14 +117,29 @@ export const defaultDmAssistant: DmAssistantJson = {
 };
 
 export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
+  score: 65,
   chi_e: "Professionista del settore B2B con focus su crescita commerciale e gestione pipeline.",
   ruolo_contesto: "Fondatore o responsabile commerciale in un'azienda con 5-50 dipendenti. Gestisce il processo di acquisizione clienti su LinkedIn.",
+  punti_forza: [
+    "Esperienza consolidata nel settore B2B",
+    "Rete di contatti ampia e attiva su LinkedIn",
+    "Pubblica contenuti con regolarità",
+  ],
+  punti_deboli: [
+    "Profilo non ottimizzato per la conversione",
+    "Manca una call-to-action chiara nel sommario",
+  ],
   perche_buon_contatto: "Ha un'esigenza concreta di sistematizzare il processo outbound. Il profilo mostra segnali di interesse verso tematiche di crescita e automazione.",
   strategia_contatto: "Approccio educativo: partire da un contenuto di valore legato al suo problema specifico. Evitare la vendita diretta nel primo messaggio.",
+  nota_connessione: "Ho visto il tuo post sulla crescita commerciale — mi occupo dello stesso tema. Mi farebbe piacere connetterci.",
   primo_messaggio: "Ciao, ho letto il tuo profilo e il focus su crescita commerciale: ti va uno scambio rapido su come gestite oggi LinkedIn inbound/outbound?",
-  followup_consigliato: "Se non risponde entro 48h: \"Riprendo il messaggio — ho un caso studio simile al tuo scenario. Ti interessa se te lo condivido?\"",
-  step_successivi: "1. Invia il primo messaggio oggi. 2. Se accetta, aspetta 24h e poi manda un follow-up di valore. 3. Proponi una call di 15 minuti dopo il secondo scambio.",
-  segnali_da_osservare: "Risponde con domande specifiche (caldo). Visualizza senza rispondere (tiepido). Non accetta la connessione (freddo).",
+  followup_3g: "Riprendo il messaggio — ho un caso studio simile al tuo scenario. Ti interessa se te lo condivido?",
+  followup_7g: "Chiudo il thread: se vuoi, possiamo fare 15 minuti e capire se c'è fit. Altrimenti nessun problema!",
+  step_successivi: [
+    "Invia il primo messaggio oggi",
+    "Se accetta, aspetta 24h e poi manda un follow-up di valore",
+    "Proponi una call di 15 minuti dopo il secondo scambio",
+  ],
   errori_da_evitare: "Non proporre subito una call. Non mandare messaggi troppo lunghi. Non parlare del proprio servizio nel primo messaggio.",
   client_heat_level: "Cold",
   priority_signal: "medium",
