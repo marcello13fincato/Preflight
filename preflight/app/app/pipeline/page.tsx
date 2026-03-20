@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+import { IconClipboard, IconTarget } from "@/components/shared/icons";
 import type { Lead, LeadStatus } from "@/lib/sales/schemas";
 
 const statuses: LeadStatus[] = ["Nuovo", "In conversazione", "Interessato", "Call proposta", "Call fissata", "Cliente"];
@@ -15,9 +16,9 @@ function heatBadgeClass(status: LeadStatus): string {
 }
 
 function heatLabel(status: LeadStatus): string {
-  if (status === "Cliente" || status === "Call fissata") return "🔥 Hot";
-  if (status === "Call proposta" || status === "Interessato") return "🟡 Warm";
-  return "❄️ Cold";
+  if (status === "Cliente" || status === "Call fissata") return "Hot";
+  if (status === "Call proposta" || status === "Interessato") return "Warm";
+  return "Cold";
 }
 
 function statusDotColor(status: LeadStatus): string {
@@ -99,10 +100,10 @@ export default function PipelinePage() {
       {/* Guide box */}
       <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold">✅ Cosa fai:</span> gestisci lead e conversazioni commerciali</div>
-          <div><span className="font-semibold">📋 Cosa inserire:</span> nome, stato, note e data prossima azione</div>
-          <div><span className="font-semibold">🎯 Cosa ottieni:</span> visione chiara di chi ricontattare e quando</div>
-          <div><span className="font-semibold">➡️ Prossima mossa:</span> genera follow-up per i lead caldi</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> gestisci lead e conversazioni commerciali</div>
+          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> nome, stato, note e data prossima azione</div>
+          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> visione chiara di chi ricontattare e quando</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> genera follow-up per i lead caldi</div>
         </div>
       </div>
 
@@ -110,7 +111,8 @@ export default function PipelinePage() {
       {recontactToday.length > 0 && (
         <div className="callout-warning rounded-lg">
           <p className="text-sm font-semibold mb-2">
-            ⏰ Da ricontattare oggi ({recontactToday.length})
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.25rem'}}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Da ricontattare oggi ({recontactToday.length})
           </p>
           <div className="flex flex-wrap gap-2">
             {recontactToday.map((lead) => (
@@ -208,7 +210,7 @@ export default function PipelinePage() {
           className="rounded-xl p-10 text-center"
           style={{ background: "var(--color-soft-2)", border: "1.5px dashed var(--color-border)" }}
         >
-          <p className="text-3xl mb-3">🗂</p>
+          <p className="text-3xl mb-3"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></p>
           <p className="font-semibold" style={{ color: "var(--color-primary)" }}>Nessun lead ancora</p>
           <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
             Aggiungi il primo contatto con il pulsante qui sopra.
@@ -244,7 +246,7 @@ export default function PipelinePage() {
                         {heatLabel(lead.status)}
                       </span>
                       {lead.next_action_at && lead.next_action_at <= today && (
-                        <span className="badge badge-amber">⏰ Ricontatta oggi</span>
+                        <span className="badge badge-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ricontatta oggi</span>
                       )}
                     </div>
                   </div>

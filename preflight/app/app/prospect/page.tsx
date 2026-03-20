@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import HistoryList from "@/components/app/HistoryList";
 import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
+import { IconEdit3, IconAlertTriangle, IconThermometer, IconTarget, IconMail, IconRefresh, IconClipboard, IconUser, IconChart, IconCheck, IconEye, IconSearch } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
 
@@ -78,7 +79,7 @@ export default function ProspectPage() {
         {/* INPUT PANEL */}
         {output ? (
         <details className="tool-input-collapsed">
-          <summary>✏️ Modifica parametri</summary>
+          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
           <div className="tool-input-body space-y-1">
           <div className="qa-field">
             <label className="qa-label">Link al profilo LinkedIn</label>
@@ -289,7 +290,7 @@ export default function ProspectPage() {
         <div>
           {error ? (
             <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
@@ -297,32 +298,32 @@ export default function ProspectPage() {
               <ResultHeader title="Analisi profilo" copyText={`${output.primo_messaggio}\n\n${output.followup_consigliato}`} />
 
               <MetricRow>
-                <MetricBadge icon="🌡️" label="Interesse" value={output.client_heat_level} color={output.client_heat_level === "Hot" ? "red" : output.client_heat_level === "Warm" ? "amber" : "blue"} />
-                <MetricBadge icon="📊" label="Priorità" value={output.priority_signal} color={output.priority_signal === "high" ? "red" : output.priority_signal === "medium" ? "amber" : "blue"} />
+                <MetricBadge icon={<IconThermometer size={16} />} label="Interesse" value={output.client_heat_level} color={output.client_heat_level === "Hot" ? "red" : output.client_heat_level === "Warm" ? "amber" : "blue"} />
+                <MetricBadge icon={<IconChart size={16} />} label="Priorità" value={output.priority_signal} color={output.priority_signal === "high" ? "red" : output.priority_signal === "medium" ? "amber" : "blue"} />
               </MetricRow>
 
-              <InsightCard icon="👤" label="Quadro generale" text={output.chi_e} variant="summary" />
-              <InsightCard icon="🏢" label="Ruolo e contesto" text={output.ruolo_contesto} variant="evidence" />
+              <InsightCard icon={<IconUser size={16} />} label="Quadro generale" text={output.chi_e} variant="summary" />
+              <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>} label="Ruolo e contesto" text={output.ruolo_contesto} variant="evidence" />
 
               <SectionDivider label="Valutazione commerciale" />
 
-              <InsightCard icon="✅" label="Perché è un buon contatto" text={output.perche_buon_contatto} variant="strategy" />
-              <InsightCard icon="👀" label="Segnali da osservare" text={output.segnali_da_osservare} variant="evidence" />
+              <InsightCard icon={<IconCheck size={16} />} label="Perché è un buon contatto" text={output.perche_buon_contatto} variant="strategy" />
+              <InsightCard icon={<IconEye size={16} />} label="Segnali da osservare" text={output.segnali_da_osservare} variant="evidence" />
 
               <SectionDivider label="Azione consigliata" />
 
-              <InsightCard icon="🎯" label="Strategia di contatto" text={output.strategia_contatto} variant="strategy" />
-              <InsightCard icon="✉️" label="Primo messaggio" text={output.primo_messaggio} variant="message" copyable />
-              <InsightCard icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} variant="message" copyable />
+              <InsightCard icon={<IconTarget size={16} />} label="Strategia di contatto" text={output.strategia_contatto} variant="strategy" />
+              <InsightCard icon={<IconMail size={16} />} label="Primo messaggio" text={output.primo_messaggio} variant="message" copyable />
+              <InsightCard icon={<IconRefresh size={16} />} label="Follow-up consigliato" text={output.followup_consigliato} variant="message" copyable />
 
               <SectionDivider label="Prossimi passi" />
 
-              <InsightCard icon="📋" label="Step successivi" text={output.step_successivi} variant="action" />
-              <InsightCard icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} variant="warning" />
+              <InsightCard icon={<IconClipboard size={16} />} label="Step successivi" text={output.step_successivi} variant="action" />
+              <InsightCard icon={<IconAlertTriangle size={16} />} label="Errori da evitare" text={output.errori_da_evitare} variant="warning" />
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon">🔎</p>
+              <p className="tool-page-empty-icon"><IconSearch size={28} /></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>

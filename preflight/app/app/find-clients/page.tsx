@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import CopyButton from "@/components/shared/CopyButton";
+import { IconLightbulb } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { findClientsSchema, type FindClientsJson } from "@/lib/sales/schemas";
@@ -253,7 +254,7 @@ export default function FindClientsPage() {
           {/* Onboarding callout */}
           {!profile.onboarding_complete && (
             <div className="fc-callout">
-              <div className="fc-callout-icon">💡</div>
+              <div className="fc-callout-icon"><IconLightbulb size={20} /></div>
               <div>
                 <p className="fc-callout-text">Configura il tuo sistema per risultati più precisi e personalizzati.</p>
                 <Link href="/app/onboarding" className="fc-callout-link">Configura il tuo sistema →</Link>

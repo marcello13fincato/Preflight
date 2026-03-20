@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconMessageCircle, IconSparkles } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
@@ -96,10 +97,10 @@ export default function PostPage() {
       {/* Guide box */}
       <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold">✅ Cosa fai:</span> scrivi un post che apre conversazioni utili</div>
-          <div><span className="font-semibold">📋 Cosa inserire:</span> bozza o idea del post, obiettivo e parola chiave DM</div>
-          <div><span className="font-semibold">🎯 Cosa ottieni:</span> hooks, 3 versioni, CTA e prossima azione</div>
-          <div><span className="font-semibold">➡️ Prossima mossa:</span> pubblica e rispondi ai commenti</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> scrivi un post che apre conversazioni utili</div>
+          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> bozza o idea del post, obiettivo e parola chiave DM</div>
+          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> hooks, 3 versioni, CTA e prossima azione</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> pubblica e rispondi ai commenti</div>
         </div>
       </div>
 
@@ -108,7 +109,7 @@ export default function PostPage() {
         {/* INPUT */}
         {output ? (
         <details className="tool-input-collapsed">
-          <summary>✏️ Modifica parametri</summary>
+          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
           <div className="tool-input-body space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -165,34 +166,34 @@ export default function PostPage() {
         <div>
           {error ? (
             <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
             <div className="tool-page-panel space-y-4">
               <ResultHeader title="Post pronto" />
 
-              <InsightCard icon="🪝" label="Hooks" text={output.hooks.join("\n")} variant="evidence" />
+              <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15.5 5.5C17 4 19.5 4 21 5.5s1.5 4 0 5.5L12 20l-9-9c-1.5-1.5-1.5-4 0-5.5s4-1.5 5.5 0"/><path d="M8 12.5l2 2 4-4"/></svg>} label="Hooks" text={output.hooks.join("\n")} variant="evidence" />
 
               <SectionDivider label="Versioni del post" />
               <div className="insight-reply-grid">
-                <InsightCard icon="✨" label="Versione pulita" text={output.post_versions.clean} variant="message" copyable />
-                <InsightCard icon="🎯" label="Versione diretta" text={output.post_versions.direct} variant="message" copyable />
-                <InsightCard icon="🏆" label="Versione autorevole" text={output.post_versions.authority} variant="message" copyable />
+                <InsightCard icon={<IconSparkles size={16} />} label="Versione pulita" text={output.post_versions.clean} variant="message" copyable />
+                <InsightCard icon={<IconTarget size={16} />} label="Versione diretta" text={output.post_versions.direct} variant="message" copyable />
+                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 9 6 9 6s2-2 4.5-2a2.5 2.5 0 0 1 0 5H12"/><path d="M12 6v13"/><path d="M8 13h8"/></svg>} label="Versione autorevole" text={output.post_versions.authority} variant="message" copyable />
               </div>
 
               <SectionDivider label="Engagement" />
-              <InsightCard icon="📣" label="Call to action" text={output.cta} variant="strategy" copyable />
-              <InsightCard icon="💬" label="Commento di apertura" text={output.comment_starter} variant="strategy" copyable />
+              <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>} label="Call to action" text={output.cta} variant="strategy" copyable />
+              <InsightCard icon={<IconMessageCircle size={16} />} label="Commento di apertura" text={output.comment_starter} variant="strategy" copyable />
 
               <div className="insight-next-action">
-                <span className="insight-next-action-icon">➡️</span>
+                <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
                 <div><strong>Prossima azione:</strong> {output.next_step}</div>
               </div>
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon">✍️</p>
+              <p className="tool-page-empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>
@@ -230,7 +231,7 @@ export default function PostPage() {
 
           {imgError && (
             <div className="callout-danger rounded-xl p-4">
-              <p className="text-sm font-semibold">⚠️ {imgError}</p>
+              <p className="text-sm font-semibold"><IconAlertTriangle size={14} /> {imgError}</p>
             </div>
           )}
 

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconMessageCircle } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { SimulatorJson } from "@/lib/sales/schemas";
 import { simulatorSchema } from "@/lib/sales/schemas";
@@ -56,10 +57,10 @@ export default function SimulatorPage() {
       {/* Guide box */}
       <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold">✅ Cosa fai:</span> ti alleni a gestire conversazioni commerciali</div>
-          <div><span className="font-semibold">📋 Cosa inserire:</span> tipo prospect, scenario e la tua risposta</div>
-          <div><span className="font-semibold">🎯 Cosa ottieni:</span> risposta del prospect, feedback e prossima mossa</div>
-          <div><span className="font-semibold">➡️ Prossima mossa:</span> applica i feedback nelle conversazioni reali</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> ti alleni a gestire conversazioni commerciali</div>
+          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> tipo prospect, scenario e la tua risposta</div>
+          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> risposta del prospect, feedback e prossima mossa</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> applica i feedback nelle conversazioni reali</div>
         </div>
       </div>
 
@@ -68,7 +69,7 @@ export default function SimulatorPage() {
         {/* INPUT */}
         {output ? (
         <details className="tool-input-collapsed">
-          <summary>✏️ Modifica parametri</summary>
+          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
           <div className="tool-input-body space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -135,34 +136,34 @@ export default function SimulatorPage() {
         <div>
           {error ? (
             <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
             <div className="insight-result">
               <ResultHeader title="Feedback coach" />
 
-              <InsightCard icon="💬" label="Risposta del prospect" text={output.prospect_reply} variant="summary" />
+              <InsightCard icon={<IconMessageCircle size={16} />} label="Risposta del prospect" text={output.prospect_reply} variant="summary" />
 
               <SectionDivider label="Valutazione" />
 
-              <InsightCard icon="📋" label="Feedback" text={output.feedback.join("\n")} variant="evidence" />
+              <InsightCard icon={<IconClipboard size={16} />} label="Feedback" text={output.feedback.join("\n")} variant="evidence" />
 
               {output.message_risk_warning && output.message_risk_warning !== "nessuno" && (
                 <div className="insight-warn-inline">
-                  <span>⚠️</span>
+                  <span><IconAlertTriangle size={14} /></span>
                   <span><strong>Valutazione messaggio:</strong> {output.message_risk_warning}</span>
                 </div>
               )}
 
               <div className="insight-next-action">
-                <span className="insight-next-action-icon">➡️</span>
+                <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
                 <div><strong>Prossima azione:</strong> {output.next_action}</div>
               </div>
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon">🎭</p>
+              <p className="tool-page-empty-icon"><IconMessageCircle size={28} /></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>

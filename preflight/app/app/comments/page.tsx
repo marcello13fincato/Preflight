@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import HistoryList from "@/components/app/HistoryList";
 import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconThermometer, IconMail, IconMessageCircle } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { commentAssistantSchema, type CommentAssistantJson } from "@/lib/sales/schemas";
 
@@ -74,10 +75,10 @@ export default function CommentsPage() {
       {/* Guide box */}
       <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold">✅ Cosa fai:</span> rispondi ai commenti in modo strategico</div>
-          <div><span className="font-semibold">📋 Cosa inserire:</span> post originale e commento ricevuto</div>
-          <div><span className="font-semibold">🎯 Cosa ottieni:</span> 3 risposte, DM suggerito, prossima azione</div>
-          <div><span className="font-semibold">➡️ Prossima mossa:</span> sposta la conversazione in DM</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> rispondi ai commenti in modo strategico</div>
+          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> post originale e commento ricevuto</div>
+          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> 3 risposte, DM suggerito, prossima azione</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> sposta la conversazione in DM</div>
         </div>
       </div>
 
@@ -86,7 +87,7 @@ export default function CommentsPage() {
         {/* INPUT */}
         {output ? (
         <details className="tool-input-collapsed">
-          <summary>✏️ Modifica parametri</summary>
+          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
           <div className="tool-input-body space-y-4">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
@@ -199,7 +200,7 @@ export default function CommentsPage() {
         <div>
           {error ? (
             <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
@@ -207,28 +208,28 @@ export default function CommentsPage() {
               <ResultHeader title="Analisi commento" copyText={`${output.replies.soft}\n\n${output.replies.authority}\n\n${output.replies.dm_pivot}`} />
 
               <MetricRow>
-                <MetricBadge icon="🌡️" label="Interesse" value={output.client_heat_level} color={heatColors[output.client_heat_level] === "badge-red" ? "red" : heatColors[output.client_heat_level] === "badge-amber" ? "amber" : "blue"} />
+                <MetricBadge icon={<IconThermometer size={16} />} label="Interesse" value={output.client_heat_level} color={heatColors[output.client_heat_level] === "badge-red" ? "red" : heatColors[output.client_heat_level] === "badge-amber" ? "amber" : "blue"} />
                 {output.message_risk_warning && output.message_risk_warning !== "nessuno" && (
-                  <MetricBadge icon="⚠️" label="Rischio" value={output.message_risk_warning} color="amber" />
+                  <MetricBadge icon={<IconAlertTriangle size={16} />} label="Rischio" value={output.message_risk_warning} color="amber" />
                 )}
               </MetricRow>
 
-              <InsightCard icon="🎯" label="Strategia" text={output.strategy} variant="summary" />
+              <InsightCard icon={<IconTarget size={16} />} label="Strategia" text={output.strategy} variant="summary" />
 
               <SectionDivider label="Risposte suggerite" />
 
               <div className="insight-reply-grid">
-                <InsightCard icon="🟢" label="Risposta soft" text={output.replies.soft} variant="message" copyable />
-                <InsightCard icon="🔵" label="Risposta autorevole" text={output.replies.authority} variant="message" copyable />
-                <InsightCard icon="💌" label="Pivot DM" text={output.replies.dm_pivot} variant="message" copyable />
+                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta soft" text={output.replies.soft} variant="message" copyable />
+                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta autorevole" text={output.replies.authority} variant="message" copyable />
+                <InsightCard icon={<IconMail size={16} />} label="Pivot DM" text={output.replies.dm_pivot} variant="message" copyable />
               </div>
 
               <SectionDivider label="Azione consigliata" />
 
-              <InsightCard icon="✉️" label="DM suggerito" text={output.suggested_dm} variant="strategy" copyable />
+              <InsightCard icon={<IconMail size={16} />} label="DM suggerito" text={output.suggested_dm} variant="strategy" copyable />
 
               <div className="insight-next-action">
-                <span className="insight-next-action-icon">➡️</span>
+                <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
                 <div><strong>Prossima azione:</strong> {output.next_action}</div>
               </div>
 
@@ -243,7 +244,7 @@ export default function CommentsPage() {
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon">💬</p>
+              <p className="tool-page-empty-icon"><IconMessageCircle size={28} /></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>

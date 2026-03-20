@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import HistoryList from "@/components/app/HistoryList";
 import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
+import { IconEdit3, IconAlertTriangle, IconThermometer, IconSearch, IconTarget, IconMail, IconRefresh, IconClipboard, IconMessageCircle } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { adviceSchema, type AdviceJson } from "@/lib/sales/schemas";
 
@@ -81,7 +82,7 @@ export default function DmPage() {
         {/* INPUT PANEL */}
         {output ? (
         <details className="tool-input-collapsed">
-          <summary>✏️ Modifica parametri</summary>
+          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
           <div className="tool-input-body space-y-1">
           <div className="qa-field">
             <label className="qa-label">Spiegami la situazione</label>
@@ -282,7 +283,7 @@ export default function DmPage() {
         <div>
           {error ? (
             <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1">⚠️ Errore AI</p>
+              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
               <p className="text-sm">{error}</p>
             </div>
           ) : output ? (
@@ -290,25 +291,25 @@ export default function DmPage() {
               <ResultHeader title="Analisi situazione" copyText={`${output.risposta_suggerita}\n\n${output.followup_consigliato}`} />
 
               <MetricRow>
-                <MetricBadge icon="🌡️" label="Interesse" value={output.client_heat_level} color={output.client_heat_level === "Hot" ? "red" : output.client_heat_level === "Warm" ? "amber" : "blue"} />
+                <MetricBadge icon={<IconThermometer size={16} />} label="Interesse" value={output.client_heat_level} color={output.client_heat_level === "Hot" ? "red" : output.client_heat_level === "Warm" ? "amber" : "blue"} />
               </MetricRow>
 
-              <InsightCard icon="🔍" label="Lettura della situazione" text={output.lettura_situazione} variant="summary" />
+              <InsightCard icon={<IconSearch size={16} />} label="Lettura della situazione" text={output.lettura_situazione} variant="summary" />
 
               <SectionDivider label="Strategia" />
 
-              <InsightCard icon="🎯" label="Strategia consigliata" text={output.strategia_consigliata} variant="strategy" />
-              <InsightCard icon="✉️" label="Risposta suggerita" text={output.risposta_suggerita} variant="message" copyable />
-              <InsightCard icon="🔄" label="Follow-up consigliato" text={output.followup_consigliato} variant="message" copyable />
+              <InsightCard icon={<IconTarget size={16} />} label="Strategia consigliata" text={output.strategia_consigliata} variant="strategy" />
+              <InsightCard icon={<IconMail size={16} />} label="Risposta suggerita" text={output.risposta_suggerita} variant="message" copyable />
+              <InsightCard icon={<IconRefresh size={16} />} label="Follow-up consigliato" text={output.followup_consigliato} variant="message" copyable />
 
               <SectionDivider label="Prossimi passi" />
 
-              <InsightCard icon="📋" label="Step successivi" text={output.step_successivi} variant="action" />
-              <InsightCard icon="⚠️" label="Errori da evitare" text={output.errori_da_evitare} variant="warning" />
+              <InsightCard icon={<IconClipboard size={16} />} label="Step successivi" text={output.step_successivi} variant="action" />
+              <InsightCard icon={<IconAlertTriangle size={16} />} label="Errori da evitare" text={output.errori_da_evitare} variant="warning" />
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon">💬</p>
+              <p className="tool-page-empty-icon"><IconMessageCircle size={28} /></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>

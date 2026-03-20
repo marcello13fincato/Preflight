@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
@@ -11,17 +11,17 @@ const TOTAL_STEPS = 5;
 
 /* ── Option sets ── */
 const timeOptions = [
-  { label: "15–30 min / giorno", value: "meno_1h", icon: "⚡", hint: "Veloce, mirato" },
-  { label: "1–3 ore / settimana", value: "1_3h", icon: "🎯", hint: "Costante, gestibile" },
-  { label: "3–5 ore / settimana", value: "3_5h", icon: "📈", hint: "Serio, strutturato" },
-  { label: "5+ ore / settimana", value: "piu_5h", icon: "🚀", hint: "Intensivo" },
-] as const;
+  { label: "15–30 min / giorno", value: "meno_1h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, hint: "Veloce, mirato" },
+  { label: "1–3 ore / settimana", value: "1_3h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, hint: "Costante, gestibile" },
+  { label: "3–5 ore / settimana", value: "3_5h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, hint: "Serio, strutturato" },
+  { label: "5+ ore / settimana", value: "piu_5h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>, hint: "Intensivo" },
+];
 
 const salesModelOptions = [
-  { label: "Transazionale veloce", value: "fast", icon: "⚡", desc: "Ciclo breve, decisione rapida. Il prospect compra quasi subito." },
-  { label: "Educativo / Consulenziale", value: "consultative", icon: "🎓", desc: "Il cliente va guidato e formato prima di decidere." },
-  { label: "Relazionale", value: "relationship", icon: "🤝", desc: "La fiducia si costruisce nel tempo con interazioni ripetute." },
-] as const;
+  { label: "Transazionale veloce", value: "fast", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, desc: "Ciclo breve, decisione rapida. Il prospect compra quasi subito." },
+  { label: "Educativo / Consulenziale", value: "consultative", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>, desc: "Il cliente va guidato e formato prima di decidere." },
+  { label: "Relazionale", value: "relationship", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, desc: "La fiducia si costruisce nel tempo con interazioni ripetute." },
+];
 
 const ticketOptions = [
   { label: "< €1.000", value: "under_1k" },
@@ -47,19 +47,19 @@ const dimensioneOptions = [
 ] as const;
 
 const ctaOptions = [
-  { label: "Call conoscitiva", value: "call", icon: "📞" },
-  { label: "Demo prodotto", value: "demo", icon: "💻" },
-  { label: "Audit / Analisi gratuita", value: "audit", icon: "🔍" },
-  { label: "Preventivo", value: "preventivo", icon: "📋" },
-  { label: "Altro", value: "altro", icon: "✏️" },
-] as const;
+  { label: "Call conoscitiva", value: "call", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> },
+  { label: "Demo prodotto", value: "demo", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> },
+  { label: "Audit / Analisi gratuita", value: "audit", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> },
+  { label: "Preventivo", value: "preventivo", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
+  { label: "Altro", value: "altro", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> },
+];
 
-const STEP_META: { num: number; label: string; section: string; description: string; icon: string }[] = [
-  { num: 1, label: "Posizionamento", section: "Chi sei e cosa offri", description: "L'AI usa queste informazioni per creare messaggi che parlano la lingua del tuo mercato.", icon: "🎯" },
-  { num: 2, label: "Il tuo buyer", section: "A chi vendi davvero", description: "Definire il buyer reale permette all'AI di filtrare i prospect e personalizzare ogni messaggio.", icon: "👤" },
-  { num: 3, label: "Segnali", section: "Come riconosci un buon prospect", description: "L'AI userà questi pattern per valutare i profili e suggerire chi contattare prima.", icon: "📡" },
-  { num: 4, label: "Processo", section: "Il tuo modo di vendere", description: "Calibra il tono, la frequenza e la strategia dell'AI in base a come lavori davvero.", icon: "⚙️" },
-  { num: 5, label: "Asset", section: "Da dove parti", description: "Il tuo profilo LinkedIn e le ricerche salvate sono il punto di partenza operativo.", icon: "🔗" },
+const STEP_META: { num: number; label: string; section: string; description: string; icon: React.ReactNode }[] = [
+  { num: 1, label: "Posizionamento", section: "Chi sei e cosa offri", description: "L'AI usa queste informazioni per creare messaggi che parlano la lingua del tuo mercato.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> },
+  { num: 2, label: "Il tuo buyer", section: "A chi vendi davvero", description: "Definire il buyer reale permette all'AI di filtrare i prospect e personalizzare ogni messaggio.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
+  { num: 3, label: "Segnali", section: "Come riconosci un buon prospect", description: "L'AI userà questi pattern per valutare i profili e suggerire chi contattare prima.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> },
+  { num: 4, label: "Processo", section: "Il tuo modo di vendere", description: "Calibra il tono, la frequenza e la strategia dell'AI in base a come lavori davvero.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> },
+  { num: 5, label: "Asset", section: "Da dove parti", description: "Il tuo profilo LinkedIn e le ricerche salvate sono il punto di partenza operativo.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> },
 ];
 
 const initial: OnboardingInput = {
@@ -342,7 +342,7 @@ export default function OnboardingPage() {
           {step === 3 && (
             <>
               <div className="onb-callout onb-callout-blue">
-                <span className="onb-callout-icon">💡</span>
+                <span className="onb-callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></span>
                 <p className="onb-callout-text">
                   Più i segnali sono specifici e osservabili, più l&apos;AI sarà precisa nel filtrare
                   e prioritizzare i prospect per te.
@@ -387,7 +387,7 @@ export default function OnboardingPage() {
                       key={opt.value}
                       type="button"
                       className={`onb-model-card${data.modello_vendita === opt.value ? " onb-model-active" : ""}`}
-                      onClick={() => setData({ ...data, modello_vendita: opt.value })}
+                      onClick={() => setData({ ...data, modello_vendita: opt.value as OnboardingInput["modello_vendita"] })}
                     >
                       <span className="onb-model-icon">{opt.icon}</span>
                       <span className="onb-model-label">{opt.label}</span>
@@ -434,7 +434,7 @@ export default function OnboardingPage() {
                       key={opt.value}
                       type="button"
                       className={`onb-chip onb-chip-lg${data.cta_preferita === opt.value ? " onb-chip-active" : ""}`}
-                      onClick={() => setData({ ...data, cta_preferita: opt.value })}
+                      onClick={() => setData({ ...data, cta_preferita: opt.value as OnboardingInput["cta_preferita"] })}
                     >
                       <span>{opt.icon}</span> {opt.label}
                     </button>
@@ -542,7 +542,7 @@ export default function OnboardingPage() {
         {/* ── Error ── */}
         {error && (
           <div className="onb-error" role="alert">
-            ⚠️ {error}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:'1px'}}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {error}
           </div>
         )}
 
@@ -590,7 +590,7 @@ export default function OnboardingPage() {
 
       {/* ── Reassurance ── */}
       <p className="onb-reassurance">
-        ✏️ Puoi modificare queste informazioni in qualsiasi momento dalle impostazioni.
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Puoi modificare queste informazioni in qualsiasi momento dalle impostazioni.
       </p>
 
     </div>
