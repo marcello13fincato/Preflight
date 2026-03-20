@@ -58,9 +58,9 @@ export default function SettingsPage() {
 
       {/* Visual Profile */}
       <div className="v3-card-flat settings-card">
-        <h3 className="settings-card-label">LinkedIn Visual Profile</h3>
+        <h3 className="settings-card-label">Profilo Visivo LinkedIn</h3>
         <p className="settings-card-text">
-          Create your personalized visual identity. These settings influence your carousel generation, visual content, and post layouts.
+          Crea la tua identità visiva personalizzata. Queste impostazioni influenzano la generazione dei caroselli, i contenuti visivi e i layout dei post.
         </p>
         <div style={{ marginTop: "1.5rem" }}>
           <VisualProfileSetup compact={true} />

@@ -25,15 +25,15 @@ export function ColorPicker({
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Brand Colors</h3>
+        <h3 className={styles.title}>Colori del Brand</h3>
         <p className={styles.subtitle}>
-          Select or customize your primary and secondary brand colors
+          Seleziona o personalizza i colori primario e secondario del tuo brand
         </p>
       </div>
 
       {/* Curated Palettes */}
       <div className={styles.section}>
-        <h4 className={styles.sectionTitle}>Curated Palettes</h4>
+        <h4 className={styles.sectionTitle}>Palette Curate</h4>
         <div className={styles.paletteGrid}>
           {CURATED_COLOR_PALETTES.map((palette) => (
             <button
@@ -64,11 +64,11 @@ export function ColorPicker({
 
       {/* Custom Color Selection */}
       <div className={styles.section}>
-        <h4 className={styles.sectionTitle}>Custom Colors</h4>
+        <h4 className={styles.sectionTitle}>Colori Personalizzati</h4>
         <div className={styles.colorGrid}>
           {/* Primary Color */}
           <div className={styles.colorInputGroup}>
-            <label className={styles.label}>Primary Color</label>
+            <label className={styles.label}>Colore Primario</label>
             <div className={styles.inputWrapper}>
               <input
                 type="color"
@@ -90,12 +90,12 @@ export function ColorPicker({
                 placeholder="#000000"
               />
             </div>
-            <p className={styles.description}>Main brand color for CTAs, highlights</p>
+            <p className={styles.description}>Colore principale per CTA e elementi in evidenza</p>
           </div>
 
           {/* Secondary Color */}
           <div className={styles.colorInputGroup}>
-            <label className={styles.label}>Secondary Color</label>
+            <label className={styles.label}>Colore Secondario</label>
             <div className={styles.inputWrapper}>
               <input
                 type="color"
@@ -117,17 +117,17 @@ export function ColorPicker({
                 placeholder="#000000"
               />
             </div>
-            <p className={styles.description}>Accent color for secondary elements</p>
+            <p className={styles.description}>Colore accento per elementi secondari</p>
           </div>
         </div>
       </div>
 
       {/* Color Preview */}
       <div className={styles.preview}>
-        <h4 className={styles.previewTitle}>Preview</h4>
+        <h4 className={styles.previewTitle}>Anteprima</h4>
         <div className={styles.previewContainer}>
           <div className={styles.previewBox}>
-            <div className={styles.previewLabel}>Primary</div>
+            <div className={styles.previewLabel}>Primario</div>
             <div
               className={styles.previewColor}
               style={{ backgroundColor: primaryColor }}
@@ -135,7 +135,7 @@ export function ColorPicker({
             <div className={styles.previewValue}>{primaryColor}</div>
           </div>
           <div className={styles.previewBox}>
-            <div className={styles.previewLabel}>Secondary</div>
+            <div className={styles.previewLabel}>Secondario</div>
             <div
               className={styles.previewColor}
               style={{ backgroundColor: secondaryColor }}

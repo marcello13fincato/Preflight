@@ -18,9 +18,9 @@ export function TypographyPreview({
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Typography</h3>
+        <h3 className={styles.title}>Tipografia</h3>
         <p className={styles.subtitle}>
-          Choose a professional typography preset for your visual identity
+          Scegli un preset tipografico professionale per la tua identità visiva
         </p>
       </div>
 
@@ -36,10 +36,10 @@ export function TypographyPreview({
           >
             <div className={styles.preview} style={{ fontFamily: preset.fontFamily }}>
               <div className={styles.heading} style={{ fontWeight: preset.headingWeight }}>
-                Heading
+                Titolo
               </div>
               <div className={styles.body} style={{ fontWeight: preset.bodyWeight }}>
-                Body text goes here with intention and clarity.
+                Il testo del corpo va qui, con intenzione e chiarezza.
               </div>
             </div>
 

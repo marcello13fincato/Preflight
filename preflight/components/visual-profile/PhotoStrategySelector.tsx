@@ -24,9 +24,9 @@ export function PhotoStrategySelector({
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Photo & Visual Strategy</h3>
+        <h3 className={styles.title}>Strategia Foto e Visual</h3>
         <p className={styles.subtitle}>
-          How should your content use photography and graphics?
+          Come dovrebbero i tuoi contenuti usare fotografie e grafiche?
         </p>
       </div>
 
@@ -53,12 +53,12 @@ export function PhotoStrategySelector({
               <p className={styles.description}>{strategy.description}</p>
               
               <div className={styles.guidance}>
-                <p className={styles.guidanceLabel}>AI Guidance:</p>
+                <p className={styles.guidanceLabel}>Guida AI:</p>
                 <p className={styles.guidanceText}>{strategy.aiGuidance}</p>
               </div>
 
               <div className={styles.bestFor}>
-                <p className={styles.bestForLabel}>Best for:</p>
+                <p className={styles.bestForLabel}>Ideale per:</p>
                 <ul className={styles.bestForList}>
                   {strategy.forWho.map((who, idx) => (
                     <li key={idx}>{who}</li>

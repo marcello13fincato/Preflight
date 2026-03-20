@@ -18,9 +18,9 @@ export function PresetSelector({
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <h3 className={styles.title}>Visual Style Presets</h3>
+        <h3 className={styles.title}>Stili Visivi Predefiniti</h3>
         <p className={styles.subtitle}>
-          Choose a curated visual style that matches your brand
+          Scegli uno stile visivo curato che rispecchi il tuo brand
         </p>
       </div>
 

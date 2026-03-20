@@ -36,7 +36,7 @@ export function VisualProfileSetup({
     return (
       <div className={styles.loading}>
         <div className={styles.spinner} />
-        <p>Loading visual profile...</p>
+        <p>Caricamento profilo visivo...</p>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export function VisualProfileSetup({
   if (!localProfile) {
     return (
       <div className={styles.error}>
-        <p>Failed to load visual profile</p>
+        <p>Impossibile caricare il profilo visivo</p>
         {error && <p className={styles.errorDetail}>{error}</p>}
       </div>
     );
@@ -53,23 +53,23 @@ export function VisualProfileSetup({
   const steps = [
     {
       id: "preset",
-      title: "Choose Your Style",
-      description: "Select a visual style preset that matches your brand",
+      title: "Scegli il tuo Stile",
+      description: "Seleziona uno stile visivo che rispecchi il tuo brand",
     },
     {
       id: "colors",
-      title: "Brand Colors",
-      description: "Customize your primary and secondary colors",
+      title: "Colori del Brand",
+      description: "Personalizza i colori primario e secondario",
     },
     {
       id: "typography",
-      title: "Typography",
-      description: "Select a professional font pairing",
+      title: "Tipografia",
+      description: "Seleziona un abbinamento tipografico professionale",
     },
     {
       id: "photos",
-      title: "Visual Strategy",
-      description: "Choose your photo and graphics approach",
+      title: "Strategia Visiva",
+      description: "Scegli il tuo approccio a foto e grafiche",
     },
   ];
 
@@ -173,7 +173,7 @@ export function VisualProfileSetup({
           disabled={isSaving}
           className={styles.saveButton}
         >
-          {isSaving ? "Saving..." : "Save Visual Profile"}
+                    {isSaving ? "Salvataggio..." : "Salva Profilo Visivo"}
         </button>
       </div>
     );
