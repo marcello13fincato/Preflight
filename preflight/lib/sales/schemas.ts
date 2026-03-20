@@ -162,24 +162,31 @@ export const findClientsCategorySchema = z.object({
   titolo: z.string(),
   descrizione: z.string(),
   perche_ora: z.string(),
+  segnali_profilo: z.string(),
   link_ricerca_linkedin: z.string(),
 });
 
 export const findClientsSchema = z.object({
-  categoria_prioritaria: findClientsCategorySchema,
-  categorie_alternative: z.tuple([findClientsCategorySchema, findClientsCategorySchema]),
-  come_scegliere_profili: z.object({
-    ruolo_decisionale: z.string(),
-    chiarezza_profilo: z.string(),
+  riepilogo_strategia: z.string(),
+  categoria_prioritaria: findClientsCategorySchema.extend({
+    messaggio_connessione: z.string(),
+    messaggio_dopo_accettazione: z.string(),
+  }),
+  categorie_alternative: z.tuple([
+    findClientsCategorySchema.extend({ messaggio_connessione: z.string() }),
+    findClientsCategorySchema.extend({ messaggio_connessione: z.string() }),
+  ]),
+  checklist_azioni: z.tuple([z.string(), z.string(), z.string(), z.string(), z.string()]),
+  criteri_selezione: z.object({
+    segnali_positivi: z.string(),
+    red_flags: z.string(),
     attivita_recente: z.string(),
-    rilevanza_problema: z.string(),
-    contesto_aziendale: z.string(),
-    chi_evitare: z.string(),
   }),
   strategia_contatto: z.object({
-    approccio: z.string(),
+    approccio_step: z.string(),
     primo_messaggio: z.string(),
-    angolo_followup: z.string(),
+    followup_48h: z.string(),
+    followup_5g: z.string(),
   }),
   prossimo_step: z.string(),
 });

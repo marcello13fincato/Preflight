@@ -52,8 +52,8 @@ export default function FindClientsPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [prefilled, setPrefilled] = useState(false);
+  const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
 
-  // Auto-fill from system setup (onboarding) when available
   useEffect(() => {
     if (!onboarding || prefilled) return;
     const ob = onboarding;
@@ -62,10 +62,15 @@ export default function FindClientsPage() {
     setPrefilled(true);
   }, [onboarding, prefilled, ruoloTarget, problemaCliente]);
 
+  function toggleCheck(i: number) {
+    setCheckedItems((prev) => { const next = [...prev]; next[i] = !next[i]; return next; });
+  }
+
   async function generate() {
     if (!ruoloTarget.trim() || loading) return;
     setLoading(true);
     setError(null);
+    setCheckedItems([false, false, false, false, false]);
     try {
       const res = await fetch("/api/ai/find-clients", {
         method: "POST",
@@ -99,18 +104,35 @@ export default function FindClientsPage() {
     }
   }
 
+  const completedCount = checkedItems.filter(Boolean).length;
+
   return (
     <div className="fc-page">
-      {/* ── PAGE HEADER ── */}
-      <div className="page-hero" style={{ marginBottom: "1.5rem" }}>
-        <span className="page-hero-eyebrow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Selezione prospect
+      {/* ── HERO ── */}
+      <div className="fc-hero">
+        <div className="fc-hero-glow" />
+        <span className="fc-hero-eyebrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Motore di selezione prospect
         </span>
-        <h1 className="page-hero-title">Chi contattare su LinkedIn</h1>
-        <p className="page-hero-subtitle">
-          Identifica le categorie di persone da contattare su LinkedIn in base al tuo servizio — con link pronti e strategia di approccio.
+        <h1 className="fc-hero-title">Chi contattare su LinkedIn</h1>
+        <p className="fc-hero-subtitle">
+          Categorie di prospect prioritarie, messaggi pronti da copiare e checklist operativa — tutto generato dall&apos;AI in base al tuo posizionamento.
         </p>
+        <div className="fc-hero-stats">
+          <div className="fc-hero-stat">
+            <span className="fc-hero-stat-value">3</span>
+            <span className="fc-hero-stat-label">Categorie target</span>
+          </div>
+          <div className="fc-hero-stat">
+            <span className="fc-hero-stat-value">5</span>
+            <span className="fc-hero-stat-label">Messaggi pronti</span>
+          </div>
+          <div className="fc-hero-stat">
+            <span className="fc-hero-stat-value">5</span>
+            <span className="fc-hero-stat-label">Azioni checklist</span>
+          </div>
+        </div>
       </div>
 
       {/* ── TWO COLUMN: INPUT | OUTPUT ── */}
@@ -124,19 +146,18 @@ export default function FindClientsPage() {
               </div>
               <div>
                 <h2 className="fc-input-title">Definisci il target</h2>
-                <p className="fc-input-sub">Più dettagli dai, più precise saranno le categorie di prospect.</p>
+                <p className="fc-input-sub">Più dettagli dai, più precise saranno le categorie e i messaggi.</p>
               </div>
             </div>
 
             {prefilled && onboarding && (
               <div className="fc-prefill-notice">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                Alcuni campi precompilati dal tuo sistema. Puoi modificarli.
+                Alcuni campi precompilati dal tuo sistema.
               </div>
             )}
 
             <div className="fc-form">
-              {/* 1. Ruolo target */}
               <div className="qa-field">
                 <label className="qa-label">Chi vuoi contattare <span className="fc-required">*</span></label>
                 <textarea
@@ -144,103 +165,56 @@ export default function FindClientsPage() {
                   onChange={(e) => setRuoloTarget(e.target.value)}
                   className="qa-input qa-input-lg"
                   rows={2}
-                  placeholder="Es: Founder SaaS B2B, CEO di agenzia di marketing, Head of Sales"
+                  placeholder="Es: Founder SaaS B2B, CEO di agenzia marketing, Head of Sales"
                 />
               </div>
 
-              {/* 2. Settore */}
               <div className="qa-field">
                 <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
-                <input
-                  type="text"
-                  value={settore}
-                  onChange={(e) => setSettore(e.target.value)}
-                  className="qa-input"
-                  placeholder="Software, consulenza, marketing, fintech"
-                />
+                <input type="text" value={settore} onChange={(e) => setSettore(e.target.value)} className="qa-input" placeholder="Software, consulenza, marketing, fintech" />
               </div>
 
-              {/* 3 + 4. Area + Città */}
               <div className="find-section-row">
                 <div className="qa-field" style={{ flex: 1 }}>
                   <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
-                  <input
-                    type="text"
-                    value={area}
-                    onChange={(e) => setArea(e.target.value)}
-                    className="qa-input"
-                    placeholder="Italia, Europa, DACH"
-                  />
+                  <input type="text" value={area} onChange={(e) => setArea(e.target.value)} className="qa-input" placeholder="Italia, Europa, DACH" />
                 </div>
                 <div className="qa-field" style={{ flex: 1 }}>
                   <label className="qa-label">Città <span className="qa-label-opt">(facoltativo)</span></label>
-                  <input
-                    type="text"
-                    value={citta}
-                    onChange={(e) => setCitta(e.target.value)}
-                    className="qa-input"
-                    placeholder="Milano, Roma, Berlino"
-                  />
+                  <input type="text" value={citta} onChange={(e) => setCitta(e.target.value)} className="qa-input" placeholder="Milano, Roma, Berlino" />
                 </div>
               </div>
 
-              {/* 5. Dimensione azienda */}
               <div className="qa-field">
                 <label className="qa-label">Dimensione azienda</label>
                 <div className="fc-pills">
                   {DIMENSIONE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`fc-pill${dimensione === opt.value ? " fc-pill-active" : ""}`}
-                      onClick={() => setDimensione(opt.value)}
-                    >
+                    <button key={opt.value} type="button" className={`fc-pill${dimensione === opt.value ? " fc-pill-active" : ""}`} onClick={() => setDimensione(opt.value)}>
                       {opt.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* 6. Fase azienda */}
               <div className="qa-field">
                 <label className="qa-label">Fase azienda</label>
                 <div className="fc-pills">
                   {FASE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`fc-pill${faseAzienda === opt.value ? " fc-pill-active" : ""}`}
-                      onClick={() => setFaseAzienda(opt.value)}
-                    >
+                    <button key={opt.value} type="button" className={`fc-pill${faseAzienda === opt.value ? " fc-pill-active" : ""}`} onClick={() => setFaseAzienda(opt.value)}>
                       {opt.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* 7. Problema principale */}
               <div className="qa-field">
                 <label className="qa-label">Problema del cliente <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea
-                  value={problemaCliente}
-                  onChange={(e) => setProblemaCliente(e.target.value)}
-                  className="qa-input"
-                  rows={2}
-                  placeholder="Es: Non trovano clienti tramite LinkedIn, non sanno come posizionarsi"
-                />
+                <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Es: Non trovano clienti tramite LinkedIn" />
               </div>
 
-              {/* CTA */}
-              <button
-                onClick={generate}
-                disabled={loading || !ruoloTarget.trim()}
-                className="fc-generate-btn"
-              >
+              <button onClick={generate} disabled={loading || !ruoloTarget.trim()} className="fc-generate-btn">
                 {loading ? (
-                  <>
-                    <span className="qa-spinner" aria-hidden="true" />
-                    Sto analizzando il target…
-                  </>
+                  <><span className="qa-spinner" aria-hidden="true" />Sto analizzando il target…</>
                 ) : (
                   <>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -251,16 +225,23 @@ export default function FindClientsPage() {
             </div>
           </div>
 
-          {/* Onboarding callout */}
           {!profile.onboarding_complete && (
             <div className="fc-callout">
               <div className="fc-callout-icon"><IconLightbulb size={20} /></div>
               <div>
-                <p className="fc-callout-text">Configura il tuo sistema per risultati più precisi e personalizzati.</p>
-                <Link href="/app/onboarding" className="fc-callout-link">Configura il tuo sistema →</Link>
+                <p className="fc-callout-text">Configura il tuo sistema per risultati più precisi.</p>
+                <Link href="/app/onboarding" className="fc-callout-link">Configura il sistema →</Link>
               </div>
             </div>
           )}
+
+          {/* Quick links */}
+          <div className="fc-quick-links">
+            <span className="fc-quick-links-label">Dopo la ricerca:</span>
+            <Link href="/app/prospect" className="fc-quick-link">Analizza un profilo</Link>
+            <Link href="/app/dm" className="fc-quick-link">Scrivi un DM</Link>
+            <Link href="/app/oggi" className="fc-quick-link">Piano di oggi</Link>
+          </div>
         </div>
 
         {/* OUTPUT PANEL */}
@@ -272,7 +253,18 @@ export default function FindClientsPage() {
             </div>
           ) : output ? (
             <div className="fc-results">
-              {/* SECTION 1 — CATEGORIA PRIORITARIA */}
+              {/* RIEPILOGO STRATEGIA */}
+              <div className="fc-summary-card">
+                <div className="fc-summary-icon">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+                </div>
+                <div>
+                  <h3 className="fc-summary-title">Riepilogo strategia</h3>
+                  <p className="fc-summary-text">{output.riepilogo_strategia}</p>
+                </div>
+              </div>
+
+              {/* SEZIONE 1 — CATEGORIA PRIORITARIA */}
               <div className="fc-result-section fc-result-highlight">
                 <div className="fc-result-badge">1</div>
                 <div className="fc-result-header">
@@ -285,18 +277,35 @@ export default function FindClientsPage() {
                   <span className="fc-cat-why-label">Perché ora</span>
                   <p className="fc-result-text">{output.categoria_prioritaria.perche_ora}</p>
                 </div>
-                <a
-                  href={output.categoria_prioritaria.link_ricerca_linkedin}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="fc-linkedin-btn"
-                >
+                <div className="fc-signals">
+                  <span className="fc-signals-label">Segnali da cercare nel profilo</span>
+                  <p className="fc-signals-text">{output.categoria_prioritaria.segnali_profilo}</p>
+                </div>
+                <a href={output.categoria_prioritaria.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="fc-linkedin-btn">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                   Apri la lista su LinkedIn
                 </a>
+
+                {/* Messaggi pronti */}
+                <div className="fc-msg-group">
+                  <div className="fc-msg-item">
+                    <div className="fc-msg-header">
+                      <span className="fc-msg-label">Nota di connessione</span>
+                      <CopyButton text={output.categoria_prioritaria.messaggio_connessione} />
+                    </div>
+                    <div className="fc-msg-box">{output.categoria_prioritaria.messaggio_connessione}</div>
+                  </div>
+                  <div className="fc-msg-item">
+                    <div className="fc-msg-header">
+                      <span className="fc-msg-label fc-msg-label-green">Primo DM dopo accettazione</span>
+                      <CopyButton text={output.categoria_prioritaria.messaggio_dopo_accettazione} />
+                    </div>
+                    <div className="fc-msg-box fc-msg-box-green">{output.categoria_prioritaria.messaggio_dopo_accettazione}</div>
+                  </div>
+                </div>
               </div>
 
-              {/* SECTION 2 — ALTRE CATEGORIE UTILI */}
+              {/* SEZIONE 2 — CATEGORIE ALTERNATIVE */}
               <div className="fc-result-section">
                 <div className="fc-result-badge">2</div>
                 <div className="fc-result-header">
@@ -309,126 +318,172 @@ export default function FindClientsPage() {
                       <h4 className="fc-alt-cat-title">{cat.titolo}</h4>
                       <p className="fc-alt-cat-desc">{cat.descrizione}</p>
                       <p className="fc-alt-cat-why">{cat.perche_ora}</p>
-                      <a
-                        href={cat.link_ricerca_linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="fc-linkedin-btn-sm"
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                        Apri la lista su LinkedIn
-                      </a>
+                      <div className="fc-alt-cat-signals">
+                        <span className="fc-signals-label">Segnali</span>
+                        <p className="fc-signals-text">{cat.segnali_profilo}</p>
+                      </div>
+                      <div className="fc-alt-cat-actions">
+                        <a href={cat.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="fc-linkedin-btn-sm">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                          Lista LinkedIn
+                        </a>
+                        <CopyButton text={cat.messaggio_connessione} />
+                      </div>
+                      <div className="fc-alt-cat-msg">
+                        <span className="fc-msg-label">Nota connessione:</span>
+                        <span className="fc-alt-cat-msg-text">{cat.messaggio_connessione}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* SECTION 3 — COME SCEGLIERE I PROFILI MIGLIORI */}
-              <div className="fc-result-section">
-                <div className="fc-result-badge">3</div>
+              {/* SEZIONE 3 — CHECKLIST AZIONI */}
+              <div className="fc-result-section fc-result-checklist">
+                <div className="fc-result-badge fc-badge-action">3</div>
                 <div className="fc-result-header">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                  <h3 className="fc-result-title">Come scegliere i profili migliori</h3>
+                  <h3 className="fc-result-title">Checklist — le 5 azioni da fare adesso</h3>
+                  <span className="fc-check-count">{completedCount}/5</span>
                 </div>
-                <div className="fc-criteria-grid">
-                  <div className="fc-criteria-item">
-                    <span className="fc-criteria-label">Ruolo decisionale</span>
-                    <p className="fc-criteria-text">{output.come_scegliere_profili.ruolo_decisionale}</p>
-                  </div>
-                  <div className="fc-criteria-item">
-                    <span className="fc-criteria-label">Chiarezza del profilo</span>
-                    <p className="fc-criteria-text">{output.come_scegliere_profili.chiarezza_profilo}</p>
-                  </div>
-                  <div className="fc-criteria-item">
-                    <span className="fc-criteria-label">Attività recente</span>
-                    <p className="fc-criteria-text">{output.come_scegliere_profili.attivita_recente}</p>
-                  </div>
-                  <div className="fc-criteria-item">
-                    <span className="fc-criteria-label">Rilevanza del problema</span>
-                    <p className="fc-criteria-text">{output.come_scegliere_profili.rilevanza_problema}</p>
-                  </div>
-                  <div className="fc-criteria-item">
-                    <span className="fc-criteria-label">Contesto aziendale</span>
-                    <p className="fc-criteria-text">{output.come_scegliere_profili.contesto_aziendale}</p>
-                  </div>
-                  <div className="fc-criteria-item fc-criteria-item-warn">
-                    <span className="fc-criteria-label fc-criteria-label-warn">Chi evitare</span>
-                    <p className="fc-criteria-text">{output.come_scegliere_profili.chi_evitare}</p>
-                  </div>
+                <div className="fc-check-progress">
+                  <div className="fc-check-progress-bar" style={{ width: `${(completedCount / 5) * 100}%` }} />
                 </div>
+                <div className="fc-checklist">
+                  {output.checklist_azioni.map((azione, i) => (
+                    <button key={i} type="button" className={`fc-check-item${checkedItems[i] ? " fc-check-done" : ""}`} onClick={() => toggleCheck(i)}>
+                      <span className="fc-check-box">
+                        {checkedItems[i] && (
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        )}
+                      </span>
+                      <span className="fc-check-text">{azione}</span>
+                    </button>
+                  ))}
+                </div>
+                {completedCount === 5 && (
+                  <div className="fc-check-complete">
+                    Tutte le azioni completate! Vai al passo successivo.
+                  </div>
+                )}
               </div>
 
-              {/* SECTION 4 — COME CONTATTARLI */}
+              {/* SEZIONE 4 — CRITERI DI SELEZIONE */}
               <div className="fc-result-section">
                 <div className="fc-result-badge">4</div>
                 <div className="fc-result-header">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-                  <h3 className="fc-result-title">Come contattarli</h3>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                  <h3 className="fc-result-title">Come scegliere i profili migliori</h3>
                 </div>
-                <div className="fc-strategy-block">
-                  <div className="fc-strategy-item">
-                    <span className="fc-strategy-label">Approccio consigliato</span>
-                    <p className="fc-result-text fc-result-text-strategy">{output.strategia_contatto.approccio}</p>
+                <div className="fc-criteria-grid">
+                  <div className="fc-criteria-item fc-criteria-good">
+                    <span className="fc-criteria-label">Segnali positivi</span>
+                    <p className="fc-criteria-text">{output.criteri_selezione.segnali_positivi}</p>
                   </div>
-                  <div className="fc-strategy-item fc-strategy-msg">
-                    <span className="fc-strategy-label">Primo messaggio</span>
-                    <div className="fc-message-box">
-                      <p className="fc-message-text">{output.strategia_contatto.primo_messaggio}</p>
-                    </div>
-                    <CopyButton text={output.strategia_contatto.primo_messaggio} />
+                  <div className="fc-criteria-item fc-criteria-warn">
+                    <span className="fc-criteria-label fc-criteria-label-warn">Red flags — chi evitare</span>
+                    <p className="fc-criteria-text">{output.criteri_selezione.red_flags}</p>
                   </div>
-                  <div className="fc-strategy-item">
-                    <span className="fc-strategy-label">Angolo follow-up</span>
-                    <p className="fc-result-text">{output.strategia_contatto.angolo_followup}</p>
+                  <div className="fc-criteria-item">
+                    <span className="fc-criteria-label">Attività recente</span>
+                    <p className="fc-criteria-text">{output.criteri_selezione.attivita_recente}</p>
                   </div>
                 </div>
               </div>
 
-              {/* SECTION 5 — PROSSIMO STEP */}
+              {/* SEZIONE 5 — STRATEGIA + MESSAGGI FOLLOW-UP */}
+              <div className="fc-result-section fc-result-message">
+                <div className="fc-result-badge fc-badge-msg">5</div>
+                <div className="fc-result-header">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <h3 className="fc-result-title">Strategia di contatto + messaggi pronti</h3>
+                </div>
+                <div className="fc-strategy-approach">
+                  <span className="fc-strategy-label">Sequenza consigliata</span>
+                  <p className="fc-result-text fc-result-text-strategy">{output.strategia_contatto.approccio_step}</p>
+                </div>
+                <div className="fc-msg-group">
+                  <div className="fc-msg-item">
+                    <div className="fc-msg-header">
+                      <span className="fc-msg-label">Primo messaggio</span>
+                      <CopyButton text={output.strategia_contatto.primo_messaggio} />
+                    </div>
+                    <div className="fc-msg-box">{output.strategia_contatto.primo_messaggio}</div>
+                  </div>
+                  <div className="fc-msg-item">
+                    <div className="fc-msg-header">
+                      <span className="fc-msg-label">Follow-up 48h</span>
+                      <CopyButton text={output.strategia_contatto.followup_48h} />
+                    </div>
+                    <div className="fc-msg-box">{output.strategia_contatto.followup_48h}</div>
+                  </div>
+                  <div className="fc-msg-item">
+                    <div className="fc-msg-header">
+                      <span className="fc-msg-label">Follow-up 5 giorni</span>
+                      <CopyButton text={output.strategia_contatto.followup_5g} />
+                    </div>
+                    <div className="fc-msg-box">{output.strategia_contatto.followup_5g}</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SEZIONE 6 — PROSSIMO STEP */}
               <div className="fc-result-section fc-result-next">
-                <div className="fc-result-badge fc-result-badge-cta">5</div>
+                <div className="fc-result-badge fc-badge-next">→</div>
                 <div className="fc-result-header">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                   <h3 className="fc-result-title">Prossimo step</h3>
                 </div>
-                <p className="fc-result-text">
-                  {output.prossimo_step}
-                </p>
+                <p className="fc-result-text">{output.prossimo_step}</p>
                 <div className="fc-next-actions">
-                  <Link href="/app/prospect" className="btn-primary">
-                    Analizza uno di questi profili
+                  <Link href="/app/prospect" className="fc-action-btn fc-action-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Analizza un profilo
                   </Link>
-                  <Link href="/app/oggi" className="btn-secondary">
-                    Vai al piano di oggi
+                  <Link href="/app/dm" className="fc-action-btn fc-action-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Scrivi un DM
+                  </Link>
+                  <Link href="/app/oggi" className="fc-action-btn fc-action-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Piano di oggi
+                  </Link>
+                  <Link href="/app/pipeline" className="fc-action-btn fc-action-secondary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    Pipeline
                   </Link>
                 </div>
               </div>
             </div>
           ) : (
             <div className="fc-empty">
-              <div className="fc-empty-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <div className="fc-empty-visual">
+                <div className="fc-empty-ring fc-empty-ring-1" />
+                <div className="fc-empty-ring fc-empty-ring-2" />
+                <div className="fc-empty-icon-wrap">
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
               </div>
               <h3 className="fc-empty-title">Chi dovresti contattare?</h3>
               <p className="fc-empty-text">
-                Preflight identifica le categorie di persone più rilevanti da contattare su LinkedIn in base al tuo posizionamento — con link pronti e strategia di approccio.
+                Compila il form e l&apos;AI genererà categorie di prospect, messaggi pronti e una checklist operativa.
               </p>
               <div className="fc-empty-features">
                 <div className="fc-empty-feature">
                   <span className="fc-empty-feature-num">1</span>
-                  <span>Categorie di prospect prioritarie</span>
+                  <span>Categorie prospect prioritarie</span>
                 </div>
                 <div className="fc-empty-feature">
                   <span className="fc-empty-feature-num">2</span>
-                  <span>Liste LinkedIn pronte</span>
+                  <span>Messaggi pronti da copiare</span>
                 </div>
                 <div className="fc-empty-feature">
                   <span className="fc-empty-feature-num">3</span>
-                  <span>Guida alla selezione profili</span>
+                  <span>Checklist azioni concrete</span>
                 </div>
                 <div className="fc-empty-feature">
                   <span className="fc-empty-feature-num">4</span>
-                  <span>Strategia di contatto e messaggi</span>
+                  <span>Link diretti LinkedIn</span>
                 </div>
               </div>
             </div>
