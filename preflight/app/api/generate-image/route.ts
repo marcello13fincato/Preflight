@@ -44,7 +44,9 @@ export async function POST(req: Request) {
       }
     }
   } catch (err) {
-    console.warn("[generate-image] Could not fetch visual profile:", err);
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("[generate-image] Could not fetch visual profile:", err);
+    }
   }
 
   // Truncate post content to avoid overly long prompts
@@ -77,7 +79,9 @@ export async function POST(req: Request) {
 
     if (!res.ok) {
       const errText = await res.text();
-      console.error("[generate-image] OpenAI error:", errText.slice(0, 300));
+      if (process.env.NODE_ENV !== "production") {
+        console.error("[generate-image] OpenAI error:", errText.slice(0, 300));
+      }
       return NextResponse.json(
         { error: `Errore generazione immagine (${res.status})` },
         { status: 502 },
@@ -104,7 +108,9 @@ export async function POST(req: Request) {
     });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore sconosciuto";
-    console.error("[generate-image] Error:", message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("[generate-image] Error:", message);
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

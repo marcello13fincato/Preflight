@@ -81,7 +81,9 @@ export async function orchestrate<T extends Record<string, unknown>>(
 
     // Don't block the response on memory writes
     memoryPromise.catch((err) => {
-      console.error(`[${params.taskType}] Memory write error:`, err);
+      if (process.env.NODE_ENV !== "production") {
+        console.error(`[${params.taskType}] Memory write error:`, err);
+      }
     });
 
     // 6. Format response
@@ -90,7 +92,9 @@ export async function orchestrate<T extends Record<string, unknown>>(
     return NextResponse.json(formatted);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    console.error(`[${params.taskType}] AI error:`, message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error(`[${params.taskType}] AI error:`, message);
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -1,4 +1,13 @@
+
 import { z } from "zod";
+
+// Logger controllato: silenzia i log in produzione
+const isProd = process.env.NODE_ENV === "production";
+const logger = {
+  log: (...args: any[]) => { if (!isProd) console.log(...args); },
+  warn: (...args: any[]) => { if (!isProd) console.warn(...args); },
+  error: (...args: any[]) => { if (!isProd) console.error(...args); }
+};
 
 type OpenAIResponse = {
   choices?: Array<{ message?: { content?: string } }>;
@@ -9,12 +18,12 @@ export async function generateWithLLM(prompt: string): Promise<string> {
 
   if (!apiKey) {
     const msg = "OPENAI_API_KEY non configurata. Aggiungi la variabile d'ambiente per attivare l'AI.";
-    console.error("[AI]", msg);
+    logger.error("[AI]", msg);
     throw new Error(msg);
   }
 
   const model = process.env.OPENAI_MODEL ?? "gpt-4o-mini";
-  console.log(`[AI] → OpenAI (model: ${model}) | prompt: ${prompt.length} chars`);
+  logger.log(`[AI] → OpenAI (model: ${model}) | prompt: ${prompt.length} chars`);
 
   const res = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
@@ -33,7 +42,7 @@ export async function generateWithLLM(prompt: string): Promise<string> {
   if (!res.ok) {
     const errText = await res.text();
     const msg = `OpenAI HTTP ${res.status}: ${errText.slice(0, 300)}`;
-    console.error("[AI]", msg);
+    logger.error("[AI]", msg);
     throw new Error(msg);
   }
 
@@ -46,7 +55,7 @@ export async function generateWithLLM(prompt: string): Promise<string> {
     throw new Error(msg);
   }
 
-  console.log("[AI] ← OpenAI response (first 300 chars):", content.slice(0, 300));
+  logger.log("[AI] ← OpenAI response (first 300 chars):", content.slice(0, 300));
   return content;
 }
 
@@ -62,29 +71,29 @@ export async function generateStructured<T>(params: {
   prompt: string;
   schema: z.ZodType<T>;
 }): Promise<T> {
-  console.log("[AI] generateStructured — full prompt:\n", params.prompt);
+  logger.log("[AI] generateStructured — full prompt:\n", params.prompt);
 
   const first = await generateWithLLM(params.prompt);
   const firstParsed = safeJsonParse(first);
   const firstValid = params.schema.safeParse(firstParsed);
   if (firstValid.success) {
-    console.log("[AI] Schema validation: OK (attempt 1)");
+    logger.log("[AI] Schema validation: OK (attempt 1)");
     return firstValid.data;
   }
 
-  console.warn("[AI] Schema validation failed (attempt 1):", JSON.stringify(firstValid.error.flatten()));
+  logger.warn("[AI] Schema validation failed (attempt 1):", JSON.stringify(firstValid.error.flatten()));
 
   const retryPrompt = `${params.prompt}\n\nReturn valid JSON matching schema exactly.`;
   const second = await generateWithLLM(retryPrompt);
   const secondParsed = safeJsonParse(second);
   const secondValid = params.schema.safeParse(secondParsed);
   if (secondValid.success) {
-    console.log("[AI] Schema validation: OK (attempt 2)");
+    logger.log("[AI] Schema validation: OK (attempt 2)");
     return secondValid.data;
   }
 
   const validationErr = JSON.stringify(secondValid.error.flatten());
-  console.error("[AI] Schema validation failed (attempt 2):", validationErr);
+  logger.error("[AI] Schema validation failed (attempt 2):", validationErr);
   throw new Error(`La risposta dell'AI non corrisponde allo schema atteso: ${validationErr}`);
 }
 

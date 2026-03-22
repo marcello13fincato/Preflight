@@ -108,7 +108,9 @@ STRUTTURA JSON DA RESTITUIRE:
     return NextResponse.json(output);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    console.error("[find-clients] AI error:", message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("[find-clients] AI error:", message);
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

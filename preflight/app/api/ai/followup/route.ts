@@ -50,7 +50,9 @@ Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
     return NextResponse.json(output);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    console.error("[followup] AI error:", message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("[followup] AI error:", message);
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

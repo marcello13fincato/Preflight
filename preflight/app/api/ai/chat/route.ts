@@ -348,7 +348,9 @@ Utente: ${message}`;
     return NextResponse.json({ reply });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    console.error("[chat] AI error:", message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("[chat] AI error:", message);
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

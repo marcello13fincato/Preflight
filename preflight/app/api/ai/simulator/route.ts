@@ -14,7 +14,9 @@ const requestSchema = z.object({
 
 export async function POST(req: Request) {
   const body = await req.json();
-  console.log("[simulator] Received payload:", JSON.stringify(body));
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[simulator] Received payload:", JSON.stringify(body));
+  }
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid simulator input", details: parsed.error.flatten() }, { status: 400 });
@@ -43,7 +45,9 @@ Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo 
     return NextResponse.json(output);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    console.error("[simulator] AI error:", message);
+    if (process.env.NODE_ENV !== "production") {
+      console.error("[simulator] AI error:", message);
+    }
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

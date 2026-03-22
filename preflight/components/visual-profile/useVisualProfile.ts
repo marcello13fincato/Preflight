@@ -37,7 +37,9 @@ export function useVisualProfile() {
         setPresets(presetsData);
         setError(null);
       } catch (err) {
-        console.error("Error fetching visual profile:", err);
+        if (process.env.NODE_ENV !== "production") {
+          console.error("Error fetching visual profile:", err);
+        }
         setError(err instanceof Error ? err.message : "Failed to load profile");
         // Set defaults
         setProfile(DEFAULT_VISUAL_PROFILE as VisualProfile);
