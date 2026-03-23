@@ -118,7 +118,7 @@ export default function DmPage() {
             <span className="pr-score-label">Consiglio</span>
           </div>
           <div className="pr-score-info">
-            <h1 className="pr-score-title">{output.titolo || "Consiglio personalizzato"}</h1>
+            <h1 className="pr-score-title">Consiglio personalizzato</h1>
             <p className="pr-score-subtitle">{output.lettura_situazione}</p>
             <div className="pr-score-badges">
               <span className={`pr-badge pr-heat-${output.client_heat_level?.toLowerCase?.() || "cold"}`}>
