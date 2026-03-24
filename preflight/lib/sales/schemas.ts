@@ -73,6 +73,10 @@ export const postBuilderSchema = z.object({
   cta: z.string(),
   comment_starter: z.string(),
   next_step: z.string(),
+  suggerimento_immagine: z.object({
+    tipo: z.string(),
+    perche_funziona: z.string(),
+  }),
 });
 
 export const commentAssistantSchema = z.object({
@@ -106,20 +110,43 @@ export const dmAssistantSchema = z.object({
   next_action: z.string(),
 });
 
+export const adviceSchema = z.object({
+  lettura_situazione: z.string(),
+  strategia_consigliata: z.string(),
+  risposta_suggerita: z.string(),
+  followup_consigliato: z.string(),
+  step_successivi: z.string(),
+  errori_da_evitare: z.string(),
+  client_heat_level: heatLevelSchema,
+});
+
 export const prospectAnalyzerSchema = z.object({
-  likely_pains: z.tuple([z.string(), z.string(), z.string()]),
-  angles: z.tuple([z.string(), z.string(), z.string()]),
-  connection_opener: z.string(),
-  dm1: z.string(),
-  smart_questions: z.tuple([z.string(), z.string(), z.string(), z.string(), z.string()]),
+  chi_e: z.string(),
+  ruolo_contesto: z.string(),
+  perche_buon_contatto: z.string(),
+  strategia_contatto: z.string(),
+  primo_messaggio: z.string(),
+  followup_consigliato: z.string(),
+  step_successivi: z.string(),
+  segnali_da_osservare: z.string(),
+  errori_da_evitare: z.string(),
   client_heat_level: heatLevelSchema,
   priority_signal: z.enum(["high", "medium", "low"]),
-  next_action: z.string(),
+});
+
+export const idealProfileSchema = z.object({
+  role: z.string(),
+  sector: z.string(),
+  company_size: z.string(),
+  why: z.string(),
 });
 
 export const opportunityFinderSchema = z.object({
-  post_types_to_search: z.array(z.string()),
   keywords_to_monitor: z.array(z.string()),
+  post_types_to_search: z.array(z.string()),
+  ideal_profiles: z.array(idealProfileSchema),
+  useful_signals: z.array(z.string()),
+  linkedin_search_queries: z.array(z.string()),
   conversation_opportunities: z.array(z.string()),
   next_action: z.string(),
 });
@@ -131,37 +158,110 @@ export const simulatorSchema = z.object({
   next_action: z.string(),
 });
 
+export const findClientsCategorySchema = z.object({
+  titolo: z.string(),
+  descrizione: z.string(),
+  perche_ora: z.string(),
+  link_ricerca_linkedin: z.string(),
+});
+
+export const findClientsSchema = z.object({
+  categoria_prioritaria: findClientsCategorySchema,
+  categorie_alternative: z.tuple([findClientsCategorySchema, findClientsCategorySchema]),
+  come_scegliere_profili: z.object({
+    ruolo_decisionale: z.string(),
+    chiarezza_profilo: z.string(),
+    attivita_recente: z.string(),
+    rilevanza_problema: z.string(),
+    contesto_aziendale: z.string(),
+    chi_evitare: z.string(),
+  }),
+  strategia_contatto: z.object({
+    approccio: z.string(),
+    primo_messaggio: z.string(),
+    angolo_followup: z.string(),
+  }),
+  prossimo_step: z.string(),
+});
+
+export const dailyPlanSchema = z.object({
+  priorita_oggi: z.object({
+    azione_1: z.string(),
+    azione_2: z.string(),
+    azione_3: z.string(),
+  }),
+  persone_da_contattare: z.object({
+    tipo_profili: z.string(),
+    link_ricerca: z.string(),
+    criteri_scelta: z.string(),
+    primo_messaggio: z.string(),
+    strategia: z.string(),
+    perche_oggi: z.string(),
+  }),
+  contenuto_consigliato: z.object({
+    idea_post: z.string(),
+    angolo_post: z.string(),
+    struttura: z.string(),
+    esempio_testo: z.string(),
+    cta_post: z.string(),
+    suggerimento_immagine: z.string(),
+  }),
+  conversazioni_da_seguire: z.object({
+    followup_da_fare: z.string(),
+    quando_scrivere: z.string(),
+    cosa_chiedere: z.string(),
+    esempio_followup: z.string(),
+    segnali_da_osservare: z.string(),
+    errori_da_evitare: z.string(),
+  }),
+});
+
+export const followupSchema = z.object({
+  analisi_situazione: z.string(),
+  messaggio_followup: z.string(),
+  variante_breve: z.string(),
+  variante_diretta: z.string(),
+  tempistica: z.string(),
+  prossimi_passi: z.string(),
+});
+
 export const onboardingInputSchema = z.object({
-  offer_one_liner: z.string(),
-  offer_price_range: z.string(),
-  offer_delivery_time: z.enum(["1w", "2w", "1m", "3m"]),
-  offer_outcome: z.string(),
-  icp_role: z.string(),
-  icp_industry: z.string(),
-  icp_company_size: z.string(),
-  icp_main_problem: z.string(),
-  icp_top_objections: z.array(z.string()).max(3),
-  proof_case_study: z.string(),
-  proof_testimonial: z.string().optional().default(""),
-  proof_links: z.string().optional().default(""),
-  weekly_time_minutes: z.enum(["15", "30", "60", "120"]),
-  comfort_post: z.enum(["1", "2", "3", "4", "5"]),
-  comfort_comments: z.enum(["1", "2", "3", "4", "5"]),
-  comfort_dm: z.enum(["1", "2", "3", "4", "5"]),
-  goal_primary: z.enum(["prime conversazioni", "più call", "più clienti"]),
+  servizio: z.string().min(1),
+  cliente_ideale: z.string().min(1),
+  problema_cliente: z.string().min(1),
+  risultato_cliente: z.string().min(1),
+  linkedin_search_links: z.array(z.string()).default([]),
+  materiali_nomi: z.array(z.string()).default([]),
+  social_links: z.array(z.string()).default([]),
+  tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]),
 });
 
 export type PlanJson = z.infer<typeof planSchema>;
 export type PostBuilderJson = z.infer<typeof postBuilderSchema>;
 export type CommentAssistantJson = z.infer<typeof commentAssistantSchema>;
 export type DmAssistantJson = z.infer<typeof dmAssistantSchema>;
+export type AdviceJson = z.infer<typeof adviceSchema>;
 export type ProspectAnalyzerJson = z.infer<typeof prospectAnalyzerSchema>;
+export type IdealProfileJson = z.infer<typeof idealProfileSchema>;
 export type OpportunityFinderJson = z.infer<typeof opportunityFinderSchema>;
 export type SimulatorJson = z.infer<typeof simulatorSchema>;
+export type FindClientsJson = z.infer<typeof findClientsSchema>;
+export type DailyPlanJson = z.infer<typeof dailyPlanSchema>;
+export type FollowupJson = z.infer<typeof followupSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
 export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 
-export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding";
+export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding" | "followup";
+
+export type AnalyzedContact = {
+  id: string;
+  linkedin_url: string;
+  nome: string;
+  ruolo: string;
+  azienda: string;
+  analyzed_at: string;
+  result: Record<string, string>;
+};
 
 export type UserProfileData = {
   onboarding: OnboardingInput | null;

@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 const labels: Record<string, string> = {
   "": "Home",
   "how-it-works": "Come funziona",
+  "per-chi-e": "Per chi è",
   perche: "Perché",
-  pricing: "Prezzi",
+  pricing: "Piani",
   audit: "Audit",
 };
 

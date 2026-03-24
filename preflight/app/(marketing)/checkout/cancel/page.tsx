@@ -7,7 +7,7 @@ export default function CheckoutCancel() {
           Il pagamento non è andato a buon fine. Riprova o contatta il supporto.
         </p>
         <a href="/pricing" className="mt-6 inline-block rounded-full border border-app px-6 py-3 text-app hover:bg-surface transition">
-          Torna ai prezzi
+          Torna ai piani
         </a>
       </div>
     </main>

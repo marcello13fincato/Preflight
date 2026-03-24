@@ -41,6 +41,88 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  systemProfile   SystemProfile?
+  prospects       Prospect[]
+  aiActivities    AIActivity[]
+  strategicMemory StrategicMemory?
+}
+
+// ── AI Orchestration Models ──────────────────────────────────
+
+model SystemProfile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  servizio         String   @default("")
+  clienteIdeale    String   @default("")
+  problemaCliente  String   @default("")
+  risultatoCliente String   @default("")
+  linkedinLinks    String   @default("[]") // JSON array
+  materialiNomi    String   @default("[]") // JSON array
+  socialLinks      String   @default("[]") // JSON array
+  tempoSettimanale String   @default("")
+
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Prospect {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  linkedinUrl   String   @default("")
+  websiteUrl    String   @default("")
+  name          String   @default("")
+  role          String   @default("")
+  company       String   @default("")
+  sector        String   @default("")
+  heatLevel     String   @default("Cold") // Cold | Warm | Hot
+  priority      String   @default("low")  // high | medium | low
+  summary       String   @default("")     // AI-generated summary
+  lastAnalysis  String   @default("")     // JSON of last AI analysis
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  activities    AIActivity[]
+
+  @@index([userId])
+  @@unique([userId, linkedinUrl])
+}
+
+model AIActivity {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  taskType    String   // analyze_profile | find_clients | ask_advice | dm | etc.
+  inputSummary String  @default("") // short summary of what was asked
+  outputSummary String @default("") // short summary of response
+  fullOutput  String   @default("") // JSON of full response
+
+  prospectId  String?
+  prospect    Prospect? @relation(fields: [prospectId], references: [id], onDelete: SetNull)
+
+  createdAt   DateTime @default(now())
+
+  @@index([userId, taskType])
+  @@index([userId, createdAt])
+}
+
+model StrategicMemory {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  summary   String   @default("") // High-level strategic summary
+  patterns  String   @default("") // JSON array of identified patterns
+  focusArea String   @default("") // Current strategic focus
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model VerificationToken {
