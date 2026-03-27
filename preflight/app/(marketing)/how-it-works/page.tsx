@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function HowItWorksPage() {
   return (
-    <div className="homepage-root">
+    <div className="homepage-root fade-in">
 
       {/* ═══════════════════════════════════════════════════════════
           1. HERO

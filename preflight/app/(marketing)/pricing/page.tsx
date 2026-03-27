@@ -43,7 +43,7 @@ const faqs = [
 
 export default function PricingPage() {
   return (
-    <div className="homepage-root">
+    <div className="homepage-root fade-in">
 
       {/* ═══════════════════════════════════════════════════════════
           1. HERO

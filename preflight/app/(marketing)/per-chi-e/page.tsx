@@ -59,7 +59,7 @@ const notFor = [
 
 export default function PerChiEPage() {
   return (
-    <div className="homepage-root">
+    <div className="homepage-root fade-in">
 
       {/* ── HERO ── */}
       <section className="hp-hero">
