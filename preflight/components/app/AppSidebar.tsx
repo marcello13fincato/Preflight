@@ -98,7 +98,7 @@ export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="app-sidebar fade-in">
+    <aside className="sb app-sidebar fade-in">
       {/* Logo */}
       <div className="sb-brand">
         <div className="sb-logo">
