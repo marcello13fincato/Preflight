@@ -42,7 +42,7 @@ export default function MarketingHeader() {
   }
 
   return (
-    <header ref={headerRef} className="mega-header">
+    <header ref={headerRef} className="mega-header fade-in-fast">
       <div className="mega-header-inner">
         {/* ── Logo ── */}
         <Link href="/" className="mega-logo">
@@ -50,7 +50,7 @@ export default function MarketingHeader() {
         </Link>
 
         {/* ── Nav desktop ── */}
-        <nav className="mega-nav">
+        <nav className="mega-nav fade-in">
           {marketingNav.map((item) => (
             <div
               key={item.href}
@@ -69,7 +69,7 @@ export default function MarketingHeader() {
         </nav>
 
         {/* ── Right side ── */}
-        <div className="mega-actions">
+        <div className="mega-actions fade-in-fast">
           {session ? (
             <div className="mega-user">
               <span className="mega-user-name">{session.user?.name || session.user?.email}</span>
@@ -79,7 +79,7 @@ export default function MarketingHeader() {
             <Link href="/app" className="mega-secondary" aria-label="Accedi">Accedi</Link>
           )}
 
-          <Link href="/app" className="mega-cta">
+          <Link href="/app" className="mega-cta fade-in-delay">
             Prova il sistema
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </Link>
@@ -104,7 +104,7 @@ export default function MarketingHeader() {
       {/* ── Megamenu dropdown panels ── */}
       {activePanel && megaPanels[activePanel] && (
         <div
-          className="mega-dropdown"
+          className="mega-dropdown fade-in"
           onMouseEnter={enterPanel}
           onMouseLeave={leavePanel}
         >
@@ -121,7 +121,7 @@ export default function MarketingHeader() {
 
       {/* ── Mobile panel ── */}
       {mobileOpen && (
-        <div className="mega-mobile">
+        <div className="mega-mobile fade-in">
           {marketingNav.map((item) => (
             <Link key={item.href} href={item.href} className="mega-mobile-link" onClick={() => setMobileOpen(false)}>
               {item.label}

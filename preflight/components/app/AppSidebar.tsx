@@ -98,7 +98,7 @@ export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sb">
+    <aside className="app-sidebar fade-in">
       {/* Logo */}
       <div className="sb-brand">
         <div className="sb-logo">
@@ -111,7 +111,7 @@ export default function AppSidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="sb-nav">
+        <nav className="app-sidebar-nav fade-in-delay">
         {groups.map((group, gi) => (
           <div key={gi} className="sb-group">
             <span className="sb-group-label">{group.label}</span>

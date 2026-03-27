@@ -6,6 +6,7 @@ export default function JsonOutputCard({ title, value }: { title: string; value:
   const text = JSON.stringify(value, null, 2);
   return (
     <div
+      className="fade-in"
       style={{
         borderRadius: "14px",
         border: "1px solid rgba(0,0,0,0.06)",

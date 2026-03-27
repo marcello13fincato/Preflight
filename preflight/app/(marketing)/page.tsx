@@ -10,14 +10,14 @@ export default async function Home() {
   }
 
   return (
-    <div className="homepage-root">
+    <div className="homepage-root fade-in">
 
       {/* ═══════════════════════════════════════════════════════════
           1. HERO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-hero">
+      <section className="hp-hero fade-in">
         <div className="hp-hero-glow" aria-hidden="true" />
-        <div className="hp-container hp-hero-inner">
+        <div className="hp-container hp-hero-inner fade-in-delay">
           <h1 className="hp-hero-title">
             Il sistema che ti guida, passo dopo passo,<br />
             <span className="hp-hero-title-accent">ad acquisire clienti su LinkedIn.</span>
@@ -32,12 +32,12 @@ export default async function Home() {
             dalla scelta del profilo giusto alla gestione della relazione,
             con il supporto di un&apos;IA specializzata in processi commerciali.
           </p>
-          <div className="hp-hero-ctas">
-            <Link href="/signup" className="hp-cta-primary">
+          <div className="hp-hero-ctas fade-in">
+            <Link href="/signup" className="hp-cta-primary fade-in-delay">
               Configura il tuo sistema in 5 minuti
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </Link>
-            <Link href="/how-it-works" className="hp-cta-ghost">
+            <Link href="/how-it-works" className="hp-cta-ghost fade-in">
               Scopri come funziona
             </Link>
           </div>
@@ -48,7 +48,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           2. PRODUCT PREVIEW — Cosa fai con Preflight
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Cosa fai ogni giorno con Preflight</div>
           <h2 className="hp-section-title">
@@ -180,7 +180,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           3. SUPPORT BLOCK — Supporto decisionale
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-soft">
+      <section className="hp-section hp-section-soft fade-in">
         <div className="hp-container hp-support-block">
           <div className="hp-section-label">Perché funziona</div>
           <h2 className="hp-section-title">
@@ -210,7 +210,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           4. METHOD BLOCK — Il flusso operativo (5 steps)
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Il tuo percorso quotidiano</div>
           <h2 className="hp-section-title">Il sistema ti dice cosa fare, passo dopo passo</h2>
@@ -261,7 +261,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           5. AI POSITIONING BLOCK
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-soft">
+      <section className="hp-section hp-section-soft fade-in">
         <div className="hp-container hp-ai-positioning">
           <div className="hp-section-label">L&apos;IA che ti supporta</div>
           <h2 className="hp-section-title">
@@ -304,7 +304,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           6. DEMO — PROVA SUBITO L'ASSISTENTE
       ═══════════════════════════════════════════════════════════ */}
-      <section id="assistente" className="hp-section hp-section-light">
+      <section id="assistente" className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Provalo adesso</div>
           <h2 className="hp-section-title">Fai una prova su un caso tuo</h2>
@@ -319,7 +319,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           7. PER CHI È
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-target">
+      <section className="hp-section hp-section-target fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Per chi è pensato</div>
           <h2 className="hp-section-title hp-target-title">Per chi vende servizi e competenze su LinkedIn.</h2>
@@ -371,7 +371,7 @@ export default async function Home() {
       {/* ═══════════════════════════════════════════════════════════
           8. CTA FINALE
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-final-cta">
+      <section className="hp-final-cta fade-in-delay">
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
           <h2 className="hp-final-title">
@@ -381,7 +381,7 @@ export default async function Home() {
             Configura il tuo profilo commerciale, segui il metodo
             e dedica 20 minuti al giorno a LinkedIn. Il resto lo guida Preflight.
           </p>
-          <Link href="/signup" className="hp-cta-primary hp-cta-large">
+          <Link href="/signup" className="hp-cta-primary hp-cta-large fade-in-delay">
             Configura il tuo sistema
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </Link>

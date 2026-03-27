@@ -36,8 +36,8 @@ export default function SystemBanner() {
   const setupState: SetupState = pct > 0 ? "partial" : "not-started";
 
   return (
-    <div className="setup-card" role="region" aria-label="Configurazione sistema commerciale">
-      <div className="setup-card-inner">
+    <div className="setup-card fade-in" role="region" aria-label="Configurazione sistema commerciale">
+      <div className="setup-card-inner fade-in-delay">
 
         <div className="setup-card-header">
           <span className="setup-card-icon" aria-hidden="true">

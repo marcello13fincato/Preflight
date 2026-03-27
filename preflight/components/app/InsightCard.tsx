@@ -76,15 +76,15 @@ export default function InsightCard({
   copyable?: boolean;
 }) {
   return (
-    <div className={`insight-card insight-${variant}`}>
-      <div className="insight-header">
+    <div className={`insight-card insight-${variant} fade-in`}>
+      <div className="insight-header fade-in-delay">
         <div className="insight-label">
           {icon && <span className="insight-icon">{icon}</span>}
           <span>{label}</span>
         </div>
         {copyable && <CopyButton text={text} />}
       </div>
-      <div className="insight-body">
+      <div className="insight-body fade-in">
         <SmartText text={text} />
       </div>
     </div>
@@ -94,7 +94,7 @@ export default function InsightCard({
 /* ── Section divider between card groups ── */
 export function SectionDivider({ label }: { label: string }) {
   return (
-    <div className="insight-divider">
+    <div className="insight-divider fade-in">
       <span>{label}</span>
     </div>
   );
