@@ -14,11 +14,11 @@ export default function HowItWorksPage() {
             <span className="hp-badge-dot" aria-hidden="true" />
             Il percorso completo
           </div>
-          <h1 className="hp-hero-title">
+          <h1 className="hp-hero-title fade-in">
             Ti guidiamo passo dopo passo,<br />
             <span className="hp-hero-title-accent">dal primo contatto alla call.</span>
           </h1>
-          <p className="hp-hero-subtitle">
+          <p className="hp-hero-subtitle fade-in">
             Preflight non è una lista di strumenti da imparare.<br />
             È un percorso che ti dice cosa fare ogni giorno su LinkedIn per trovare clienti.
           </p>

@@ -69,11 +69,11 @@ export default function PerChiEPage() {
             <span className="hp-badge-dot" aria-hidden="true" />
             Per chi è
           </div>
-          <h1 className="hp-hero-title">
+          <h1 className="hp-hero-title fade-in">
             Un sistema pensato per chi vende.<br />
             <span className="hp-hero-title-accent">Non per tutti.</span>
           </h1>
-          <p className="hp-hero-subtitle">
+          <p className="hp-hero-subtitle fade-in">
             Preflight guida passo passo professionisti che vogliono trovare clienti su LinkedIn.<br />
             Se vendi servizi e competenze, è costruito intorno al tuo modo di lavorare.
           </p>
@@ -84,8 +84,8 @@ export default function PerChiEPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Chi aiutiamo</div>
-          <h2 className="hp-section-title">Pensato per professionisti che vendono competenze e servizi</h2>
-          <p className="hp-section-subtitle">
+          <h2 className="hp-section-title fade-in">Pensato per professionisti che vendono competenze e servizi</h2>
+          <p className="hp-section-subtitle fade-in">
             Ogni parte del sistema è costruita intorno a un obiettivo preciso:
             aiutarti a trovare i clienti giusti e a portare avanti le conversazioni con chiarezza.
           </p>
@@ -105,7 +105,7 @@ export default function PerChiEPage() {
       <section className="hp-section hp-section-soft">
         <div className="hp-container">
           <div className="hp-section-label">Ti riconosci?</div>
-          <h2 className="hp-section-title">Se ti ritrovi in almeno due di queste situazioni, Preflight fa per te</h2>
+          <h2 className="hp-section-title fade-in">Se ti ritrovi in almeno due di queste situazioni, Preflight fa per te</h2>
           <div className="pce-problems-grid">
             {problems.map((p, i) => (
               <div key={i} className="pce-problem-item">
@@ -121,8 +121,8 @@ export default function PerChiEPage() {
       <section className="hp-section hp-section-light">
         <div className="hp-container">
           <div className="hp-section-label">Chiarezza</div>
-          <h2 className="hp-section-title">Per chi NON è pensato</h2>
-          <p className="hp-section-subtitle">
+          <h2 className="hp-section-title fade-in">Per chi NON è pensato</h2>
+          <p className="hp-section-subtitle fade-in">
             Meglio saperlo subito. Se ti riconosci in una di queste situazioni, probabilmente non è lo strumento giusto per te — e va bene così.
           </p>
           <div className="pce-notfor-grid">
@@ -140,8 +140,8 @@ export default function PerChiEPage() {
       <section className="hp-section hp-section-dark">
         <div className="hp-container">
           <div className="hp-section-label hp-section-label-light">Il percorso</div>
-          <h2 className="hp-section-title hp-title-white">Cosa succede quando inizi</h2>
-          <p className="hp-section-subtitle hp-subtitle-light">
+          <h2 className="hp-section-title hp-title-white fade-in">Cosa succede quando inizi</h2>
+          <p className="hp-section-subtitle hp-subtitle-light fade-in">
             Configuri il tuo profilo commerciale una volta.
             Da lì in poi, ogni giorno il sistema ti guida: chi contattare,
             cosa scrivere, come portare avanti le conversazioni.
@@ -176,11 +176,11 @@ export default function PerChiEPage() {
       <section className="hp-final-cta">
         <div className="hp-final-glow" aria-hidden="true" />
         <div className="hp-container hp-final-inner">
-          <h2 className="hp-final-title">
+          <h2 className="hp-final-title fade-in">
             Se vendi servizi su LinkedIn,<br />
             Preflight ti guida passo dopo passo
           </h2>
-          <p className="hp-final-subtitle">
+          <p className="hp-final-subtitle fade-in">
             Non servono più ore o più strumenti.<br />
             Serve il sistema giusto — e 20 minuti al giorno.
           </p>

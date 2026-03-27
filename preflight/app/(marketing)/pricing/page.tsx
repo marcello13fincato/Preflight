@@ -55,11 +55,11 @@ export default function PricingPage() {
             <span className="hp-badge-dot" aria-hidden="true" />
             Piani
           </div>
-          <h1 className="hp-hero-title">
+          <h1 className="hp-hero-title fade-in">
             Non paghi per funzionalità.<br />
             <span className="hp-hero-title-accent">Scegli il livello di guida che vuoi.</span>
           </h1>
-          <p className="hp-hero-subtitle">
+          <p className="hp-hero-subtitle fade-in">
             La differenza tra i piani non è il numero di strumenti.<br />
             È quanto il sistema ti accompagna in ogni decisione commerciale su LinkedIn.
           </p>
