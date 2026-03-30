@@ -45,8 +45,8 @@ export default function MarketingHeader() {
     <header ref={headerRef} className="mega-header fade-in-fast">
       <div className="mega-header-inner">
         {/* ── Logo ── */}
-        <Link href="/" className="mega-logo">
-          Preflight
+        <Link href="/" className="mega-logo" aria-label="Homepage">
+          <img src="/globe.svg" alt="Preflight logo" style={{ height: 32, width: 32 }} />
         </Link>
 
         {/* ── Nav desktop ── */}
