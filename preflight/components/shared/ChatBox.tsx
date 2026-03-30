@@ -59,6 +59,14 @@ export default function ChatBox() {
     <>
       {/* ── Floating button ── */}
       <button
+        className="chatbox-fab"
+        aria-label="Apri chat Preflight"
+        onClick={() => setOpen((v) => !v)}
+        style={{ position: "fixed", bottom: 32, right: 32, zIndex: 1000, background: "#fff", borderRadius: "50%", boxShadow: "0 4px 24px #0A66C2aa", border: "none", padding: 0, width: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center" }}
+      >
+        <img src="/LOGO PREFLIGHT.png" alt="Chat Preflight" style={{ width: 44, height: 44, objectFit: "contain" }} />
+      </button>
+      <button
         className="cb-fab"
         onClick={() => setOpen((v) => !v)}
         aria-label={open ? "Chiudi assistente" : "Apri assistente Preflight"}
