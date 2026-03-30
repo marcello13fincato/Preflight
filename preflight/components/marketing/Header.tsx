@@ -46,7 +46,7 @@ export default function MarketingHeader() {
       <div className="mega-header-inner">
         {/* ── Logo ── */}
         <Link href="/" className="mega-logo" aria-label="Homepage">
-          <img src="/globe.svg" alt="Preflight logo" style={{ height: 32, width: 32 }} />
+          <img src="/LOGO PREFLIGHT LUNGO.png" alt="Preflight logo" style={{ height: 36, maxWidth: 180, width: "auto" }} />
         </Link>
 
         {/* ── Nav desktop ── */}
