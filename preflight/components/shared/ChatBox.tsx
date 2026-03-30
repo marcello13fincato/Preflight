@@ -55,28 +55,32 @@ export default function ChatBox() {
     }
   }
 
+  // Animazione breve al click
+  const [animating, setAnimating] = useState(false);
+  function handleLogoClick() {
+    if (!open) {
+      setAnimating(true);
+      setTimeout(() => {
+        setAnimating(false);
+        setOpen(true);
+      }, 180); // durata animazione breve
+    } else {
+      setOpen(false);
+    }
+  }
   return (
     <>
-      {/* ── Floating button ── */}
-      <button
-        className="chatbox-fab"
-        aria-label="Apri chat Preflight"
-        onClick={() => setOpen((v) => !v)}
-        style={{ position: "fixed", bottom: 32, right: 32, zIndex: 1000, background: "#fff", borderRadius: "50%", boxShadow: "0 4px 24px #0002", border: "none", padding: 0, width: 72, height: 72, display: "flex", alignItems: "center", justifyContent: "center" }}
-      >
-        <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Chat Preflight" style={{ width: 56, height: 56, objectFit: "contain", display: "block" }} />
-      </button>
-      <button
-        className="cb-fab"
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Chiudi assistente" : "Apri assistente Preflight"}
-      >
-        {open ? (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-        ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        )}
-      </button>
+      {/* ── Floating logo button (unico trigger) ── */}
+      {!open && (
+        <button
+          className={`chatbox-fab${animating ? " chatbox-fab-anim" : ""}`}
+          aria-label="Apri chat Preflight"
+          onClick={handleLogoClick}
+          style={{ position: "fixed", bottom: 32, right: 32, zIndex: 1000, background: "#fff", borderRadius: "50%", boxShadow: "0 4px 24px #0002", border: "none", padding: 0, width: 72, height: 72, display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.18s cubic-bezier(.4,0,.2,1)" }}
+        >
+          <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Chat Preflight" style={{ width: 56, height: 56, objectFit: "contain", display: "block", transition: "transform 0.18s cubic-bezier(.4,0,.2,1)", transform: animating ? "scale(1.12) rotate(-8deg)" : "none" }} />
+        </button>
+      )}
 
       {/* ── Chat window ── */}
       {open && (
