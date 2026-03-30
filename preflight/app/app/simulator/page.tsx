@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
-import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconMessageCircle } from "@/components/shared/icons";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconLogoPreflight } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { SimulatorJson } from "@/lib/sales/schemas";
 import { simulatorSchema } from "@/lib/sales/schemas";
@@ -143,7 +143,7 @@ export default function SimulatorPage() {
             <div className="insight-result">
               <ResultHeader title="Feedback coach" />
 
-              <InsightCard icon={<IconMessageCircle size={16} />} label="Risposta del prospect" text={output.prospect_reply} variant="summary" />
+              <InsightCard icon={<IconLogoPreflight size={16} />} label="Risposta del prospect" text={output.prospect_reply} variant="summary" />
 
               <SectionDivider label="Valutazione" />
 
@@ -163,7 +163,7 @@ export default function SimulatorPage() {
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon"><IconMessageCircle size={28} /></p>
+              <p className="tool-page-empty-icon"><IconLogoPreflight size={28} /></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>

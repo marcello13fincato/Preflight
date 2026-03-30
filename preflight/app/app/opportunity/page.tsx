@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
-import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconSearch, IconUser, IconMessageCircle } from "@/components/shared/icons";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconSearch, IconUser, IconLogoPreflight } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import type { OpportunityFinderJson } from "@/lib/sales/schemas";
 import { opportunityFinderSchema } from "@/lib/sales/schemas";
@@ -132,7 +132,7 @@ export default function OpportunityPage() {
 
               <SectionDivider label="Azione" />
 
-              <InsightCard icon={<IconMessageCircle size={16} />} label="Opportunità di conversazione" text={output.conversation_opportunities.map(c => `• ${c}`).join("\n")} variant="action" />
+              <InsightCard icon={<IconLogoPreflight size={16} />} label="Opportunità di conversazione" text={output.conversation_opportunities.map(c => `• ${c}`).join("\n")} variant="action" />
 
               <div className="insight-next-action">
                 <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>

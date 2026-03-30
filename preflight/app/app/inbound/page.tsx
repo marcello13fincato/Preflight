@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
-import { IconClipboard, IconTarget, IconMessageCircle, IconRefresh } from "@/components/shared/icons";
+import { IconClipboard, IconTarget, IconLogoPreflight, IconRefresh } from "@/components/shared/icons";
 
 export default function InboundPage() {
   const { data: session } = useSession();
@@ -112,7 +112,7 @@ export default function InboundPage() {
                 </div>
                 <div className="text-sm space-y-1" style={{ color: "var(--color-muted)" }}>
                   <div><span className="font-medium" style={{ color: "var(--color-text)" }}><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>Contenuti:</span> {day.inbound}</div>
-                  <div><span className="font-medium" style={{ color: "var(--color-text)" }}><IconMessageCircle size={12} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Conversazioni:</span> {day.outbound}</div>
+                  <div><span className="font-medium" style={{ color: "var(--color-text)" }}><IconLogoPreflight size={12} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Conversazioni:</span> {day.outbound}</div>
                   <div><span className="font-medium" style={{ color: "var(--color-text)" }}><IconRefresh size={12} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Follow-up:</span> {day.followup}</div>
                 </div>
               </div>

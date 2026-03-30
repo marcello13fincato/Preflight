@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
-import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconMessageCircle, IconSparkles } from "@/components/shared/icons";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconLogoPreflight, IconSparkles } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
@@ -184,7 +184,7 @@ export default function PostPage() {
 
               <SectionDivider label="Engagement" />
               <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>} label="Call to action" text={output.cta} variant="strategy" copyable />
-              <InsightCard icon={<IconMessageCircle size={16} />} label="Commento di apertura" text={output.comment_starter} variant="strategy" copyable />
+              <InsightCard icon={<IconLogoPreflight size={16} />} label="Commento di apertura" text={output.comment_starter} variant="strategy" copyable />
 
               <div className="insight-next-action">
                 <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>

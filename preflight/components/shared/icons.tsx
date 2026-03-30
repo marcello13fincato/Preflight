@@ -1,3 +1,16 @@
+// Icona custom: logo chatbox
+export function IconLogoPreflight({ size = 32, ...props }: React.ImgHTMLAttributes<HTMLImageElement> & { size?: number }) {
+  return (
+    <img
+      src="/LOGO PREFLIGHT.png"
+      alt="Logo Preflight"
+      width={size}
+      height={size}
+      style={{ display: "inline-block", verticalAlign: "middle", ...props.style }}
+      {...props}
+    />
+  );
+}
 import * as React from "react";
 
 type IconProps = React.SVGProps<SVGSVGElement> & { size?: number };

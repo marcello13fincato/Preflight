@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import HistoryList from "@/components/app/HistoryList";
 import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
-import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconThermometer, IconMail, IconMessageCircle } from "@/components/shared/icons";
+import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconThermometer, IconMail, IconLogoPreflight } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { commentAssistantSchema, type CommentAssistantJson } from "@/lib/sales/schemas";
 
@@ -244,7 +244,7 @@ export default function CommentsPage() {
             </div>
           ) : (
             <div className="tool-page-empty">
-              <p className="tool-page-empty-icon"><IconMessageCircle size={28} /></p>
+              <p className="tool-page-empty-icon"><IconLogoPreflight size={28} /></p>
               <p className="tool-page-empty-title">
                 Il risultato apparirà qui
               </p>
