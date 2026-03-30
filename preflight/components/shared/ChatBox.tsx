@@ -64,7 +64,7 @@ export default function ChatBox() {
         onClick={() => setOpen((v) => !v)}
         style={{ position: "fixed", bottom: 32, right: 32, zIndex: 1000, background: "#fff", borderRadius: "50%", boxShadow: "0 4px 24px #0002", border: "none", padding: 0, width: 72, height: 72, display: "flex", alignItems: "center", justifyContent: "center" }}
       >
-        <img src="/LOGO PREFLIGHT.svg" alt="Chat Preflight" style={{ width: 56, height: 56, objectFit: "contain", display: "block" }} />
+        <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Chat Preflight" style={{ width: 56, height: 56, objectFit: "contain", display: "block" }} />
       </button>
       <button
         className="cb-fab"
