@@ -45,7 +45,7 @@ export default function MarketingHeader() {
     <header ref={headerRef} className="mega-header fade-in-fast">
       <div className="mega-header-inner">
         {/* ── Logo ── */}
-        <Link href="/" className="mega-logo" aria-label="Homepage">
+        <Link href="/" className="mega-logo" aria-label="Homepage" style={{ display: "block", padding: "32px 0 24px 0", minHeight: 120 }}>
           <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Preflight logo" style={{ height: 72, maxWidth: 320, width: "auto", display: "block", margin: "0 auto" }} />
         </Link>
 
