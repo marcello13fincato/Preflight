@@ -9,6 +9,7 @@ export default async function Home() {
     redirect("/app");
   }
 
+
   return (
     <div className="homepage-root fade-in">
 
