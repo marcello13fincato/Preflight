@@ -101,7 +101,7 @@ export default function AppSidebar() {
     <aside className="sb app-sidebar fade-in">
       {/* Logo */}
       <div className="sb-brand" style={{ textAlign: "center" }}>
-        <img src="/LOGO PREFLIGHT LUNGO.png" alt="Preflight logo" style={{ height: 54, maxWidth: 220, width: "auto", margin: "0 auto", filter: "drop-shadow(0 2px 12px #0A66C2aa)" }} />
+        <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Preflight logo" style={{ height: 54, maxWidth: 220, width: "auto", margin: "0 auto", filter: "drop-shadow(0 2px 12px #0A66C2aa)" }} />
       </div>
 
       {/* Navigation */}
