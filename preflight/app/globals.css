@@ -269,7 +269,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 .hero-illustration svg { opacity: .9; transform: translateY(6%); width: 420px; height: auto; }
 
 /* ─── Homepage redesign ─── */
-.homepage-root{width:100%}
+.homepage-root {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
 
 /* ═══════════════════════════════════════════════════════════
    MICRO-ANIMAZIONI GLOBALI
@@ -311,9 +316,15 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 
 /* Inner container — fluid with comfortable padding */
-.hp-container{max-width:100%;margin:0 auto;padding:0 3.5rem}
-@media(min-width:1440px){.hp-container{padding:0 5rem}}
-@media(min-width:1920px){.hp-container{padding:0 7rem}}
+.hp-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  box-sizing: border-box;
+}
+@media(min-width:1440px){.hp-container{padding:0 3rem}}
+@media(min-width:1920px){.hp-container{padding:0 4rem}}
 @media(max-width:768px){.hp-container{padding:0 1.5rem}}
 
 /* ── HERO ── */
