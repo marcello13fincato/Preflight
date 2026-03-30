@@ -15,7 +15,7 @@ export default function MarketingHeader() {
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const headerRef = useRef<HTMLElement>(null);
 
-  /* chiudi dropdown se click fuori */
+  // Chiudi dropdown se click fuori
   useEffect(() => {
     function onClick(e: MouseEvent) {
       if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
@@ -42,15 +42,15 @@ export default function MarketingHeader() {
   }
 
   return (
-    <header ref={headerRef} className="mega-header fade-in-fast">
-      <div className="mega-header-inner">
-        {/* ── Logo ── */}
-        <Link href="/" className="mega-logo" aria-label="Homepage" style={{ display: "block", padding: "32px 0 24px 0", minHeight: 120 }}>
-          <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Preflight logo" style={{ height: 72, maxWidth: 320, width: "auto", display: "block", margin: "0 auto" }} />
-        </Link>
-
-        {/* ── Nav desktop ── */}
-        <nav className="mega-nav fade-in">
+    <header ref={headerRef} className="mega-header fade-in-fast" style={{ background: '#fff', borderBottom: '1.5px solid #D0D9E2', boxShadow: '0 2px 24px rgba(10,102,194,0.04)' }}>
+      <div className="mega-header-inner" style={{ maxWidth: '100%', minHeight: 110, padding: '0 2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 0 }}>
+        {/* Logo a sinistra, nav al centro, azioni a destra */}
+        <div style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', minWidth: 180, padding: '0 0.5rem 0 0' }}>
+          <Link href="/" className="mega-logo" aria-label="Homepage" style={{ display: 'flex', alignItems: 'center', height: 90 }}>
+            <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Preflight logo" style={{ height: 80, width: 'auto', maxWidth: 180, display: 'block' }} />
+          </Link>
+        </div>
+        <nav className="mega-nav fade-in" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2.5rem' }}>
           {marketingNav.map((item) => (
             <div
               key={item.href}
@@ -58,7 +58,7 @@ export default function MarketingHeader() {
               onMouseEnter={() => enterNav(item.href)}
               onMouseLeave={leaveNav}
             >
-              <Link href={item.href} className={`mega-nav-link${activePanel === item.href ? " mega-nav-link-active" : ""}`}>
+              <Link href={item.href} className={`mega-nav-link${activePanel === item.href ? " mega-nav-link-active" : ""}`} style={{ fontSize: '1.08rem', fontWeight: 600, padding: '0.6rem 0.2rem' }}>
                 {item.label}
                 {megaPanels[item.href] && (
                   <svg className="mega-nav-chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
@@ -67,9 +67,7 @@ export default function MarketingHeader() {
             </div>
           ))}
         </nav>
-
-        {/* ── Right side ── */}
-        <div className="mega-actions fade-in-fast">
+        <div className="mega-actions fade-in-fast" style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center', gap: '1.2rem', minWidth: 180, justifyContent: 'flex-end' }}>
           {session ? (
             <div className="mega-user">
               <span className="mega-user-name">{session.user?.name || session.user?.email}</span>
@@ -78,13 +76,10 @@ export default function MarketingHeader() {
           ) : (
             <Link href="/app" className="mega-secondary" aria-label="Accedi">Accedi</Link>
           )}
-
           <Link href="/app" className="mega-cta fade-in-delay">
             Prova il sistema
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </Link>
-
-          {/* ── Hamburger mobile ── */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
             className="mega-hamburger"
@@ -101,7 +96,7 @@ export default function MarketingHeader() {
         </div>
       </div>
 
-      {/* ── Megamenu dropdown panels ── */}
+      {/* Megamenu dropdown panels */}
       {activePanel && megaPanels[activePanel] && (
         <div
           className="mega-dropdown fade-in"
@@ -119,7 +114,7 @@ export default function MarketingHeader() {
         </div>
       )}
 
-      {/* ── Mobile panel ── */}
+      {/* Mobile panel */}
       {mobileOpen && (
         <div className="mega-mobile fade-in">
           {marketingNav.map((item) => (

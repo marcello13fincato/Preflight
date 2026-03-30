@@ -1851,19 +1851,25 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 /* ═══════════════════════════════════════════════════════════
    MEGAMENU HEADER
 ═══════════════════════════════════════════════════════════ */
+/* Header bianco pieno, senza blur */
 .mega-header{
   position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(24px) saturate(1.8);
-  -webkit-backdrop-filter:blur(24px) saturate(1.8);
-  border-bottom:1px solid rgba(208,217,226,0.45);
+  background:#fff;
+  border-bottom:1.5px solid #D0D9E2;
+  box-shadow:0 2px 24px rgba(10,102,194,0.04);
   transition:box-shadow .3s ease;
 }
 .mega-header:hover{box-shadow:0 2px 32px rgba(10,102,194,.07)}
+/* Più spazio verticale e padding orizzontale */
 .mega-header-inner{
-  max-width:100%;margin:0 auto;
-  padding:0 3rem;height:3.75rem;
-  display:flex;align-items:center;justify-content:space-between;
+  max-width:100%;
+  margin:0 auto;
+  padding:0 2.5rem;
+  min-height:110px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:0;
 }
 @media(min-width:1440px){.mega-header-inner{padding:0 4rem}}
 @media(min-width:1920px){.mega-header-inner{padding:0 5rem}}
