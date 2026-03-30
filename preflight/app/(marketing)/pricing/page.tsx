@@ -48,9 +48,9 @@ export default function PricingPage() {
       {/* ═══════════════════════════════════════════════════════════
           1. HERO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-hero">
+      <section className="hp-hero fade-in">
         <div className="hp-hero-glow" aria-hidden="true" />
-        <div className="hp-container hp-hero-inner">
+        <div className="hp-container hp-hero-inner fade-in-delay">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
             Piani
@@ -63,7 +63,7 @@ export default function PricingPage() {
             La differenza tra i piani non è il numero di strumenti.<br />
             È quanto il sistema ti accompagna in ogni decisione commerciale su LinkedIn.
           </p>
-          <div className="hp-hero-ctas">
+          <div className="hp-hero-ctas fade-in-delay">
             <Link href="/app/onboarding" className="hp-cta-primary">
               Inizia ora
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -87,7 +87,7 @@ export default function PricingPage() {
       {/* ═══════════════════════════════════════════════════════════
           2. COSA PUOI FARE SUBITO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Inizia gratis</div>
           <h2 className="hp-section-title">Esplora il percorso con il piano base</h2>
@@ -95,8 +95,8 @@ export default function PricingPage() {
             Scopri come funziona il sistema, prova gli strumenti e capisci se è il percorso giusto per te — senza nessun impegno.
           </p>
 
-          <div className="prc-base-wrap">
-            <div className="prc-base-card">
+          <div className="prc-base-wrap fade-in">
+            <div className="prc-base-card fade-in-delay">
               <div className="prc-base-header">
                 <div>
                   <span className="prc-plan-badge">Piano Base</span>
@@ -132,7 +132,7 @@ export default function PricingPage() {
       {/* ═══════════════════════════════════════════════════════════
           3. COSA SI SBLOCCA DAVVERO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-dark">
+      <section className="hp-section hp-section-dark fade-in">
         <div className="hp-container">
           <div className="hp-section-label hp-section-label-light">Guida completa</div>
           <h2 className="hp-section-title hp-title-white">
@@ -143,16 +143,16 @@ export default function PricingPage() {
             Nessun dubbio. Nessuna dispersione.
           </p>
 
-          <div className="prc-pro-grid">
+          <div className="prc-pro-grid fade-in">
             {proFeatures.map((f) => (
-              <div key={f.label} className="prc-pro-card">
+              <div key={f.label} className="prc-pro-card fade-in-delay">
                 <span className="prc-pro-icon">{f.icon}</span>
                 <p className="prc-pro-label">{f.label}</p>
               </div>
             ))}
           </div>
 
-          <div className="prc-pro-cta-box">
+          <div className="prc-pro-cta-box fade-in-delay">
             <div className="prc-pro-cta-info">
               <span className="prc-plan-badge prc-plan-badge-light">Piano Pro</span>
               <p className="prc-pro-price">€19,99<span className="prc-pro-period">/mese</span></p>
@@ -169,7 +169,7 @@ export default function PricingPage() {
       {/* ═══════════════════════════════════════════════════════════
           4. CONFRONTO CHIARO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Confronto</div>
           <h2 className="hp-section-title">Base vs Completo: cosa cambia nella pratica</h2>

@@ -21,8 +21,8 @@ export default function Page() {
     const generate = () => {};
   // ── STATIC PAGE (INPUT) FULLSCREEN WOW ──
   return (
-    <div className="pr-fullscreen pr-fullscreen-empty">
-      <div className="pr-score-hero">
+    <div className="pr-fullscreen pr-fullscreen-empty fade-in">
+      <div className="pr-score-hero fade-in">
         <div className="pr-score-ring-wrap">
           <div className="pr-score-ring">
             <svg viewBox="0 0 120 120" className="pr-score-svg">
@@ -41,13 +41,13 @@ export default function Page() {
           </div>
           <span className="pr-score-label">Analisi</span>
         </div>
-        <div className="pr-score-info">
+        <div className="pr-score-info fade-in-delay">
           <h1 className="pr-score-title">Analizza un profilo</h1>
           <p className="pr-score-subtitle">Scopri se vale la pena contattare una persona e ricevi messaggi pronti da copiare per ogni fase.</p>
         </div>
       </div>
-      <div className="pr-input-layout">
-        <div className="pr-form-card">
+      <div className="pr-input-layout fade-in">
+        <div className="pr-form-card fade-in-delay">
           <div className="qa-field">
             <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
             <p className="qa-microcopy">Se vuoi un'analisi più precisa, puoi caricare anche il PDF del profilo.</p>

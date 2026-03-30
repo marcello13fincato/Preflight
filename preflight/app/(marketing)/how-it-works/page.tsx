@@ -7,9 +7,9 @@ export default function HowItWorksPage() {
       {/* ═══════════════════════════════════════════════════════════
           1. HERO
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-hero">
+      <section className="hp-hero fade-in">
         <div className="hp-hero-glow" aria-hidden="true" />
-        <div className="hp-container hp-hero-inner">
+        <div className="hp-container hp-hero-inner fade-in-delay">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
             Il percorso completo
@@ -22,7 +22,7 @@ export default function HowItWorksPage() {
             Preflight non è una lista di strumenti da imparare.<br />
             È un percorso che ti dice cosa fare ogni giorno su LinkedIn per trovare clienti.
           </p>
-          <div className="hp-hero-ctas">
+          <div className="hp-hero-ctas fade-in-delay">
             <Link href="/app/onboarding" className="hp-cta-primary">
               Inizia il tuo percorso
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
@@ -49,7 +49,7 @@ export default function HowItWorksPage() {
       {/* ═══════════════════════════════════════════════════════════
           2. LA VERITÀ
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Il vero problema</div>
           <h2 className="hp-section-title">Non ti mancano gli strumenti. Ti manca sapere cosa fare.</h2>
@@ -63,7 +63,7 @@ export default function HowItWorksPage() {
 
           <div className="hiw-versus-grid">
             {/* Senza sistema */}
-            <div className="hiw-versus-card hiw-versus-card-negative">
+            <div className="hiw-versus-card hiw-versus-card-negative fade-in">
               <p className="hiw-versus-label">Senza sistema</p>
               <div className="hiw-versus-flow">
                 {["POST", "LIKE", "FINE"].map((s, i, a) => (
@@ -75,7 +75,7 @@ export default function HowItWorksPage() {
               </div>
             </div>
             {/* Con Preflight */}
-            <div className="hiw-versus-card hiw-versus-card-positive">
+            <div className="hiw-versus-card hiw-versus-card-positive fade-in-delay">
               <p className="hiw-versus-label hiw-versus-label-blue">Con Preflight</p>
               <div className="hiw-versus-flow">
                 {["POST", "COMMENTO", "MESSAGGIO", "CALL", "CLIENTE"].map((s, i, a) => (
@@ -93,7 +93,7 @@ export default function HowItWorksPage() {
       {/* ═══════════════════════════════════════════════════════════
           2.5. DATI FREELANCE
       ═══════════════════════════════════════════════════════════ */}
-      <section className="hp-section hp-section-soft">
+      <section className="hp-section hp-section-soft fade-in-delay">
         <div className="hp-container">
           <div className="hp-section-label">Dati</div>
           <h2 className="hp-section-title">LinkedIn funziona già. Serve il percorso giusto per usarlo.</h2>

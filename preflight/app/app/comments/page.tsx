@@ -64,8 +64,8 @@ export default function CommentsPage() {
   };
 
   return (
-    <div className="tool-page">
-      <div className="tool-page-hero">
+    <div className="tool-page fade-in">
+      <div className="tool-page-hero fade-in">
         <h2>Rispondi ai commenti</h2>
         <p>
           Trasforma i commenti ricevuti in conversazioni commerciali.
@@ -73,7 +73,7 @@ export default function CommentsPage() {
       </div>
 
       {/* Guide box */}
-      <div className="tool-page-guide">
+      <div className="tool-page-guide fade-in-delay">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
           <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> rispondi ai commenti in modo strategico</div>
           <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> post originale e commento ricevuto</div>
@@ -83,7 +83,7 @@ export default function CommentsPage() {
       </div>
 
       {/* Two-column layout: input + output */}
-      <div className="tool-page-grid">
+      <div className="tool-page-grid fade-in">
         {/* INPUT */}
         {output ? (
         <details className="tool-input-collapsed">
@@ -142,7 +142,7 @@ export default function CommentsPage() {
           </div>
         </details>
         ) : (
-        <div className="tool-page-panel space-y-4">
+        <div className="tool-page-panel space-y-4 fade-in-delay">
           <h3 className="tool-page-panel-header">Input</h3>
           <label className="block text-sm">
             <span className="mb-1 block font-medium">Post originale</span>

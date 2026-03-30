@@ -62,9 +62,9 @@ export default function PerChiEPage() {
     <div className="homepage-root fade-in">
 
       {/* ── HERO ── */}
-      <section className="hp-hero">
+      <section className="hp-hero fade-in">
         <div className="hp-hero-glow" aria-hidden="true" />
-        <div className="hp-container hp-hero-inner">
+        <div className="hp-container hp-hero-inner fade-in-delay">
           <div className="hp-badge">
             <span className="hp-badge-dot" aria-hidden="true" />
             Per chi è
@@ -81,17 +81,17 @@ export default function PerChiEPage() {
       </section>
 
       {/* ── TARGET CARDS ── */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Chi aiutiamo</div>
-          <h2 className="hp-section-title fade-in">Pensato per professionisti che vendono competenze e servizi</h2>
-          <p className="hp-section-subtitle fade-in">
+          <h2 className="hp-section-title fade-in-delay">Pensato per professionisti che vendono competenze e servizi</h2>
+          <p className="hp-section-subtitle fade-in-delay">
             Ogni parte del sistema è costruita intorno a un obiettivo preciso:
             aiutarti a trovare i clienti giusti e a portare avanti le conversazioni con chiarezza.
           </p>
-          <div className="pce-target-grid">
+          <div className="pce-target-grid fade-in">
             {targets.map((t) => (
-              <div key={t.title} className="pce-target-card">
+              <div key={t.title} className="pce-target-card fade-in-delay">
                 <span className="pce-target-emoji" aria-hidden="true">{t.emoji}</span>
                 <h3 className="pce-target-title">{t.title}</h3>
                 <p className="pce-target-desc">{t.desc}</p>
@@ -102,10 +102,10 @@ export default function PerChiEPage() {
       </section>
 
       {/* ── PROBLEMI RISOLTI ── */}
-      <section className="hp-section hp-section-soft">
+      <section className="hp-section hp-section-soft fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Ti riconosci?</div>
-          <h2 className="hp-section-title fade-in">Se ti ritrovi in almeno due di queste situazioni, Preflight fa per te</h2>
+          <h2 className="hp-section-title fade-in-delay">Se ti ritrovi in almeno due di queste situazioni, Preflight fa per te</h2>
           <div className="pce-problems-grid">
             {problems.map((p, i) => (
               <div key={i} className="pce-problem-item">
@@ -118,11 +118,11 @@ export default function PerChiEPage() {
       </section>
 
       {/* ── PER CHI NON È ── */}
-      <section className="hp-section hp-section-light">
+      <section className="hp-section hp-section-light fade-in">
         <div className="hp-container">
           <div className="hp-section-label">Chiarezza</div>
-          <h2 className="hp-section-title fade-in">Per chi NON è pensato</h2>
-          <p className="hp-section-subtitle fade-in">
+          <h2 className="hp-section-title fade-in-delay">Per chi NON è pensato</h2>
+          <p className="hp-section-subtitle fade-in-delay">
             Meglio saperlo subito. Se ti riconosci in una di queste situazioni, probabilmente non è lo strumento giusto per te — e va bene così.
           </p>
           <div className="pce-notfor-grid">
@@ -137,17 +137,17 @@ export default function PerChiEPage() {
       </section>
 
       {/* ── AI PERSONALIZZATA ── */}
-      <section className="hp-section hp-section-dark">
+      <section className="hp-section hp-section-dark fade-in">
         <div className="hp-container">
           <div className="hp-section-label hp-section-label-light">Il percorso</div>
-          <h2 className="hp-section-title hp-title-white fade-in">Cosa succede quando inizi</h2>
-          <p className="hp-section-subtitle hp-subtitle-light fade-in">
+          <h2 className="hp-section-title hp-title-white fade-in-delay">Cosa succede quando inizi</h2>
+          <p className="hp-section-subtitle hp-subtitle-light fade-in-delay">
             Configuri il tuo profilo commerciale una volta.
             Da lì in poi, ogni giorno il sistema ti guida: chi contattare,
             cosa scrivere, come portare avanti le conversazioni.
           </p>
-          <div className="pce-ai-grid">
-            <div className="pce-ai-card">
+          <div className="pce-ai-grid fade-in">
+            <div className="pce-ai-card fade-in-delay">
               <span className="pce-ai-step">1</span>
               <h3 className="pce-ai-title">Racconti cosa fai e per chi</h3>
               <p className="pce-ai-desc">Descrivi il tuo servizio, il tuo cliente ideale e il problema che risolvi. Ci vogliono 5 minuti — il sistema parte da qui.</p>
@@ -173,9 +173,9 @@ export default function PerChiEPage() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="hp-final-cta">
+      <section className="hp-final-cta fade-in">
         <div className="hp-final-glow" aria-hidden="true" />
-        <div className="hp-container hp-final-inner">
+        <div className="hp-container hp-final-inner fade-in-delay">
           <h2 className="hp-final-title fade-in">
             Se vendi servizi su LinkedIn,<br />
             Preflight ti guida passo dopo passo

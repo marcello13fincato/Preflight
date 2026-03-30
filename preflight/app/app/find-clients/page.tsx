@@ -151,7 +151,7 @@ export default function FindClientsPage() {
             <div className="fc-result-section fc-result-highlight">
               <div className="fc-result-badge">1</div>
               <div className="fc-result-header">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 <h3 className="fc-result-title">Da chi partire oggi</h3>
               </div>
               <h4 className="fc-cat-title">{output.categoria_prioritaria.titolo}</h4>
@@ -343,187 +343,191 @@ export default function FindClientsPage() {
 
   /* ── INPUT VIEW (no results yet) ── */
   return (
-    <div className="fc-page">
-      {/* ── HERO ── */}
-      <div className="fc-hero">
-        <div className="fc-hero-glow" />
-        <span className="fc-hero-eyebrow">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Motore di selezione prospect
-        </span>
-        <h1 className="fc-hero-title">Chi contattare su LinkedIn</h1>
-        <p className="fc-hero-subtitle">
-          Categorie di prospect prioritarie, messaggi pronti da copiare e checklist operativa — tutto generato dall&apos;AI in base al tuo posizionamento.
-        </p>
-        <div className="fc-hero-stats">
-          <div className="fc-hero-stat">
-            <span className="fc-hero-stat-value">3</span>
-            <span className="fc-hero-stat-label">Categorie target</span>
-          </div>
-          <div className="fc-hero-stat">
-            <span className="fc-hero-stat-value">5</span>
-            <span className="fc-hero-stat-label">Messaggi pronti</span>
-          </div>
-          <div className="fc-hero-stat">
-            <span className="fc-hero-stat-value">5</span>
-            <span className="fc-hero-stat-label">Azioni checklist</span>
+    <div className="find-clients-page fade-in">
+      <div className="find-clients-hero fade-in">
+        {/* ── HERO ── */}
+        <div className="fc-hero">
+          <div className="fc-hero-glow" />
+          <span className="fc-hero-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Motore di selezione prospect
+          </span>
+          <h1 className="fc-hero-title">Chi contattare su LinkedIn</h1>
+          <p className="fc-hero-subtitle">
+            Categorie di prospect prioritarie, messaggi pronti da copiare e checklist operativa — tutto generato dall&apos;AI in base al tuo posizionamento.
+          </p>
+          <div className="fc-hero-stats">
+            <div className="fc-hero-stat">
+              <span className="fc-hero-stat-value">3</span>
+              <span className="fc-hero-stat-label">Categorie target</span>
+            </div>
+            <div className="fc-hero-stat">
+              <span className="fc-hero-stat-value">5</span>
+              <span className="fc-hero-stat-label">Messaggi pronti</span>
+            </div>
+            <div className="fc-hero-stat">
+              <span className="fc-hero-stat-value">5</span>
+              <span className="fc-hero-stat-label">Azioni checklist</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ── TWO COLUMN: INPUT | OUTPUT ── */}
-      <div className="fc-layout">
-        {/* INPUT PANEL */}
-        <div className="fc-input-panel">
-          <div className="fc-input-card">
-            <div className="fc-input-header">
-              <div className="fc-input-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+      <div className="find-clients-form-card fade-in-delay">
+        {/* ── TWO COLUMN: INPUT | OUTPUT ── */}
+        <div className="fc-layout">
+          {/* INPUT PANEL */}
+          <div className="fc-input-panel">
+            <div className="fc-input-card">
+              <div className="fc-input-header">
+                <div className="fc-input-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+                </div>
+                <div>
+                  <h2 className="fc-input-title">Definisci il target</h2>
+                  <p className="fc-input-sub">Più dettagli dai, più precise saranno le categorie e i messaggi.</p>
+                </div>
               </div>
-              <div>
-                <h2 className="fc-input-title">Definisci il target</h2>
-                <p className="fc-input-sub">Più dettagli dai, più precise saranno le categorie e i messaggi.</p>
+
+              {prefilled && onboarding && (
+                <div className="fc-prefill-notice">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  Alcuni campi precompilati dal tuo sistema.
+                </div>
+              )}
+
+              <div className="fc-form">
+                <div className="qa-field">
+                  <label className="qa-label">Chi vuoi contattare <span className="fc-required">*</span></label>
+                  <textarea
+                    value={ruoloTarget}
+                    onChange={(e) => setRuoloTarget(e.target.value)}
+                    className="qa-input qa-input-lg"
+                    rows={2}
+                    placeholder="Es: Founder SaaS B2B, CEO di agenzia marketing, Head of Sales"
+                  />
+                </div>
+
+                <div className="qa-field">
+                  <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
+                  <input type="text" value={settore} onChange={(e) => setSettore(e.target.value)} className="qa-input" placeholder="Software, consulenza, marketing, fintech" />
+                </div>
+
+                <div className="find-section-row">
+                  <div className="qa-field" style={{ flex: 1 }}>
+                    <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
+                    <input type="text" value={area} onChange={(e) => setArea(e.target.value)} className="qa-input" placeholder="Italia, Europa, DACH" />
+                  </div>
+                  <div className="qa-field" style={{ flex: 1 }}>
+                    <label className="qa-label">Città <span className="qa-label-opt">(facoltativo)</span></label>
+                    <input type="text" value={citta} onChange={(e) => setCitta(e.target.value)} className="qa-input" placeholder="Milano, Roma, Berlino" />
+                  </div>
+                </div>
+
+                <div className="qa-field">
+                  <label className="qa-label">Dimensione azienda</label>
+                  <div className="fc-pills">
+                    {DIMENSIONE_OPTIONS.map((opt) => (
+                      <button key={opt.value} type="button" className={`fc-pill${dimensione === opt.value ? " fc-pill-active" : ""}`} onClick={() => setDimensione(opt.value)}>
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="qa-field">
+                  <label className="qa-label">Fase azienda</label>
+                  <div className="fc-pills">
+                    {FASE_OPTIONS.map((opt) => (
+                      <button key={opt.value} type="button" className={`fc-pill${faseAzienda === opt.value ? " fc-pill-active" : ""}`} onClick={() => setFaseAzienda(opt.value)}>
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="qa-field">
+                  <label className="qa-label">Problema del cliente <span className="qa-label-opt">(facoltativo)</span></label>
+                  <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Es: Non trovano clienti tramite LinkedIn" />
+                </div>
+
+                <button onClick={generate} disabled={loading || !ruoloTarget.trim()} className="fc-generate-btn">
+                  {loading ? (
+                    <><span className="qa-spinner" aria-hidden="true" />Sto analizzando il target…</>
+                  ) : (
+                    <>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      Identifica chi contattare
+                    </>
+                  )}
+                </button>
               </div>
             </div>
 
-            {prefilled && onboarding && (
-              <div className="fc-prefill-notice">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                Alcuni campi precompilati dal tuo sistema.
+            {!profile.onboarding_complete && (
+              <div className="fc-callout">
+                <div className="fc-callout-icon"><IconLightbulb size={20} /></div>
+                <div>
+                  <p className="fc-callout-text">Configura il tuo sistema per risultati più precisi.</p>
+                  <Link href="/app/onboarding" className="fc-callout-link">Configura il sistema →</Link>
+                </div>
               </div>
             )}
 
-            <div className="fc-form">
-              <div className="qa-field">
-                <label className="qa-label">Chi vuoi contattare <span className="fc-required">*</span></label>
-                <textarea
-                  value={ruoloTarget}
-                  onChange={(e) => setRuoloTarget(e.target.value)}
-                  className="qa-input qa-input-lg"
-                  rows={2}
-                  placeholder="Es: Founder SaaS B2B, CEO di agenzia marketing, Head of Sales"
-                />
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
-                <input type="text" value={settore} onChange={(e) => setSettore(e.target.value)} className="qa-input" placeholder="Software, consulenza, marketing, fintech" />
-              </div>
-
-              <div className="find-section-row">
-                <div className="qa-field" style={{ flex: 1 }}>
-                  <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
-                  <input type="text" value={area} onChange={(e) => setArea(e.target.value)} className="qa-input" placeholder="Italia, Europa, DACH" />
-                </div>
-                <div className="qa-field" style={{ flex: 1 }}>
-                  <label className="qa-label">Città <span className="qa-label-opt">(facoltativo)</span></label>
-                  <input type="text" value={citta} onChange={(e) => setCitta(e.target.value)} className="qa-input" placeholder="Milano, Roma, Berlino" />
-                </div>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Dimensione azienda</label>
-                <div className="fc-pills">
-                  {DIMENSIONE_OPTIONS.map((opt) => (
-                    <button key={opt.value} type="button" className={`fc-pill${dimensione === opt.value ? " fc-pill-active" : ""}`} onClick={() => setDimensione(opt.value)}>
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Fase azienda</label>
-                <div className="fc-pills">
-                  {FASE_OPTIONS.map((opt) => (
-                    <button key={opt.value} type="button" className={`fc-pill${faseAzienda === opt.value ? " fc-pill-active" : ""}`} onClick={() => setFaseAzienda(opt.value)}>
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="qa-field">
-                <label className="qa-label">Problema del cliente <span className="qa-label-opt">(facoltativo)</span></label>
-                <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Es: Non trovano clienti tramite LinkedIn" />
-              </div>
-
-              <button onClick={generate} disabled={loading || !ruoloTarget.trim()} className="fc-generate-btn">
-                {loading ? (
-                  <><span className="qa-spinner" aria-hidden="true" />Sto analizzando il target…</>
-                ) : (
-                  <>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                    Identifica chi contattare
-                  </>
-                )}
-              </button>
+            {/* Quick links */}
+            <div className="fc-quick-links">
+              <span className="fc-quick-links-label">Dopo la ricerca:</span>
+              <Link href="/app/prospect" className="fc-quick-link">Analizza un profilo</Link>
+              <Link href="/app/dm" className="fc-quick-link">Scrivi un DM</Link>
+              <Link href="/app/oggi" className="fc-quick-link">Piano di oggi</Link>
             </div>
           </div>
 
-          {!profile.onboarding_complete && (
-            <div className="fc-callout">
-              <div className="fc-callout-icon"><IconLightbulb size={20} /></div>
-              <div>
-                <p className="fc-callout-text">Configura il tuo sistema per risultati più precisi.</p>
-                <Link href="/app/onboarding" className="fc-callout-link">Configura il sistema →</Link>
+          {/* OUTPUT PANEL — empty state only (results go fullscreen) */}
+          <div className="fc-output-panel">
+            {error ? (
+              <div className="callout-danger rounded-xl p-5">
+                <p className="font-semibold mb-1">Errore</p>
+                <p className="text-sm">{error}</p>
               </div>
-            </div>
-          )}
-
-          {/* Quick links */}
-          <div className="fc-quick-links">
-            <span className="fc-quick-links-label">Dopo la ricerca:</span>
-            <Link href="/app/prospect" className="fc-quick-link">Analizza un profilo</Link>
-            <Link href="/app/dm" className="fc-quick-link">Scrivi un DM</Link>
-            <Link href="/app/oggi" className="fc-quick-link">Piano di oggi</Link>
+            ) : (
+              <div className="fc-empty">
+                <div className="fc-empty-visual">
+                  <div className="fc-empty-ring fc-empty-ring-1" />
+                  <div className="fc-empty-ring fc-empty-ring-2" />
+                  <div className="fc-empty-icon-wrap">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  </div>
+                </div>
+                <h3 className="fc-empty-title">Chi dovresti contattare?</h3>
+                <p className="fc-empty-text">
+                  Compila il form e l&apos;AI genererà categorie di prospect, messaggi pronti e una checklist operativa.
+                </p>
+                <div className="fc-empty-features">
+                  <div className="fc-empty-feature">
+                    <span className="fc-empty-feature-num">1</span>
+                    <span>Categorie prospect prioritarie</span>
+                  </div>
+                  <div className="fc-empty-feature">
+                    <span className="fc-empty-feature-num">2</span>
+                    <span>Messaggi pronti da copiare</span>
+                  </div>
+                  <div className="fc-empty-feature">
+                    <span className="fc-empty-feature-num">3</span>
+                    <span>Checklist azioni concrete</span>
+                  </div>
+                  <div className="fc-empty-feature">
+                    <span className="fc-empty-feature-num">4</span>
+                    <span>Link diretti LinkedIn</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* OUTPUT PANEL — empty state only (results go fullscreen) */}
-        <div className="fc-output-panel">
-          {error ? (
-            <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1">Errore</p>
-              <p className="text-sm">{error}</p>
-            </div>
-          ) : (
-            <div className="fc-empty">
-              <div className="fc-empty-visual">
-                <div className="fc-empty-ring fc-empty-ring-1" />
-                <div className="fc-empty-ring fc-empty-ring-2" />
-                <div className="fc-empty-icon-wrap">
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                </div>
-              </div>
-              <h3 className="fc-empty-title">Chi dovresti contattare?</h3>
-              <p className="fc-empty-text">
-                Compila il form e l&apos;AI genererà categorie di prospect, messaggi pronti e una checklist operativa.
-              </p>
-              <div className="fc-empty-features">
-                <div className="fc-empty-feature">
-                  <span className="fc-empty-feature-num">1</span>
-                  <span>Categorie prospect prioritarie</span>
-                </div>
-                <div className="fc-empty-feature">
-                  <span className="fc-empty-feature-num">2</span>
-                  <span>Messaggi pronti da copiare</span>
-                </div>
-                <div className="fc-empty-feature">
-                  <span className="fc-empty-feature-num">3</span>
-                  <span>Checklist azioni concrete</span>
-                </div>
-                <div className="fc-empty-feature">
-                  <span className="fc-empty-feature-num">4</span>
-                  <span>Link diretti LinkedIn</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        <HistoryList userId={userId} type="prospect" />
       </div>
-
-      <HistoryList userId={userId} type="prospect" />
     </div>
   );
 }

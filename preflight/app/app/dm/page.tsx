@@ -79,7 +79,7 @@ export default function DmPage() {
   // ── FULLSCREEN OUTPUT ──
   if (output) {
     return (
-      <div className="pr-fullscreen">
+      <div className="pr-fullscreen fade-in">
         {/* Top bar with controls */}
         <div className="pr-topbar">
           <button onClick={resetAdvice} className="pr-back-btn">
@@ -98,7 +98,7 @@ export default function DmPage() {
         </div>
 
         {/* Score + Heat hero banner */}
-        <div className="pr-score-hero">
+        <div className="pr-score-hero fade-in">
           <div className="pr-score-ring-wrap">
             <div className="pr-score-ring">
               <svg viewBox="0 0 120 120" className="pr-score-svg">
@@ -117,7 +117,7 @@ export default function DmPage() {
             </div>
             <span className="pr-score-label">Consiglio</span>
           </div>
-          <div className="pr-score-info">
+          <div className="pr-score-info fade-in-delay">
             <h1 className="pr-score-title">Consiglio personalizzato</h1>
             <p className="pr-score-subtitle">{output.lettura_situazione}</p>
             <div className="pr-score-badges">
@@ -134,7 +134,7 @@ export default function DmPage() {
           {/* LEFT COLUMN — Analisi */}
           <div className="pr-col">
             {/* Strategia */}
-            <div className="pr-card pr-card-strategy">
+            <div className="pr-card pr-card-strategy fade-in-delay">
               <div className="pr-card-header">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                 <h3>Strategia consigliata</h3>
@@ -143,7 +143,7 @@ export default function DmPage() {
             </div>
 
             {/* Errori da evitare */}
-            <div className="pr-card pr-card-warning">
+            <div className="pr-card pr-card-warning fade-in-delay">
               <div className="pr-card-header">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                 <h3>Errori da evitare</h3>
@@ -155,7 +155,7 @@ export default function DmPage() {
           {/* RIGHT COLUMN — Messaggi e azioni */}
           <div className="pr-col">
             {/* Risposta suggerita */}
-            <div className="pr-msg-card pr-msg-first">
+            <div className="pr-msg-card pr-msg-first fade-in-delay">
               <div className="pr-msg-header">
                 <div className="pr-msg-step">1</div>
                 <div>
@@ -170,7 +170,7 @@ export default function DmPage() {
             </div>
 
             {/* Follow-up consigliato */}
-            <div className="pr-msg-card">
+            <div className="pr-msg-card fade-in-delay">
               <div className="pr-msg-header">
                 <div className="pr-msg-step">2</div>
                 <div>
@@ -185,7 +185,7 @@ export default function DmPage() {
             </div>
 
             {/* Step successivi */}
-            <div className="pr-msg-card">
+            <div className="pr-msg-card fade-in-delay">
               <div className="pr-msg-header">
                 <div className="pr-msg-step">3</div>
                 <div>
@@ -206,8 +206,8 @@ export default function DmPage() {
 
   // ── STATIC PAGE (INPUT) ──
   return (
-    <div className="pr-fullscreen pr-fullscreen-empty">
-      <div className="pr-score-hero">
+    <div className="pr-fullscreen pr-fullscreen-empty fade-in">
+      <div className="pr-score-hero fade-in">
         <div className="pr-score-ring-wrap">
           <div className="pr-score-ring">
             <svg viewBox="0 0 120 120" className="pr-score-svg">
@@ -226,13 +226,13 @@ export default function DmPage() {
           </div>
           <span className="pr-score-label">Consiglio</span>
         </div>
-        <div className="pr-score-info">
+        <div className="pr-score-info fade-in-delay">
           <h1 className="pr-score-title">Chiedimi un consiglio</h1>
           <p className="pr-score-subtitle">Descrivi una situazione reale su LinkedIn e ricevi una strategia pronta, messaggi da inviare e azioni pratiche.</p>
         </div>
       </div>
-      <div className="pr-input-layout">
-        <div className="pr-form-card">
+      <div className="pr-input-layout fade-in">
+        <div className="pr-form-card fade-in-delay">
           <div className="pr-form-header">
             <div className="pr-form-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>

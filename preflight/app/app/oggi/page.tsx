@@ -141,9 +141,9 @@ export default function CosaFareOggiPage() {
   });
 
   return (
-    <div className="oggi-page">
+    <div className="oggi-page fade-in">
       {/* ── HERO ── */}
-      <div className="oggi-hero">
+      <div className="oggi-hero fade-in">
         <div className="oggi-hero-top">
           <span className="oggi-date">{today}</span>
           {plan && (
@@ -163,7 +163,7 @@ export default function CosaFareOggiPage() {
 
       {/* ── EMPTY STATE ── */}
       {!plan && !loading && (
-        <section className="oggi-empty">
+        <section className="oggi-empty fade-in-delay">
           <div className="oggi-empty-icon">📋</div>
           <h3 className="oggi-empty-title">Il tuo piano di oggi non è ancora pronto</h3>
           <p className="oggi-empty-desc">
@@ -186,7 +186,7 @@ export default function CosaFareOggiPage() {
 
       {/* ── LOADING ── */}
       {loading && (
-        <section className="oggi-loading-card">
+        <section className="oggi-loading-card fade-in-delay">
           <div className="oggi-pulse-ring" />
           <p className="oggi-loading-title">Sto preparando il tuo piano…</p>
           <p className="oggi-loading-sub">Analizzo profilo, contatti e conversazioni recenti.</p>
@@ -196,7 +196,7 @@ export default function CosaFareOggiPage() {
       {plan && (
         <>
           {/* ── SEZIONE 1: CHECKLIST AZIONI ── */}
-          <section className="oggi-section-card">
+          <section className="oggi-section-card fade-in-delay">
             <div className="oggi-section-head">
               <span className="oggi-section-num">1</span>
               <div>
@@ -242,7 +242,7 @@ export default function CosaFareOggiPage() {
           </section>
 
           {/* ── SEZIONE 2: MESSAGGI PRONTI ── */}
-          <section className="oggi-section-card">
+          <section className="oggi-section-card fade-in-delay">
             <div className="oggi-section-head">
               <span className="oggi-section-num">2</span>
               <div>
@@ -266,7 +266,7 @@ export default function CosaFareOggiPage() {
           </section>
 
           {/* ── SEZIONE 3: POST DEL GIORNO ── */}
-          <section className="oggi-section-card">
+          <section className="oggi-section-card fade-in-delay">
             <div className="oggi-section-head">
               <span className="oggi-section-num">3</span>
               <div>
@@ -294,7 +294,7 @@ export default function CosaFareOggiPage() {
           </section>
 
           {/* ── SEZIONE 4: STATISTICHE ── */}
-          <section className="oggi-section-card oggi-stats-card">
+          <section className="oggi-section-card oggi-stats-card fade-in-delay">
             <div className="oggi-stats-grid">
               <div className="oggi-stat">
                 <span className="oggi-stat-value">{contacts.length}</span>
