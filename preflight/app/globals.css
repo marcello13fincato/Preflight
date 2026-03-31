@@ -3666,6 +3666,34 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   transform:scale(1.08);
   box-shadow:0 6px 28px rgba(10,102,194,.38);
 }
+
+/* Floating chatbox button stile custom con animazione hover */
+.chatbox-fab {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 24px #0002;
+  border: none;
+  padding: 0;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s var(--ease-out), box-shadow 0.18s var(--ease-out), background 0.18s var(--ease-out);
+  cursor: pointer;
+}
+.chatbox-fab:hover {
+  background: var(--color-soft);
+  box-shadow: 0 8px 32px #0A66C233;
+  transform: scale(1.10) rotate(-4deg);
+}
+.chatbox-fab:active {
+  transform: scale(0.98) rotate(0deg);
+}
 .cb-window{
   position:fixed;bottom:5rem;right:1.25rem;z-index:9998;
   width:380px;max-width:calc(100vw - 2rem);
