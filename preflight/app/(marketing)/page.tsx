@@ -18,33 +18,78 @@ export default async function Home() {
       ═══════════════════════════════════════════════════════════ */}
       <section className="hp-hero fade-in">
         <div className="hp-hero-glow" aria-hidden="true" />
-        <div className="hp-container hp-hero-inner fade-in-delay">
-          <h1 className="hp-hero-title">
-            Il sistema che ti guida, passo dopo passo,<br />
-            <span className="hp-hero-title-accent">ad acquisire clienti su LinkedIn.</span>
-          </h1>
-          <p className="hp-hero-subtitle">
-            Preflight ti dice chi contattare, come scrivere il primo messaggio,
-            quando pubblicare un post strategico e come portare la conversazione
-            fino alla call. Ogni giorno, con chiarezza.
-          </p>
-          <p className="hp-hero-bridge">
-            Non devi inventarti nulla. Il sistema ti accompagna
-            dalla scelta del profilo giusto alla gestione della relazione,
-            con il supporto di un&apos;IA specializzata in processi commerciali.
-          </p>
-          <div className="hp-hero-ctas fade-in">
-            <Link href="/signup" className="hp-cta-primary fade-in-delay">
-              Configura il tuo sistema in 5 minuti
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-            </Link>
-            <Link href="/how-it-works" className="hp-cta-ghost fade-in">
-              Scopri come funziona
-            </Link>
+        <div className="hp-container hp-hero-inner hp-hero-cols fade-in-delay">
+
+          {/* ── COLONNA SINISTRA: copy ── */}
+          <div className="hp-hero-left">
+            <h1 className="hp-hero-title">
+              Il sistema che ti dice cosa fare ogni giorno su LinkedIn per trovare clienti.
+            </h1>
+            <p className="hp-hero-subtitle">
+              Non strumenti. Non teoria.<br />
+              Un percorso guidato: da chi contattare → a cosa scrivere → alla call.
+            </p>
+            <div className="hp-hero-ctas fade-in">
+              <Link href="/signup" className="hp-cta-primary fade-in-delay">
+                Inizia gratis
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+              </Link>
+            </div>
+            <p className="hp-hero-trust">Setup in 5 minuti · Nessuna carta di credito</p>
           </div>
-          <p className="hp-hero-trust">✓ Gratis per iniziare &nbsp;&nbsp; ✓ Nessuna carta di credito &nbsp;&nbsp; ✓ Setup in 5 minuti</p>
+
+          {/* ── COLONNA DESTRA: mock preview ── */}
+          <div className="hp-hero-right">
+            <div className="hp-hero-mock">
+              <div className="hp-hero-mock-header">
+                <span className="hp-hero-mock-dot hp-hero-mock-dot--red" />
+                <span className="hp-hero-mock-dot hp-hero-mock-dot--yellow" />
+                <span className="hp-hero-mock-dot hp-hero-mock-dot--green" />
+                <span className="hp-hero-mock-header-title">Preflight — Oggi</span>
+              </div>
+
+              <div className="hp-hero-mock-body">
+                {/* Step 1 */}
+                <div className="hp-hero-mock-step">
+                  <span className="hp-hero-mock-step-badge hp-hero-mock-step-badge--active">1</span>
+                  <div className="hp-hero-mock-step-content">
+                    <span className="hp-hero-mock-step-label">Chi contattare oggi</span>
+                    <span className="hp-hero-mock-step-value">Marco R. · CEO, SaaS B2B · Milano</span>
+                  </div>
+                </div>
+
+                <div className="hp-hero-mock-connector" />
+
+                {/* Step 2 */}
+                <div className="hp-hero-mock-step">
+                  <span className="hp-hero-mock-step-badge">2</span>
+                  <div className="hp-hero-mock-step-content">
+                    <span className="hp-hero-mock-step-label">Messaggio suggerito</span>
+                    <span className="hp-hero-mock-step-value">&quot;Ho visto il tuo post sull&apos;hiring — ti scrivo perché…&quot;</span>
+                  </div>
+                </div>
+
+                <div className="hp-hero-mock-connector" />
+
+                {/* Step 3 */}
+                <div className="hp-hero-mock-step">
+                  <span className="hp-hero-mock-step-badge">3</span>
+                  <div className="hp-hero-mock-step-content">
+                    <span className="hp-hero-mock-step-label">Prossimo passo</span>
+                    <span className="hp-hero-mock-step-value hp-hero-mock-step-value--cta">Proponi una call di 15 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
+
+      {/* ── RIGA TARGET ── */}
+      <div className="hp-hero-target fade-in">
+        <p className="hp-hero-target-text">Per freelance, consulenti e professionisti B2B</p>
+      </div>
 
       {/* ═══════════════════════════════════════════════════════════
           2. PRODUCT PREVIEW — Cosa fai con Preflight
