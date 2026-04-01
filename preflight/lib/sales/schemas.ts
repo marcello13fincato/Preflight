@@ -197,10 +197,17 @@ export const findClientsSchema = z.object({
 });
 
 export const dailyActionSchema = z.object({
-  titolo: z.string(),
   tipo: z.string(),
-  istruzioni: z.string(),
-  messaggio_pronto: z.string(),
+  priorita: z.enum(["alta", "media", "bassa"]),
+  contesto: z.object({
+    chi: z.string(),
+    situazione: z.string(),
+  }),
+  perche_ora: z.string(),
+  azione_concreta: z.string(),
+  messaggio_suggerito: z.string(),
+  outcome_atteso: z.string(),
+  prossimo_step: z.string(),
 });
 
 export const dailyPlanSchema = z.object({

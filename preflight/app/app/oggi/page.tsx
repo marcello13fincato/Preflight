@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
-import { IconClipboard } from "@/components/shared/icons";
+import DailyActionCard from "@/components/app/DailyActionCard";
+import type { DailyAction } from "@/components/app/DailyActionCard";
 import type { DailyPlanJson } from "@/lib/sales/schemas";
+import { demoDailyActions } from "@/lib/mock/dailyActions";
 
 const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan";
 const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-date";
@@ -45,13 +47,6 @@ function cachePlan(plan: DailyPlanJson) {
   localStorage.setItem(DAILY_PLAN_STORAGE_KEY, JSON.stringify(plan));
   localStorage.setItem(DAILY_PLAN_DATE_KEY, todayKey());
 }
-
-const TIPO_CONFIG: Record<string, { emoji: string; label: string; color: string }> = {
-  outreach:  { emoji: "🎯", label: "Outreach",  color: "oggi-tipo-outreach" },
-  contenuto: { emoji: "✍️", label: "Contenuto", color: "oggi-tipo-contenuto" },
-  followup:  { emoji: "🔄", label: "Follow-up", color: "oggi-tipo-followup" },
-  ricerca:   { emoji: "🔍", label: "Ricerca",   color: "oggi-tipo-ricerca" },
-};
 
 function CopyBtn({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -133,6 +128,21 @@ export default function CosaFareOggiPage() {
     });
   };
 
+  // Extract actions from plan (new schema) or fall back to demo data
+  const actions: DailyAction[] = useMemo(() => {
+    if (!plan) return [];
+    const azioniObj = plan.azioni;
+    const keys = ["azione_1", "azione_2", "azione_3", "azione_4", "azione_5"] as const;
+    const extracted = keys.map((k) => azioniObj[k]).filter(Boolean);
+    // Check if actions match new schema (have `contesto` object)
+    const firstAction = extracted[0] as Record<string, unknown> | undefined;
+    if (firstAction && typeof firstAction.contesto === "object" && firstAction.contesto !== null) {
+      return extracted as unknown as DailyAction[];
+    }
+    // Old schema fallback → use demo data
+    return demoDailyActions;
+  }, [plan]);
+
   const completedCount = checkedActions.size;
   const today = new Date().toLocaleDateString("it-IT", {
     weekday: "long",
@@ -148,8 +158,8 @@ export default function CosaFareOggiPage() {
           <span className="oggi-date">{today}</span>
           {plan && (
             <span className="oggi-progress-pill">
-              <span className="oggi-progress-fill" style={{ width: `${(completedCount / 5) * 100}%` }} />
-              <span className="oggi-progress-label">{completedCount}/5 completate</span>
+              <span className="oggi-progress-fill" style={{ width: `${(completedCount / actions.length) * 100}%` }} />
+              <span className="oggi-progress-label">{completedCount}/{actions.length} completate</span>
             </span>
           )}
         </div>
@@ -157,7 +167,7 @@ export default function CosaFareOggiPage() {
         {plan?.focus_giornata ? (
           <p className="oggi-hero-focus">{plan.focus_giornata}</p>
         ) : (
-          <p className="oggi-hero-sub">Le azioni più utili per oggi, pronte da eseguire su LinkedIn.</p>
+          <p className="oggi-hero-sub">Azioni pensate per la tua situazione, con contesto, ragionamento e messaggio pronto.</p>
         )}
       </div>
 
@@ -168,8 +178,8 @@ export default function CosaFareOggiPage() {
           <h3 className="oggi-empty-title">Il tuo piano di oggi non è ancora pronto</h3>
           <p className="oggi-empty-desc">
             {profile.onboarding_complete
-              ? "Genera il piano e ricevi 5 azioni precise con messaggi pronti da copiare."
-              : "Configura il profilo per consigli personalizzati, oppure genera un piano generico."}
+              ? "Genera il piano e ricevi azioni intelligenti con contesto, ragionamento e messaggi personalizzati."
+              : "Configura il profilo per un piano su misura, oppure genera azioni con esempi realistici."}
           </p>
           <div className="oggi-empty-actions">
             <button type="button" onClick={generatePlan} className="btn-primary oggi-gen-btn">
@@ -195,47 +205,27 @@ export default function CosaFareOggiPage() {
 
       {plan && (
         <>
-          {/* ── SEZIONE 1: CHECKLIST AZIONI ── */}
+          {/* ── SEZIONE 1: PIANO AZIONI INTELLIGENTE ── */}
           <section className="oggi-section-card fade-in-delay">
             <div className="oggi-section-head">
               <span className="oggi-section-num">1</span>
               <div>
-                <h2 className="oggi-section-title">Le tue 5 azioni di oggi</h2>
-                <p className="oggi-section-sub">Spunta ogni azione completata. Ogni card ha il messaggio pronto da copiare.</p>
+                <h2 className="oggi-section-title">Il tuo piano di oggi</h2>
+                <p className="oggi-section-sub">Ogni azione è pensata per la tua situazione. Espandi per vedere contesto, ragionamento e messaggio.</p>
               </div>
             </div>
 
             <div className="oggi-actions-list">
-              {(["azione_1", "azione_2", "azione_3", "azione_4", "azione_5"] as const).map((key, i) => {
-                const a = plan.azioni[key];
-                const tipo = TIPO_CONFIG[a.tipo] || TIPO_CONFIG.ricerca;
-                const done = checkedActions.has(key);
+              {actions.map((action, i) => {
+                const key = `azione_${i}`;
                 return (
-                  <div key={key} className={`oggi-action-card ${done ? "oggi-action-done" : ""}`} style={{ animationDelay: `${i * 0.06}s` }}>
-                    <button type="button" className="oggi-check" onClick={() => toggleAction(key)} aria-label={done ? "Segna come non completata" : "Segna come completata"}>
-                      {done ? (
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                      ) : (
-                        <span className="oggi-check-num">{i + 1}</span>
-                      )}
-                    </button>
-                    <div className="oggi-action-body">
-                      <div className="oggi-action-top">
-                        <span className={`oggi-tipo-badge ${tipo.color}`}>{tipo.emoji} {tipo.label}</span>
-                        <h3 className="oggi-action-title">{a.titolo}</h3>
-                      </div>
-                      <p className="oggi-action-steps">{a.istruzioni}</p>
-                      {a.messaggio_pronto && (
-                        <div className="oggi-msg-box">
-                          <div className="oggi-msg-header">
-                            <span className="oggi-msg-label">💬 Messaggio pronto</span>
-                            <CopyBtn text={a.messaggio_pronto} />
-                          </div>
-                          <p className="oggi-msg-text">{a.messaggio_pronto}</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  <DailyActionCard
+                    key={key}
+                    action={action}
+                    index={i}
+                    done={checkedActions.has(key)}
+                    onToggle={() => toggleAction(key)}
+                  />
                 );
               })}
             </div>
@@ -307,7 +297,7 @@ export default function CosaFareOggiPage() {
                 <span className="oggi-stat-label">Analizzati oggi</span>
               </div>
               <div className="oggi-stat">
-                <span className="oggi-stat-value">{completedCount}/5</span>
+                <span className="oggi-stat-value">{completedCount}/{actions.length}</span>
                 <span className="oggi-stat-label">Azioni fatte</span>
               </div>
               <div className="oggi-stat">

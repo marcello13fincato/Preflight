@@ -55,28 +55,46 @@ export async function POST(req: Request) {
 
     const prompt = `${salesRules}
 
-Sei l'Assistente Preflight. Genera il piano operativo di oggi per LinkedIn. L'utente deve poter COPIARE e INCOLLARE ogni messaggio direttamente su LinkedIn senza modifiche.
+Sei l'Assistente Preflight. Genera il piano operativo di oggi per LinkedIn. NON generare azioni generiche tipo "commenta 3 post" — ogni azione deve sembrare pensata da un consulente strategico per QUESTA persona.
 
-${profileCtx || "NOTA: L'utente non ha ancora configurato il suo profilo. Genera suggerimenti generici ma utili per un consulente/freelance B2B."}${targetingCtx}
+${profileCtx || "NOTA: L'utente non ha ancora configurato il suo profilo. Genera suggerimenti realistici per un consulente/freelance B2B che vende servizi ad aziende."}${targetingCtx}
 
 REGOLE FONDAMENTALI:
-- Ogni messaggio deve essere PRONTO DA COPIARE: realistico, personale, naturale
-- Non usare placeholder come [nome], [azienda] — scrivi messaggi generici ma credibili
-- Il tipo di ogni azione deve essere UNO tra: outreach, contenuto, followup, ricerca
-- Per "istruzioni": scrivi esattamente cosa fare, passo per passo
-- Per "messaggio_pronto": scrivi il testo completo da copiare/incollare su LinkedIn
-- Il post deve essere COMPLETO e pubblicabile così com'è
+- Ogni azione deve contenere: tipo, priorità, contesto (chi + situazione specifica), perché agire ora, azione concreta, messaggio suggerito, outcome atteso, prossimo step
+- Non usare placeholder come [nome], [azienda] — inventa nomi e situazioni realistiche e credibili
+- Il valore NON è il messaggio → è il RAGIONAMENTO dietro l'azione
+- Ogni azione deve sembrare pensata da un consulente, non da un tool
+- Il tipo di ogni azione deve essere UNO tra: outreach, contenuto, followup, ricerca, commento, connessione
+- La priorità deve essere UNA tra: alta, media, bassa
+- Il contesto deve avere "chi" (persona specifica con ruolo, azienda, dettagli) e "situazione" (cosa sta succedendo che rende l'azione rilevante)
+- "perche_ora" spiega il timing: perché agire OGGI e non domani
+- "azione_concreta" descrive ESATTAMENTE cosa fare, passo per passo
+- "messaggio_suggerito" è il testo da copiare/incollare su LinkedIn
+- "outcome_atteso" spiega cosa aspettarsi realisticamente
+- "prossimo_step" dice cosa fare DOPO in base alla risposta
+- Per il post: testo COMPLETO e pubblicabile così com'è
 - Rispondi ESCLUSIVAMENTE in italiano
+
+ESEMPI DI TRASFORMAZIONE:
+PRIMA (generico): "Commenta 3 post di decision-maker"
+DOPO (intelligente): contesto = "Marco Rossi, founder SaaS CRM, ha pubblicato ieri su espansione team sales" + perché ora = "Se assume sales, ha bisogno di pipeline. Commentare oggi ti posiziona prima che cerchi soluzioni" + azione = "Commenta aggiungendo esperienza su ramp-up sales" + outcome = "Ti nota come esperto, visita il tuo profilo"
 
 Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
 {
-  "focus_giornata": "<una frase motivante di max 15 parole che riassume la giornata, es: Oggi costruiamo 3 nuove relazioni e rafforziamo la tua autorevolezza>",
+  "focus_giornata": "<una frase di max 15 parole che riassume la strategia di oggi>",
   "azioni": {
     "azione_1": {
-      "titolo": "<azione concisa di max 8 parole, es: Commenta 3 post di decision-maker>",
-      "tipo": "outreach|contenuto|followup|ricerca",
-      "istruzioni": "<3-4 step precisi su cosa fare, separati da \\n>",
-      "messaggio_pronto": "<il commento o messaggio completo da copiare, pronto all'uso>"
+      "tipo": "outreach|contenuto|followup|ricerca|commento|connessione",
+      "priorita": "alta|media|bassa",
+      "contesto": {
+        "chi": "<persona specifica con nome, ruolo, azienda, dettagli rilevanti>",
+        "situazione": "<cosa sta succedendo che rende questa azione strategica>"
+      },
+      "perche_ora": "<perché agire oggi, quale segnale o timing rende urgente>",
+      "azione_concreta": "<cosa fare esattamente, passo per passo>",
+      "messaggio_suggerito": "<testo completo da copiare/incollare su LinkedIn>",
+      "outcome_atteso": "<cosa aspettarsi realisticamente da questa azione>",
+      "prossimo_step": "<cosa fare dopo in base alla risposta o non-risposta>"
     },
     "azione_2": { ... stessa struttura ... },
     "azione_3": { ... stessa struttura ... },

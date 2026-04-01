@@ -4132,6 +4132,89 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   margin:0;white-space:pre-line;
 }
 
+/* ── V2 Action Card (intelligent daily plan) ── */
+.oggi-action-card-v2{
+  flex-direction:column;gap:0;padding:0;overflow:hidden;
+}
+.oggi-action-header{
+  display:flex;align-items:center;gap:0.75rem;
+  padding:1rem 1.25rem 0.75rem;
+}
+.oggi-action-badges{
+  display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;
+}
+.oggi-prio-badge{
+  font-size:0.62rem;font-weight:700;padding:0.18rem 0.5rem;
+  border-radius:5px;text-transform:uppercase;letter-spacing:0.04em;
+}
+.oggi-prio-alta{background:rgba(239,68,68,0.1);color:#dc2626}
+.oggi-prio-media{background:rgba(245,158,11,0.1);color:#d97706}
+.oggi-prio-bassa{background:rgba(107,114,128,0.08);color:#6b7280}
+.oggi-action-context{
+  padding:0 1.25rem 0.75rem;
+  border-bottom:1px solid var(--color-border);
+}
+.oggi-action-chi,
+.oggi-action-situazione{
+  font-size:0.84rem;color:var(--color-text);line-height:1.6;
+  margin:0 0 0.25rem;
+}
+.oggi-label-dim{
+  font-size:0.7rem;font-weight:700;color:var(--color-muted);
+  text-transform:uppercase;letter-spacing:0.03em;margin-right:0.35rem;
+}
+.oggi-label-accent{
+  display:block;font-size:0.72rem;font-weight:700;
+  color:var(--color-primary);text-transform:uppercase;
+  letter-spacing:0.04em;margin-bottom:0.3rem;
+}
+.oggi-action-perche{
+  padding:0.75rem 1.25rem;
+  background:linear-gradient(135deg,rgba(245,158,11,0.04),rgba(245,158,11,0.02));
+  border-bottom:1px solid var(--color-border);
+}
+.oggi-action-perche p{
+  font-size:0.84rem;color:var(--color-text);line-height:1.6;margin:0;
+}
+.oggi-action-cosa{
+  padding:0.75rem 1.25rem;
+  border-bottom:1px solid var(--color-border);
+}
+.oggi-action-cosa p{
+  font-size:0.84rem;color:var(--color-text);line-height:1.6;margin:0;
+}
+.oggi-expand-btn{
+  width:100%;padding:0.65rem 1.25rem;
+  font-size:0.78rem;font-weight:600;color:var(--color-primary);
+  background:rgba(59,130,246,0.03);border:none;border-top:1px solid var(--color-border);
+  cursor:pointer;transition:all 0.2s ease;text-align:center;
+}
+.oggi-expand-btn:hover{
+  background:rgba(59,130,246,0.07);
+}
+.oggi-action-details{
+  padding:0.75rem 1.25rem 1.25rem;
+  border-top:1px solid var(--color-border);
+  display:flex;flex-direction:column;gap:0.75rem;
+}
+.oggi-action-outcome,
+.oggi-action-nextstep{
+  padding:0.5rem 0;
+}
+.oggi-action-outcome p,
+.oggi-action-nextstep p{
+  font-size:0.84rem;color:var(--color-text);line-height:1.6;margin:0;
+}
+.oggi-action-done.oggi-action-card-v2{
+  opacity:0.7;
+}
+.oggi-action-done.oggi-action-card-v2 .oggi-action-chi,
+.oggi-action-done.oggi-action-card-v2 .oggi-action-situazione,
+.oggi-action-done.oggi-action-card-v2 .oggi-action-perche p,
+.oggi-action-done.oggi-action-card-v2 .oggi-action-cosa p{
+  text-decoration:line-through;opacity:0.5;
+}
+
 /* ── Message box inside actions ── */
 .oggi-msg-box{
   margin-top:0.75rem;
@@ -4328,6 +4411,12 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   .oggi-hero{padding:2rem 1.5rem 1.75rem}
   .oggi-section-card{padding:1.5rem 1.25rem}
   .oggi-action-card{padding:1rem}
+  .oggi-action-card-v2{padding:0}
+  .oggi-action-header{padding:0.75rem 1rem 0.5rem}
+  .oggi-action-context{padding:0 1rem 0.5rem}
+  .oggi-action-perche{padding:0.5rem 1rem}
+  .oggi-action-cosa{padding:0.5rem 1rem}
+  .oggi-action-details{padding:0.5rem 1rem 1rem}
   .oggi-msgs-grid{grid-template-columns:1fr}
   .oggi-stats-grid{grid-template-columns:repeat(2,1fr)}
 }
@@ -7033,6 +7122,201 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   padding:1.5rem 1.5rem;
   display:flex;flex-direction:column;gap:1.1rem;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD REFACTORED — Cabina di regia commerciale
+═══════════════════════════════════════════════════════════ */
+
+/* ── Page header ── */
+.dash-page-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding-bottom:0.25rem;
+}
+.dash-page-title{
+  margin:0;font-size:clamp(1.6rem,3vw,2rem);font-weight:900;
+  color:var(--color-text,#0f172a);letter-spacing:-0.03em;line-height:1.1;
+}
+.dash-page-sub{
+  margin:0.35rem 0 0;font-size:0.95rem;color:var(--color-muted,#64748b);line-height:1.6;
+}
+
+/* ── Section head shared ── */
+.dash-section-head{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  margin-bottom:1rem;flex-wrap:wrap;
+}
+.dash-section-label{
+  margin:0;font-size:1.1rem;font-weight:800;
+  color:var(--color-text,#0f172a);letter-spacing:-0.02em;
+}
+.dash-section-sub{margin:0;font-size:0.85rem;color:var(--color-muted,#64748b)}
+.dash-section-link{
+  font-size:0.83rem;font-weight:700;color:var(--color-primary,#0A66C2);
+  text-decoration:none;white-space:nowrap;
+}
+.dash-section-link:hover{text-decoration:underline}
+
+/* ── Sezione 1: Opportunità di oggi (4 card grid) ── */
+.dash-opp-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;
+}
+@media(max-width:1100px){.dash-opp-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.dash-opp-grid{grid-template-columns:1fr}}
+
+.dash-opp-card{
+  display:flex;flex-direction:column;gap:0.75rem;
+  border-radius:16px;border:1px solid rgba(208,217,226,0.9);
+  background:#ffffff;padding:1.25rem;
+  transition:transform 0.18s ease,box-shadow 0.18s ease,border-color 0.18s ease;
+}
+.dash-opp-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,23,42,0.07);border-color:rgba(59,130,246,0.3)}
+.dash-opp-card--urgent{border-color:rgba(239,68,68,0.35);background:linear-gradient(160deg,#fff5f5 0%,#ffffff 100%)}
+.dash-opp-card--highlight{border-color:rgba(34,197,94,0.35);background:linear-gradient(160deg,#f0fdf4 0%,#ffffff 100%)}
+
+.dash-opp-card-top{display:flex;align-items:center;gap:0.5rem}
+.dash-opp-badge{
+  display:inline-flex;align-items:center;
+  border-radius:999px;padding:0.28rem 0.75rem;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+}
+.dash-opp-badge--red{background:rgba(254,226,226,1);color:#b91c1c}
+.dash-opp-badge--blue{background:rgba(219,234,254,1);color:#1d4ed8}
+.dash-opp-badge--yellow{background:rgba(254,249,195,1);color:#92400e}
+.dash-opp-badge--green{background:rgba(220,252,231,1);color:#15803d}
+
+.dash-opp-card-title{
+  margin:0;font-size:0.95rem;font-weight:700;
+  color:var(--color-text,#0f172a);line-height:1.35;
+}
+.dash-opp-card-reason{
+  margin:0;font-size:0.83rem;color:var(--color-muted,#64748b);line-height:1.55;flex:1;
+}
+.dash-opp-card-action{
+  display:inline-flex;align-items:center;
+  font-size:0.82rem;font-weight:700;color:var(--color-primary,#0A66C2);
+  text-decoration:none;background:none;border:none;padding:0;cursor:pointer;
+  margin-top:auto;
+}
+.dash-opp-card-action:hover{text-decoration:underline;color:#0851a8}
+
+/* ── Sezione 2: Azioni prioritarie ── */
+.dash-priority-list{display:flex;flex-direction:column;gap:0.75rem}
+.dash-priority-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  border-radius:14px;border:1px solid rgba(208,217,226,0.9);
+  background:#ffffff;padding:1.15rem 1.25rem;
+  transition:box-shadow 0.18s ease;
+}
+.dash-priority-item:hover{box-shadow:0 4px 16px rgba(15,23,42,0.06)}
+@media(max-width:640px){.dash-priority-item{flex-direction:column;gap:0.75rem}}
+
+.dash-priority-badge{
+  flex-shrink:0;
+  display:inline-flex;align-items:center;
+  border-radius:999px;padding:0.3rem 0.85rem;
+  font-size:0.68rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase;
+  white-space:nowrap;margin-top:0.15rem;
+}
+.dash-priority-badge--alta{background:#fee2e2;color:#b91c1c}
+.dash-priority-badge--media{background:#fef3c7;color:#92400e}
+.dash-priority-badge--bassa{background:#f1f5f9;color:#475569}
+
+.dash-priority-content{flex:1;min-width:0;display:flex;flex-direction:column;gap:0.35rem}
+.dash-priority-title{margin:0;font-size:0.95rem;font-weight:700;color:var(--color-text,#0f172a)}
+.dash-priority-why{margin:0;font-size:0.83rem;color:var(--color-muted,#64748b);line-height:1.55}
+.dash-priority-action{margin:0;font-size:0.83rem;color:var(--color-muted,#64748b);line-height:1.55}
+
+/* ── Sezione 3: Conversazioni e follow-up ── */
+.dash-conv-list{display:flex;flex-direction:column;gap:0.6rem}
+.dash-conv-item{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  border-radius:12px;border:1px solid rgba(208,217,226,0.9);
+  background:#ffffff;padding:0.9rem 1.1rem;
+  transition:background 0.15s ease;
+}
+.dash-conv-item--demo{opacity:0.85}
+.dash-conv-item:hover{background:#f8fafc}
+
+.dash-conv-avatar{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#0A66C2,#1a7fd4);
+  color:#fff;font-size:0.88rem;font-weight:700;
+}
+.dash-conv-info{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.dash-conv-name{font-size:0.9rem;font-weight:700;color:var(--color-text,#0f172a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-conv-role{font-size:0.78rem;color:var(--color-muted,#64748b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-conv-status{
+  flex-shrink:0;border-radius:999px;padding:0.22rem 0.65rem;
+  font-size:0.68rem;font-weight:700;white-space:nowrap;
+}
+.dash-conv-status--active{background:#dcfce7;color:#15803d}
+.dash-conv-status--pending{background:#fef3c7;color:#92400e}
+.dash-conv-next{display:flex;flex-direction:column;gap:1px;flex:1;min-width:120px}
+.dash-conv-next-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted,#64748b)}
+.dash-conv-next-text{font-size:0.82rem;color:var(--color-text,#0f172a)}
+
+/* ── Sezione 4: Prospect ad alta priorità ── */
+.dash-prospect-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;
+}
+@media(max-width:900px){.dash-prospect-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.dash-prospect-grid{grid-template-columns:1fr}}
+
+.dash-prospect-card{
+  display:flex;flex-direction:column;gap:0.85rem;
+  border-radius:16px;border:1px solid rgba(208,217,226,0.9);
+  background:#ffffff;padding:1.15rem;
+  transition:transform 0.18s ease,box-shadow 0.18s ease;
+}
+.dash-prospect-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(15,23,42,0.07)}
+.dash-prospect-card--demo{opacity:0.88}
+.dash-prospect-card-top{display:flex;align-items:flex-start;gap:0.75rem}
+.dash-prospect-avatar{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#1e40af,#0A66C2);
+  color:#fff;font-size:0.95rem;font-weight:700;
+}
+.dash-prospect-name{margin:0;font-size:0.95rem;font-weight:700;color:var(--color-text,#0f172a)}
+.dash-prospect-role{margin:0;font-size:0.78rem;color:var(--color-muted,#64748b)}
+.dash-prospect-company{margin:0;font-size:0.75rem;color:var(--color-muted,#94a3b8)}
+.dash-prospect-reason{margin:0;font-size:0.83rem;color:var(--color-muted,#475569);line-height:1.55;flex:1}
+.dash-prospect-action-row{display:flex;flex-direction:column;gap:2px;padding-top:0.25rem;border-top:1px solid #f1f5f9}
+.dash-prospect-action-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--color-muted,#94a3b8)}
+.dash-prospect-action-text{font-size:0.82rem;color:var(--color-text,#0f172a);line-height:1.5}
+
+/* ── Sezione 5: Performance (collassabile) ── */
+.dash-perf-section{
+  border-radius:16px;
+  border:1px solid rgba(208,217,226,0.9);
+  background:#f8fafc;overflow:hidden;
+}
+.dash-perf-details{width:100%}
+.dash-perf-summary{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+  padding:1rem 1.25rem;cursor:pointer;list-style:none;
+  user-select:none;
+}
+.dash-perf-summary::-webkit-details-marker{display:none}
+.dash-perf-summary:hover{background:rgba(15,23,42,0.03)}
+.dash-perf-index-inline{
+  font-size:0.85rem;color:var(--color-muted,#64748b);margin-left:auto;
+}
+.dash-perf-chevron{
+  flex-shrink:0;color:var(--color-muted,#94a3b8);
+  transition:transform 0.2s ease;
+}
+details[open] .dash-perf-chevron{transform:rotate(180deg)}
+.dash-perf-body{padding:0 1.25rem 1.25rem;display:flex;flex-direction:column;gap:0}
+
+/* ── Demo notice ── */
+.dash-demo-notice{
+  margin:0.75rem 0 0;font-size:0.8rem;color:var(--color-muted,#94a3b8);
+  font-style:italic;
+}
+.dash-demo-link{color:var(--color-primary,#0A66C2);text-decoration:none;font-weight:600}
+.dash-demo-link:hover{text-decoration:underline}
 .ops-metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0.85rem}
 .ops-metric-card{
   border-radius:14px;border:1px solid rgba(208,217,226,0.9);
