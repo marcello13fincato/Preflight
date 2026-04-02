@@ -6,6 +6,8 @@ import { useMemo, useState, useCallback, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
+import OpportunityCard from "@/components/app/OpportunityCard";
+import ActionCard from "@/components/app/ActionCard";
 import type { AnalyzedContact } from "@/lib/sales/schemas";
 
 const MODAL_DISMISSED_KEY = "onboarding-modal-dismissed";
@@ -660,75 +662,74 @@ export default function AppTodayPage() {
         {/* ═══════════════════════════════════════════════════════════
             HEADER PAGINA
         ═══════════════════════════════════════════════════════════ */}
-        <div className="dash-page-head">
+        <div className="dash-page-head-v7">
           <div>
-            <h1 className="dash-page-title">Le tue opportunità di oggi</h1>
-            <p className="dash-page-sub">Parti da ciò che può generare una conversazione o avvicinarti a una call.</p>
+            <p className="dash-page-eyebrow">Sistema operativo commerciale</p>
+            <h1 className="dash-page-title-v7">Le tue opportunità di oggi</h1>
+            <p className="dash-page-sub-v7">Parti da ciò che può generare una conversazione o avvicinarti a una call.</p>
           </div>
         </div>
 
         {/* ═══════════════════════════════════════════════════════════
             SEZIONE 1 — OPPORTUNITÀ DI OGGI
         ═══════════════════════════════════════════════════════════ */}
-        <section className="opp-section" aria-label="Opportunità di oggi">
-          <div className="opp-grid">
-            <div className="opp-card opp-card-urgent">
-              <div className="opp-card-icon">🔴</div>
-              <h4 className="opp-card-title">Follow-up urgenti</h4>
-              <p className="opp-card-reason">Luca Martini (CEO, agenzia digital) — call esplorativa 10 giorni fa, nessuna risposta al recap. La finestra di follow-up si chiude tra 2-3 giorni.</p>
-              <p className="opp-card-action"><strong>Azione:</strong> Invia DM con micro-insight sul suo problema specifico (conversion rate al 12%). Non riproporre la call, riattiva l&apos;interesse.</p>
-            </div>
-            <div className="opp-card opp-card-warm">
-              <div className="opp-card-icon">🟡</div>
-              <h4 className="opp-card-title">Prospect da contattare oggi</h4>
-              <p className="opp-card-reason">Sara Ferri (Head of Sales, consulenza B2B) — ha interagito con 3 tuoi post nell&apos;ultimo mese. Il suo team sta lanciando un nuovo servizio.</p>
-              <p className="opp-card-action"><strong>Azione:</strong> Invia richiesta di connessione con nota personalizzata. Fai riferimento al nuovo servizio e proponi uno scambio di idee su pipeline.</p>
-            </div>
-            <div className="opp-card opp-card-unlock">
-              <div className="opp-card-icon">🔓</div>
-              <h4 className="opp-card-title">Conversazione da sbloccare</h4>
-              <p className="opp-card-reason">Andrea Colombo (VP Sales, SaaS fintech) — ha accettato la connessione 5 giorni fa, ha visto il tuo profilo ma non ha risposto al primo messaggio.</p>
-              <p className="opp-card-action"><strong>Azione:</strong> Commenta un suo post recente per tornare visibile, poi invia un secondo messaggio con un angolo diverso (es. case study specifico fintech).</p>
-            </div>
-            <div className="opp-card opp-card-call">
-              <div className="opp-card-icon">📞</div>
-              <h4 className="opp-card-title">Azione con più probabilità di call</h4>
-              <p className="opp-card-reason">Marco Bianchi (Founder SaaS CRM) — ha commentato un tuo post ieri, sta assumendo 2 sales. Segnale forte: espansione team → bisogno di pipeline.</p>
-              <p className="opp-card-action"><strong>Azione:</strong> Rispondi al suo commento con un insight concreto, poi invia DM personalizzato. Proponi 15 min su come generare pipeline per i nuovi sales.</p>
-            </div>
+        <section className="opp-section-v7" aria-label="Opportunità di oggi">
+          <div className="opp-grid-v7">
+            <OpportunityCard
+              icon="🔴"
+              variant="urgent"
+              title="Follow-up urgenti"
+              reason="Luca Martini (CEO, agenzia digital) — call esplorativa 10 giorni fa, nessuna risposta al recap. La finestra di follow-up si chiude tra 2-3 giorni."
+              action="Invia DM con micro-insight sul suo problema specifico (conversion rate al 12%). Non riproporre la call, riattiva l'interesse."
+            />
+            <OpportunityCard
+              icon="📞"
+              variant="call"
+              title="Azione con più probabilità di call"
+              reason="Marco Bianchi (Founder SaaS CRM) — ha commentato un tuo post ieri, sta assumendo 2 sales. Segnale forte: espansione team → bisogno di pipeline."
+              action="Rispondi al suo commento con un insight concreto, poi invia DM personalizzato. Proponi 15 min su come generare pipeline per i nuovi sales."
+            />
+            <OpportunityCard
+              icon="🟡"
+              variant="warm"
+              title="Prospect da contattare oggi"
+              reason="Sara Ferri (Head of Sales, consulenza B2B) — ha interagito con 3 tuoi post nell'ultimo mese. Il suo team sta lanciando un nuovo servizio."
+              action="Invia richiesta di connessione con nota personalizzata. Fai riferimento al nuovo servizio e proponi uno scambio di idee su pipeline."
+            />
+            <OpportunityCard
+              icon="🔓"
+              variant="unlock"
+              title="Conversazione da sbloccare"
+              reason="Andrea Colombo (VP Sales, SaaS fintech) — ha accettato la connessione 5 giorni fa, ha visto il tuo profilo ma non ha risposto al primo messaggio."
+              action="Commenta un suo post recente per tornare visibile, poi invia un secondo messaggio con un angolo diverso (es. case study specifico fintech)."
+            />
           </div>
         </section>
 
         {/* ═══════════════════════════════════════════════════════════
             SEZIONE 2 — AZIONI PRIORITARIE
         ═══════════════════════════════════════════════════════════ */}
-        <section className="pri-section" aria-label="Azioni prioritarie">
-          <div className="pri-head">
-            <h3 className="pri-title">Azioni prioritarie</h3>
-            <p className="pri-sub">Le 3 azioni che hanno il maggior impatto oggi sulla tua pipeline.</p>
+        <section className="pri-section-v7" aria-label="Azioni prioritarie">
+          <div className="pri-head-v7">
+            <h3 className="pri-title-v7">Azioni prioritarie</h3>
+            <p className="pri-sub-v7">Le 3 azioni che hanno il maggior impatto oggi sulla tua pipeline.</p>
           </div>
-          <div className="pri-list">
-            <div className="pri-item pri-item-alta">
-              <span className="pri-badge pri-badge-alta">Alta</span>
-              <div className="pri-body">
-                <p className="pri-perche"><strong>Perché ora:</strong> Il follow-up con Luca Martini è nella finestra critica. Dopo 14 giorni la conversazione si raffredda e ripartire costa 3x lo sforzo.</p>
-                <p className="pri-cosa"><strong>Cosa fare:</strong> Apri LinkedIn → DM a Luca → Condividi il dato sul follow-up day 3-7 (dove il 40% dei deal muore) → Proponi 10 min questa settimana.</p>
-              </div>
-            </div>
-            <div className="pri-item pri-item-alta">
-              <span className="pri-badge pri-badge-alta">Alta</span>
-              <div className="pri-body">
-                <p className="pri-perche"><strong>Perché ora:</strong> Marco Bianchi ha commentato il tuo post ieri. Rispondere entro 24h mantiene il momentum. Dopo 48h il thread è morto.</p>
-                <p className="pri-cosa"><strong>Cosa fare:</strong> Rispondi al commento con un insight su pipeline per nuovi sales → Se risponde, invia richiesta di connessione → Prepara DM per domani.</p>
-              </div>
-            </div>
-            <div className="pri-item pri-item-media">
-              <span className="pri-badge pri-badge-media">Media</span>
-              <div className="pri-body">
-                <p className="pri-perche"><strong>Perché ora:</strong> Non pubblichi da 4 giorni. L&apos;ultimo post ha performato bene (1.200 impression). L&apos;algoritmo è &quot;caldo&quot; — pubblicare oggi massimizza la portata.</p>
-                <p className="pri-cosa"><strong>Cosa fare:</strong> Pubblica tra le 8:00-9:30 → Nei primi 30 min rispondi a ogni commento entro 5 min → Se un decision-maker commenta, segnalo come prospect caldo.</p>
-              </div>
-            </div>
+          <div className="pri-list-v7">
+            <ActionCard
+              priority="alta"
+              why="Il follow-up con Luca Martini è nella finestra critica. Dopo 14 giorni la conversazione si raffredda e ripartire costa 3x lo sforzo."
+              what="Apri LinkedIn → DM a Luca → Condividi il dato sul follow-up day 3-7 (dove il 40% dei deal muore) → Proponi 10 min questa settimana."
+            />
+            <ActionCard
+              priority="alta"
+              why="Marco Bianchi ha commentato il tuo post ieri. Rispondere entro 24h mantiene il momentum. Dopo 48h il thread è morto."
+              what="Rispondi al commento con un insight su pipeline per nuovi sales → Se risponde, invia richiesta di connessione → Prepara DM per domani."
+            />
+            <ActionCard
+              priority="media"
+              why={`Non pubblichi da 4 giorni. L'ultimo post ha performato bene (1.200 impression). L'algoritmo è "caldo" — pubblicare oggi massimizza la portata.`}
+              what="Pubblica tra le 8:00-9:30 → Nei primi 30 min rispondi a ogni commento entro 5 min → Se un decision-maker commenta, segnalo come prospect caldo."
+            />
           </div>
         </section>
 

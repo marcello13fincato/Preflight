@@ -8043,3 +8043,132 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
     border-color:rgba(59,130,246,0.15);
   }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   DASHBOARD V7 — Sistema operativo commerciale
+═══════════════════════════════════════════════════════════ */
+
+/* ── Page Header v7 ── */
+.dash-page-head-v7{padding:0.5rem 0}
+.dash-page-eyebrow{
+  font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--color-primary);margin:0 0 0.4rem;
+}
+.dash-page-title-v7{
+  font-size:1.85rem;font-weight:900;color:var(--color-text);
+  letter-spacing:-0.035em;margin:0 0 0.35rem;line-height:1.15;
+}
+.dash-page-sub-v7{
+  font-size:0.95rem;color:var(--color-muted);margin:0;line-height:1.5;
+  max-width:52ch;
+}
+
+/* ── OpportunityCard v7 ── */
+.opp-section-v7{padding:0}
+.opp-grid-v7{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.15rem;
+}
+.opp-card-v7{
+  background:var(--color-bg);
+  border:1px solid var(--color-border);
+  border-radius:18px;padding:1.4rem 1.6rem;
+  display:flex;flex-direction:column;gap:0.65rem;
+  transition:all 0.2s ease;
+  position:relative;
+}
+.opp-card-v7:hover{
+  border-color:rgba(59,130,246,0.3);
+  box-shadow:0 8px 24px rgba(10,102,194,0.08);
+  transform:translateY(-1px);
+}
+.opp-card-v7-header{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.opp-card-v7-icon{font-size:1.1rem;line-height:1}
+.opp-card-v7-badge{
+  font-size:0.62rem;font-weight:700;padding:0.2rem 0.6rem;
+  border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;
+}
+.opp-card-v7-badge-urgent{background:var(--color-danger-bg);color:var(--color-danger)}
+.opp-card-v7-badge-call{background:var(--color-success-bg);color:var(--color-success)}
+.opp-card-v7-badge-warm{background:var(--color-warning-bg);color:var(--color-warning)}
+.opp-card-v7-badge-unlock{background:rgba(139,92,246,0.12);color:#7c3aed}
+.opp-card-v7-title{
+  font-size:1rem;font-weight:800;color:var(--color-text);
+  margin:0;line-height:1.25;letter-spacing:-0.02em;
+}
+.opp-card-v7-reason{
+  font-size:0.83rem;color:var(--color-muted);line-height:1.65;margin:0;
+}
+.opp-card-v7-action{
+  margin-top:auto;padding-top:0.6rem;
+  border-top:1px solid var(--color-border);
+}
+.opp-card-v7-action-label{
+  font-size:0.7rem;font-weight:700;color:var(--color-primary);
+  text-transform:uppercase;letter-spacing:0.06em;
+  display:block;margin-bottom:0.25rem;
+}
+.opp-card-v7-action-text{
+  font-size:0.83rem;color:var(--color-text);line-height:1.6;margin:0;
+}
+
+/* Variant left borders */
+.opp-card-v7-urgent{border-left:3.5px solid var(--color-danger)}
+.opp-card-v7-call{border-left:3.5px solid var(--color-success)}
+.opp-card-v7-warm{border-left:3.5px solid var(--color-warning)}
+.opp-card-v7-unlock{border-left:3.5px solid #7c3aed}
+
+/* First two cards (urgent + call) get emphasis */
+.opp-grid-v7 .opp-card-v7:nth-child(1),
+.opp-grid-v7 .opp-card-v7:nth-child(2){
+  box-shadow:0 4px 16px rgba(10,102,194,0.06);
+}
+
+/* ── ActionCard v7 ── */
+.pri-section-v7{padding:0}
+.pri-head-v7{margin-bottom:1.1rem}
+.pri-title-v7{
+  font-size:1.25rem;font-weight:800;color:var(--color-text);
+  margin:0 0 0.25rem;letter-spacing:-0.025em;
+}
+.pri-sub-v7{font-size:0.88rem;color:var(--color-muted);margin:0}
+.pri-list-v7{display:flex;flex-direction:column;gap:0.85rem}
+.act-card-v7{
+  display:flex;gap:1rem;align-items:flex-start;
+  background:var(--color-bg);border:1px solid var(--color-border);
+  border-radius:14px;padding:1.2rem 1.4rem;
+  transition:border-color 0.2s ease;
+}
+.act-card-v7:hover{border-color:rgba(59,130,246,0.2)}
+.act-card-v7-badge{
+  font-size:0.62rem;font-weight:700;padding:0.22rem 0.6rem;
+  border-radius:6px;text-transform:uppercase;letter-spacing:0.05em;
+  flex-shrink:0;margin-top:0.15rem;
+}
+.act-card-v7-badge-alta{background:var(--color-danger-bg);color:var(--color-danger)}
+.act-card-v7-badge-media{background:var(--color-warning-bg);color:var(--color-warning)}
+.act-card-v7-badge-bassa{background:rgba(107,114,128,0.08);color:var(--color-muted)}
+.act-card-v7-body{flex:1;min-width:0}
+.act-card-v7-why{
+  font-size:0.84rem;color:var(--color-muted);line-height:1.65;margin:0 0 0.45rem;
+}
+.act-card-v7-what{
+  font-size:0.84rem;color:var(--color-text);line-height:1.65;margin:0;
+}
+
+/* ── Responsive v7 ── */
+@media(max-width:768px){
+  .opp-grid-v7{grid-template-columns:1fr}
+  .dash-page-title-v7{font-size:1.5rem}
+}
+
+/* ── Dark mode overrides v7 ── */
+@media(prefers-color-scheme:dark){
+  .opp-card-v7-badge-urgent{background:rgba(220,38,38,0.18);color:#fca5a5}
+  .opp-card-v7-badge-call{background:rgba(22,163,74,0.18);color:#86efac}
+  .opp-card-v7-badge-warm{background:rgba(217,119,6,0.18);color:#fde68a}
+  .opp-card-v7-badge-unlock{background:rgba(139,92,246,0.18);color:#a78bfa}
+  .act-card-v7-badge-alta{background:rgba(220,38,38,0.15);color:#fca5a5}
+  .act-card-v7-badge-media{background:rgba(217,119,6,0.15);color:#fde68a}
+}
