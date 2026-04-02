@@ -8378,7 +8378,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   min-height:100vh;
   height:100vh;
   overflow:hidden;
-  background:#F7FAFF;
+  background:#fff;
 }
 
 /* ── Main area: fill remaining space, scroll internally ── */
@@ -8398,7 +8398,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   overflow-x:hidden;
   padding:0;
   box-sizing:border-box;
-  background:transparent;
+  background:#fff;
 }
 .app-content::-webkit-scrollbar{width:6px}
 .app-content::-webkit-scrollbar-thumb{background:rgba(10,102,194,0.12);border-radius:3px}
@@ -8407,7 +8407,10 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 /* Pages add their own internal padding via dash-page-v6 */
 .dash-page-v6.dash-page-v6{
   max-width:100%;width:100%;
+  min-height:100%;
   padding:1.5rem 2rem 3rem;
+  background:#fff;
+  box-sizing:border-box;
 }
 @media(min-width:1440px){.dash-page-v6.dash-page-v6{padding:1.75rem 2.5rem 3.5rem}}
 @media(min-width:1920px){.dash-page-v6.dash-page-v6{padding:2rem 3rem 4rem}}
@@ -8546,6 +8549,9 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 .simulator-page.simulator-page,
 .pipeline-page.pipeline-page{
   padding:1.5rem 2rem 3rem;
+  min-height:100%;
+  background:#fff;
+  box-sizing:border-box;
 }
 @media(min-width:1440px){
   .tool-page.tool-page,.oggi-page.oggi-page,.find-clients-page.find-clients-page,
