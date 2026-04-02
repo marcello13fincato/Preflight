@@ -3,6 +3,7 @@ import Link from "next/link";
 import getServerAuthSession from "@/lib/getServerAuthSession";
 import AppSidebar from "@/components/app/AppSidebar";
 import SystemBanner from "@/components/app/SystemBanner";
+import AIContextBanner from "@/components/app/AIContextBanner";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
@@ -30,6 +31,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
         <SystemBanner />
+        <AIContextBanner />
         <main className="app-content">
           {children}
         </main>

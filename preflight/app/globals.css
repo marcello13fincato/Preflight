@@ -2007,11 +2007,97 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   .onb-model-grid{grid-template-columns:1fr}
   .onb-fields-grid{grid-template-columns:1fr}
   .onb-fields-grid-3{grid-template-columns:1fr}
+  .onb-status-grid{grid-template-columns:1fr}
 }
 @media (max-width:560px){
   .onb-engine-steps{gap:0.3rem}
   .onb-step-label{display:none}
   .onb-section-icon{width:40px;height:40px;font-size:1.5rem;border-radius:12px}
+}
+
+/* Step number badge */
+.onb-step-number{
+  display:inline-block;
+  font-size:0.65rem;font-weight:800;letter-spacing:0.08em;
+  color:var(--color-primary);opacity:0.6;
+  margin-bottom:0.35rem;
+}
+
+/* Step transition animation */
+.onb-step-transition{
+  animation:onb-step-in 0.35s cubic-bezier(.4,0,.2,1) both;
+}
+@keyframes onb-step-in{
+  from{opacity:0;transform:translateX(16px)}
+  to{opacity:1;transform:translateX(0)}
+}
+
+/* Tone sample cards */
+.onb-tone-sample{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:1rem 1.25rem;
+  position:relative;
+}
+.onb-tone-sample-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:0.5rem;
+}
+.onb-tone-sample-label{
+  font-size:0.72rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.06em;color:var(--color-primary);
+}
+.onb-tone-sample-remove{
+  background:none;border:none;cursor:pointer;
+  color:var(--color-muted);font-size:0.85rem;
+  padding:0.2rem 0.4rem;border-radius:4px;
+  transition:color 0.15s,background 0.15s;
+}
+.onb-tone-sample-remove:hover{
+  color:#ef4444;background:rgba(239,68,68,0.08);
+}
+.onb-tone-sample-text{
+  font-size:0.85rem;color:var(--color-text);line-height:1.6;
+  margin:0;font-style:italic;
+}
+
+/* Add sample button */
+.onb-add-sample-btn{
+  display:inline-flex;align-items:center;gap:0.3rem;
+  margin-top:0.5rem;padding:0.5rem 1rem;
+  border-radius:var(--radius-md);
+  border:1.5px dashed var(--color-border);
+  background:transparent;color:var(--color-primary);
+  font-size:0.82rem;font-weight:600;
+  cursor:pointer;transition:all 0.15s;
+}
+.onb-add-sample-btn:hover:not(:disabled){
+  border-color:var(--color-primary);
+  background:rgba(59,130,246,0.04);
+}
+.onb-add-sample-btn:disabled{
+  opacity:0.4;cursor:not-allowed;
+}
+
+/* Status card icon */
+.onb-status-icon{
+  font-size:1.3rem;margin-bottom:0.15rem;
+}
+
+/* Completion badge */
+.onb-complete-badge{
+  width:64px;height:64px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;margin-bottom:1.25rem;
+  background:linear-gradient(135deg,#10b981,#059669);
+  color:#fff;font-size:1.75rem;font-weight:800;
+  box-shadow:0 8px 32px rgba(16,185,129,0.3);
+  animation:onb-badge-pop 0.5s cubic-bezier(.175,.885,.32,1.275) both;
+}
+@keyframes onb-badge-pop{
+  from{opacity:0;transform:scale(0.5)}
+  to{opacity:1;transform:scale(1)}
 }
 
 /* ── Persistent banner ── */

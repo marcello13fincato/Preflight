@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
+import { callAI } from "@/lib/ai/aiEngine";
 import { postBuilderSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
 
 const requestSchema = z.object({
-  profile: z.unknown().optional(),
   draft_post: z.string(),
   objective: z.string(),
   dm_keyword: z.string(),
@@ -14,53 +13,34 @@ const requestSchema = z.object({
 
 export async function POST(req: Request) {
   const body = await req.json();
-  if (process.env.NODE_ENV !== "production") {
-    console.log("[post] Received payload:", JSON.stringify(body));
-  }
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid post input", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  try {
-    const { draft_post, objective, dm_keyword, profile } = parsed.data;
-    const prompt = `${salesRules}
+  const { draft_post, objective, dm_keyword } = parsed.data;
 
-Stai scrivendo un post LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
+  const taskPrompt = `COMPITO: Scrivi un post LinkedIn ottimizzato.
+
+USA il contesto commerciale dell'utente per:
+- Allineare il post al suo posizionamento e differenziatore
+- Parlare al suo cliente ideale
+- Usare il tono coerente con il suo modello di vendita
+
+Restituisci JSON:
 {
-  "hooks": [
-    "<stringa: hook accattivante 1>",
-    "<stringa: hook accattivante 2>",
-    "<stringa: hook accattivante 3>",
-    "<stringa: hook accattivante 4>",
-    "<stringa: hook accattivante 5>"
-  ],
-  "post_versions": {
-    "clean": "<stringa: versione pulita e leggibile del post>",
-    "direct": "<stringa: versione diretta e incisiva>",
-    "authority": "<stringa: versione autorevole ed esperta>"
-  },
-  "cta": "<stringa: call to action per il post>",
-  "comment_starter": "<stringa: commento esempio per stimolare engagement>",
-  "next_step": "<stringa: prossima azione concreta dopo la pubblicazione>",
-  "suggerimento_immagine": {
-    "tipo": "<stringa: tipo di immagine consigliata. Suggerisci SEMPRE di preferire foto reali dell'utente (foto mentre lavora, foto dell'ambiente, screenshot di lavoro reale) oppure grafiche semplici per attirare attenzione>",
-    "perche_funziona": "<stringa: perché questo tipo di immagine funziona per questo post>"
-  }
-}
+  "hooks": ["<hook 1>", "<hook 2>", "<hook 3>", "<hook 4>", "<hook 5>"],
+  "post_versions": { "clean": "<versione pulita>", "direct": "<versione diretta>", "authority": "<versione autorevole>" },
+  "cta": "<call to action>",
+  "comment_starter": "<commento per stimolare engagement>",
+  "next_step": "<prossima azione dopo pubblicazione>",
+  "suggerimento_immagine": { "tipo": "<foto reale o grafica semplice>", "perche_funziona": "<perché funziona>" }
+}`;
 
-Contesto:
-- Bozza/idea: ${draft_post}
-- Obiettivo: ${objective}
-- Parola chiave DM: ${dm_keyword}
-${formatProfileContext(profile) || "- Profilo utente: non configurato"}`;
-    const output = await generateStructured({ prompt, schema: postBuilderSchema });
-    return NextResponse.json(output);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    if (process.env.NODE_ENV !== "production") {
-      console.error("[post] AI error:", message);
-    }
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  return callAI({
+    taskType: "post_builder",
+    schema: postBuilderSchema,
+    taskPrompt,
+    userInput: `Bozza/idea: ${draft_post}\nObiettivo: ${objective}\nParola chiave DM: ${dm_keyword}`,
+  });
 }

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { generateStructured, salesRules } from "@/lib/ai/structured";
 import { onboardingInputSchema, planSchema } from "@/lib/sales/schemas";
+import prisma from "@/lib/prisma";
+import getServerAuthSession from "@/lib/getServerAuthSession";
 
 export const runtime = "nodejs";
 
@@ -16,6 +18,65 @@ export async function POST(req: Request) {
 
   try {
     const d = parsed.data;
+
+    // Persist to SystemProfile (the central AI context)
+    const session = await getServerAuthSession();
+    const userId = session?.user?.email || session?.user?.name || "anonymous";
+
+    await prisma.systemProfile.upsert({
+      where: { userId },
+      create: {
+        userId,
+        servizio: d.servizio,
+        tipoServizio: d.tipo_servizio || "",
+        elevatorPitch: d.elevator_pitch || "",
+        differenziatore: d.differenziatore || "",
+        clienteIdeale: d.cliente_ideale,
+        settore: d.settore || "",
+        dimensioneAzienda: d.dimensione_azienda || "",
+        problemaCliente: d.problema_cliente,
+        risultatoCliente: d.risultato_cliente || "",
+        segnaliInteresse: d.segnali_interesse,
+        obiezioneFrequente: d.obiezione_frequente || "",
+        modelloVendita: d.modello_vendita || "",
+        ticketMedio: d.ticket_medio || "",
+        cicloVendita: d.ciclo_vendita || "",
+        ctaPreferita: d.cta_preferita || "",
+        tempoSettimanale: d.tempo_settimanale || "",
+        statoLinkedin: d.stato_linkedin || "",
+        linkedinUrl: d.linkedin_url || "",
+        sitoWeb: d.sito_web || "",
+        linkedinLinks: JSON.stringify(d.linkedin_search_links || []),
+        materialiNomi: JSON.stringify(d.materiali_nomi || []),
+        toneSamples: JSON.stringify(d.tone_samples || []),
+        setupComplete: true,
+      },
+      update: {
+        servizio: d.servizio,
+        tipoServizio: d.tipo_servizio || "",
+        elevatorPitch: d.elevator_pitch || "",
+        differenziatore: d.differenziatore || "",
+        clienteIdeale: d.cliente_ideale,
+        settore: d.settore || "",
+        dimensioneAzienda: d.dimensione_azienda || "",
+        problemaCliente: d.problema_cliente,
+        risultatoCliente: d.risultato_cliente || "",
+        segnaliInteresse: d.segnali_interesse,
+        obiezioneFrequente: d.obiezione_frequente || "",
+        modelloVendita: d.modello_vendita || "",
+        ticketMedio: d.ticket_medio || "",
+        cicloVendita: d.ciclo_vendita || "",
+        ctaPreferita: d.cta_preferita || "",
+        tempoSettimanale: d.tempo_settimanale || "",
+        statoLinkedin: d.stato_linkedin || "",
+        linkedinUrl: d.linkedin_url || "",
+        sitoWeb: d.sito_web || "",
+        linkedinLinks: JSON.stringify(d.linkedin_search_links || []),
+        materialiNomi: JSON.stringify(d.materiali_nomi || []),
+        toneSamples: JSON.stringify(d.tone_samples || []),
+        setupComplete: true,
+      },
+    });
     const prompt = `${salesRules}
 
 Stai costruendo un piano LinkedIn Sales OS di 14 giorni. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):

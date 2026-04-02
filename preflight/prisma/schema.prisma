@@ -56,14 +56,37 @@ model SystemProfile {
   userId           String   @unique
   user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Core commercial context
   servizio         String   @default("")
+  tipoServizio     String   @default("")  // consulenza | servizio | coaching | agenzia | altro
+  elevatorPitch    String   @default("")
+  differenziatore  String   @default("")
   clienteIdeale    String   @default("")
+  settore          String   @default("")
+  dimensioneAzienda String  @default("")  // freelance | startup | pmi | enterprise
   problemaCliente  String   @default("")
   risultatoCliente String   @default("")
+  segnaliInteresse String   @default("")
+  obiezioneFrequente String @default("")
+
+  // Sales model
+  modelloVendita   String   @default("")  // fast | consultative | relationship
+  ticketMedio      String   @default("")  // under_1k | 1k_5k | 5k_15k | 15k_50k | over_50k
+  cicloVendita     String   @default("")  // under_1w | 1_4w | 1_3m | over_3m
+  ctaPreferita     String   @default("")  // call | demo | audit | preventivo | altro
+  tempoSettimanale String   @default("")
+
+  // LinkedIn & links
+  statoLinkedin    String   @default("")  // non_uso | pubblico_no_risultati | scrivo_no_risposta | conversazioni_no_call
+  linkedinUrl      String   @default("")
+  sitoWeb          String   @default("")
   linkedinLinks    String   @default("[]") // JSON array
   materialiNomi    String   @default("[]") // JSON array
   socialLinks      String   @default("[]") // JSON array
-  tempoSettimanale String   @default("")
+  toneSamples      String   @default("[]") // JSON array of text samples for tone/style
+
+  // Context completeness
+  setupComplete    Boolean  @default(false)
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt

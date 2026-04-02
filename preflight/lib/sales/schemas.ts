@@ -292,7 +292,10 @@ export const onboardingInputSchema = z.object({
   /* Step 4 — Segnali */
   segnali_interesse: z.string().min(1),
 
-  /* Step 5 — Stato attuale */
+  /* Step 5 — Come comunichi */
+  tone_samples: z.array(z.string()).optional().default([]),
+
+  /* Step 6 — Stato attuale */
   stato_linkedin: z.enum(["non_uso", "pubblico_no_risultati", "scrivo_no_risposta", "conversazioni_no_call"]).default("non_uso"),
 
   /* Legacy fields — kept optional for backward compatibility */

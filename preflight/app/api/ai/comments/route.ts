@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateStructured, salesRules, formatProfileContext } from "@/lib/ai/structured";
+import { callAI } from "@/lib/ai/aiEngine";
 import { commentAssistantSchema } from "@/lib/sales/schemas";
 
 export const runtime = "nodejs";
 
 const requestSchema = z.object({
-  profile: z.unknown().optional(),
   original_post: z.string(),
   received_comment: z.string(),
   commenter_profile_text: z.string().optional().default(""),
@@ -16,47 +15,41 @@ const requestSchema = z.object({
 
 export async function POST(req: Request) {
   const body = await req.json();
-  if (process.env.NODE_ENV !== "production") {
-    console.log("[comments] Received payload:", JSON.stringify(body));
-  }
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: "Invalid comments input", details: parsed.error.flatten() }, { status: 400 });
   }
 
-  try {
-    const { original_post, received_comment, commenter_profile_text, commenter_linkedin_url, conversation_goal, profile } = parsed.data;
-    const prompt = `${salesRules}
+  const { original_post, received_comment, commenter_profile_text, commenter_linkedin_url, conversation_goal } = parsed.data;
 
-Stai analizzando un commento LinkedIn. Rispondi ESCLUSIVAMENTE in italiano. Restituisci SOLO un oggetto JSON con esattamente questa struttura (nessun campo extra):
+  const taskPrompt = `COMPITO: Analizza un commento LinkedIn e suggerisci come rispondere.
+
+USA il contesto commerciale dell'utente per capire se il commentatore è in target e adattare la strategia di risposta al servizio e posizionamento dell'utente.
+
+Restituisci JSON:
 {
-  "comment_type": "<uno tra: lead | curious | support | objection | negative | peer>",
-  "strategy": "<stringa: strategia di risposta in 1-2 frasi, in italiano>",
-  "client_heat_level": "<uno tra: Cold | Warm | Hot>",
-  "message_risk_warning": "<stringa: rischio in questa risposta, o 'nessuno' se non c'è>",
-  "replies": {
-    "soft": "<stringa: risposta calda ed empatica, in italiano>",
-    "authority": "<stringa: risposta autorevole ed esperta, in italiano>",
-    "dm_pivot": "<stringa: risposta che porta la conversazione in DM, in italiano>"
-  },
-  "suggested_dm": "<stringa: messaggio DM esatto da inviare dopo la risposta, in italiano>",
-  "next_action": "<stringa: prossimo passo concreto, in italiano>"
-}
+  "comment_type": "<lead | curious | support | objection | negative | peer>",
+  "strategy": "<strategia di risposta>",
+  "client_heat_level": "<Cold | Warm | Hot>",
+  "message_risk_warning": "<rischio, o 'nessuno'>",
+  "replies": { "soft": "<risposta empatica>", "authority": "<risposta autorevole>", "dm_pivot": "<risposta per portare in DM>" },
+  "suggested_dm": "<messaggio DM da inviare dopo>",
+  "next_action": "<prossimo passo>"
+}`;
 
-Contesto:
-- Post originale: ${original_post}
-- Commento ricevuto: ${received_comment}
-- Profilo autore commento: ${commenter_profile_text || "non fornito"}
-${commenter_linkedin_url ? `- LinkedIn autore commento: ${commenter_linkedin_url}` : ""}
-- Obiettivo conversazione: ${conversation_goal}
-${formatProfileContext(profile) || "- Profilo utente: non configurato"}`;
-    const output = await generateStructured({ prompt, schema: commentAssistantSchema });
-    return NextResponse.json(output);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Errore AI sconosciuto";
-    if (process.env.NODE_ENV !== "production") {
-      console.error("[comments] AI error:", message);
-    }
-    return NextResponse.json({ error: message }, { status: 500 });
-  }
+  const userInput = [
+    `Post originale: ${original_post}`,
+    `Commento ricevuto: ${received_comment}`,
+    commenter_profile_text ? `Profilo commentatore: ${commenter_profile_text}` : "",
+    commenter_linkedin_url ? `LinkedIn commentatore: ${commenter_linkedin_url}` : "",
+    `Obiettivo: ${conversation_goal}`,
+  ].filter(Boolean).join("\n");
+
+  return callAI({
+    taskType: "comment_assistant",
+    schema: commentAssistantSchema,
+    taskPrompt,
+    userInput,
+    contextOptions: commenter_linkedin_url ? { prospectLinkedinUrl: commenter_linkedin_url } : undefined,
+  });
 }

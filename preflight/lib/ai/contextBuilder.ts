@@ -15,6 +15,20 @@ export type AIContext = {
     risultatoCliente: string;
     linkedinLinks: string[];
     tempoSettimanale: string;
+    tipoServizio: string;
+    elevatorPitch: string;
+    differenziatore: string;
+    settore: string;
+    dimensioneAzienda: string;
+    segnaliInteresse: string;
+    obiezioneFrequente: string;
+    modelloVendita: string;
+    ticketMedio: string;
+    cicloVendita: string;
+    ctaPreferita: string;
+    statoLinkedin: string;
+    linkedinUrl: string;
+    sitoWeb: string;
   } | null;
   strategicSummary: string | null;
   recentActivity: Array<{
@@ -83,6 +97,21 @@ export async function buildAIContext(
           risultatoCliente: profile.risultatoCliente,
           linkedinLinks: safeJsonArray(profile.linkedinLinks),
           tempoSettimanale: profile.tempoSettimanale,
+          // Extended fields from new schema
+          tipoServizio: profile.tipoServizio || "",
+          elevatorPitch: profile.elevatorPitch || "",
+          differenziatore: profile.differenziatore || "",
+          settore: profile.settore || "",
+          dimensioneAzienda: profile.dimensioneAzienda || "",
+          segnaliInteresse: profile.segnaliInteresse || "",
+          obiezioneFrequente: profile.obiezioneFrequente || "",
+          modelloVendita: profile.modelloVendita || "",
+          ticketMedio: profile.ticketMedio || "",
+          cicloVendita: profile.cicloVendita || "",
+          ctaPreferita: profile.ctaPreferita || "",
+          statoLinkedin: profile.statoLinkedin || "",
+          linkedinUrl: profile.linkedinUrl || "",
+          sitoWeb: profile.sitoWeb || "",
         }
       : null,
     strategicSummary: memory?.summary || null,
@@ -132,6 +161,20 @@ export function formatContext(ctx: AIContext): string {
       `- Risultato promesso: ${p.risultatoCliente || "non specificato"}`,
       `- Tempo settimanale LinkedIn: ${p.tempoSettimanale || "non specificato"}`,
     ];
+    if (p.tipoServizio) profileLines.push(`- Tipo servizio: ${p.tipoServizio}`);
+    if (p.elevatorPitch) profileLines.push(`- Elevator pitch: ${p.elevatorPitch}`);
+    if (p.differenziatore) profileLines.push(`- Differenziatore: ${p.differenziatore}`);
+    if (p.settore) profileLines.push(`- Settore: ${p.settore}`);
+    if (p.dimensioneAzienda) profileLines.push(`- Dimensione azienda target: ${p.dimensioneAzienda}`);
+    if (p.segnaliInteresse) profileLines.push(`- Segnali di interesse: ${p.segnaliInteresse}`);
+    if (p.obiezioneFrequente) profileLines.push(`- Obiezione frequente: ${p.obiezioneFrequente}`);
+    if (p.modelloVendita) profileLines.push(`- Modello vendita: ${p.modelloVendita}`);
+    if (p.ticketMedio) profileLines.push(`- Ticket medio: ${p.ticketMedio}`);
+    if (p.cicloVendita) profileLines.push(`- Ciclo vendita: ${p.cicloVendita}`);
+    if (p.ctaPreferita) profileLines.push(`- CTA preferita: ${p.ctaPreferita}`);
+    if (p.statoLinkedin) profileLines.push(`- Stato LinkedIn: ${p.statoLinkedin}`);
+    if (p.linkedinUrl) profileLines.push(`- Profilo LinkedIn: ${p.linkedinUrl}`);
+    if (p.sitoWeb) profileLines.push(`- Sito web: ${p.sitoWeb}`);
     if (p.linkedinLinks.length > 0) {
       profileLines.push(`- Target LinkedIn: ${p.linkedinLinks.join(", ")}`);
     }
