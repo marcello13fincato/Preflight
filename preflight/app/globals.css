@@ -72,18 +72,18 @@ body {
 ═══════════════════════════════════════════════════════════ */
 .layout-main{
   width:100%;
-  max-width:100%;
-  margin:0 auto;
-  padding:3rem 3rem 4rem;
+  max-width:none;
+  margin:0;
+  padding:0;
 }
 @media(min-width:1440px){
-  .layout-main{padding:3rem 4rem 4rem}
+  .layout-main{padding:0}
 }
 @media(min-width:1920px){
-  .layout-main{padding:3rem 5rem 4rem}
+  .layout-main{padding:0}
 }
 @media(max-width:768px){
-  .layout-main{padding:1.5rem 1.25rem 2rem}
+  .layout-main{padding:0}
 }
 .container-wide{
   max-width:100%;
@@ -271,8 +271,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 /* ─── Homepage redesign ─── */
 .homepage-root {
   width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   box-sizing: border-box;
 }
 
@@ -309,22 +309,21 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
   }
 }
 
-/* Full-bleed sections break out of parent padding */
+/* Full-bleed sections — already full width, no breakout needed */
 .hp-hero,.hp-section-dark,.hp-section-blue,.hp-section-light,.hp-section-soft,.hp-final-cta{
-  margin-left:calc(-50vw + 50%);margin-right:calc(-50vw + 50%);
-  width:100vw;
+  width:100%;
 }
 
 /* Inner container — fluid with comfortable padding */
 .hp-container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  max-width: none;
+  margin: 0;
+  padding: 0 3rem;
   box-sizing: border-box;
 }
-@media(min-width:1440px){.hp-container{padding:0 3rem}}
-@media(min-width:1920px){.hp-container{padding:0 4rem}}
+@media(min-width:1440px){.hp-container{padding:0 4rem}}
+@media(min-width:1920px){.hp-container{padding:0 6rem}}
 @media(max-width:768px){.hp-container{padding:0 1.5rem}}
 
 /* ── HERO ── */
@@ -8562,4 +8561,28 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   .tool-page.tool-page,.oggi-page.oggi-page,.find-clients-page.find-clients-page,
   .settings-page.settings-page,.onboarding-page.onboarding-page,
   .simulator-page.simulator-page,.pipeline-page.pipeline-page{padding:1rem 0.85rem 2rem}
+}
+
+/* ── GLOBAL FULL-WIDTH: kill all remaining boxed containers ── */
+.homepage-root.homepage-root,
+.layout-main.layout-main{
+  max-width:none!important;
+  width:100%;
+  margin:0;
+  padding:0;
+}
+.hp-container.hp-container{
+  max-width:none!important;
+  margin:0;
+  padding:0 3rem;
+}
+@media(min-width:1440px){.hp-container.hp-container{padding:0 4rem}}
+@media(min-width:1920px){.hp-container.hp-container{padding:0 6rem}}
+@media(max-width:768px){.hp-container.hp-container{padding:0 1.5rem}}
+
+/* Kill full-bleed breakout hack — no longer needed */
+.hp-hero.hp-hero,.hp-section-dark.hp-section-dark,.hp-section-blue.hp-section-blue,
+.hp-section-light.hp-section-light,.hp-section-soft.hp-section-soft,.hp-final-cta.hp-final-cta{
+  margin-left:0;margin-right:0;
+  width:100%;
 }
