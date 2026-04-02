@@ -98,15 +98,17 @@ export default function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="sb">
-      {/* Logo */}
+    <aside className="sb" role="navigation" aria-label="Navigazione principale">
+      {/* Brand */}
       <div className="sb-brand">
         <Link href="/app" style={{ display: "flex", alignItems: "center", gap: 0, textDecoration: "none" }}>
-          <img
-            src="/LOGO PREFLIGHT_Pittogramma.png"
-            alt="Preflight"
-            style={{ height: 28, width: "auto", filter: "brightness(0) invert(1) opacity(0.9)" }}
-          />
+          <div className="sb-logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <img
+              src="/LOGO PREFLIGHT_Pittogramma.png"
+              alt="Preflight"
+              style={{ height: 20, width: "auto", filter: "brightness(0) invert(1)" }}
+            />
+          </div>
           <span className="sb-brand-text">Preflight</span>
         </Link>
       </div>
@@ -138,10 +140,10 @@ export default function AppSidebar() {
       {/* Footer */}
       <div className="sb-footer">
         <div className="sb-footer-badge">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.7 }}>
             <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
           </svg>
-          <span className="sb-footer-badge-text">AI-powered</span>
+          <span className="sb-footer-badge-text">AI-powered Sales OS</span>
         </div>
       </div>
     </aside>

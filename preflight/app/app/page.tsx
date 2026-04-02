@@ -663,13 +663,15 @@ export default function AppTodayPage() {
             HEADER — Premium branded hero
         ═══════════════════════════════════════════════════════════ */}
         <div className="dash-hero">
-          <div>
-            <p className="dash-page-eyebrow" style={{ color: "rgba(255,255,255,0.5)" }}>Sala operativa</p>
+          <div style={{ position: "relative", zIndex: 1 }}>
+            <p className="dash-page-eyebrow" style={{ color: "rgba(255,255,255,0.4)" }}>
+              ◆ Sala operativa
+            </p>
             <h1 className="dash-page-title-v7" style={{
               background: "none", WebkitBackgroundClip: "unset", WebkitTextFillColor: "#fff",
-              color: "#fff", fontSize: "clamp(1.6rem, 3vw, 2.2rem)"
+              color: "#fff", fontSize: "clamp(1.7rem, 3.2vw, 2.4rem)"
             }}>Le tue opportunità di oggi</h1>
-            <p className="dash-page-sub-v7" style={{ color: "rgba(255,255,255,0.55)" }}>
+            <p className="dash-page-sub-v7" style={{ color: "rgba(255,255,255,0.5)" }}>
               Parti da ciò che può generare una conversazione o avvicinarti a una call.
             </p>
           </div>

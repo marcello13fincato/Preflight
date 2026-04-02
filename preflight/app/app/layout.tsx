@@ -11,16 +11,11 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     <div className="app-shell">
       <AppSidebar />
       <div className="app-main">
-        {/* Top bar — minimal, premium */}
         <header className="app-topbar">
           <div className="app-topbar-left">
             <div className="app-topbar-status">
               <span className="app-topbar-dot" />
               <span className="app-topbar-status-text">Online</span>
-            </div>
-            <div className="app-topbar-context" aria-label="Contesto dashboard">
-              <p className="app-topbar-kicker">Preflight</p>
-              <p className="app-topbar-title">Sistema commerciale</p>
             </div>
           </div>
           <div className="app-topbar-right">
