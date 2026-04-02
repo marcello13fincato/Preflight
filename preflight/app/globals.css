@@ -8389,14 +8389,14 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   overflow:hidden;
 }
 
-/* ── Content: scroll area, full width, tight padding ── */
+/* ── Content: scroll area, full width, no chrome padding ── */
 .app-content.app-content{
   flex:1;
   width:100%;
   max-width:100%;
   overflow-y:auto;
   overflow-x:hidden;
-  padding:1.5rem 2rem 3rem;
+  padding:0;
   box-sizing:border-box;
   background:transparent;
 }
@@ -8404,9 +8404,14 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 .app-content::-webkit-scrollbar-thumb{background:rgba(10,102,194,0.12);border-radius:3px}
 .app-content::-webkit-scrollbar-thumb:hover{background:rgba(10,102,194,0.22)}
 
-@media(min-width:1440px){.app-content.app-content{padding:1.75rem 2.5rem 3.5rem}}
-@media(min-width:1920px){.app-content.app-content{padding:2rem 3rem 4rem}}
-@media(max-width:768px){.app-content.app-content{padding:1rem 0.85rem 2rem}}
+/* Pages add their own internal padding via dash-page-v6 */
+.dash-page-v6.dash-page-v6{
+  max-width:100%;width:100%;
+  padding:1.5rem 2rem 3rem;
+}
+@media(min-width:1440px){.dash-page-v6.dash-page-v6{padding:1.75rem 2.5rem 3.5rem}}
+@media(min-width:1920px){.dash-page-v6.dash-page-v6{padding:2rem 3rem 4rem}}
+@media(max-width:768px){.dash-page-v6.dash-page-v6{padding:1rem 0.85rem 2rem}}
 
 /* ── Topbar: compact, branded ── */
 .app-topbar.app-topbar{
@@ -8527,7 +8532,28 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   .sb.sb.sb-open{left:0}
 }
 
-/* ── Dashboard page: use full width ── */
-.dash-page-v6.dash-page-v6{
-  max-width:100%;width:100%;
+/* Topbar also needs no extra margin since app-content has 0 padding */
+.app-topbar.app-topbar + .setup-card{
+  margin:0 2rem;
+}
+
+/* All page wrappers get internal padding since app-content has none */
+.tool-page.tool-page,
+.oggi-page.oggi-page,
+.find-clients-page.find-clients-page,
+.settings-page.settings-page,
+.onboarding-page.onboarding-page,
+.simulator-page.simulator-page,
+.pipeline-page.pipeline-page{
+  padding:1.5rem 2rem 3rem;
+}
+@media(min-width:1440px){
+  .tool-page.tool-page,.oggi-page.oggi-page,.find-clients-page.find-clients-page,
+  .settings-page.settings-page,.onboarding-page.onboarding-page,
+  .simulator-page.simulator-page,.pipeline-page.pipeline-page{padding:1.75rem 2.5rem 3.5rem}
+}
+@media(max-width:768px){
+  .tool-page.tool-page,.oggi-page.oggi-page,.find-clients-page.find-clients-page,
+  .settings-page.settings-page,.onboarding-page.onboarding-page,
+  .simulator-page.simulator-page,.pipeline-page.pipeline-page{padding:1rem 0.85rem 2rem}
 }

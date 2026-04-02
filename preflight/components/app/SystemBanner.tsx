@@ -30,9 +30,10 @@ export default function SystemBanner() {
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = repo.profile.getProfile(userId);
 
-  if (profile.onboarding_complete) return null;
-
   const pct = computeSystemProgress(profile.onboarding as Record<string, unknown> | null);
+
+  if (profile.onboarding_complete || pct >= 100) return null;
+
   const setupState: SetupState = pct > 0 ? "partial" : "not-started";
 
   return (
