@@ -8,34 +8,34 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
 
   return (
-    <div className="app-shell fade-in">
+    <div className="app-shell">
       <AppSidebar />
-      <div className="app-main fade-in-delay">
-        {/* Top bar */}
-        <header className="app-topbar fade-in-fast">
-          <div className="app-topbar-left fade-in">
+      <div className="app-main">
+        {/* Top bar — minimal, premium */}
+        <header className="app-topbar">
+          <div className="app-topbar-left">
             <div className="app-topbar-status">
               <span className="app-topbar-dot" />
-              <span className="app-topbar-status-text">Sistema attivo</span>
+              <span className="app-topbar-status-text">Online</span>
             </div>
             <div className="app-topbar-context" aria-label="Contesto dashboard">
               <p className="app-topbar-kicker">Preflight</p>
-              <p className="app-topbar-title">Sistema operativo commerciale</p>
+              <p className="app-topbar-title">Sistema commerciale</p>
             </div>
           </div>
-          <div className="app-topbar-right fade-in">
+          <div className="app-topbar-right">
             <span className="app-topbar-user">
-              {session?.user?.email || session?.user?.name || "Guest mode"}
+              {session?.user?.email || session?.user?.name || "Guest"}
             </span>
             {session ? (
-              <Link href="/api/auth/signout" className="app-topbar-btn fade-in-fast">
+              <Link href="/api/auth/signout" className="app-topbar-btn">
                 Esci
               </Link>
             ) : null}
           </div>
         </header>
         <SystemBanner />
-        <main className="app-content fade-in">
+        <main className="app-content">
           {children}
         </main>
       </div>

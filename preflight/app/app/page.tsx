@@ -660,13 +660,36 @@ export default function AppTodayPage() {
       <div className="dash-page-v6">
 
         {/* ═══════════════════════════════════════════════════════════
-            HEADER PAGINA
+            HEADER — Premium branded hero
         ═══════════════════════════════════════════════════════════ */}
-        <div className="dash-page-head-v7">
+        <div className="dash-hero">
           <div>
-            <p className="dash-page-eyebrow">Sistema operativo commerciale</p>
-            <h1 className="dash-page-title-v7">Le tue opportunità di oggi</h1>
-            <p className="dash-page-sub-v7">Parti da ciò che può generare una conversazione o avvicinarti a una call.</p>
+            <p className="dash-page-eyebrow" style={{ color: "rgba(255,255,255,0.5)" }}>Sala operativa</p>
+            <h1 className="dash-page-title-v7" style={{
+              background: "none", WebkitBackgroundClip: "unset", WebkitTextFillColor: "#fff",
+              color: "#fff", fontSize: "clamp(1.6rem, 3vw, 2.2rem)"
+            }}>Le tue opportunità di oggi</h1>
+            <p className="dash-page-sub-v7" style={{ color: "rgba(255,255,255,0.55)" }}>
+              Parti da ciò che può generare una conversazione o avvicinarti a una call.
+            </p>
+          </div>
+          <div className="dash-hero-kpis">
+            <div className="dash-hero-kpi">
+              <span className="dash-hero-kpi-value">{activityIndex}</span>
+              <span className="dash-hero-kpi-label">Indice attività</span>
+            </div>
+            <div className="dash-hero-kpi">
+              <span className="dash-hero-kpi-value">{streak > 0 ? `${streak}g` : "0g"}</span>
+              <span className="dash-hero-kpi-label">Streak</span>
+            </div>
+            <div className="dash-hero-kpi">
+              <span className="dash-hero-kpi-value">{contacts.length}</span>
+              <span className="dash-hero-kpi-label">Profili</span>
+            </div>
+            <div className="dash-hero-kpi">
+              <span className="dash-hero-kpi-value">{dashboardMetrics.messagesHandled}</span>
+              <span className="dash-hero-kpi-label">Messaggi</span>
+            </div>
           </div>
         </div>
 
