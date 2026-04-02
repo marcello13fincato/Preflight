@@ -46,21 +46,34 @@ export function formatAIResponse(
 }
 
 function formatAnalyzeProfile(raw: Record<string, unknown>): AIResponse {
+  const verdetto = raw.verdetto as Record<string, string> | undefined;
+  const perche = raw.perche as Record<string, string> | undefined;
+  const angolo = raw.angolo_attacco as Record<string, string> | undefined;
+  const followup = raw.followup as Record<string, string> | undefined;
+  const segnali = raw.segnali as Array<Record<string, string>> | undefined;
+  const errori = raw.errori_da_evitare as string[] | undefined;
+
+  const segnaliText = segnali
+    ? segnali.map((s) => `${s.tipo} → ${s.significato} → ${s.implicazione_commerciale}`).join("\n")
+    : "";
+
   return {
-    summary: String(raw.chi_e || "Analisi profilo completata"),
+    summary: verdetto?.sintesi || String(raw.chi_e || "Analisi profilo completata"),
     sections: [
       { title: "Chi è", content: String(raw.chi_e || "") },
       { title: "Ruolo e contesto", content: String(raw.ruolo_contesto || "") },
-      { title: "Perché è un buon contatto", content: String(raw.perche_buon_contatto || "") },
-      { title: "Strategia di contatto", content: String(raw.strategia_contatto || "") },
+      { title: "Verdetto", content: verdetto ? `${verdetto.vale_la_pena} — Priorità: ${verdetto.priorita} — Confidenza: ${verdetto.confidenza}\n${verdetto.sintesi}` : "" },
+      { title: "Segnali", content: segnaliText },
+      { title: "Perché contattarlo", content: perche ? `Fit: ${perche.fit_con_target}\nTiming: ${perche.timing}\nPotenziale: ${perche.potenziale}` : "" },
+      { title: "Angolo di attacco", content: angolo ? `Tema: ${angolo.tema}\nLeva: ${angolo.leva}\nEvita: ${angolo.cosa_evitare}` : "" },
+      { title: "Nota di connessione", content: String(raw.nota_connessione || "") },
       { title: "Primo messaggio", content: String(raw.primo_messaggio || "") },
-      { title: "Follow-up consigliato", content: String(raw.followup_consigliato || "") },
-      { title: "Prossimi passi", content: String(raw.step_successivi || "") },
-      { title: "Segnali da osservare", content: String(raw.segnali_da_osservare || "") },
-      { title: "Errori da evitare", content: String(raw.errori_da_evitare || "") },
+      { title: "Follow-up", content: followup ? `Quando: ${followup.quando}\nCita: ${followup.cosa_citare}\nObiettivo: ${followup.obiettivo}\n\n${followup.messaggio}` : "" },
+      { title: "Errori da evitare", content: errori ? errori.join("\n") : "" },
+      { title: "Prossimo step", content: String(raw.prossimo_step || "") },
     ],
     suggested_actions: [
-      String(raw.step_successivi || "Analizza altri profili"),
+      String(raw.prossimo_step || "Analizza altri profili"),
     ],
     metadata: {
       heat_level: String(raw.client_heat_level || "Cold"),

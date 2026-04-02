@@ -116,6 +116,7 @@ export function formatProfileContext(profile: unknown): string {
   const p = profile as Record<string, unknown>;
   const lines: string[] = [];
   if (p.servizio) lines.push(`- Servizio offerto: ${p.servizio}`);
+  if (p.tipo_servizio) lines.push(`- Tipo servizio: ${p.tipo_servizio}`);
   if (p.elevator_pitch) lines.push(`- Elevator pitch: ${p.elevator_pitch}`);
   if (p.settore) lines.push(`- Settore: ${p.settore}`);
   if (p.differenziatore) lines.push(`- Differenziatore unico: ${p.differenziatore}`);
@@ -124,6 +125,7 @@ export function formatProfileContext(profile: unknown): string {
   if (p.problema_cliente) lines.push(`- Problema del cliente: ${p.problema_cliente}`);
   if (p.risultato_cliente) lines.push(`- Risultato promesso: ${p.risultato_cliente}`);
   if (p.segnali_interesse) lines.push(`- Segnali di interesse: ${p.segnali_interesse}`);
+  if (p.stato_linkedin) lines.push(`- Stato attuale LinkedIn: ${p.stato_linkedin}`);
   if (p.obiezione_frequente) lines.push(`- Obiezione più frequente: ${p.obiezione_frequente}`);
   if (p.modello_vendita) lines.push(`- Modello di vendita: ${p.modello_vendita}`);
   if (p.ticket_medio) lines.push(`- Ticket medio: ${p.ticket_medio}`);

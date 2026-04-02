@@ -5,9 +5,55 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
+import InsightCard, { SectionDivider, MetricRow, MetricBadge } from "@/components/app/InsightCard";
 import { IconLightbulb } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
+
+/* ── Demo data realistico ── */
+const DEMO_RESULT: ProspectAnalyzerJson = {
+  score: 78,
+  chi_e: "Marco Bianchi — Head of Sales, SaaS B2B nel settore HR Tech",
+  ruolo_contesto: "Guida un team di 8 venditori in una scale-up che ha chiuso un Series A da 5M€ sei mesi fa. L'azienda sta espandendo il mercato italiano e ha iniziato ad approcciare il mid-market.",
+  verdetto: {
+    vale_la_pena: "Sì",
+    priorita: "Alta",
+    confidenza: "Media",
+    sintesi: "Profilo in espansione commerciale attiva con budget e autorità decisionale. Timing favorevole per proporre strumenti di acquisizione clienti.",
+  },
+  segnali: [
+    { tipo: "Sta assumendo in area sales", significato: "Il team commerciale sta crescendo", implicazione_commerciale: "Budget allocato per crescita → apertura a strumenti e metodi nuovi" },
+    { tipo: "Post recente su pipeline management", significato: "È attivo sul tema della gestione opportunità", implicazione_commerciale: "Sensibilità alta al tema → leva per aprire conversazione" },
+    { tipo: "Series A chiuso 6 mesi fa", significato: "Pressione su crescita revenue da parte degli investitori", implicazione_commerciale: "Urgenza di risultati → decisioni più rapide" },
+    { tipo: "Commenta post di founder e sales leader", significato: "Network attivo e in costruzione", implicazione_commerciale: "Ricettivo a nuove connessioni qualificate" },
+  ],
+  perche: {
+    fit_con_target: "Ruolo decisionale in area sales, azienda in crescita, settore compatibile con la tua offerta",
+    timing: "Post-fundraising con pressione su crescita, team in espansione — momento in cui cercano soluzioni",
+    potenziale: "Se converte, può diventare caso studio e referral per altre scale-up del portfolio",
+  },
+  angolo_attacco: {
+    tema: "Scalare l'outbound senza aumentare l'headcount",
+    leva: "La fase di crescita post-Series A crea pressione sui numeri ma il team è ancora snello",
+    cosa_evitare: "Non proporre una demo o un prodotto. Apri sul tema strategico, non sulla soluzione",
+  },
+  nota_connessione: "Marco, ho visto il tuo post sulla pipeline — lavoro su temi simili con team sales in crescita. Mi farebbe piacere connetterci.",
+  primo_messaggio: "Grazie per la connessione! Ho notato che state espandendo il team sales — curioso di capire come state strutturando l'outbound in questa fase. Ci sono pattern che vedo spesso nelle scale-up post-Series A.",
+  followup: {
+    quando: "5 giorni dopo il primo messaggio",
+    cosa_citare: "Un suo post o commento recente sul tema sales/pipeline",
+    obiettivo: "Riaprire la conversazione con un elemento specifico, senza chiedere nulla",
+    messaggio: "Marco, ho letto il tuo commento sul post di [nome] sulla pipeline — punto interessante. Ti capita di avere lo stesso problema con il mid-market?",
+  },
+  errori_da_evitare: [
+    "Non proporre subito una call — prima costruisci il contesto con 2-3 interazioni",
+    "Non parlare del tuo prodotto/servizio nel primo messaggio — parla del suo problema",
+    "Non inviare messaggi lunghi — massimo 3 righe, tono da pari a pari",
+  ],
+  prossimo_step: "Invia la richiesta di connessione con la nota personalizzata e metti un reminder tra 3 giorni per il follow-up",
+  client_heat_level: "Warm",
+  priority_signal: "high",
+};
 
 export default function Page() {
     const [linkedinUrl, setLinkedinUrl] = useState("");
@@ -17,8 +63,170 @@ export default function Page() {
     const [showPdfGuide, setShowPdfGuide] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    // Placeholder per la funzione generate (da implementare o mock)
-    const generate = () => {};
+    const [result, setResult] = useState<ProspectAnalyzerJson | null>(null);
+    const [showDemo, setShowDemo] = useState(false);
+
+    const data = result || (showDemo ? DEMO_RESULT : null);
+
+    const generate = () => {
+      if (!linkedinUrl.trim()) return;
+      setLoading(true);
+      setError(null);
+      // Per ora usa demo data dopo un breve delay
+      setTimeout(() => {
+        setResult(DEMO_RESULT);
+        setLoading(false);
+      }, 1800);
+    };
+
+  /* ── Output panel ── */
+  if (data) {
+    const heatColor = data.client_heat_level === "Hot" ? "red" : data.client_heat_level === "Warm" ? "amber" : "blue";
+    const priorityColor = data.verdetto.priorita === "Alta" ? "red" : data.verdetto.priorita === "Media" ? "amber" : "blue";
+    const verdettoColor = data.verdetto.vale_la_pena === "Sì" ? "green" : data.verdetto.vale_la_pena === "No" ? "red" : "amber";
+
+    return (
+      <div className="pr-fullscreen fade-in">
+        <div className="pr-score-hero fade-in">
+          <div className="pr-score-ring-wrap">
+            <div className="pr-score-ring">
+              <svg viewBox="0 0 120 120" className="pr-score-svg">
+                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
+                <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
+                  strokeDasharray={`${(data.score / 100) * 327} 327`}
+                  transform="rotate(-90 60 60)" className="pr-score-progress" />
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#3b82f6" />
+                    <stop offset="100%" stopColor="#06b6d4" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="pr-score-value">{data.score}</div>
+            </div>
+            <span className="pr-score-label">Compatibilità</span>
+          </div>
+          <div className="pr-score-info fade-in-delay">
+            <h1 className="pr-score-title">Diagnosi Profilo</h1>
+            <p className="pr-score-subtitle">{data.chi_e}</p>
+          </div>
+        </div>
+
+        {/* Metrics bar */}
+        <MetricRow>
+          <MetricBadge icon="🎯" label="Verdetto" value={data.verdetto.vale_la_pena} color={verdettoColor} />
+          <MetricBadge icon="⚡" label="Priorità" value={data.verdetto.priorita} color={priorityColor} />
+          <MetricBadge icon="🔥" label="Temperatura" value={data.client_heat_level} color={heatColor} />
+          <MetricBadge icon="📊" label="Confidenza" value={data.verdetto.confidenza} color="blue" />
+        </MetricRow>
+
+        {/* Verdetto */}
+        <div className="pr-diagnosis-section pr-diagnosis-highlight fade-in">
+          <div className="pr-diagnosis-icon">🎯</div>
+          <div className="pr-diagnosis-content">
+            <h3 className="pr-diagnosis-title">Verdetto</h3>
+            <p className="pr-diagnosis-text">{data.verdetto.sintesi}</p>
+          </div>
+        </div>
+
+        <div className="pr-result-grid">
+          {/* Segnali */}
+          <SectionDivider label="📡 Segnali rilevati" />
+          <div className="pr-signals-list">
+            {data.segnali.map((s, i) => (
+              <div key={i} className="pr-signal-card fade-in">
+                <span className="pr-signal-badge">{s.tipo}</span>
+                <p className="pr-signal-meaning">{s.significato}</p>
+                <p className="pr-signal-implication">→ {s.implicazione_commerciale}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Perché contattarlo */}
+          <SectionDivider label="🧠 Perché contattarlo" />
+          <div className="pr-why-grid">
+            <div className="pr-why-card fade-in">
+              <span className="pr-why-label">Fit con target</span>
+              <p>{data.perche.fit_con_target}</p>
+            </div>
+            <div className="pr-why-card fade-in">
+              <span className="pr-why-label">Timing</span>
+              <p>{data.perche.timing}</p>
+            </div>
+            <div className="pr-why-card fade-in">
+              <span className="pr-why-label">Potenziale</span>
+              <p>{data.perche.potenziale}</p>
+            </div>
+          </div>
+
+          {/* Angolo di attacco */}
+          <SectionDivider label="⚔️ Angolo di attacco" />
+          <div className="pr-diagnosis-section pr-diagnosis-highlight fade-in">
+            <div className="pr-diagnosis-content">
+              <div className="pr-attack-grid">
+                <div className="pr-attack-item">
+                  <span className="pr-attack-label">Tema</span>
+                  <p>{data.angolo_attacco.tema}</p>
+                </div>
+                <div className="pr-attack-item">
+                  <span className="pr-attack-label">Leva</span>
+                  <p>{data.angolo_attacco.leva}</p>
+                </div>
+                <div className="pr-attack-item pr-attack-avoid">
+                  <span className="pr-attack-label">⚠️ Evita</span>
+                  <p>{data.angolo_attacco.cosa_evitare}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Messaggi */}
+          <SectionDivider label="💬 Messaggi" />
+          <InsightCard icon="🤝" label="Nota di connessione" text={data.nota_connessione} variant="message" copyable />
+          <InsightCard icon="✉️" label="Primo messaggio" text={data.primo_messaggio} variant="message" copyable />
+
+          {/* Follow-up */}
+          <SectionDivider label="🔄 Follow-up" />
+          <div className="pr-followup-card fade-in">
+            <div className="pr-followup-meta">
+              <span className="pr-followup-tag">📅 {data.followup.quando}</span>
+              <span className="pr-followup-tag">💡 Cita: {data.followup.cosa_citare}</span>
+              <span className="pr-followup-tag">🎯 Obiettivo: {data.followup.obiettivo}</span>
+            </div>
+            <div className="pr-followup-message">
+              <p>{data.followup.messaggio}</p>
+              <CopyButton text={data.followup.messaggio} />
+            </div>
+          </div>
+
+          {/* Errori da evitare */}
+          <SectionDivider label="🚫 Errori da evitare" />
+          <div className="pr-errors-list">
+            {data.errori_da_evitare.map((err, i) => (
+              <div key={i} className="pr-error-item fade-in">
+                <span className="pr-error-icon">✕</span>
+                <p>{err}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Prossimo step */}
+          <div className="pr-diagnosis-section pr-next-step fade-in">
+            <div className="pr-diagnosis-icon">→</div>
+            <div className="pr-diagnosis-content">
+              <h3 className="pr-diagnosis-title">Prossimo step</h3>
+              <p className="pr-diagnosis-text">{data.prossimo_step}</p>
+            </div>
+          </div>
+        </div>
+
+        <button onClick={() => { setResult(null); setShowDemo(false); }} className="pr-generate-btn" style={{ marginTop: "2rem" }}>
+          ← Analizza un altro profilo
+        </button>
+      </div>
+    );
+  }
+
   // ── STATIC PAGE (INPUT) FULLSCREEN WOW ──
   return (
     <div className="pr-fullscreen pr-fullscreen-empty fade-in">
@@ -48,6 +256,10 @@ export default function Page() {
       </div>
       <div className="pr-input-layout fade-in">
         <div className="pr-form-card fade-in-delay">
+          <div className="qa-field">
+            <label className="qa-label">Link profilo LinkedIn</label>
+            <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nome-cognome" />
+          </div>
           <div className="qa-field">
             <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
             <p className="qa-microcopy">Se vuoi un'analisi più precisa, puoi caricare anche il PDF del profilo.</p>
@@ -97,14 +309,19 @@ export default function Page() {
               </>
             )}
           </button>
+          <button onClick={() => setShowDemo(true)} className="pr-demo-btn">
+            Vedi esempio di diagnosi →
+          </button>
         </div>
         <div className="pr-info-side">
           <div className="pr-info-card">
             <h3 className="pr-info-title">Cosa otterrai</h3>
             <div className="pr-info-features">
-              <div className="pr-info-feature">Analisi compatibilità</div>
-              <div className="pr-info-feature">Messaggi pronti da inviare</div>
-              <div className="pr-info-feature">Strategia e warning</div>
+              <div className="pr-info-feature">🎯 Verdetto chiaro: vale la pena contattarlo?</div>
+              <div className="pr-info-feature">📡 Segnali con implicazione commerciale</div>
+              <div className="pr-info-feature">⚔️ Angolo di attacco specifico</div>
+              <div className="pr-info-feature">💬 Messaggi pronti da copiare</div>
+              <div className="pr-info-feature">🚫 Errori da evitare</div>
             </div>
           </div>
         </div>

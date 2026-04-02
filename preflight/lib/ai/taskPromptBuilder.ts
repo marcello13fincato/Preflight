@@ -4,27 +4,63 @@ import { type AIContext, formatContext } from "./contextBuilder";
 export type TaskType = "analyze_profile" | "find_clients" | "ask_advice";
 
 const TASK_INSTRUCTIONS: Record<TaskType, string> = {
-  analyze_profile: `COMPITO: Analizza il profilo LinkedIn del prospect indicato.
+  analyze_profile: `COMPITO: Analizza il profilo LinkedIn del prospect come un consulente commerciale senior con 15+ anni di esperienza.
+
+NON scrivere come un'AI. Scrivi come un professionista che dà un parere diretto, concreto, utile.
 
 Valuta:
 1. Chi è questa persona (ruolo, settore, posizionamento)
-2. Perché potrebbe essere un buon contatto per l'utente
-3. Strategia di contatto personalizzata
-4. Primo messaggio pronto all'uso
-5. Follow-up consigliato
-6. Segnali da osservare e errori da evitare
+2. Verdetto chiaro: vale la pena contattarlo? Con che priorità?
+3. Segnali concreti con implicazione commerciale
+4. Perché è un buon contatto (fit, timing, potenziale)
+5. Angolo di attacco specifico (non generico)
+6. Messaggio breve e contestuale
+7. Follow-up con timing e obiettivo
+8. Errori specifici da evitare
+9. Prossimo step concreto
+
+REGOLE DI STILE:
+- Ogni segnale deve spiegare COSA significa e QUALE implicazione commerciale ha
+- Il verdetto deve essere netto, non diplomatico
+- L'angolo di attacco deve essere specifico al profilo, mai generico
+- I messaggi devono essere brevi (max 3 righe) e contestuali
+- Gli errori devono essere realistici e specifici, non ovvi
 
 Rispondi con un JSON con ESATTAMENTE questi campi:
 {
-  "chi_e": "<chi è, ruolo, settore>",
-  "ruolo_contesto": "<ruolo nel dettaglio, contesto aziendale>",
-  "perche_buon_contatto": "<motivi di allineamento con l'utente>",
-  "strategia_contatto": "<approccio consigliato dettagliato>",
-  "primo_messaggio": "<messaggio personalizzato pronto da usare>",
-  "followup_consigliato": "<follow-up se non risponde, con tempistica>",
-  "step_successivi": "<passi concreti dopo il primo contatto>",
-  "segnali_da_osservare": "<segnali positivi e negativi>",
-  "errori_da_evitare": "<errori comuni con questo tipo di contatto>",
+  "score": <0-100>,
+  "chi_e": "<chi è, ruolo, settore — 1 frase>",
+  "ruolo_contesto": "<ruolo nel dettaglio, contesto aziendale — 2 frasi max>",
+  "verdetto": {
+    "vale_la_pena": "<Sì | No | Debole>",
+    "priorita": "<Alta | Media | Bassa>",
+    "confidenza": "<Alta | Media | Bassa>",
+    "sintesi": "<1 frase secca che spiega il perché>"
+  },
+  "segnali": [
+    { "tipo": "<tipo segnale>", "significato": "<cosa significa>", "implicazione_commerciale": "<implicazione>" },
+    ...almeno 2, max 5
+  ],
+  "perche": {
+    "fit_con_target": "<perché il profilo è in target>",
+    "timing": "<perché è il momento giusto>",
+    "potenziale": "<qual è il potenziale commerciale>"
+  },
+  "angolo_attacco": {
+    "tema": "<tema specifico da usare>",
+    "leva": "<leva commerciale>",
+    "cosa_evitare": "<cosa NON fare>"
+  },
+  "nota_connessione": "<messaggio breve per la richiesta di connessione, max 2 righe>",
+  "primo_messaggio": "<messaggio dopo accettazione, max 3 righe, contestuale>",
+  "followup": {
+    "quando": "<dopo quanti giorni>",
+    "cosa_citare": "<elemento specifico da citare>",
+    "obiettivo": "<obiettivo del follow-up>",
+    "messaggio": "<testo del follow-up>"
+  },
+  "errori_da_evitare": ["<errore specifico 1>", "<errore specifico 2>", "<errore specifico 3>"],
+  "prossimo_step": "<azione concreta e semplice>",
   "client_heat_level": "<Cold | Warm | Hot>",
   "priority_signal": "<high | medium | low>"
 }`,

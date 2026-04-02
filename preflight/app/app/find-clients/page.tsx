@@ -6,6 +6,7 @@ import { useSession } from "next-auth/react";
 import CopyButton from "@/components/shared/CopyButton";
 import { IconLightbulb } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
+import ProspectCategoryCard, { type ProspectCategory } from "@/components/app/ProspectCategoryCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { findClientsSchema, type FindClientsJson } from "@/lib/sales/schemas";
 
@@ -53,6 +54,42 @@ export default function FindClientsPage() {
   const [error, setError] = useState<string | null>(null);
   const [prefilled, setPrefilled] = useState(false);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
+
+  const DEMO_CATEGORIES: ProspectCategory[] = [
+    {
+      titolo: "Founder SaaS B2B in fase di hiring sales",
+      priorita: "Alta",
+      perche: "Stanno assumendo venditori → budget allocato per crescita commerciale → apertura a metodi e strumenti nuovi per accelerare.",
+      segnali: ["Pubblica offerte lavoro sales", "Post su crescita aziendale", "Series A/B recente", "Team < 30 persone"],
+      angolo_attacco: "Parlare di come scalare l'outbound senza dipendere solo dai nuovi assunti — il processo conta più dell'headcount.",
+      azione_consigliata: "Commenta un loro post su crescita → dopo 2 interazioni, DM con domanda specifica sul loro processo outbound.",
+      link_ricerca_linkedin: "https://www.linkedin.com/search/results/people/?keywords=founder%20SaaS%20B2B&origin=GLOBAL_SEARCH_HEADER",
+      messaggio_connessione: "Ho visto che state espandendo il team sales — lavoro su temi simili. Mi farebbe piacere connetterci.",
+      primo_messaggio: "Curiosità: come state strutturando l'outbound con il team che cresce? Vedo pattern interessanti nelle scale-up in questa fase.",
+      followup: "Ho letto il tuo post su [tema] — punto interessante. Ti capita lo stesso problema con il mid-market?",
+      steps: ["Cerca 5 profili con questi segnali", "Commenta 2-3 post prima di connetterti", "Invia nota di connessione personalizzata"],
+    },
+    {
+      titolo: "Head of Sales con focus pipeline",
+      priorita: "Media",
+      perche: "Chi gestisce la pipeline ha il problema più concreto: convertire contatti in clienti. Se il processo non funziona, lo sente ogni giorno.",
+      segnali: ["Post su pipeline/CRM", "Commenta leader di settore", "Cambiato ruolo negli ultimi 6 mesi"],
+      angolo_attacco: "Partire dal problema specifico della conversione — non dalla generazione di lead, ma da cosa succede dopo il primo contatto.",
+      azione_consigliata: "DM diretto dopo connessione, con domanda su come gestiscono il follow-up oggi.",
+      messaggio_connessione: "Vedo che ti occupi di pipeline — mi occupo dello stesso tema in ambito B2B. Connettiamoci.",
+      primo_messaggio: "Domanda veloce: come gestite il follow-up dopo il primo contatto? È il punto dove vedo più opportunità perse.",
+      steps: ["Cerca profili Head of Sales / VP Sales", "Filtra per aziende 10-100 dipendenti", "Prioritizza chi pubblica contenuti"],
+    },
+    {
+      titolo: "Consulente che pubblica contenuti su LinkedIn",
+      priorita: "Bassa",
+      perche: "Già attivi sulla piattaforma, capiscono il valore del networking. Potenziale più come partner o referral che come cliente diretto.",
+      segnali: ["Pubblica 2+ post a settimana", "Commenta attivamente su altri post", "Ha 1000+ connessioni"],
+      angolo_attacco: "Non vendere — proporre uno scambio di valore o una collaborazione su contenuti.",
+      azione_consigliata: "Interazione organica sui loro contenuti → connessione → proposta di scambio",
+      steps: ["Identifica 3 consulenti nel tuo settore", "Commenta con valore per 2 settimane", "Proponi scambio di insight"],
+    },
+  ];
 
   useEffect(() => {
     if (!onboarding || prefilled) return;
@@ -352,9 +389,9 @@ export default function FindClientsPage() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             Motore di selezione prospect
           </span>
-          <h1 className="fc-hero-title">Chi contattare su LinkedIn</h1>
+          <h1 className="fc-hero-title">Chi contattare</h1>
           <p className="fc-hero-subtitle">
-            Categorie di prospect prioritarie, messaggi pronti da copiare e checklist operativa — tutto generato dall&apos;AI in base al tuo posizionamento.
+            Categorie e opportunità basate sul tuo posizionamento. Decidi chi contattare, capisci perché, sai come iniziare.
           </p>
           <div className="fc-hero-stats">
             <div className="fc-hero-stat">
@@ -404,7 +441,7 @@ export default function FindClientsPage() {
                     onChange={(e) => setRuoloTarget(e.target.value)}
                     className="qa-input qa-input-lg"
                     rows={2}
-                    placeholder="Es: Founder SaaS B2B, CEO di agenzia marketing, Head of Sales"
+                    placeholder="Founder SaaS B2B che stanno assumendo, CEO agenzia marketing in crescita"
                   />
                 </div>
 
@@ -447,8 +484,8 @@ export default function FindClientsPage() {
                 </div>
 
                 <div className="qa-field">
-                  <label className="qa-label">Problema del cliente <span className="qa-label-opt">(facoltativo)</span></label>
-                  <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Es: Non trovano clienti tramite LinkedIn" />
+                  <label className="qa-label">Problema che risolvi per loro <span className="qa-label-opt">(facoltativo)</span></label>
+                  <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Non riescono a generare pipeline su LinkedIn, il team sales non ha un processo outbound" />
                 </div>
 
                 <button onClick={generate} disabled={loading || !ruoloTarget.trim()} className="fc-generate-btn">
@@ -483,7 +520,7 @@ export default function FindClientsPage() {
             </div>
           </div>
 
-          {/* OUTPUT PANEL — empty state only (results go fullscreen) */}
+          {/* OUTPUT PANEL — empty state with demo data */}
           <div className="fc-output-panel">
             {error ? (
               <div className="callout-danger rounded-xl p-5">
@@ -491,35 +528,16 @@ export default function FindClientsPage() {
                 <p className="text-sm">{error}</p>
               </div>
             ) : (
-              <div className="fc-empty">
-                <div className="fc-empty-visual">
-                  <div className="fc-empty-ring fc-empty-ring-1" />
-                  <div className="fc-empty-ring fc-empty-ring-2" />
-                  <div className="fc-empty-icon-wrap">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  </div>
+              <div className="fc-demo-state">
+                <div className="fc-demo-header">
+                  <span className="fc-demo-badge">Esempio</span>
+                  <h3 className="fc-demo-title">Ecco cosa otterrai</h3>
+                  <p className="fc-demo-sub">Questi sono esempi realistici. Compila il form per generare categorie basate sul tuo posizionamento.</p>
                 </div>
-                <h3 className="fc-empty-title">Chi dovresti contattare?</h3>
-                <p className="fc-empty-text">
-                  Compila il form e l&apos;AI genererà categorie di prospect, messaggi pronti e una checklist operativa.
-                </p>
-                <div className="fc-empty-features">
-                  <div className="fc-empty-feature">
-                    <span className="fc-empty-feature-num">1</span>
-                    <span>Categorie prospect prioritarie</span>
-                  </div>
-                  <div className="fc-empty-feature">
-                    <span className="fc-empty-feature-num">2</span>
-                    <span>Messaggi pronti da copiare</span>
-                  </div>
-                  <div className="fc-empty-feature">
-                    <span className="fc-empty-feature-num">3</span>
-                    <span>Checklist azioni concrete</span>
-                  </div>
-                  <div className="fc-empty-feature">
-                    <span className="fc-empty-feature-num">4</span>
-                    <span>Link diretti LinkedIn</span>
-                  </div>
+                <div className="fc-demo-cards">
+                  {DEMO_CATEGORIES.map((cat, i) => (
+                    <ProspectCategoryCard key={i} category={cat} index={i} demo />
+                  ))}
                 </div>
               </div>
             )}

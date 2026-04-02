@@ -3,75 +3,54 @@
 import React, { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
-import { computeSystemProgress } from "@/components/app/SystemBanner";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
 
 const TOTAL_STEPS = 5;
 
-/* ── Option sets ── */
-const timeOptions = [
-  { label: "15–30 min / giorno", value: "meno_1h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, hint: "Veloce, mirato" },
-  { label: "1–3 ore / settimana", value: "1_3h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>, hint: "Costante, gestibile" },
-  { label: "3–5 ore / settimana", value: "3_5h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>, hint: "Serio, strutturato" },
-  { label: "5+ ore / settimana", value: "piu_5h", icon: <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>, hint: "Intensivo" },
-];
-
-const salesModelOptions = [
-  { label: "Transazionale veloce", value: "fast", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, desc: "Ciclo breve, decisione rapida. Il prospect compra quasi subito." },
-  { label: "Educativo / Consulenziale", value: "consultative", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>, desc: "Il cliente va guidato e formato prima di decidere." },
-  { label: "Relazionale", value: "relationship", icon: <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>, desc: "La fiducia si costruisce nel tempo con interazioni ripetute." },
-];
-
-const ticketOptions = [
-  { label: "< €1.000", value: "under_1k" },
-  { label: "€1k – €5k", value: "1k_5k" },
-  { label: "€5k – €15k", value: "5k_15k" },
-  { label: "€15k – €50k", value: "15k_50k" },
-  { label: "> €50k", value: "over_50k" },
+const TIPO_SERVIZIO_OPTIONS = [
+  { label: "Consulenza", value: "consulenza" },
+  { label: "Servizio", value: "servizio" },
+  { label: "Coaching", value: "coaching" },
+  { label: "Agenzia", value: "agenzia" },
+  { label: "Altro", value: "altro" },
 ] as const;
 
-const cicloOptions = [
-  { label: "< 1 settimana", value: "under_1w" },
-  { label: "1–4 settimane", value: "1_4w" },
-  { label: "1–3 mesi", value: "1_3m" },
-  { label: "> 3 mesi", value: "over_3m" },
+const DIMENSIONE_OPTIONS = [
+  { label: "Freelance", value: "freelance" },
+  { label: "Startup", value: "startup" },
+  { label: "PMI", value: "pmi" },
+  { label: "Enterprise", value: "enterprise" },
 ] as const;
 
-const dimensioneOptions = [
-  { label: "1–10 persone", value: "1_10" },
-  { label: "11–50", value: "11_50" },
-  { label: "51–200", value: "51_200" },
-  { label: "201–1000", value: "201_1000" },
-  { label: "1000+", value: "1000_plus" },
+const STATO_LINKEDIN_OPTIONS = [
+  { label: "Non lo uso", value: "non_uso", desc: "LinkedIn è fermo o quasi" },
+  { label: "Pubblico ma senza risultati", value: "pubblico_no_risultati", desc: "Creo contenuti ma non generano lead" },
+  { label: "Scrivo ma senza risposta", value: "scrivo_no_risposta", desc: "Mando messaggi che non ottengono reply" },
+  { label: "Ho conversazioni ma non diventano call", value: "conversazioni_no_call", desc: "Parlo con le persone giuste ma non converto" },
 ] as const;
 
-const ctaOptions = [
-  { label: "Call conoscitiva", value: "call", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> },
-  { label: "Demo prodotto", value: "demo", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> },
-  { label: "Audit / Analisi gratuita", value: "audit", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> },
-  { label: "Preventivo", value: "preventivo", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> },
-  { label: "Altro", value: "altro", icon: <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> },
-];
-
-const STEP_META: { num: number; label: string; section: string; description: string; icon: React.ReactNode }[] = [
-  { num: 1, label: "Posizionamento", section: "Chi sei e cosa offri", description: "L'AI usa queste informazioni per creare messaggi che parlano la lingua del tuo mercato.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> },
-  { num: 2, label: "Il tuo buyer", section: "A chi vendi davvero", description: "Definire il buyer reale permette all'AI di filtrare i prospect e personalizzare ogni messaggio.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> },
-  { num: 3, label: "Segnali", section: "Come riconosci un buon prospect", description: "L'AI userà questi pattern per valutare i profili e suggerire chi contattare prima.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> },
-  { num: 4, label: "Processo", section: "Il tuo modo di vendere", description: "Calibra il tono, la frequenza e la strategia dell'AI in base a come lavori davvero.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> },
-  { num: 5, label: "Asset", section: "Da dove parti", description: "Il tuo profilo LinkedIn e le ricerche salvate sono il punto di partenza operativo.", icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> },
+const STEP_META = [
+  { num: 1, label: "Cosa vendi", icon: "🎯" },
+  { num: 2, label: "Il tuo cliente", icon: "👤" },
+  { num: 3, label: "Il problema", icon: "🔧" },
+  { num: 4, label: "Segnali", icon: "📡" },
+  { num: 5, label: "Stato attuale", icon: "📊" },
 ];
 
 const initial: OnboardingInput = {
   servizio: "",
-  elevator_pitch: "",
-  settore: "",
-  differenziatore: "",
+  tipo_servizio: "consulenza",
   cliente_ideale: "",
-  dimensione_azienda: "51_200",
+  settore: "",
+  dimensione_azienda: "pmi",
   problema_cliente: "",
   risultato_cliente: "",
   segnali_interesse: "",
+  stato_linkedin: "non_uso",
+  elevator_pitch: "",
+  differenziatore: "",
   obiezione_frequente: "",
   modello_vendita: "consultative",
   ticket_medio: "5k_15k",
@@ -80,7 +59,7 @@ const initial: OnboardingInput = {
   cta_preferita: "call",
   linkedin_url: "",
   sito_web: "",
-  linkedin_search_links: [""],
+  linkedin_search_links: [],
   materiali_nomi: [],
 };
 
@@ -93,6 +72,18 @@ export default function OnboardingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState<OnboardingInput>(initial);
+  const [complete, setComplete] = useState(false);
+
+  function canAdvance(): boolean {
+    switch (step) {
+      case 1: return data.servizio.trim().length > 0;
+      case 2: return data.cliente_ideale.trim().length > 0;
+      case 3: return data.problema_cliente.trim().length > 0;
+      case 4: return data.segnali_interesse.trim().length > 0;
+      case 5: return true;
+      default: return true;
+    }
+  }
 
   async function submit() {
     setError("");
@@ -115,7 +106,7 @@ export default function OnboardingPage() {
       repo.profile.savePlan(userId, plan);
       repo.profile.setOnboardingComplete(userId);
       repo.interaction.addInteraction(userId, "onboarding", JSON.stringify(parsed.data), plan);
-      router.push("/app");
+      setComplete(true);
     } catch {
       setError("Non sono riuscito a generare il piano. Riprova.");
     } finally {
@@ -123,417 +114,226 @@ export default function OnboardingPage() {
     }
   }
 
-  /* ── LinkedIn search links helpers ── */
-  function addLink() {
-    setData({ ...data, linkedin_search_links: [...data.linkedin_search_links, ""] });
-  }
-  function updateLink(idx: number, val: string) {
-    const links = [...data.linkedin_search_links];
-    links[idx] = val;
-    setData({ ...data, linkedin_search_links: links });
-  }
-  function removeLink(idx: number) {
-    const links = data.linkedin_search_links.filter((_, i) => i !== idx);
-    setData({ ...data, linkedin_search_links: links.length === 0 ? [""] : links });
+  /* ── Completion screen ── */
+  if (complete) {
+    return (
+      <div className="onb-engine">
+        <section className="onb-complete fade-in">
+          <div className="onb-complete-icon">✅</div>
+          <h1 className="onb-complete-title">Il tuo sistema è pronto</h1>
+          <p className="onb-complete-subtitle">
+            Ora sai chi contattare, come iniziare e cosa fare ogni giorno.
+          </p>
+          <div className="onb-complete-summary">
+            <div className="onb-complete-item">
+              <span className="onb-complete-label">Offerta</span>
+              <span className="onb-complete-value">{data.servizio}</span>
+            </div>
+            <div className="onb-complete-item">
+              <span className="onb-complete-label">Target</span>
+              <span className="onb-complete-value">{data.cliente_ideale}</span>
+            </div>
+            <div className="onb-complete-item">
+              <span className="onb-complete-label">Problema</span>
+              <span className="onb-complete-value">{data.problema_cliente}</span>
+            </div>
+          </div>
+          <div className="onb-complete-actions">
+            <Link href="/app" className="onb-nav-next onb-nav-submit">
+              Vai alla dashboard →
+            </Link>
+            <Link href="/app/find-clients" className="onb-nav-next" style={{ background: "transparent", border: "1px solid rgba(0,0,0,0.1)", color: "var(--color-text)" }}>
+              Trova clienti
+            </Link>
+          </div>
+        </section>
+      </div>
+    );
   }
 
-  /* ── File upload handler ── */
-  function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const files = e.target.files;
-    if (!files) return;
-    const names = Array.from(files).map((f) => f.name);
-    setData({ ...data, materiali_nomi: [...data.materiali_nomi, ...names] });
-  }
-  function removeFile(idx: number) {
-    const nomi = data.materiali_nomi.filter((_, i) => i !== idx);
-    setData({ ...data, materiali_nomi: nomi });
-  }
-
-  const systemPct = computeSystemProgress(data as unknown as Record<string, unknown>);
-  const currentMeta = STEP_META[step - 1];
+  const progress = (step / TOTAL_STEPS) * 100;
 
   return (
     <div className="onb-engine">
 
-      {/* ══════════════════════════════════════════════════
-          HERO
-      ══════════════════════════════════════════════════ */}
+      {/* ── Hero ── */}
       <section className="onb-engine-hero">
         <div className="onb-engine-hero-glow" aria-hidden="true" />
-        <span className="onb-engine-eyebrow">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          Configurazione motore commerciale
-        </span>
         <h1 className="onb-engine-title">
-          Costruisci il tuo sistema<br />di acquisizione clienti
+          Costruisci il tuo sistema commerciale
         </h1>
         <p className="onb-engine-subtitle">
-          5 domande mirate. L&apos;AI usa queste informazioni per trovare prospect reali,
-          scrivere messaggi che convertono e pianificare le tue giornate operative.
+          5 domande, meno di 3 minuti. L&apos;AI userà queste informazioni per trovare prospect, scrivere messaggi e pianificare le tue giornate.
         </p>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          PROGRESS RAIL
-      ══════════════════════════════════════════════════ */}
-      <div className="onb-engine-progress-wrap">
-        <div className="onb-engine-steps">
+      {/* ── Progress bar ── */}
+      <div className="onb-progress-bar-wrap">
+        <div className="onb-progress-steps">
           {STEP_META.map((s) => (
             <button
               key={s.num}
               type="button"
               className={`onb-step-pill${s.num === step ? " onb-step-active" : ""}${s.num < step ? " onb-step-done" : ""}`}
-              onClick={() => setStep(s.num)}
+              onClick={() => s.num <= step && setStep(s.num)}
             >
-              <span className="onb-step-icon" aria-hidden="true">{s.num < step ? "✓" : s.icon}</span>
+              <span className="onb-step-icon">{s.num < step ? "✓" : s.icon}</span>
               <span className="onb-step-label">{s.label}</span>
             </button>
           ))}
         </div>
-        {systemPct > 0 && (
-          <div className="onb-engine-completion">
-            <div className="onb-engine-completion-track">
-              <div
-                className={`onb-engine-completion-fill${systemPct === 100 ? " onb-engine-completion-done" : ""}`}
-                style={{ width: `${systemPct}%` }}
-              />
-            </div>
-            <span className="onb-engine-completion-label">{systemPct}% configurato</span>
-          </div>
-        )}
+        <div className="onb-progress-track">
+          <div className="onb-progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+        <span className="onb-progress-text">{step}/{TOTAL_STEPS}</span>
       </div>
 
-      {/* ══════════════════════════════════════════════════
-          SECTION BLOCK
-      ══════════════════════════════════════════════════ */}
+      {/* ── Step content ── */}
       <section className="onb-section-block">
-        <div className="onb-section-header">
-          <span className="onb-section-icon" aria-hidden="true">{currentMeta.icon}</span>
-          <div>
-            <h2 className="onb-section-title">{currentMeta.section}</h2>
-            <p className="onb-section-desc">{currentMeta.description}</p>
-          </div>
-          <span className="onb-section-badge">Passo {step}/{TOTAL_STEPS}</span>
-        </div>
-
         <div className="onb-section-body">
 
-          {/* ────────────────────────────────────────────────
-              Step 1 — Posizionamento
-          ──────────────────────────────────────────────── */}
+          {/* Step 1 — Cosa vendi */}
           {step === 1 && (
             <>
-              <div className="onb-fields-grid">
-                <OnbField
-                  label="Il tuo servizio / prodotto"
-                  hint="Cosa offri concretamente? Più specifico è, meglio l'AI calibra tutto."
-                >
-                  <textarea
-                    className="onb-input onb-textarea"
-                    rows={2}
-                    placeholder="Consulenza LinkedIn per team commerciali B2B. Aiuto a strutturare il processo di acquisizione clienti via LinkedIn."
-                    value={data.servizio}
-                    onChange={(e) => setData({ ...data, servizio: e.target.value })}
-                  />
-                </OnbField>
-                <OnbField
-                  label="Settore principale"
-                  hint="In che mercato operi? (es. SaaS, Formazione, Consulenza HR, Logistica...)"
-                >
-                  <input
-                    className="onb-input"
-                    placeholder="SaaS B2B, Consulenza, Formazione aziendale..."
-                    value={data.settore}
-                    onChange={(e) => setData({ ...data, settore: e.target.value })}
-                  />
-                </OnbField>
+              <div className="onb-step-header">
+                <h2 className="onb-step-title">Cosa offri</h2>
+                <p className="onb-step-desc">L&apos;AI usa queste informazioni per creare messaggi che parlano la lingua del tuo mercato.</p>
               </div>
-              <OnbField
-                label="Elevator pitch"
-                hint="In 1-2 frasi: cosa fai e per chi? Immagina di presentarti a un evento."
-              >
+              <OnbField label="Descrivi la tua offerta" hint="Cosa fai concretamente per i tuoi clienti?">
                 <textarea
                   className="onb-input onb-textarea"
                   rows={2}
-                  placeholder="Aiuto i team commerciali B2B a generare 5+ call qualificate al mese da LinkedIn, senza cold calling."
-                  value={data.elevator_pitch}
-                  onChange={(e) => setData({ ...data, elevator_pitch: e.target.value })}
+                  placeholder="Aiuto team sales B2B a generare pipeline su LinkedIn"
+                  value={data.servizio}
+                  onChange={(e) => setData({ ...data, servizio: e.target.value })}
                 />
               </OnbField>
-              <OnbField
-                label="Perché te e non un altro?"
-                hint="Il tuo differenziatore unico. Cosa ti rende diverso dai competitor? Metodo, esperienza, risultati..."
-              >
-                <textarea
-                  className="onb-input onb-textarea"
-                  rows={2}
-                  placeholder="Metodo proprietario testato su 80+ team commerciali. ROI medio 4x nei primi 90 giorni."
-                  value={data.differenziatore}
-                  onChange={(e) => setData({ ...data, differenziatore: e.target.value })}
-                />
+              <OnbField label="Tipo di servizio">
+                <div className="onb-chip-row">
+                  {TIPO_SERVIZIO_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`onb-chip${data.tipo_servizio === opt.value ? " onb-chip-active" : ""}`}
+                      onClick={() => setData({ ...data, tipo_servizio: opt.value })}
+                    >{opt.label}</button>
+                  ))}
+                </div>
               </OnbField>
             </>
           )}
 
-          {/* ────────────────────────────────────────────────
-              Step 2 — Il tuo buyer
-          ──────────────────────────────────────────────── */}
+          {/* Step 2 — Chi è il tuo cliente */}
           {step === 2 && (
             <>
-              <OnbField
-                label="Chi è il tuo vero buyer?"
-                hint="Ruolo, contesto aziendale, situazione tipica di chi firma il contratto."
-              >
-                <textarea
-                  className="onb-input onb-textarea"
-                  rows={3}
-                  placeholder="Head of Sales o VP Sales in aziende SaaS B2B (20-200 dip.) che hanno un team commerciale ma non usano LinkedIn in modo strutturato."
+              <div className="onb-step-header">
+                <h2 className="onb-step-title">Chi è il tuo cliente</h2>
+                <p className="onb-step-desc">Definire il target permette all&apos;AI di filtrare i prospect e personalizzare ogni messaggio.</p>
+              </div>
+              <OnbField label="Chi vuoi come cliente" hint="Ruolo, tipo di azienda, contesto">
+                <input
+                  className="onb-input"
+                  placeholder="Founder SaaS B2B, Head of Sales, CEO PMI"
                   value={data.cliente_ideale}
                   onChange={(e) => setData({ ...data, cliente_ideale: e.target.value })}
                 />
               </OnbField>
-              <div className="onb-fields-grid">
-                <OnbField
-                  label="Dimensione azienda target"
-                  hint="La fascia più frequente tra i tuoi clienti."
-                >
-                  <div className="onb-chip-row">
-                    {dimensioneOptions.map((opt) => (
-                      <button
-                        key={opt.value}
-                        type="button"
-                        className={`onb-chip${data.dimensione_azienda === opt.value ? " onb-chip-active" : ""}`}
-                        onClick={() => setData({ ...data, dimensione_azienda: opt.value })}
-                      >{opt.label}</button>
-                    ))}
-                  </div>
-                </OnbField>
-                <OnbField
-                  label="Risultato concreto"
-                  hint="Cosa ottiene il cliente dopo aver lavorato con te? Pensa al risultato misurabile."
-                >
-                  <textarea
-                    className="onb-input onb-textarea"
-                    rows={2}
-                    placeholder="Il team passa da 0 a 5+ call qualificate al mese da LinkedIn."
-                    value={data.risultato_cliente}
-                    onChange={(e) => setData({ ...data, risultato_cliente: e.target.value })}
-                  />
-                </OnbField>
+              <OnbField label="Settore" hint="Facoltativo — aiuta a restringere il target">
+                <input
+                  className="onb-input"
+                  placeholder="SaaS, consulenza, marketing, fintech"
+                  value={data.settore}
+                  onChange={(e) => setData({ ...data, settore: e.target.value })}
+                />
+              </OnbField>
+              <OnbField label="Dimensione azienda">
+                <div className="onb-chip-row">
+                  {DIMENSIONE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`onb-chip${data.dimensione_azienda === opt.value ? " onb-chip-active" : ""}`}
+                      onClick={() => setData({ ...data, dimensione_azienda: opt.value })}
+                    >{opt.label}</button>
+                  ))}
+                </div>
+              </OnbField>
+            </>
+          )}
+
+          {/* Step 3 — Problema che risolvi */}
+          {step === 3 && (
+            <>
+              <div className="onb-step-header">
+                <h2 className="onb-step-title">Problema che risolvi</h2>
+                <p className="onb-step-desc">Serve per definire l&apos;angolo di attacco nei messaggi e nell&apos;analisi dei profili.</p>
               </div>
-              <OnbField
-                label="Problema tipico prima di lavorare con te"
-                hint="Frustrazione, blocco o inefficienza ricorrente."
-              >
+              <OnbField label="Problema principale del tuo cliente" hint="Qual è la frustrazione o il blocco che risolvi?">
                 <textarea
                   className="onb-input onb-textarea"
                   rows={2}
-                  placeholder="Il team pubblica contenuti generici senza strategia e non genera lead da LinkedIn."
+                  placeholder="Non generano clienti tramite LinkedIn"
                   value={data.problema_cliente}
                   onChange={(e) => setData({ ...data, problema_cliente: e.target.value })}
                 />
               </OnbField>
+              <OnbField label="Risultato che offri" hint="Facoltativo — il risultato concreto che ottengono">
+                <input
+                  className="onb-input"
+                  placeholder="5–10 call qualificate al mese"
+                  value={data.risultato_cliente}
+                  onChange={(e) => setData({ ...data, risultato_cliente: e.target.value })}
+                />
+              </OnbField>
             </>
           )}
 
-          {/* ────────────────────────────────────────────────
-              Step 3 — Segnali & Obiezioni
-          ──────────────────────────────────────────────── */}
-          {step === 3 && (
+          {/* Step 4 — Segnali */}
+          {step === 4 && (
             <>
+              <div className="onb-step-header">
+                <h2 className="onb-step-title">Segnali di interesse</h2>
+                <p className="onb-step-desc">Questa è la parte più potente. L&apos;AI li usa per valutare i profili e decidere chi contattare prima.</p>
+              </div>
               <div className="onb-callout onb-callout-blue">
-                <span className="onb-callout-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg></span>
+                <span className="onb-callout-icon">💡</span>
                 <p className="onb-callout-text">
-                  Più i segnali sono specifici e osservabili, più l&apos;AI sarà precisa nel filtrare
-                  e prioritizzare i prospect per te.
+                  Più i segnali sono specifici e osservabili su LinkedIn, più l&apos;AI sarà precisa.
                 </p>
               </div>
-              <OnbField
-                label="Segnali di interesse osservabili su LinkedIn"
-                hint="Assunzioni, contenuti pubblicati, crescita aziendale, cambi di ruolo, domande pubbliche..."
-              >
+              <OnbField label="Quando capisci che un cliente è interessante?" hint="Cosa vedi su LinkedIn che ti fa pensare 'questo è un buon prospect'?">
                 <textarea
                   className="onb-input onb-textarea"
-                  rows={4}
-                  placeholder="Pubblica contenuti su sales o crescita aziendale. L'azienda sta assumendo commerciali. Ha cambiato ruolo di recente. Fa domande sulla gestione del team vendite."
+                  rows={3}
+                  placeholder="Sta assumendo sales, pubblica su crescita, parla di pipeline, ha cambiato ruolo di recente"
                   value={data.segnali_interesse}
                   onChange={(e) => setData({ ...data, segnali_interesse: e.target.value })}
                 />
               </OnbField>
-              <OnbField
-                label="L'obiezione che senti più spesso"
-                hint="Quando un prospect dice no, qual è il motivo più frequente? L'AI preparerà risposte specifiche."
-              >
-                <textarea
-                  className="onb-input onb-textarea"
-                  rows={3}
-                  placeholder="&quot;Già ci proviamo internamente con LinkedIn, ma non funziona&quot;, &quot;Non abbiamo budget dedicato&quot;, &quot;Ci pensiamo noi&quot;"
-                  value={data.obiezione_frequente}
-                  onChange={(e) => setData({ ...data, obiezione_frequente: e.target.value })}
-                />
-              </OnbField>
             </>
           )}
 
-          {/* ────────────────────────────────────────────────
-              Step 4 — Il tuo processo
-          ──────────────────────────────────────────────── */}
-          {step === 4 && (
-            <>
-              <OnbField label="Modello di vendita" hint="Come funziona la tua dinamica commerciale? Determina il tono dei messaggi AI.">
-                <div className="onb-model-grid">
-                  {salesModelOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`onb-model-card${data.modello_vendita === opt.value ? " onb-model-active" : ""}`}
-                      onClick={() => setData({ ...data, modello_vendita: opt.value as OnboardingInput["modello_vendita"] })}
-                    >
-                      <span className="onb-model-icon">{opt.icon}</span>
-                      <span className="onb-model-label">{opt.label}</span>
-                      <span className="onb-model-desc">{opt.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </OnbField>
-
-              <div className="onb-fields-grid onb-fields-grid-3">
-                <OnbField label="Ticket medio" hint="Valore medio di un contratto.">
-                  <select
-                    className="onb-input onb-select"
-                    value={data.ticket_medio}
-                    onChange={(e) => setData({ ...data, ticket_medio: e.target.value as OnboardingInput["ticket_medio"] })}
-                  >
-                    {ticketOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
-                </OnbField>
-                <OnbField label="Ciclo di vendita" hint="Quanto tempo dal primo contatto alla firma?">
-                  <select
-                    className="onb-input onb-select"
-                    value={data.ciclo_vendita}
-                    onChange={(e) => setData({ ...data, ciclo_vendita: e.target.value as OnboardingInput["ciclo_vendita"] })}
-                  >
-                    {cicloOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
-                </OnbField>
-                <OnbField label="Tempo su LinkedIn" hint="Quanto puoi dedicare davvero?">
-                  <select
-                    className="onb-input onb-select"
-                    value={data.tempo_settimanale}
-                    onChange={(e) => setData({ ...data, tempo_settimanale: e.target.value as OnboardingInput["tempo_settimanale"] })}
-                  >
-                    {timeOptions.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-                  </select>
-                </OnbField>
-              </div>
-
-              <OnbField label="CTA preferita" hint="Cosa chiedi alla fine dell'interazione con un prospect?">
-                <div className="onb-chip-row">
-                  {ctaOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`onb-chip onb-chip-lg${data.cta_preferita === opt.value ? " onb-chip-active" : ""}`}
-                      onClick={() => setData({ ...data, cta_preferita: opt.value as OnboardingInput["cta_preferita"] })}
-                    >
-                      <span>{opt.icon}</span> {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </OnbField>
-            </>
-          )}
-
-          {/* ────────────────────────────────────────────────
-              Step 5 — I tuoi asset
-          ──────────────────────────────────────────────── */}
+          {/* Step 5 — Stato attuale */}
           {step === 5 && (
             <>
-              <div className="onb-fields-grid">
-                <OnbField
-                  label="Il tuo profilo LinkedIn"
-                  hint="L'URL del tuo profilo personale. Obbligatorio."
-                  required
-                >
-                  <input
-                    className="onb-input"
-                    type="url"
-                    placeholder="https://linkedin.com/in/tuoprofilo"
-                    value={data.linkedin_url}
-                    onChange={(e) => setData({ ...data, linkedin_url: e.target.value })}
-                  />
-                </OnbField>
-                <OnbField
-                  label="Sito web"
-                  hint="Facoltativo — aiuta l'AI a capire il tuo tono di voce."
-                >
-                  <input
-                    className="onb-input"
-                    type="url"
-                    placeholder="https://www.tuosito.com"
-                    value={data.sito_web}
-                    onChange={(e) => setData({ ...data, sito_web: e.target.value })}
-                  />
-                </OnbField>
+              <div className="onb-step-header">
+                <h2 className="onb-step-title">Come usi LinkedIn oggi</h2>
+                <p className="onb-step-desc">Serve per personalizzare i consigli quotidiani e il piano operativo.</p>
               </div>
-
-              <OnbField
-                label="Ricerche LinkedIn salvate"
-                hint="Incolla i link delle sales navigator o ricerche persone. Puoi aggiungerne quanti ne vuoi."
-              >
-                <div className="onb-links-list">
-                  {data.linkedin_search_links.map((link, idx) => (
-                    <div key={idx} className="onb-link-row">
-                      <input
-                        className="onb-input"
-                        type="url"
-                        placeholder="https://www.linkedin.com/search/results/people/?keywords=..."
-                        value={link}
-                        onChange={(e) => updateLink(idx, e.target.value)}
-                      />
-                      {data.linkedin_search_links.length > 1 && (
-                        <button type="button" onClick={() => removeLink(idx)} className="onb-link-remove" aria-label="Rimuovi link">
-                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        </button>
-                      )}
-                    </div>
+              <OnbField label="Qual è la tua situazione attuale?">
+                <div className="onb-status-grid">
+                  {STATO_LINKEDIN_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`onb-status-card${data.stato_linkedin === opt.value ? " onb-status-active" : ""}`}
+                      onClick={() => setData({ ...data, stato_linkedin: opt.value })}
+                    >
+                      <span className="onb-status-label">{opt.label}</span>
+                      <span className="onb-status-desc">{opt.desc}</span>
+                    </button>
                   ))}
                 </div>
-                <button type="button" onClick={addLink} className="onb-add-btn">
-                  + Aggiungi un&apos;altra ricerca
-                </button>
-              </OnbField>
-
-              <OnbField
-                label="Documenti e presentazioni"
-                hint="Slide, PDF, offerte. Facoltativo."
-              >
-                <label className="onb-file-upload">
-                  <input
-                    type="file"
-                    accept=".pdf,.ppt,.pptx"
-                    multiple
-                    className="onb-file-input"
-                    onChange={handleFileUpload}
-                  />
-                  <span className="onb-file-label">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                    Scegli file (PDF, PPT, PPTX)
-                  </span>
-                </label>
-                {data.materiali_nomi.length > 0 && (
-                  <div className="onb-file-list">
-                    {data.materiali_nomi.map((name, idx) => (
-                      <div key={idx} className="onb-file-item">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                        <span className="onb-file-name">{name}</span>
-                        <button type="button" onClick={() => removeFile(idx)} className="onb-file-remove" aria-label="Rimuovi file">
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </OnbField>
             </>
           )}
@@ -542,19 +342,14 @@ export default function OnboardingPage() {
         {/* ── Error ── */}
         {error && (
           <div className="onb-error" role="alert">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:'1px'}}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {error}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,marginTop:"1px"}}><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> {error}
           </div>
         )}
 
         {/* ── Navigation ── */}
         <div className="onb-nav">
           {step > 1 && (
-            <button
-              type="button"
-              className="onb-nav-back"
-              disabled={loading}
-              onClick={() => setStep((s) => s - 1)}
-            >
+            <button type="button" className="onb-nav-back" disabled={loading} onClick={() => setStep((s) => s - 1)}>
               ← Indietro
             </button>
           )}
@@ -563,7 +358,7 @@ export default function OnboardingPage() {
             <button
               type="button"
               className="onb-nav-next"
-              disabled={loading}
+              disabled={loading || !canAdvance()}
               onClick={() => setStep((s) => s + 1)}
             >
               Continua →
@@ -576,10 +371,7 @@ export default function OnboardingPage() {
               onClick={submit}
             >
               {loading ? (
-                <>
-                  <span className="onb-spinner" aria-hidden="true" />
-                  Generazione piano in corso…
-                </>
+                <><span className="onb-spinner" aria-hidden="true" />Generazione piano in corso…</>
               ) : (
                 "Attiva il sistema →"
               )}
@@ -588,25 +380,19 @@ export default function OnboardingPage() {
         </div>
       </section>
 
-      {/* ── Reassurance ── */}
       <p className="onb-reassurance">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Puoi modificare queste informazioni in qualsiasi momento dalle impostazioni.
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Puoi modificare queste informazioni in qualsiasi momento dalle impostazioni.
       </p>
-
     </div>
   );
 }
 
-/* ═══════════════════════════════════════════════════════════
-   FIELD COMPONENT
-═══════════════════════════════════════════════════════════ */
-function OnbField({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
+/* ── Field component ── */
+function OnbField({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div className="onb-field">
-      <label className="onb-field-label">
-        {label}
-        {required && <span className="onb-field-required">*</span>}
-      </label>
+      <label className="onb-field-label">{label}</label>
       {hint && <p className="onb-field-hint">{hint}</p>}
       {children}
     </div>

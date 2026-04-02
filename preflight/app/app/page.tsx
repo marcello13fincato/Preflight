@@ -657,98 +657,229 @@ export default function AppTodayPage() {
 
       <div className="dash-page-v6">
 
-        {/* ── PRIMARY HERO: ACTIVITY INDEX ── */}
-        <section className="acti-hero" aria-label="Indice attività commerciale">
-          <div className="acti-hero-grid">
-            <div className="acti-main-panel">
-              <p className="acti-eyebrow">Indice attività LinkedIn</p>
-              <h2 className="acti-title">Indice attività commerciale</h2>
-              <div className="acti-score-row">
-                <div className="acti-score-block">
-                  <span className="acti-score-value">{activityIndex}</span>
-                  <span className="acti-score-over">/100</span>
-                </div>
-                <div className={`acti-status-badge ${activityIndexStatus.className}`}>{activityIndexStatus.label}</div>
-              </div>
-              <p className="acti-feedback">
-                {activityIndex >= 75
-                  ? "Ricerche, conversazioni e contenuti si muovono insieme: questo è il ritmo che genera pipeline reale."
-                  : activityIndex >= 45
-                  ? "Basi presenti ma l'intensità varia. Aumenta la coerenza tra ricerca clienti e conversazioni attive."
-                  : "L'attività commerciale è sotto la soglia minima di efficienza. Parti oggi con ricerca profili e un follow-up attivo."}
-              </p>
-              <div className="acti-trend-row">
-                <span className={`acti-trend-pill ${weeklyDelta >= 0 ? "acti-trend-up" : "acti-trend-down"}`}>
-                  {weeklyDelta >= 0 ? "Trend in crescita" : "Trend in flessione"}
-                  <strong>{weeklyDelta >= 0 ? ` +${weeklyDelta}` : ` ${weeklyDelta}`}</strong>
-                </span>
-                <span className="acti-trend-meta">Ultima attività: {lastActiveLabel}</span>
+        {/* ═══════════════════════════════════════════════════════════
+            HEADER PAGINA
+        ═══════════════════════════════════════════════════════════ */}
+        <div className="dash-page-head">
+          <div>
+            <h1 className="dash-page-title">Le tue opportunità di oggi</h1>
+            <p className="dash-page-sub">Parti da ciò che può generare una conversazione o avvicinarti a una call.</p>
+          </div>
+        </div>
+
+        {/* ═══════════════════════════════════════════════════════════
+            SEZIONE 1 — OPPORTUNITÀ DI OGGI
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="opp-section" aria-label="Opportunità di oggi">
+          <div className="opp-grid">
+            <div className="opp-card opp-card-urgent">
+              <div className="opp-card-icon">🔴</div>
+              <h4 className="opp-card-title">Follow-up urgenti</h4>
+              <p className="opp-card-reason">Luca Martini (CEO, agenzia digital) — call esplorativa 10 giorni fa, nessuna risposta al recap. La finestra di follow-up si chiude tra 2-3 giorni.</p>
+              <p className="opp-card-action"><strong>Azione:</strong> Invia DM con micro-insight sul suo problema specifico (conversion rate al 12%). Non riproporre la call, riattiva l&apos;interesse.</p>
+            </div>
+            <div className="opp-card opp-card-warm">
+              <div className="opp-card-icon">🟡</div>
+              <h4 className="opp-card-title">Prospect da contattare oggi</h4>
+              <p className="opp-card-reason">Sara Ferri (Head of Sales, consulenza B2B) — ha interagito con 3 tuoi post nell&apos;ultimo mese. Il suo team sta lanciando un nuovo servizio.</p>
+              <p className="opp-card-action"><strong>Azione:</strong> Invia richiesta di connessione con nota personalizzata. Fai riferimento al nuovo servizio e proponi uno scambio di idee su pipeline.</p>
+            </div>
+            <div className="opp-card opp-card-unlock">
+              <div className="opp-card-icon">🔓</div>
+              <h4 className="opp-card-title">Conversazione da sbloccare</h4>
+              <p className="opp-card-reason">Andrea Colombo (VP Sales, SaaS fintech) — ha accettato la connessione 5 giorni fa, ha visto il tuo profilo ma non ha risposto al primo messaggio.</p>
+              <p className="opp-card-action"><strong>Azione:</strong> Commenta un suo post recente per tornare visibile, poi invia un secondo messaggio con un angolo diverso (es. case study specifico fintech).</p>
+            </div>
+            <div className="opp-card opp-card-call">
+              <div className="opp-card-icon">📞</div>
+              <h4 className="opp-card-title">Azione con più probabilità di call</h4>
+              <p className="opp-card-reason">Marco Bianchi (Founder SaaS CRM) — ha commentato un tuo post ieri, sta assumendo 2 sales. Segnale forte: espansione team → bisogno di pipeline.</p>
+              <p className="opp-card-action"><strong>Azione:</strong> Rispondi al suo commento con un insight concreto, poi invia DM personalizzato. Proponi 15 min su come generare pipeline per i nuovi sales.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            SEZIONE 2 — AZIONI PRIORITARIE
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="pri-section" aria-label="Azioni prioritarie">
+          <div className="pri-head">
+            <h3 className="pri-title">Azioni prioritarie</h3>
+            <p className="pri-sub">Le 3 azioni che hanno il maggior impatto oggi sulla tua pipeline.</p>
+          </div>
+          <div className="pri-list">
+            <div className="pri-item pri-item-alta">
+              <span className="pri-badge pri-badge-alta">Alta</span>
+              <div className="pri-body">
+                <p className="pri-perche"><strong>Perché ora:</strong> Il follow-up con Luca Martini è nella finestra critica. Dopo 14 giorni la conversazione si raffredda e ripartire costa 3x lo sforzo.</p>
+                <p className="pri-cosa"><strong>Cosa fare:</strong> Apri LinkedIn → DM a Luca → Condividi il dato sul follow-up day 3-7 (dove il 40% dei deal muore) → Proponi 10 min questa settimana.</p>
               </div>
             </div>
-
-            <div className="acti-continuity-panel">
-              <h3 className="acti-panel-title">Continuità operativa</h3>
-              <div className="acti-continuity-grid">
-                <div className="acti-kpi-card">
-                  <span className="acti-kpi-label">Streak attivo</span>
-                  <span className="acti-kpi-value">{streak > 0 ? `${streak} gg` : "0 gg"}</span>
-                </div>
-                <div className="acti-kpi-card">
-                  <span className="acti-kpi-label">Giorni attivi (30g)</span>
-                  <span className="acti-kpi-value">{activeDaysLast30}</span>
-                </div>
-                <div className="acti-kpi-card">
-                  <span className="acti-kpi-label">Gap recente</span>
-                  <span className="acti-kpi-value">{daysSinceActive && daysSinceActive > 0 ? `${daysSinceActive} gg` : "Nessuno"}</span>
-                </div>
-                <div className="acti-kpi-card">
-                  <span className="acti-kpi-label">Confronto settimana</span>
-                  <span className="acti-kpi-value">{currentWeekActiveDays} vs {previousWeekActiveDays}</span>
-                </div>
+            <div className="pri-item pri-item-alta">
+              <span className="pri-badge pri-badge-alta">Alta</span>
+              <div className="pri-body">
+                <p className="pri-perche"><strong>Perché ora:</strong> Marco Bianchi ha commentato il tuo post ieri. Rispondere entro 24h mantiene il momentum. Dopo 48h il thread è morto.</p>
+                <p className="pri-cosa"><strong>Cosa fare:</strong> Rispondi al commento con un insight su pipeline per nuovi sales → Se risponde, invia richiesta di connessione → Prepara DM per domani.</p>
+              </div>
+            </div>
+            <div className="pri-item pri-item-media">
+              <span className="pri-badge pri-badge-media">Media</span>
+              <div className="pri-body">
+                <p className="pri-perche"><strong>Perché ora:</strong> Non pubblichi da 4 giorni. L&apos;ultimo post ha performato bene (1.200 impression). L&apos;algoritmo è &quot;caldo&quot; — pubblicare oggi massimizza la portata.</p>
+                <p className="pri-cosa"><strong>Cosa fare:</strong> Pubblica tra le 8:00-9:30 → Nei primi 30 min rispondi a ogni commento entro 5 min → Se un decision-maker commenta, segnalo come prospect caldo.</p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* ── OPERATIONAL METRICS + SMART ALERT ── */}
-        <section className="ops-metrics-wrap" aria-label="Metriche operative">
-          <div className="ops-metrics-grid">
-            <div className="ops-metric-card">
-              <span className="ops-metric-label">Profili analizzati</span>
-              <span className="ops-metric-value">{contacts.length}</span>
+        {/* ═══════════════════════════════════════════════════════════
+            SEZIONE 3 — CONVERSAZIONI E FOLLOW-UP
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="conv-section" aria-label="Conversazioni e follow-up">
+          <div className="conv-head">
+            <h3 className="conv-title">Conversazioni e follow-up</h3>
+            <p className="conv-sub">Stato delle conversazioni attive e prossimo passo per ciascuna.</p>
+          </div>
+          <div className="conv-list">
+            <div className="conv-row">
+              <div className="conv-avatar">LM</div>
+              <div className="conv-info">
+                <span className="conv-name">Luca Martini</span>
+                <span className="conv-role">CEO · Agenzia digital · 15 persone</span>
+              </div>
+              <span className="conv-status conv-status-stale">In stallo (10gg)</span>
+              <span className="conv-step">→ DM con micro-insight sul conversion rate</span>
             </div>
-            <div className="ops-metric-card">
-              <span className="ops-metric-label">Messaggi gestiti</span>
-              <span className="ops-metric-value">{dashboardMetrics.messagesHandled}</span>
+            <div className="conv-row">
+              <div className="conv-avatar">SF</div>
+              <div className="conv-info">
+                <span className="conv-name">Sara Ferri</span>
+                <span className="conv-role">Head of Sales · Consulenza B2B</span>
+              </div>
+              <span className="conv-status conv-status-warm">Segnale caldo</span>
+              <span className="conv-step">→ Richiesta connessione + nota personalizzata</span>
             </div>
-            <div className="ops-metric-card">
-              <span className="ops-metric-label">Contenuti creati</span>
-              <span className="ops-metric-value">{dashboardMetrics.postsPublished}</span>
+            <div className="conv-row">
+              <div className="conv-avatar">AC</div>
+              <div className="conv-info">
+                <span className="conv-name">Andrea Colombo</span>
+                <span className="conv-role">VP Sales · SaaS fintech</span>
+              </div>
+              <span className="conv-status conv-status-cold">Connesso, no risposta</span>
+              <span className="conv-step">→ Commenta un suo post, poi 2° messaggio</span>
             </div>
-            <div className="ops-metric-card">
-              <span className="ops-metric-label">Sessioni AI strategiche</span>
-              <span className="ops-metric-value">{dashboardMetrics.aiSessions}</span>
+            <div className="conv-row">
+              <div className="conv-avatar">MB</div>
+              <div className="conv-info">
+                <span className="conv-name">Marco Bianchi</span>
+                <span className="conv-role">Founder · SaaS CRM per PMI</span>
+              </div>
+              <span className="conv-status conv-status-hot">Alta probabilità call</span>
+              <span className="conv-step">→ Rispondi al commento + DM domani</span>
             </div>
           </div>
-          <div className={`smart-alert ${smartAlert.className}`} role="status" aria-live="polite">
-            <p className="smart-alert-title">{smartAlert.title}</p>
-            <p className="smart-alert-body">{smartAlert.body}</p>
-          </div>
-          <p className="ops-activity-reminder">
-            {activityLevel === "Alta"
-              ? "Alta continuità rilevata: mantieni ritmo e qualità per trasformare più conversazioni in call."
-              : activityLevel === "Media"
-              ? "Continuità discreta: aumenta la frequenza su follow-up e ricerca profili per migliorare la resa commerciale."
-              : "La continuità quotidiana è il principale moltiplicatore per l'acquisizione clienti su LinkedIn."}
-          </p>
         </section>
 
-        {/* ── MAIN TOOLS (SECONDARY POSITIONING) ── */}
-        <section className="main-tools-secondary" aria-label="Strumenti principali">
-          <div className="main-tools-head">
-            <h3 className="main-tools-title">Strumenti principali</h3>
-            <p className="main-tools-sub">Disponibili dopo il quadro performance per passare subito all&apos;azione.</p>
+        {/* ═══════════════════════════════════════════════════════════
+            SEZIONE 4 — PROSPECT AD ALTA PRIORITÀ
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="prosp-section" aria-label="Prospect ad alta priorità">
+          <div className="prosp-head">
+            <h3 className="prosp-title">Prospect ad alta priorità</h3>
+            <p className="prosp-sub">I profili con il segnale di timing più forte questa settimana.</p>
           </div>
+          <div className="prosp-grid">
+            <div className="prosp-card">
+              <div className="prosp-card-top">
+                <div className="prosp-card-avatar">MB</div>
+                <div>
+                  <h4 className="prosp-card-name">Marco Bianchi</h4>
+                  <p className="prosp-card-role">Founder · SaaS CRM per PMI</p>
+                </div>
+              </div>
+              <p className="prosp-card-reason"><strong>Rilevanza:</strong> Sta assumendo 2 sales → ha bisogno di pipeline subito. Ha commentato il tuo post = awareness già presente.</p>
+              <p className="prosp-card-action">Commenta il suo post sull&apos;hiring con insight su ramp-up sales, poi connessione personalizzata.</p>
+            </div>
+            <div className="prosp-card">
+              <div className="prosp-card-top">
+                <div className="prosp-card-avatar">SF</div>
+                <div>
+                  <h4 className="prosp-card-name">Sara Ferri</h4>
+                  <p className="prosp-card-role">Head of Sales · Consulenza B2B (50-200 dip.)</p>
+                </div>
+              </div>
+              <p className="prosp-card-reason"><strong>Rilevanza:</strong> 3 interazioni in un mese (warm signal). Nuovo servizio in lancio → bisogno di acquisire nuovi clienti per quel verticale.</p>
+              <p className="prosp-card-action">Connessione con nota su come altri team gestiscono pipeline durante un lancio. Proponi 15 min.</p>
+            </div>
+            <div className="prosp-card">
+              <div className="prosp-card-top">
+                <div className="prosp-card-avatar">GR</div>
+                <div>
+                  <h4 className="prosp-card-name">Giulia Rossi</h4>
+                  <p className="prosp-card-role">CRO · Scale-up SaaS (serie A, 80 persone)</p>
+                </div>
+              </div>
+              <p className="prosp-card-reason"><strong>Rilevanza:</strong> Ha pubblicato un post sulla difficoltà di prevedere la pipeline Q2. Il team sales è passato da 4 a 12 persone in 6 mesi.</p>
+              <p className="prosp-card-action">Commenta con esperienza su pipeline forecasting in fase di scaling. Se risponde, proponi scambio di idee.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            SEZIONE 5 — AVANZAMENTO (ex Performance, ridotta)
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="perf-reduced" aria-label="Avanzamento verso call">
+          <div className="perf-reduced-head">
+            <h3 className="perf-reduced-title">Avanzamento</h3>
+            <p className="perf-reduced-sub">Metriche sintetiche sulla tua attività commerciale.</p>
+          </div>
+          <div className="perf-reduced-grid">
+            <div className="perf-reduced-card">
+              <span className="perf-reduced-label">Indice attività</span>
+              <span className="perf-reduced-value">{activityIndex}<span className="perf-reduced-over">/100</span></span>
+              <span className={`perf-reduced-status ${activityIndexStatus.className}`}>{activityIndexStatus.label}</span>
+            </div>
+            <div className="perf-reduced-card">
+              <span className="perf-reduced-label">Streak attivo</span>
+              <span className="perf-reduced-value">{streak > 0 ? `${streak} gg` : "0 gg"}</span>
+            </div>
+            <div className="perf-reduced-card">
+              <span className="perf-reduced-label">Giorni attivi (30g)</span>
+              <span className="perf-reduced-value">{activeDaysLast30}</span>
+            </div>
+            <div className="perf-reduced-card">
+              <span className="perf-reduced-label">Profili analizzati</span>
+              <span className="perf-reduced-value">{contacts.length}</span>
+            </div>
+            <div className="perf-reduced-card">
+              <span className="perf-reduced-label">Messaggi gestiti</span>
+              <span className="perf-reduced-value">{dashboardMetrics.messagesHandled}</span>
+            </div>
+            <div className="perf-reduced-card">
+              <span className="perf-reduced-label">Trend settimanale</span>
+              <span className={`perf-reduced-value ${weeklyDelta >= 0 ? "perf-trend-up" : "perf-trend-down"}`}>
+                {weeklyDelta >= 0 ? `+${weeklyDelta}` : weeklyDelta}
+              </span>
+            </div>
+          </div>
+          {smartAlert && (
+            <div className={`smart-alert ${smartAlert.className}`} role="status" aria-live="polite">
+              <p className="smart-alert-title">{smartAlert.title}</p>
+              <p className="smart-alert-body">{smartAlert.body}</p>
+            </div>
+          )}
+        </section>
+
+        {/* ═══════════════════════════════════════════════════════════
+            SEZIONE 6 — STRUMENTI DI SUPPORTO
+        ═══════════════════════════════════════════════════════════ */}
+        <section className="support-tools-section" aria-label="Strumenti di supporto">
+          <div className="support-tools-head">
+            <h3 className="support-tools-title">Strumenti di supporto</h3>
+            <p className="support-tools-sub">Usa questi strumenti quando hai bisogno di creare contenuti, messaggi o approfondire un profilo.</p>
+          </div>
+
+          {/* Core actions */}
           <div className="main-tools-grid">
             {CORE_ACTIONS.map((action) => (
               <Link key={action.id} href={action.href} className="main-tool-card" onClick={markActiveToday}>
@@ -759,15 +890,9 @@ export default function AppTodayPage() {
               </Link>
             ))}
           </div>
-        </section>
 
-        {/* ── SECONDARY OPS V5 ── */}
-        <section className="dash-ops-v5-section" aria-label="Strumenti operativi">
-          <div className="dash-ops-v5-head">
-            <h3 className="dash-ops-v5-title">Strumenti operativi</h3>
-            <p className="dash-ops-v5-sub">Contenuti, risposte e avanzamento conversazioni quando servono.</p>
-          </div>
-          <div className="dash-ops-v5-grid">
+          {/* Secondary tools */}
+          <div className="dash-ops-v5-grid" style={{ marginTop: "1rem" }}>
             {SECONDARY_TOOLS.map((tool) => (
               <button
                 key={tool.id}

@@ -120,21 +120,51 @@ export const adviceSchema = z.object({
   client_heat_level: heatLevelSchema,
 });
 
+export const segnaleSchema = z.object({
+  tipo: z.string(),
+  significato: z.string(),
+  implicazione_commerciale: z.string(),
+});
+
 export const prospectAnalyzerSchema = z.object({
   score: z.number().min(0).max(100),
   chi_e: z.string(),
   ruolo_contesto: z.string(),
-  punti_forza: z.tuple([z.string(), z.string(), z.string()]),
-  punti_deboli: z.tuple([z.string(), z.string()]),
-  perche_buon_contatto: z.string(),
-  strategia_contatto: z.string(),
+  // Verdetto rafforzato
+  verdetto: z.object({
+    vale_la_pena: z.enum(["Sì", "No", "Debole"]),
+    priorita: z.enum(["Alta", "Media", "Bassa"]),
+    confidenza: z.enum(["Alta", "Media", "Bassa"]),
+    sintesi: z.string(),
+  }),
+  // Segnali strutturati
+  segnali: z.array(segnaleSchema).min(2).max(5),
+  // Perché strutturato
+  perche: z.object({
+    fit_con_target: z.string(),
+    timing: z.string(),
+    potenziale: z.string(),
+  }),
+  // Angolo di attacco
+  angolo_attacco: z.object({
+    tema: z.string(),
+    leva: z.string(),
+    cosa_evitare: z.string(),
+  }),
+  // Messaggi (ridimensionati)
   nota_connessione: z.string(),
   primo_messaggio: z.string(),
-  followup_3g: z.string(),
-  followup_7g: z.string(),
-  step_successivi: z.tuple([z.string(), z.string(), z.string()]),
-  segnali_da_osservare: z.string(),
-  errori_da_evitare: z.string(),
+  // Follow-up strutturato
+  followup: z.object({
+    quando: z.string(),
+    cosa_citare: z.string(),
+    obiettivo: z.string(),
+    messaggio: z.string(),
+  }),
+  // Errori specifici
+  errori_da_evitare: z.tuple([z.string(), z.string(), z.string()]),
+  // Prossimo step
+  prossimo_step: z.string(),
   client_heat_level: heatLevelSchema,
   priority_signal: z.enum(["high", "medium", "low"]),
 });
@@ -246,34 +276,38 @@ export const followupSchema = z.object({
 });
 
 export const onboardingInputSchema = z.object({
-  /* Step 1 — Posizionamento */
+  /* Step 1 — Cosa vendi */
   servizio: z.string().min(1),
-  elevator_pitch: z.string().min(1),
-  settore: z.string().min(1),
-  differenziatore: z.string().min(1),
+  tipo_servizio: z.enum(["consulenza", "servizio", "coaching", "agenzia", "altro"]).default("consulenza"),
 
-  /* Step 2 — Il tuo buyer */
+  /* Step 2 — Chi è il tuo cliente */
   cliente_ideale: z.string().min(1),
-  dimensione_azienda: z.enum(["1_10", "11_50", "51_200", "201_1000", "1000_plus"]),
+  settore: z.string().default(""),
+  dimensione_azienda: z.enum(["freelance", "startup", "pmi", "enterprise"]).default("pmi"),
+
+  /* Step 3 — Problema che risolvi */
   problema_cliente: z.string().min(1),
-  risultato_cliente: z.string().min(1),
+  risultato_cliente: z.string().default(""),
 
-  /* Step 3 — Segnali & Obiezioni */
+  /* Step 4 — Segnali */
   segnali_interesse: z.string().min(1),
-  obiezione_frequente: z.string().min(1),
 
-  /* Step 4 — Il tuo processo */
-  modello_vendita: z.enum(["fast", "consultative", "relationship"]),
-  ticket_medio: z.enum(["under_1k", "1k_5k", "5k_15k", "15k_50k", "over_50k"]),
-  ciclo_vendita: z.enum(["under_1w", "1_4w", "1_3m", "over_3m"]),
-  tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]),
-  cta_preferita: z.enum(["call", "demo", "audit", "preventivo", "altro"]),
+  /* Step 5 — Stato attuale */
+  stato_linkedin: z.enum(["non_uso", "pubblico_no_risultati", "scrivo_no_risposta", "conversazioni_no_call"]).default("non_uso"),
 
-  /* Step 5 — Asset */
-  linkedin_url: z.string().min(1),
+  /* Legacy fields — kept optional for backward compatibility */
+  elevator_pitch: z.string().optional().default(""),
+  differenziatore: z.string().optional().default(""),
+  obiezione_frequente: z.string().optional().default(""),
+  modello_vendita: z.enum(["fast", "consultative", "relationship"]).optional().default("consultative"),
+  ticket_medio: z.enum(["under_1k", "1k_5k", "5k_15k", "15k_50k", "over_50k"]).optional().default("5k_15k"),
+  ciclo_vendita: z.enum(["under_1w", "1_4w", "1_3m", "over_3m"]).optional().default("1_4w"),
+  tempo_settimanale: z.enum(["meno_1h", "1_3h", "3_5h", "piu_5h"]).optional().default("1_3h"),
+  cta_preferita: z.enum(["call", "demo", "audit", "preventivo", "altro"]).optional().default("call"),
+  linkedin_url: z.string().optional().default(""),
   sito_web: z.string().optional().default(""),
-  linkedin_search_links: z.array(z.string()).default([]),
-  materiali_nomi: z.array(z.string()).default([]),
+  linkedin_search_links: z.array(z.string()).optional().default([]),
+  materiali_nomi: z.array(z.string()).optional().default([]),
 });
 
 export type PlanJson = z.infer<typeof planSchema>;

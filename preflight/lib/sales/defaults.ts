@@ -120,28 +120,40 @@ export const defaultProspectAnalyzer: ProspectAnalyzerJson = {
   score: 65,
   chi_e: "Professionista del settore B2B con focus su crescita commerciale e gestione pipeline.",
   ruolo_contesto: "Fondatore o responsabile commerciale in un'azienda con 5-50 dipendenti. Gestisce il processo di acquisizione clienti su LinkedIn.",
-  punti_forza: [
-    "Esperienza consolidata nel settore B2B",
-    "Rete di contatti ampia e attiva su LinkedIn",
-    "Pubblica contenuti con regolarità",
+  verdetto: {
+    vale_la_pena: "Debole",
+    priorita: "Media",
+    confidenza: "Bassa",
+    sintesi: "Profilo con potenziale ma informazioni insufficienti per un verdetto netto. Servono più segnali prima di investire tempo.",
+  },
+  segnali: [
+    { tipo: "Pubblica contenuti regolarmente", significato: "È attivo sulla piattaforma e visibile", implicazione_commerciale: "Più ricettivo a interazioni qualificate e apertura a conversazioni" },
+    { tipo: "Rete di contatti ampia", significato: "Ha investito nella costruzione del network", implicazione_commerciale: "Sa usare LinkedIn come canale — apprezza approcci non banali" },
   ],
-  punti_deboli: [
-    "Profilo non ottimizzato per la conversione",
-    "Manca una call-to-action chiara nel sommario",
-  ],
-  perche_buon_contatto: "Ha un'esigenza concreta di sistematizzare il processo outbound. Il profilo mostra segnali di interesse verso tematiche di crescita e automazione.",
-  strategia_contatto: "Approccio educativo: partire da un contenuto di valore legato al suo problema specifico. Evitare la vendita diretta nel primo messaggio.",
+  perche: {
+    fit_con_target: "Ha un'esigenza concreta di sistematizzare il processo outbound. Il profilo mostra segnali di interesse verso tematiche di crescita.",
+    timing: "Non ci sono segnali di urgenza chiara. Potrebbe essere un contatto da coltivare nel medio termine.",
+    potenziale: "Se converte, può diventare un caso studio nel suo settore e un referral per contatti simili.",
+  },
+  angolo_attacco: {
+    tema: "Sistematizzazione dell'outbound su LinkedIn",
+    leva: "Pubblica contenuti ma non ha un processo strutturato per convertire le interazioni in opportunità",
+    cosa_evitare: "Non proporre tool o servizi nel primo messaggio — parla del suo problema",
+  },
   nota_connessione: "Ho visto il tuo post sulla crescita commerciale — mi occupo dello stesso tema. Mi farebbe piacere connetterci.",
   primo_messaggio: "Ciao, ho letto il tuo profilo e il focus su crescita commerciale: ti va uno scambio rapido su come gestite oggi LinkedIn inbound/outbound?",
-  followup_3g: "Riprendo il messaggio — ho un caso studio simile al tuo scenario. Ti interessa se te lo condivido?",
-  followup_7g: "Chiudo il thread: se vuoi, possiamo fare 15 minuti e capire se c'è fit. Altrimenti nessun problema!",
-  step_successivi: [
-    "Invia il primo messaggio oggi",
-    "Se accetta, aspetta 24h e poi manda un follow-up di valore",
-    "Proponi una call di 15 minuti dopo il secondo scambio",
+  followup: {
+    quando: "3 giorni dopo il primo messaggio",
+    cosa_citare: "Un suo post o contenuto recente legato al tema commerciale",
+    obiettivo: "Riaprire la conversazione con un elemento di valore, non una richiesta",
+    messaggio: "Riprendo il messaggio — ho un caso studio simile al tuo scenario. Ti interessa se te lo condivido?",
+  },
+  errori_da_evitare: [
+    "Non proporre subito una call senza aver costruito contesto",
+    "Non mandare messaggi troppo lunghi — massimo 3 righe",
+    "Non parlare del proprio servizio nel primo messaggio",
   ],
-  segnali_da_osservare: "Risponde con domande specifiche (caldo). Visualizza senza rispondere (tiepido). Non accetta la connessione (freddo).",
-  errori_da_evitare: "Non proporre subito una call. Non mandare messaggi troppo lunghi. Non parlare del proprio servizio nel primo messaggio.",
+  prossimo_step: "Invia la richiesta di connessione con la nota personalizzata e prepara un contenuto di valore da condividere come follow-up.",
   client_heat_level: "Cold",
   priority_signal: "medium",
 };
