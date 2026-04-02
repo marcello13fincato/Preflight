@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
+
+const BANNER_DISMISSED_KEY = "preflight-setup-banner-dismissed";
 
 export function computeSystemProgress(onboarding: Record<string, unknown> | null): number {
   if (!onboarding) return 0;
@@ -32,13 +34,40 @@ export default function SystemBanner() {
 
   const pct = computeSystemProgress(profile.onboarding as Record<string, unknown> | null);
 
-  if (profile.onboarding_complete || pct >= 100) return null;
+  const [dismissed, setDismissed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem(BANNER_DISMISSED_KEY) === "true";
+  });
+
+  const dismiss = useCallback(() => {
+    setDismissed(true);
+    localStorage.setItem(BANNER_DISMISSED_KEY, "true");
+  }, []);
+
+  if (profile.onboarding_complete || pct >= 100 || dismissed) return null;
 
   const setupState: SetupState = pct > 0 ? "partial" : "not-started";
 
   return (
     <div className="setup-card fade-in" role="region" aria-label="Configurazione sistema commerciale">
-      <div className="setup-card-inner fade-in-delay">
+      <div className="setup-card-inner fade-in-delay" style={{ position: "relative" }}>
+
+        <button
+          type="button"
+          onClick={dismiss}
+          aria-label="Chiudi banner"
+          style={{
+            position: "absolute", top: "0.85rem", right: "0.85rem",
+            background: "none", border: "none", cursor: "pointer",
+            color: "var(--v7-text-tertiary, #8494A7)", padding: "0.25rem",
+            borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center",
+            transition: "background 150ms ease, color 150ms ease",
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(0,0,0,0.06)"; e.currentTarget.style.color = "var(--v7-text, #0C1527)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "var(--v7-text-tertiary, #8494A7)"; }}
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+        </button>
 
         <div className="setup-card-header">
           <span className="setup-card-icon" aria-hidden="true">
