@@ -8366,3 +8366,168 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   .act-card-v7-badge-alta{background:rgba(220,38,38,0.15);color:#fca5a5}
   .act-card-v7-badge-media{background:rgba(217,119,6,0.15);color:#fde68a}
 }
+
+/* ═══════════════════════════════════════════════════════════
+   FINAL LAYOUT OVERRIDE — Full-screen app shell
+   Wins cascade over all previous declarations
+═══════════════════════════════════════════════════════════ */
+
+/* ── Shell: full screen, no scroll on body ── */
+.app-shell.app-shell{
+  display:flex;
+  min-height:100vh;
+  height:100vh;
+  overflow:hidden;
+  background:#F7FAFF;
+}
+
+/* ── Main area: fill remaining space, scroll internally ── */
+.app-main.app-main{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;
+  height:100vh;
+  overflow:hidden;
+}
+
+/* ── Content: scroll area, full width, tight padding ── */
+.app-content.app-content{
+  flex:1;
+  width:100%;
+  max-width:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:1.5rem 2rem 3rem;
+  box-sizing:border-box;
+  background:transparent;
+}
+.app-content::-webkit-scrollbar{width:6px}
+.app-content::-webkit-scrollbar-thumb{background:rgba(10,102,194,0.12);border-radius:3px}
+.app-content::-webkit-scrollbar-thumb:hover{background:rgba(10,102,194,0.22)}
+
+@media(min-width:1440px){.app-content.app-content{padding:1.75rem 2.5rem 3.5rem}}
+@media(min-width:1920px){.app-content.app-content{padding:2rem 3rem 4rem}}
+@media(max-width:768px){.app-content.app-content{padding:1rem 0.85rem 2rem}}
+
+/* ── Topbar: compact, branded ── */
+.app-topbar.app-topbar{
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  height:3.25rem;
+  padding:0 2rem;
+  background:rgba(255,255,255,0.96);
+  border-bottom:1px solid rgba(10,102,194,0.08);
+  box-shadow:0 1px 8px rgba(10,102,194,0.03);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+@media(min-width:1440px){.app-topbar.app-topbar{padding:0 2.5rem}}
+@media(max-width:768px){.app-topbar.app-topbar{padding:0 0.85rem;height:3rem}}
+
+/* ── Sidebar: full redesign ── */
+.sb.sb{
+  width:240px;
+  flex-shrink:0;
+  display:flex;flex-direction:column;
+  height:100vh;
+  position:sticky;top:0;
+  overflow-y:auto;overflow-x:hidden;
+  z-index:60;
+  background:linear-gradient(180deg,#003A8C 0%,#0A66C2 55%,#0B5CAD 100%);
+  border-right:none;
+  box-shadow:2px 0 16px rgba(10,102,194,0.12);
+}
+.sb.sb::-webkit-scrollbar{width:3px}
+.sb.sb::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+/* Sidebar brand */
+.sb.sb .sb-brand{
+  padding:1.25rem 1.15rem 1rem;
+  border-bottom:1px solid rgba(255,255,255,0.12);
+}
+
+/* Sidebar nav */
+.sb.sb .sb-nav,
+.sb.sb .app-sidebar-nav{
+  flex:1;
+  display:flex;flex-direction:column;gap:0.15rem;
+  padding:0.75rem 0.65rem;
+  overflow-y:auto;
+}
+
+/* Group */
+.sb.sb .sb-group{margin-bottom:0.65rem}
+.sb.sb .sb-group-label{
+  display:block;
+  font-size:0.58rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.12em;
+  color:rgba(255,255,255,0.45);
+  padding:0 0.6rem;margin-bottom:0.35rem;
+}
+.sb.sb .sb-group-items{display:flex;flex-direction:column;gap:2px}
+
+/* Nav links */
+.sb.sb .sb-link{
+  display:flex;align-items:center;gap:0.65rem;
+  padding:0.5rem 0.6rem;
+  border-radius:10px;
+  font-size:0.82rem;font-weight:500;
+  color:rgba(255,255,255,0.72);
+  text-decoration:none;
+  border:1px solid transparent;
+  transition:all 0.15s ease;
+  position:relative;
+}
+.sb.sb .sb-link:hover{
+  background:rgba(255,255,255,0.1);
+  border-color:rgba(255,255,255,0.12);
+  color:#fff;
+}
+.sb.sb .sb-link-active{
+  background:rgba(255,255,255,0.16);
+  border-color:rgba(255,255,255,0.22);
+  color:#fff;font-weight:600;
+  box-shadow:0 2px 10px rgba(0,0,0,0.12);
+}
+.sb.sb .sb-link-active::before{
+  content:'';position:absolute;left:-1px;top:50%;transform:translateY(-50%);
+  width:3px;height:55%;border-radius:0 3px 3px 0;
+  background:#fff;
+  box-shadow:0 0 8px rgba(255,255,255,0.35);
+}
+
+/* Nav link icons */
+.sb.sb .sb-link-icon{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.07);
+  color:inherit;
+  transition:all 0.15s ease;
+}
+.sb.sb .sb-link:hover .sb-link-icon{
+  background:rgba(255,255,255,0.14);color:#fff;
+}
+.sb.sb .sb-link-active .sb-link-icon{
+  background:rgba(255,255,255,0.2);color:#fff;
+}
+
+/* Footer */
+.sb.sb .sb-footer{
+  padding:0.85rem 1.15rem;
+  border-top:1px solid rgba(255,255,255,0.1);
+  margin-top:auto;
+}
+
+/* Mobile sidebar */
+@media(max-width:768px){
+  .sb.sb{
+    position:fixed;left:-240px;top:0;
+    width:240px;
+    transition:left 0.3s cubic-bezier(.4,0,.2,1);
+    box-shadow:12px 0 40px rgba(0,0,0,0.35);
+  }
+  .sb.sb.sb-open{left:0}
+}
+
+/* ── Dashboard page: use full width ── */
+.dash-page-v6.dash-page-v6{
+  max-width:100%;width:100%;
+}
