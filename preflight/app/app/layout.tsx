@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import getServerAuthSession from "@/lib/getServerAuthSession";
 import AppSidebar from "@/components/app/AppSidebar";
 import SystemBanner from "@/components/app/SystemBanner";
@@ -7,6 +8,10 @@ import AIContextBanner from "@/components/app/AIContextBanner";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
+
+  if (!session?.user) {
+    redirect("/auth/login");
+  }
 
   return (
     <div className="app-shell">
