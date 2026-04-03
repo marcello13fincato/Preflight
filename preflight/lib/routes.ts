@@ -7,11 +7,12 @@ export const marketingNav = [
 export const marketingCTA = { label: "Prova il sistema", href: "/app" };
 
 export const dashboardNav = [
-  { label: "Dashboard", href: "/app" },
-  { label: "Cosa fare oggi", href: "/app/oggi" },
+  { label: "Cosa fare oggi", href: "/app" },
   { label: "Trova clienti", href: "/app/find-clients" },
   { label: "Analizza profilo", href: "/app/prospect" },
-  { label: "Chiedi un consiglio", href: "/app/dm" },
-  { label: "Configura", href: "/app/onboarding" },
-  { label: "Settings", href: "/app/settings" },
+  { label: "Conversazioni", href: "/app/dm" },
+  { label: "Chiedi un consiglio", href: "/app/consiglio" },
+  { label: "Messaggi / Follow-up", href: "/app/followup" },
+  { label: "Configura sistema", href: "/app/onboarding" },
+  { label: "Impostazioni", href: "/app/settings" },
 ];

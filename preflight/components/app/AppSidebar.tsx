@@ -5,22 +5,10 @@ import { usePathname } from "next/navigation";
 
 type NavItem = { href: string; label: string; icon: React.ReactNode };
 
-const overviewItems: NavItem[] = [
+const mainItems: NavItem[] = [
   {
     href: "/app",
-    label: "Dashboard",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="3" y="3" width="7" height="7" rx="1.5" />
-        <rect x="14" y="3" width="7" height="7" rx="1.5" />
-        <rect x="3" y="14" width="7" height="7" rx="1.5" />
-        <rect x="14" y="14" width="7" height="7" rx="1.5" />
-      </svg>
-    ),
-  },
-  {
-    href: "/app/oggi",
-    label: "Oggi",
+    label: "Cosa fare oggi",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
@@ -30,7 +18,7 @@ const overviewItems: NavItem[] = [
   },
 ];
 
-const clientItems: NavItem[] = [
+const actionItems: NavItem[] = [
   {
     href: "/app/find-clients",
     label: "Trova clienti",
@@ -56,10 +44,31 @@ const clientItems: NavItem[] = [
 const conversationItems: NavItem[] = [
   {
     href: "/app/dm",
-    label: "Messaggi",
+    label: "Conversazioni",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/app/consiglio",
+    label: "Chiedi un consiglio",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+        <circle cx="12" cy="12" r="10" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+      </svg>
+    ),
+  },
+  {
+    href: "/app/followup",
+    label: "Messaggi / Follow-up",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+        <polyline points="21 3 21 9 15 9" />
       </svg>
     ),
   },
@@ -68,7 +77,7 @@ const conversationItems: NavItem[] = [
 const systemItems: NavItem[] = [
   {
     href: "/app/onboarding",
-    label: "Setup",
+    label: "Configura sistema",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="3" />
@@ -88,8 +97,8 @@ const systemItems: NavItem[] = [
 ];
 
 const groups = [
-  { label: "Overview", items: overviewItems },
-  { label: "Strumenti", items: clientItems },
+  { label: "", items: mainItems },
+  { label: "Azione", items: actionItems },
   { label: "Conversazioni", items: conversationItems },
   { label: "Sistema", items: systemItems },
 ];

@@ -1,111 +1,99 @@
 "use client";
 
-
 import { useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
-import { adviceSchema, type AdviceJson } from "@/lib/sales/schemas";
+import CopyButton from "@/components/shared/CopyButton";
 
+type ConversationResult = {
+  best_reply: string;
+  client_heat_level: string;
+  message_risk_warning: string;
+  alternatives: { short: string; assertive: string };
+  qualifying_questions: [string, string, string];
+  followups: { "48h": string; "5d": string; "10d": string };
+  next_action: string;
+};
 
-export default function DmPage() {
+const GOAL_OPTIONS = [
+  { value: "continue_conversation", label: "Continuare la conversazione" },
+  { value: "propose_call", label: "Proporre una call" },
+  { value: "qualify", label: "Capire se è un buon prospect" },
+  { value: "reactivate", label: "Riattivare un contatto fermo" },
+] as const;
+
+export default function ConversazioniPage() {
   const { data: session } = useSession();
   const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = repo.profile.getProfile(userId);
 
   const [situation, setSituation] = useState("");
+  const [objective, setObjective] = useState("continue_conversation");
+  const [conversationState, setConversationState] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
-  const [pdfFile, setPdfFile] = useState<File | null>(null);
-  const [websiteUrl, setWebsiteUrl] = useState("");
-  const [output, setOutput] = useState<AdviceJson | null>(null);
+  const [output, setOutput] = useState<ConversationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [copied, setCopied] = useState<string | null>(null);
-
 
   async function generate() {
     if (!situation.trim() || loading) return;
     setLoading(true);
     setError(null);
     try {
-      let pdfText = "";
-      if (pdfFile) {
-        pdfText = `[PDF caricato: ${pdfFile.name}]`;
-      }
-      const res = await fetch("/api/ai/advice", {
+      const res = await fetch("/api/ai/dm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           profile: profile.onboarding,
-          situation: situation.trim(),
-          linkedin_url: linkedinUrl.trim(),
-          website_url: websiteUrl.trim(),
-          pdf_text: pdfText,
+          thread: situation.trim(),
+          conversation_goal: objective,
+          conversation_state: conversationState.trim() || undefined,
+          linkedin_url: linkedinUrl.trim() || undefined,
         }),
       });
-      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      const json = await res.json().catch(() => ({}));
       if (!res.ok) {
         throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
       }
-      const parsed = adviceSchema.safeParse(json);
-      if (!parsed.success) {
-        throw new Error("Risposta AI non valida. Riprova.");
-      }
-      setOutput(parsed.data);
-      repo.interaction.addInteraction(userId, "dm", situation, parsed.data);
+      setOutput(json as ConversationResult);
+      repo.interaction.addInteraction(userId, "dm", situation, json);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
+      setError(err instanceof Error ? err.message : "Errore sconosciuto.");
     } finally {
       setLoading(false);
     }
   }
 
-  function fillExample(text: string) {
-    setSituation(text);
-  }
-
-  function resetAdvice() {
+  function reset() {
     setOutput(null);
     setError(null);
   }
 
-  function copyText(text: string, field: string) {
-    navigator.clipboard.writeText(text);
-    setCopied(field);
-    setTimeout(() => setCopied(null), 2000);
-  }
-
-  // ── FULLSCREEN OUTPUT ──
+  /* ── OUTPUT ── */
   if (output) {
     return (
       <div className="pr-fullscreen fade-in">
-        {/* Top bar with controls */}
         <div className="pr-topbar">
-          <button onClick={resetAdvice} className="pr-back-btn">
+          <button onClick={reset} className="pr-back-btn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Nuova richiesta
+            Nuova conversazione
           </button>
-          <div className="pr-topbar-url">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Consulenza AI
-          </div>
+          <div className="pr-topbar-url">💬 Strategia conversazione</div>
           <div className="pr-topbar-actions">
-            <Link href="/app/prospect" className="pr-topbar-link">Analizza profilo</Link>
-            <Link href="/app/find-clients" className="pr-topbar-link">Trova clienti</Link>
-            <Link href="/app/oggi" className="pr-topbar-link">Piano oggi</Link>
+            <Link href="/app/followup" className="pr-topbar-link">Follow-up</Link>
+            <Link href="/app/consiglio" className="pr-topbar-link">Chiedi consiglio</Link>
           </div>
         </div>
 
-        {/* Score + Heat hero banner */}
         <div className="pr-score-hero fade-in">
           <div className="pr-score-ring-wrap">
             <div className="pr-score-ring">
               <svg viewBox="0 0 120 120" className="pr-score-svg">
                 <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
                 <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
-                  strokeDasharray={`327 327`}
-                  transform="rotate(-90 60 60)" className="pr-score-progress" />
+                  strokeDasharray="327 327" transform="rotate(-90 60 60)" className="pr-score-progress" />
                 <defs>
                   <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#3b82f6" />
@@ -113,90 +101,107 @@ export default function DmPage() {
                   </linearGradient>
                 </defs>
               </svg>
-              <div className="pr-score-value">AI</div>
+              <div className="pr-score-value">💬</div>
             </div>
-            <span className="pr-score-label">Consiglio</span>
+            <span className="pr-score-label">Risposta strategica</span>
           </div>
           <div className="pr-score-info fade-in-delay">
-            <h1 className="pr-score-title">Consiglio personalizzato</h1>
-            <p className="pr-score-subtitle">{output.lettura_situazione}</p>
+            <h1 className="pr-score-title">La tua prossima mossa</h1>
+            <p className="pr-score-subtitle">{output.next_action}</p>
             <div className="pr-score-badges">
               <span className={`pr-badge pr-heat-${output.client_heat_level?.toLowerCase?.() || "cold"}`}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2c.5 1 2.5 3 2.5 5.5a4.5 4.5 0 1 1-5 0C9.5 5 11.5 3 12 2z"/></svg>
-                {output.client_heat_level}
+                🔥 {output.client_heat_level}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Main content grid */}
         <div className="pr-grid">
-          {/* LEFT COLUMN — Analisi */}
           <div className="pr-col">
-            {/* Strategia */}
-            <div className="pr-card pr-card-strategy fade-in-delay">
-              <div className="pr-card-header">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                <h3>Strategia consigliata</h3>
-              </div>
-              <p className="pr-card-text">{output.strategia_consigliata}</p>
-            </div>
-
-            {/* Errori da evitare */}
-            <div className="pr-card pr-card-warning fade-in-delay">
-              <div className="pr-card-header">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-                <h3>Errori da evitare</h3>
-              </div>
-              <p className="pr-card-text">{output.errori_da_evitare}</p>
-            </div>
-          </div>
-
-          {/* RIGHT COLUMN — Messaggi e azioni */}
-          <div className="pr-col">
-            {/* Risposta suggerita */}
+            {/* Best reply */}
             <div className="pr-msg-card pr-msg-first fade-in-delay">
               <div className="pr-msg-header">
                 <div className="pr-msg-step">1</div>
                 <div>
-                  <h3 className="pr-msg-title">Risposta suggerita</h3>
-                  <p className="pr-msg-hint">Invia subito, personalizza se serve</p>
+                  <h3 className="pr-msg-title">Risposta consigliata</h3>
+                  <p className="pr-msg-hint">Copia e invia su LinkedIn</p>
                 </div>
-                <button onClick={() => copyText(output.risposta_suggerita, "risposta")} className={`pr-copy-btn${copied === "risposta" ? " pr-copied" : ""}`}>
-                  {copied === "risposta" ? "✓ Copiato" : "Copia"}
-                </button>
+                <CopyButton text={output.best_reply} />
               </div>
-              <div className="pr-msg-body">{output.risposta_suggerita}</div>
+              <div className="pr-msg-body">{output.best_reply}</div>
             </div>
 
-            {/* Follow-up consigliato */}
+            {/* Alternatives */}
             <div className="pr-msg-card fade-in-delay">
               <div className="pr-msg-header">
                 <div className="pr-msg-step">2</div>
                 <div>
-                  <h3 className="pr-msg-title">Follow-up</h3>
-                  <p className="pr-msg-hint">Se non risponde entro 2-3 giorni</p>
+                  <h3 className="pr-msg-title">Alternative</h3>
+                  <p className="pr-msg-hint">Scegli il tono più adatto</p>
                 </div>
-                <button onClick={() => copyText(output.followup_consigliato, "followup")} className={`pr-copy-btn${copied === "followup" ? " pr-copied" : ""}`}>
-                  {copied === "followup" ? "✓ Copiato" : "Copia"}
-                </button>
               </div>
-              <div className="pr-msg-body">{output.followup_consigliato}</div>
+              <div className="sys-alt-msgs">
+                <div className="sys-alt-msg">
+                  <span className="sys-alt-label">Breve</span>
+                  <p className="pr-msg-body">{output.alternatives.short}</p>
+                  <CopyButton text={output.alternatives.short} />
+                </div>
+                <div className="sys-alt-msg">
+                  <span className="sys-alt-label">Assertiva</span>
+                  <p className="pr-msg-body">{output.alternatives.assertive}</p>
+                  <CopyButton text={output.alternatives.assertive} />
+                </div>
+              </div>
             </div>
 
-            {/* Step successivi */}
-            <div className="pr-msg-card fade-in-delay">
-              <div className="pr-msg-header">
-                <div className="pr-msg-step">3</div>
-                <div>
-                  <h3 className="pr-msg-title">Step successivi</h3>
-                  <p className="pr-msg-hint">Azioni pratiche da seguire</p>
+            {output.message_risk_warning && (
+              <div className="pr-card pr-card-warning fade-in-delay">
+                <div className="pr-card-header">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  <h3>Attenzione</h3>
                 </div>
-                <button onClick={() => copyText(output.step_successivi, "step")} className={`pr-copy-btn${copied === "step" ? " pr-copied" : ""}`}>
-                  {copied === "step" ? "✓ Copiato" : "Copia"}
-                </button>
+                <p className="pr-card-text">{output.message_risk_warning}</p>
               </div>
-              <div className="pr-msg-body">{output.step_successivi}</div>
+            )}
+          </div>
+
+          <div className="pr-col">
+            {/* Qualifying questions */}
+            <div className="pr-card fade-in-delay">
+              <div className="pr-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><circle cx="12" cy="12" r="10"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <h3>Domande per qualificare</h3>
+              </div>
+              <ul className="sys-qualify-list">
+                {output.qualifying_questions.map((q, i) => (
+                  <li key={i} className="sys-qualify-item">{q}</li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Follow-ups */}
+            <div className="pr-card fade-in-delay">
+              <div className="pr-card-header">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9"/></svg>
+                <h3>Follow-up programmati</h3>
+              </div>
+              <div className="sys-followup-list">
+                <div className="sys-followup-item">
+                  <span className="sys-followup-time">48h</span>
+                  <p className="pr-msg-body">{output.followups["48h"]}</p>
+                  <CopyButton text={output.followups["48h"]} />
+                </div>
+                <div className="sys-followup-item">
+                  <span className="sys-followup-time">5 giorni</span>
+                  <p className="pr-msg-body">{output.followups["5d"]}</p>
+                  <CopyButton text={output.followups["5d"]} />
+                </div>
+                <div className="sys-followup-item">
+                  <span className="sys-followup-time">10 giorni</span>
+                  <p className="pr-msg-body">{output.followups["10d"]}</p>
+                  <CopyButton text={output.followups["10d"]} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -204,7 +209,7 @@ export default function DmPage() {
     );
   }
 
-  // ── STATIC PAGE (INPUT) ──
+  /* ── INPUT ── */
   return (
     <div className="pr-fullscreen pr-fullscreen-empty fade-in">
       <div className="pr-score-hero fade-in">
@@ -213,8 +218,7 @@ export default function DmPage() {
             <svg viewBox="0 0 120 120" className="pr-score-svg">
               <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
               <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
-                strokeDasharray={`327 327`}
-                transform="rotate(-90 60 60)" className="pr-score-progress" />
+                strokeDasharray="327 327" transform="rotate(-90 60 60)" className="pr-score-progress" />
               <defs>
                 <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#3b82f6" />
@@ -222,15 +226,16 @@ export default function DmPage() {
                 </linearGradient>
               </defs>
             </svg>
-            <div className="pr-score-value">AI</div>
+            <div className="pr-score-value">💬</div>
           </div>
-          <span className="pr-score-label">Consiglio</span>
+          <span className="pr-score-label">Conversazioni</span>
         </div>
         <div className="pr-score-info fade-in-delay">
-          <h1 className="pr-score-title">Chiedimi un consiglio</h1>
-          <p className="pr-score-subtitle">Descrivi una situazione reale su LinkedIn e ricevi una strategia pronta, messaggi da inviare e azioni pratiche.</p>
+          <h1 className="pr-score-title">Gestisci una conversazione</h1>
+          <p className="pr-score-subtitle">Incolla la conversazione, scegli l&apos;obiettivo e ricevi la risposta strategica per avanzare verso la call.</p>
         </div>
       </div>
+
       <div className="pr-input-layout fade-in">
         <div className="pr-form-card fade-in-delay">
           <div className="pr-form-header">
@@ -238,76 +243,76 @@ export default function DmPage() {
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             </div>
             <div>
-              <h2 className="pr-form-title">Descrivi la situazione</h2>
-              <p className="pr-form-sub">Più dettagli fornisci, più il consiglio sarà personalizzato e utile.</p>
+              <h2 className="pr-form-title">La conversazione</h2>
+              <p className="pr-form-sub">Incolla la conversazione o descrivi la situazione attuale.</p>
             </div>
           </div>
           <div className="pr-form-fields">
             <div className="qa-field">
-              <label className="qa-label">Spiegami la situazione <span className="fc-required">*</span></label>
-              <textarea value={situation} onChange={(e) => setSituation(e.target.value)} className="qa-input qa-input-lg" rows={5} placeholder="Ho scritto a un founder SaaS e mi ha risposto in modo generico. Non so come continuare la conversazione." />
+              <label className="qa-label">Situazione / conversazione <span className="fc-required">*</span></label>
+              <textarea value={situation} onChange={(e) => setSituation(e.target.value)} className="qa-input qa-input-lg" rows={5}
+                placeholder="Incolla qui la conversazione LinkedIn o descrivi la situazione. Es: 'Ho scritto a un founder e mi ha risposto: Interessante, mandami più info'" />
             </div>
-            <div className="qa-examples">
-              <p className="qa-examples-title">Esempi di situazioni:</p>
-              <div className="qa-examples-chips">
-                <button type="button" className="qa-example-btn" onClick={() => fillExample("Qualcuno ha commentato un mio post e sembra interessato a quello che faccio.")}>
-                  Qualcuno ha commentato un mio post
-                </button>
-                <button type="button" className="qa-example-btn" onClick={() => fillExample("Ho ricevuto un messaggio su LinkedIn da qualcuno che non conosco.")}>
-                  Ho ricevuto un messaggio su LinkedIn
-                </button>
-                <button type="button" className="qa-example-btn" onClick={() => fillExample("Voglio capire se è il momento giusto per proporre una call a un contatto con cui sto parlando.")}>
-                  Voglio capire se è il momento giusto per proporre una call
-                </button>
-                <button type="button" className="qa-example-btn" onClick={() => fillExample("Non so come continuare una conversazione che si è fermata dopo il mio ultimo messaggio.")}>
-                  Non so come continuare una conversazione
-                </button>
+
+            <div className="qa-field">
+              <label className="qa-label">Obiettivo della conversazione</label>
+              <div className="fc-pills">
+                {GOAL_OPTIONS.map((opt) => (
+                  <button key={opt.value} type="button"
+                    className={`fc-pill${objective === opt.value ? " fc-pill-active" : ""}`}
+                    onClick={() => setObjective(opt.value)}>
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             </div>
+
             <div className="qa-field">
-              <label className="qa-label">Link profilo LinkedIn della persona coinvolta <span className="qa-label-opt">(facoltativo)</span></label>
-              <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nomecognome" />
+              <label className="qa-label">Stato attuale della conversazione <span className="qa-label-opt">(facoltativo)</span></label>
+              <input type="text" value={conversationState} onChange={(e) => setConversationState(e.target.value)} className="qa-input"
+                placeholder="Es: Ha accettato la connessione ma non ha risposto al primo messaggio" />
             </div>
+
             <div className="qa-field">
-              <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
-              <label className="qa-file-upload">
-                <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setPdfFile(e.target.files?.[0] || null)} />
-                <span className="qa-file-label">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  {pdfFile ? pdfFile.name : "Scegli un file PDF"}
-                </span>
-              </label>
+              <label className="qa-label">Link profilo LinkedIn <span className="qa-label-opt">(facoltativo)</span></label>
+              <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className="qa-input"
+                placeholder="https://linkedin.com/in/nomecognome" />
             </div>
-            <div className="qa-field">
-              <label className="qa-label">Link sito web azienda <span className="qa-label-opt">(facoltativo)</span></label>
-              <input type="url" value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)} className="qa-input" placeholder="https://azienda.com" />
-            </div>
+
             {error && (
               <div className="pr-error">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
                 {error}
               </div>
             )}
+
             <button onClick={generate} disabled={loading || !situation.trim()} className="pr-generate-btn">
               {loading ? (
-                <><span className="qa-spinner" aria-hidden="true" />Sto analizzando…</>
+                <><span className="qa-spinner" aria-hidden="true" />Analizzo la conversazione…</>
               ) : (
                 <>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  Chiedi un consiglio
+                  Ottieni la strategia
                 </>
               )}
             </button>
           </div>
         </div>
+
         <div className="pr-info-side">
           <div className="pr-info-card">
             <h3 className="pr-info-title">Cosa otterrai</h3>
             <div className="pr-info-features">
-              <div className="pr-info-feature">Risposta pronta da inviare</div>
-              <div className="pr-info-feature">Follow-up personalizzato</div>
-              <div className="pr-info-feature">Step pratici e warning</div>
+              <div className="pr-info-feature">Risposta strategica pronta</div>
+              <div className="pr-info-feature">Alternative (breve / assertiva)</div>
+              <div className="pr-info-feature">Domande per qualificare</div>
+              <div className="pr-info-feature">Follow-up a 48h, 5gg, 10gg</div>
             </div>
+          </div>
+          <div className="sys-quick-nav">
+            <Link href="/app/consiglio" className="sys-quick-nav-link">💡 Chiedi un consiglio</Link>
+            <Link href="/app/followup" className="sys-quick-nav-link">🔄 Follow-up</Link>
+            <Link href="/app/prospect" className="sys-quick-nav-link">👤 Analizza profilo</Link>
           </div>
         </div>
       </div>

@@ -9602,3 +9602,192 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 .dash-page-v6>section:nth-child(6){animation-delay:0.25s}
 .dash-page-v6>section:nth-child(7){animation-delay:0.3s}
 .dash-page-v6>section:nth-child(8){animation-delay:0.35s}
+
+/* ══════════════════════════════════════════════════════════════
+   GUIDED SYSTEM REDESIGN — April 2026
+   New component styles for the guided sales OS structure
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Setup banner (onboarding prompt) ── */
+.sys-setup-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding: 1.5rem 2rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(6,182,212,0.05));
+  border: 1px solid rgba(59,130,246,0.15);
+  margin-bottom: 2rem;
+}
+.sys-setup-icon { font-size: 1.5rem; line-height: 1; }
+.sys-setup-content { flex: 1; }
+.sys-setup-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--v7-text-primary, #1a1a2e);
+  margin: 0 0 0.35rem;
+}
+.sys-setup-desc {
+  font-size: 0.88rem;
+  color: var(--v7-text-secondary, #64748b);
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+/* ── Quick actions grid (home page) ── */
+.sys-quick-actions {
+  margin-top: 2rem;
+}
+.sys-quick-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--v7-text-secondary, #64748b);
+  margin: 0 0 1rem;
+}
+.sys-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+.sys-quick-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.25rem;
+  border-radius: 14px;
+  background: var(--v7-card-bg, #fff);
+  border: 1px solid var(--v7-border, #e2e8f0);
+  text-decoration: none;
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.sys-quick-card:hover {
+  border-color: var(--v7-blue-500, #0A66C2);
+  box-shadow: 0 4px 16px rgba(10,102,194,0.08);
+  transform: translateY(-2px);
+}
+.sys-quick-card-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+.sys-quick-card-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--v7-text-primary, #1a1a2e);
+  margin: 0;
+}
+.sys-quick-card-desc {
+  font-size: 0.82rem;
+  color: var(--v7-text-secondary, #64748b);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ── Alternative messages (conversation output) ── */
+.sys-alt-msgs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sys-alt-msg {
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba(59,130,246,0.04);
+  border: 1px solid rgba(59,130,246,0.1);
+  position: relative;
+}
+.sys-alt-label {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  background: rgba(59,130,246,0.1);
+  color: var(--v7-blue-500, #0A66C2);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Qualifying questions list ── */
+.sys-qualify-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+.sys-qualify-item {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  background: rgba(6,182,212,0.05);
+  border-left: 3px solid rgba(6,182,212,0.4);
+  font-size: 0.88rem;
+  color: var(--v7-text-primary, #1a1a2e);
+  line-height: 1.5;
+}
+
+/* ── Follow-up list (conversation output) ── */
+.sys-followup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.sys-followup-item {
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgba(59,130,246,0.03);
+  border: 1px solid var(--v7-border, #e2e8f0);
+  position: relative;
+}
+.sys-followup-time {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(6,182,212,0.08));
+  color: var(--v7-blue-500, #0A66C2);
+  margin-bottom: 0.5rem;
+}
+
+/* ── Quick navigation in sidebar of tool pages ── */
+.sys-quick-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.sys-quick-nav-link {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  background: var(--v7-card-bg, #fff);
+  border: 1px solid var(--v7-border, #e2e8f0);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--v7-text-primary, #1a1a2e);
+  transition: all 0.2s ease;
+}
+.sys-quick-nav-link:hover {
+  border-color: var(--v7-blue-500, #0A66C2);
+  background: rgba(59,130,246,0.04);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sys-quick-grid {
+    grid-template-columns: 1fr;
+  }
+  .sys-setup-banner {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem;
+  }
+}
