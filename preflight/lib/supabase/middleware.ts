@@ -39,7 +39,7 @@ export async function updateSession(request: NextRequest) {
   // If logged in and visiting login, redirect to app
   if (user && request.nextUrl.pathname === "/auth/login") {
     const url = request.nextUrl.clone();
-    url.pathname = "/app/oggi";
+    url.pathname = "/app/onboarding";
     return NextResponse.redirect(url);
   }
 

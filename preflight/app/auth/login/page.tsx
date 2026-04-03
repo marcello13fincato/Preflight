@@ -66,7 +66,7 @@ export default function LoginPage() {
         }
         return;
       }
-      router.push("/app/oggi");
+      router.push("/app/onboarding");
       router.refresh();
     } finally {
       setLoading(false);
@@ -74,8 +74,16 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+          <img
+            src="/LOGO PREFLIGHT_Pittogramma.png"
+            alt="Preflight"
+            className="h-14 w-auto"
+          />
+        </div>
         <h1 className="text-2xl font-bold text-center mb-2">
           {mode === "login" ? "Accedi a Preflight" : "Crea il tuo account"}
         </h1>
@@ -167,8 +175,13 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* Footer */}
+        <p className="text-xs text-center mt-8 text-gray-400">
+          Il tuo assistente LinkedIn per trovare clienti.
+        </p>
+
         {/* Toggle mode */}
-        <p className="text-sm text-center mt-6 text-gray-500">
+        <p className="text-sm text-center mt-4 text-gray-500">
           {mode === "login" ? (
             <>
               Non hai un account?{" "}

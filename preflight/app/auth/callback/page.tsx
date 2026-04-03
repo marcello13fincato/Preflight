@@ -14,13 +14,13 @@ export default function AuthCallback() {
     // We just need to wait for the session to be established.
     supabase.auth.onAuthStateChange((event: string) => {
       if (event === "SIGNED_IN") {
-        router.replace("/app/oggi");
+        router.replace("/app/onboarding");
       }
     });
 
     // Fallback redirect after a short delay
     const timeout = setTimeout(() => {
-      router.replace("/app/oggi");
+      router.replace("/app/onboarding");
     }, 3000);
 
     return () => clearTimeout(timeout);
