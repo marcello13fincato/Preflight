@@ -12,7 +12,7 @@ export default function AuthCallback() {
 
     // Supabase handles the token exchange automatically via the URL hash.
     // We just need to wait for the session to be established.
-    supabase.auth.onAuthStateChange((event) => {
+    supabase.auth.onAuthStateChange((event: string) => {
       if (event === "SIGNED_IN") {
         router.replace("/app/oggi");
       }
