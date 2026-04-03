@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
-import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconLogoPreflight, IconSparkles } from "@/components/shared/icons";
+import Link from "next/link";
+import { IconAlertTriangle } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { postBuilderSchema, type PostBuilderJson } from "@/lib/sales/schemas";
@@ -22,6 +22,8 @@ export default function PostPage() {
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState<PostBuilderJson | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [activeVersion, setActiveVersion] = useState<"clean" | "direct" | "authority">("clean");
+  const [copied, setCopied] = useState<string | null>(null);
 
   /* Image generation state */
   const [imgLoading, setImgLoading] = useState(false);
@@ -64,7 +66,7 @@ export default function PostPage() {
     setImgLoading(true);
     setImgError(null);
     try {
-      const postText = output.post_versions.clean + "\n\n" + output.cta;
+      const postText = output.post_versions[activeVersion] + "\n\n" + output.cta;
       const res = await fetch("/api/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -85,175 +87,232 @@ export default function PostPage() {
     }
   }
 
+  function copyText(text: string, id: string) {
+    navigator.clipboard.writeText(text);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
+  }
+
+  const VERSION_LABELS = { clean: "Pulita", direct: "Diretta", authority: "Autorevole" } as const;
+
   return (
-    <div className="tool-page">
-      <div className="tool-page-hero">
-        <h2>Scrivi un post che genera conversazioni</h2>
-        <p>
-          Trasforma un&apos;idea in un post LinkedIn strategico pronto da pubblicare.
-        </p>
-      </div>
-
-      {/* Guide box */}
-      <div className="tool-page-guide">
-        <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> scrivi un post che apre conversazioni utili</div>
-          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> bozza o idea del post, obiettivo e parola chiave DM</div>
-          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> hooks, 3 versioni, CTA e prossima azione</div>
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> pubblica e rispondi ai commenti</div>
+    <div className="pr-fullscreen">
+      {/* Hero */}
+      <div className="pr-score-hero" style={{ background: "linear-gradient(135deg, rgba(108,92,231,0.15), rgba(0,206,209,0.08))" }}>
+        <div className="pr-hero-content">
+          <div className="pr-hero-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Scrivi un post
+          </div>
+          <h1 className="pr-hero-title">Crea un post LinkedIn che genera conversazioni</h1>
+          <p className="pr-hero-subtitle">Trasforma un&apos;idea in un post strategico con hook, CTA e immagine — pronto da pubblicare.</p>
         </div>
       </div>
 
-      {/* Two-column layout */}
-      <div className="tool-page-grid">
-        {/* INPUT */}
-        {output ? (
-        <details className="tool-input-collapsed">
-          <summary><IconEdit3 size={14} /> Modifica parametri</summary>
-          <div className="tool-input-body space-y-4">
-          <h3 className="tool-page-panel-header">Input</h3>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Bozza o idea del post</span>
-            <textarea rows={7} className="input w-full resize-none" placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso..." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
-          </label>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="block text-sm">
-              <span className="mb-1 block font-medium">Obiettivo</span>
-              <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
-                <option value="lead">Aprire conversazioni</option>
-                <option value="call">Portare a call</option>
-                <option value="inbound">Ricevere richieste</option>
-              </select>
-            </label>
-            <label className="block text-sm">
-              <span className="mb-1 block font-medium">Parola chiave per DM</span>
-              <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
-            </label>
-          </div>
-          <button onClick={generate} disabled={loading} className="btn-primary w-full">
-            {loading ? "Generazione in corso…" : "Genera post →"}
-          </button>
-          </div>
-        </details>
-        ) : (
-        <div className="tool-page-panel space-y-4">
-          <h3 className="tool-page-panel-header">Input</h3>
-          <label className="block text-sm">
-            <span className="mb-1 block font-medium">Bozza o idea del post</span>
-            <textarea rows={7} className="input w-full resize-none" placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso..." value={draftPost} onChange={(e) => setDraftPost(e.target.value)} />
-          </label>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="block text-sm">
-              <span className="mb-1 block font-medium">Obiettivo</span>
-              <select value={objective} onChange={(e) => setObjective(e.target.value)} className="input w-full">
-                <option value="lead">Aprire conversazioni</option>
-                <option value="call">Portare a call</option>
-                <option value="inbound">Ricevere richieste</option>
-              </select>
-            </label>
-            <label className="block text-sm">
-              <span className="mb-1 block font-medium">Parola chiave per DM</span>
-              <input className="input w-full" value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} />
-            </label>
-          </div>
-          <button onClick={generate} disabled={loading} className="btn-primary w-full">
-            {loading ? "Generazione in corso…" : "Genera post →"}
-          </button>
-        </div>
-        )}
-
-        {/* OUTPUT */}
-        <div>
-          {error ? (
-            <div className="callout-danger rounded-xl p-5">
-              <p className="font-semibold mb-1"><IconAlertTriangle size={14} /> Errore AI</p>
-              <p className="text-sm">{error}</p>
-            </div>
-          ) : output ? (
-            <div className="tool-page-panel space-y-4">
-              <ResultHeader title="Post pronto" />
-
-              <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15.5 5.5C17 4 19.5 4 21 5.5s1.5 4 0 5.5L12 20l-9-9c-1.5-1.5-1.5-4 0-5.5s4-1.5 5.5 0"/><path d="M8 12.5l2 2 4-4"/></svg>} label="Hooks" text={output.hooks.join("\n")} variant="evidence" />
-
-              <SectionDivider label="Versioni del post" />
-              <div className="insight-reply-grid">
-                <InsightCard icon={<IconSparkles size={16} />} label="Versione pulita" text={output.post_versions.clean} variant="message" copyable />
-                <InsightCard icon={<IconTarget size={16} />} label="Versione diretta" text={output.post_versions.direct} variant="message" copyable />
-                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5C7 4 9 6 9 6s2-2 4.5-2a2.5 2.5 0 0 1 0 5H12"/><path d="M12 6v13"/><path d="M8 13h8"/></svg>} label="Versione autorevole" text={output.post_versions.authority} variant="message" copyable />
-              </div>
-
-              <SectionDivider label="Engagement" />
-              <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>} label="Call to action" text={output.cta} variant="strategy" copyable />
-              <InsightCard icon={<IconLogoPreflight size={16} />} label="Commento di apertura" text={output.comment_starter} variant="strategy" copyable />
-
-              <div className="insight-next-action">
-                <span className="insight-next-action-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-                <div><strong>Prossima azione:</strong> {output.next_step}</div>
-              </div>
-            </div>
-          ) : (
-            <div className="tool-page-empty">
-              <p className="tool-page-empty-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></p>
-              <p className="tool-page-empty-title">
-                Il risultato apparirà qui
-              </p>
-              <p className="tool-page-empty-text">
-                Inserisci la bozza e clicca &quot;Genera post&quot;
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* ── Suggerimento immagine ── */}
-      {output && (
-        <section className="dash-img-section">
-          <div className="dash-img-header">
-            <div className="dash-img-header-icon">
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+      {/* Input form */}
+      <div className="fc-section">
+        <div className="fc-section-inner">
+          <div className="fc-input-header">
+            <div className="fc-input-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             </div>
             <div>
-              <h3 className="dash-img-title">Suggerimento immagine</h3>
-              <p className="dash-img-sub">Un&apos;immagine aumenta engagement e visibilità del post su LinkedIn.</p>
+              <h2 className="fc-section-title">Componi il tuo post</h2>
+              <p className="fc-section-desc">Scrivi una bozza o un&apos;idea — l&apos;AI la trasforma in 3 versioni ottimizzate.</p>
             </div>
           </div>
 
-          <div className="dash-img-tips">
-            <div className="dash-img-tip">
-              <span className="dash-img-tip-label">Tipo consigliato:</span>{" "}
-              Illustrazione o grafica astratta — evita foto stock generiche.
+          <div className="fc-form">
+            <div className="qa-field">
+              <label className="qa-label">Bozza o idea del post <span className="fc-required">*</span></label>
+              <textarea value={draftPost} onChange={(e) => setDraftPost(e.target.value)} className="qa-input qa-input-lg" rows={5}
+                placeholder="Es. Molte aziende SaaS perdono conversioni perché l'onboarding è confuso. Vorrei raccontare come risolvere questo problema." />
             </div>
-            <div className="dash-img-tip">
-              <span className="dash-img-tip-label">Idea visiva:</span>{" "}
-              Un&apos;immagine che richiami il concetto chiave del post in modo semplice e professionale.
-            </div>
-          </div>
 
-          {imgError && (
-            <div className="callout-danger rounded-xl p-4">
-              <p className="text-sm font-semibold"><IconAlertTriangle size={14} /> {imgError}</p>
+            <div className="find-section-row">
+              <div className="qa-field" style={{ flex: 1 }}>
+                <label className="qa-label">Obiettivo</label>
+                <select value={objective} onChange={(e) => setObjective(e.target.value)} className="qa-input">
+                  <option value="lead">Aprire conversazioni</option>
+                  <option value="call">Portare a call</option>
+                  <option value="inbound">Ricevere richieste</option>
+                </select>
+              </div>
+              <div className="qa-field" style={{ flex: 1 }}>
+                <label className="qa-label">Parola chiave per DM</label>
+                <input value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} className="qa-input" placeholder="audit, consulenza, demo" />
+              </div>
             </div>
-          )}
 
-          {imgUrl && (
-            <div className="dash-img-preview">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imgUrl} alt="Immagine generata per il post" className="dash-img-result" />
-            </div>
-          )}
-
-          <div className="dash-img-actions">
-            <button onClick={generateImage} disabled={imgLoading} className="dash-btn-primary">
-              {imgLoading ? "Generazione in corso..." : imgUrl ? "Genera un'altra immagine" : "Genera esempio immagine"}
+            <button onClick={generate} disabled={loading || !draftPost.trim()} className="fc-generate-btn">
+              {loading ? (
+                <><span className="qa-spinner" aria-hidden="true" />Sto scrivendo il post…</>
+              ) : (
+                <>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  Genera post
+                </>
+              )}
             </button>
           </div>
-        </section>
+        </div>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="fc-section">
+          <div className="fc-section-inner">
+            <div className="fc-empty-state" style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.06)" }}>
+              <IconAlertTriangle size={20} />
+              <p>{error}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Output */}
+      {output && (
+        <>
+          {/* Hooks */}
+          <div className="fc-section">
+            <div className="fc-section-inner">
+              <h3 className="post-section-label">Hook — scegli il migliore</h3>
+              <div className="post-hooks-grid">
+                {output.hooks.map((hook, i) => (
+                  <button key={i} className="post-hook-card" onClick={() => copyText(hook, `hook-${i}`)}>
+                    <span className="post-hook-num">{i + 1}</span>
+                    <span className="post-hook-text">{hook}</span>
+                    <span className="post-hook-copy">{copied === `hook-${i}` ? "✓" : "Copia"}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Versioni post */}
+          <div className="fc-section">
+            <div className="fc-section-inner">
+              <h3 className="post-section-label">Versioni del post</h3>
+              <div className="fc-mode-toggle" style={{ marginBottom: "1rem" }}>
+                {(["clean", "direct", "authority"] as const).map((v) => (
+                  <button key={v} type="button" className={`fc-mode-btn${activeVersion === v ? " fc-mode-active" : ""}`} onClick={() => setActiveVersion(v)}>
+                    {VERSION_LABELS[v]}
+                  </button>
+                ))}
+              </div>
+              <div className="post-version-card">
+                <pre className="post-version-text">{output.post_versions[activeVersion]}</pre>
+                <div className="post-version-actions">
+                  <button className="post-copy-btn" onClick={() => copyText(output.post_versions[activeVersion], "version")}>
+                    {copied === "version" ? "✓ Copiato" : "Copia testo"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA & Comment starter */}
+          <div className="fc-section">
+            <div className="fc-section-inner">
+              <div className="post-engage-grid">
+                <div className="post-engage-card">
+                  <div className="post-engage-label">Call to action</div>
+                  <p className="post-engage-text">{output.cta}</p>
+                  <button className="post-copy-btn-sm" onClick={() => copyText(output.cta, "cta")}>{copied === "cta" ? "✓" : "Copia"}</button>
+                </div>
+                <div className="post-engage-card">
+                  <div className="post-engage-label">Commento di apertura</div>
+                  <p className="post-engage-text">{output.comment_starter}</p>
+                  <button className="post-copy-btn-sm" onClick={() => copyText(output.comment_starter, "comment")}>{copied === "comment" ? "✓" : "Copia"}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Image generator — first-class */}
+          <div className="fc-section">
+            <div className="fc-section-inner">
+              <div className="fc-input-header">
+                <div className="fc-input-icon" style={{ background: "linear-gradient(135deg, rgba(0,206,209,0.15), rgba(108,92,231,0.15))" }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                </div>
+                <div>
+                  <h3 className="fc-section-title">Immagine per il post</h3>
+                  <p className="fc-section-desc">Genera un&apos;immagine coerente con il tuo profilo visivo e il contenuto del post.</p>
+                </div>
+              </div>
+
+              {imgUrl && (
+                <div className="post-img-preview">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imgUrl} alt="Immagine generata per il post" className="post-img-result" />
+                </div>
+              )}
+
+              {imgError && <p className="post-img-error"><IconAlertTriangle size={14} /> {imgError}</p>}
+
+              <button onClick={generateImage} disabled={imgLoading} className="fc-generate-btn" style={{ marginTop: "1rem" }}>
+                {imgLoading ? (
+                  <><span className="qa-spinner" aria-hidden="true" />Generazione immagine…</>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                    {imgUrl ? "Genera nuova immagine" : "Genera immagine"}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Next action */}
+          <div className="fc-section">
+            <div className="fc-section-inner">
+              <div className="fc-callout" style={{ borderLeft: "3px solid var(--v7-accent, #6C5CE7)" }}>
+                <div className="fc-callout-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                </div>
+                <div>
+                  <p className="fc-callout-text"><strong>Prossima azione:</strong> {output.next_step}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Empty state */}
+      {!output && !error && !loading && (
+        <div className="fc-section">
+          <div className="fc-section-inner">
+            <div className="fc-empty-state">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <p className="fc-empty-title">Scrivi la tua idea e genera il post</p>
+              <p className="fc-empty-text">Riceverai hook, 3 versioni, CTA e un&apos;immagine coerente col tuo brand.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!profile.onboarding_complete && (
+        <div className="fc-section">
+          <div className="fc-section-inner">
+            <div className="fc-callout">
+              <div className="fc-callout-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg></div>
+              <div>
+                <p className="fc-callout-text">Configura il tuo sistema per post più mirati e coerenti.</p>
+                <Link href="/app/onboarding" className="fc-callout-link">Configura il sistema →</Link>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* History */}
-      <div className="tool-page-panel">
-        <h3 className="font-semibold mb-3">Storico</h3>
-        <HistoryList userId={userId} type="post" />
+      <div className="fc-section">
+        <div className="fc-section-inner">
+          <h3 className="post-section-label">Storico</h3>
+          <HistoryList userId={userId} type="post" />
+        </div>
       </div>
     </div>
   );

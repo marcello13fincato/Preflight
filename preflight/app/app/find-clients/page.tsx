@@ -49,6 +49,9 @@ export default function FindClientsPage() {
   const [dimensione, setDimensione] = useState("");
   const [faseAzienda, setFaseAzienda] = useState("");
   const [problemaCliente, setProblemaCliente] = useState("");
+  const [linkedinProfileUrl, setLinkedinProfileUrl] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [searchMode, setSearchMode] = useState<"manual" | "profile">("manual");
   const [output, setOutput] = useState<FindClientsJson | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,22 +107,32 @@ export default function FindClientsPage() {
   }
 
   async function generate() {
-    if (!ruoloTarget.trim() || loading) return;
+    if (searchMode === "manual" && !ruoloTarget.trim()) return;
+    if (searchMode === "profile" && !linkedinProfileUrl.trim()) return;
+    if (loading) return;
     setLoading(true);
     setError(null);
     setCheckedItems([false, false, false, false, false]);
     try {
+      let pdfText = "";
+      if (pdfFile) {
+        pdfText = `[PDF caricato: ${pdfFile.name}]`;
+      }
       const res = await fetch("/api/ai/find-clients", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          ruolo_target: ruoloTarget.trim(),
+          ruolo_target: searchMode === "profile"
+            ? `Trova profili simili a questo profilo LinkedIn: ${linkedinProfileUrl.trim()}`
+            : ruoloTarget.trim(),
           settore: settore.trim() || undefined,
           area_geografica: area.trim() || undefined,
           citta: citta.trim() || undefined,
           dimensione: dimensione || undefined,
           fase_azienda: faseAzienda || undefined,
           problema_cliente: problemaCliente.trim() || undefined,
+          linkedin_profile_url: linkedinProfileUrl.trim() || undefined,
+          pdf_text: pdfText || undefined,
           profile: onboarding || undefined,
         }),
       });
@@ -434,6 +447,44 @@ export default function FindClientsPage() {
               )}
 
               <div className="fc-form">
+                {/* Mode toggle */}
+                <div className="fc-mode-toggle">
+                  <button type="button" className={`fc-mode-btn${searchMode === "manual" ? " fc-mode-active" : ""}`} onClick={() => setSearchMode("manual")}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    Descrivi il target
+                  </button>
+                  <button type="button" className={`fc-mode-btn${searchMode === "profile" ? " fc-mode-active" : ""}`} onClick={() => setSearchMode("profile")}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    Da un profilo LinkedIn
+                  </button>
+                </div>
+
+                {searchMode === "profile" ? (
+                  <>
+                    <div className="qa-field">
+                      <label className="qa-label">Link profilo LinkedIn <span className="fc-required">*</span></label>
+                      <input type="url" value={linkedinProfileUrl} onChange={(e) => setLinkedinProfileUrl(e.target.value)} className="qa-input"
+                        placeholder="https://linkedin.com/in/nomecognome" />
+                      <p className="qa-field-hint">Incolla il link di un profilo e troveremo categorie di persone simili da contattare.</p>
+                    </div>
+                    <div className="qa-field">
+                      <label className="qa-label">PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
+                      <label className="qa-file-upload">
+                        <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setPdfFile(e.target.files?.[0] || null)} />
+                        <span className="qa-file-label">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                          {pdfFile ? pdfFile.name : "Carica PDF profilo"}
+                        </span>
+                      </label>
+                    </div>
+                    <div className="qa-field">
+                      <label className="qa-label">Contesto aggiuntivo <span className="qa-label-opt">(facoltativo)</span></label>
+                      <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2}
+                        placeholder="Es: Cerco profili simili ma nel mercato italiano" />
+                    </div>
+                  </>
+                ) : (
+                  <>
                 <div className="qa-field">
                   <label className="qa-label">Chi vuoi contattare <span className="fc-required">*</span></label>
                   <textarea
@@ -487,8 +538,10 @@ export default function FindClientsPage() {
                   <label className="qa-label">Problema che risolvi per loro <span className="qa-label-opt">(facoltativo)</span></label>
                   <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Non riescono a generare pipeline su LinkedIn, il team sales non ha un processo outbound" />
                 </div>
+                  </>
+                )}
 
-                <button onClick={generate} disabled={loading || !ruoloTarget.trim()} className="fc-generate-btn">
+                <button onClick={generate} disabled={loading || (searchMode === "manual" ? !ruoloTarget.trim() : !linkedinProfileUrl.trim())} className="fc-generate-btn">
                   {loading ? (
                     <><span className="qa-spinner" aria-hidden="true" />Sto analizzando il target…</>
                   ) : (

@@ -81,22 +81,16 @@ const QUICK_ACTIONS = [
     desc: "Valuta fit, priorità e angolo di attacco.",
   },
   {
-    href: "/app/consiglio",
-    icon: "💡",
-    title: "Chiedi un consiglio",
-    desc: "Descrivi una situazione, ricevi strategia e messaggio.",
+    href: "/app/post",
+    icon: "✍️",
+    title: "Scrivi un post",
+    desc: "Crea un post LinkedIn con hook, CTA e immagine.",
   },
   {
-    href: "/app/dm",
-    icon: "💬",
-    title: "Conversazioni",
-    desc: "Scrivi il messaggio giusto per avanzare verso la call.",
-  },
-  {
-    href: "/app/followup",
-    icon: "🔄",
-    title: "Follow-up",
-    desc: "Riprendi una conversazione ferma.",
+    href: "/app/articolo",
+    icon: "📄",
+    title: "Scrivi un articolo",
+    desc: "Articolo lungo e autorevole per la tua newsletter.",
   },
 ];
 

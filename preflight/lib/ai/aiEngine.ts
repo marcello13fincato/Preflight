@@ -20,7 +20,8 @@ export type TaskType =
   | "simulator"
   | "opportunity_finder"
   | "ask_advice"
-  | "onboarding";
+  | "onboarding"
+  | "articolo";
 
 // ── User AI Context ───────────────────────────────────────
 

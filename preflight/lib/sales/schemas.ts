@@ -313,8 +313,25 @@ export const onboardingInputSchema = z.object({
   materiali_nomi: z.array(z.string()).optional().default([]),
 });
 
+export const articoloSchema = z.object({
+  titolo: z.string(),
+  sottotitolo: z.string(),
+  sezioni: z.array(z.object({
+    titolo_sezione: z.string(),
+    contenuto: z.string(),
+  })),
+  conclusione: z.string(),
+  cta_finale: z.string(),
+  meta_description: z.string(),
+  suggerimento_immagine: z.object({
+    tipo: z.string(),
+    descrizione: z.string(),
+  }),
+});
+
 export type PlanJson = z.infer<typeof planSchema>;
 export type PostBuilderJson = z.infer<typeof postBuilderSchema>;
+export type ArticoloJson = z.infer<typeof articoloSchema>;
 export type CommentAssistantJson = z.infer<typeof commentAssistantSchema>;
 export type DmAssistantJson = z.infer<typeof dmAssistantSchema>;
 export type AdviceJson = z.infer<typeof adviceSchema>;
@@ -328,7 +345,7 @@ export type FollowupJson = z.infer<typeof followupSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
 export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 
-export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding" | "followup";
+export type InteractionType = "post" | "comments" | "dm" | "prospect" | "onboarding" | "followup" | "articolo";
 
 export type AnalyzedContact = {
   id: string;
