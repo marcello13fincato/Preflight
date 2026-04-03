@@ -27,6 +27,13 @@ export async function POST(req: Request) {
 
   const taskPrompt = `COMPITO: Analizza il profilo di un potenziale cliente LinkedIn.
 
+IMPORTANTE: Basa l'analisi ESCLUSIVAMENTE sulle informazioni fornite dall'utente (URL LinkedIn, testo PDF del profilo, sito web, contesto aggiuntivo). NON inventare dettagli che non sono presenti nell'input. Se le informazioni sono limitate (es. solo un URL senza PDF), dillo esplicitamente nella sintesi e abbassa la confidenza.
+
+Se l'utente ha fornito il TESTO del profilo (PDF), analizzalo in profondità:
+- Leggi ogni sezione: headline, about, esperienze, competenze, post recenti
+- Identifica segnali commerciali concreti (assunzioni, crescita, cambi ruolo, post su temi specifici)
+- Estrai il tono comunicativo e il posizionamento reale della persona
+
 USA il contesto commerciale dell'utente per:
 - Determinare il FIT tra il prospect e l'offerta dell'utente
 - Personalizzare i messaggi in base al servizio e differenziatore dell'utente
@@ -38,8 +45,10 @@ REGOLE per i messaggi:
 - Personalizzati sul profilo analizzato E sull'offerta dell'utente
 - Tono professionale ma umano, MAI commerciale o insistente
 - Nota di connessione: max 300 caratteri
+- Se non hai abbastanza info sul prospect, i messaggi devono essere generici ma intelligenti
 
 Score: 0-30 freddo, 31-60 potenziale, 61-80 buon match, 81-100 eccellente.
+Se hai poche info, lo score non può essere sopra 60 e la confidenza deve essere "Bassa".
 
 Restituisci JSON:
 {

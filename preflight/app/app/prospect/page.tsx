@@ -68,15 +68,39 @@ export default function Page() {
 
     const data = result || (showDemo ? DEMO_RESULT : null);
 
-    const generate = () => {
+    const generate = async () => {
       if (!linkedinUrl.trim()) return;
       setLoading(true);
       setError(null);
-      // Per ora usa demo data dopo un breve delay
-      setTimeout(() => {
-        setResult(DEMO_RESULT);
+      try {
+        let pdfText = "";
+        if (pdfFile) {
+          pdfText = await pdfFile.text();
+        }
+        const res = await fetch("/api/ai/prospect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            linkedin_url: linkedinUrl.trim(),
+            website_url: websiteUrl.trim() || undefined,
+            context: context.trim() || undefined,
+            pdf_text: pdfText || undefined,
+          }),
+        });
+        const json: Record<string, unknown> = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+        }
+        const parsed = prospectAnalyzerSchema.safeParse(json);
+        if (!parsed.success) {
+          throw new Error("Risposta AI non valida. Riprova.");
+        }
+        setResult(parsed.data);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
+      } finally {
         setLoading(false);
-      }, 1800);
+      }
     };
 
   /* ── Output panel ── */
