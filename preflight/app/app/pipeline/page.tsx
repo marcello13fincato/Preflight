@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { IconClipboard, IconTarget } from "@/components/shared/icons";
 import type { Lead, LeadStatus } from "@/lib/sales/schemas";

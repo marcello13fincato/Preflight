@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import Link from "next/link";
 import { IconAlertTriangle } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";

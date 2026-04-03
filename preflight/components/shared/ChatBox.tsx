@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 
 type Message = { role: "user" | "assistant"; content: string };
 

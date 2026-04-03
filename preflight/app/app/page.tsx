@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useCallback, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import DailyActionCard from "@/components/app/DailyActionCard";
 import type { DailyAction } from "@/components/app/DailyActionCard";

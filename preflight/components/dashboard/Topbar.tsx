@@ -1,7 +1,8 @@
 "use client";
 
 import { ReactNode } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
+import { createClient } from "@/lib/supabase/client";
 
 export default function Topbar({ children }: { children?: ReactNode }) {
   const { data: session } = useSession();
@@ -14,7 +15,7 @@ export default function Topbar({ children }: { children?: ReactNode }) {
         )}
         <button
           className="btn-secondary"
-          onClick={() => signOut({ callbackUrl: "/" })}
+          onClick={() => createClient().auth.signOut().then(() => window.location.href = '/')}
         >
           Esci
         </button>

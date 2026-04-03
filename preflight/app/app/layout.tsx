@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import getServerAuthSession from "@/lib/getServerAuthSession";
 import AppSidebar from "@/components/app/AppSidebar";
 import SystemBanner from "@/components/app/SystemBanner";
 import AIContextBanner from "@/components/app/AIContextBanner";
+import SignOutButton from "@/components/app/SignOutButton";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const session = await getServerAuthSession();
@@ -28,11 +28,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             <span className="app-topbar-user">
               {session?.user?.email || session?.user?.name || "Guest"}
             </span>
-            {session ? (
-              <Link href="/api/auth/signout" className="app-topbar-btn">
-                Esci
-              </Link>
-            ) : null}
+            <SignOutButton />
           </div>
         </header>
         <SystemBanner />

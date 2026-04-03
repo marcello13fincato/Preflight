@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconLogoPreflight } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";

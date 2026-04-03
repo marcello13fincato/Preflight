@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { marketingNav } from "../../lib/routes";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
+import { createClient } from "@/lib/supabase/client";
 import { useState, useRef, useEffect } from "react";
 
 /* ── dropdown megamenu content per voce ── */
@@ -71,7 +72,7 @@ export default function MarketingHeader() {
           {session ? (
             <div className="mega-user">
               <span className="mega-user-name">{session.user?.name || session.user?.email}</span>
-              <button onClick={() => signOut({ callbackUrl: "/" })} className="mega-user-btn" aria-label="Esci">Esci</button>
+              <button onClick={() => createClient().auth.signOut().then(() => window.location.href = '/')} className="mega-user-btn" aria-label="Esci">Esci</button>
             </div>
           ) : (
             <Link href="/app" className="mega-secondary" aria-label="Accedi">Accedi</Link>
@@ -125,7 +126,7 @@ export default function MarketingHeader() {
           {session ? (
             <div className="mega-mobile-user">
               <span className="text-sm">{session.user?.name || session.user?.email}</span>
-              <button onClick={() => signOut({ callbackUrl: "/" })} className="mega-user-btn">Esci</button>
+              <button onClick={() => createClient().auth.signOut().then(() => window.location.href = '/')} className="mega-user-btn">Esci</button>
             </div>
           ) : (
             <Link href="/app" className="mega-mobile-link" onClick={() => setMobileOpen(false)}>Accedi</Link>

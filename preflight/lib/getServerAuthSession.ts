@@ -1,8 +1,24 @@
-import { getServerSession as nextGetServerSession } from 'next-auth/next';
-import authOptions from './auth';
-import type { Session } from 'next-auth';
+import { createClient } from './supabase/server';
 
-export default async function getServerAuthSession(): Promise<Session | null> {
-  // Wrapper for server components to get the current session using centralized authOptions
-  return await nextGetServerSession(authOptions);
+type Session = {
+  user: {
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+  };
+} | null;
+
+export default async function getServerAuthSession(): Promise<Session> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (!user) return null;
+
+  return {
+    user: {
+      name: user.user_metadata?.full_name || user.user_metadata?.name || null,
+      email: user.email || null,
+      image: user.user_metadata?.avatar_url || null,
+    },
+  };
 }

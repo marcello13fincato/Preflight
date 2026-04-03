@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { VisualProfileSetup } from "@/components/visual-profile";
 

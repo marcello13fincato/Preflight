@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";

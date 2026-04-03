@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 
 export default function UserIdBadge({ onUserId }: { onUserId?: (userId: string) => void }) {
   const { data: session } = useSession();

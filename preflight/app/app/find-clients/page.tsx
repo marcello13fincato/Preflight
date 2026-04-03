@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import CopyButton from "@/components/shared/CopyButton";
 import { IconLightbulb } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";

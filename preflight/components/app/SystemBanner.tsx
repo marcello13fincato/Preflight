@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useSession } from "@/lib/hooks/useSession";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 
 const BANNER_DISMISSED_KEY = "preflight-setup-banner-dismissed";
