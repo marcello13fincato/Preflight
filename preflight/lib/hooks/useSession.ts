@@ -22,9 +22,9 @@ export function useSession() {
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-      setStatus(user ? "authenticated" : "unauthenticated");
+    supabase.auth.getUser().then(({ data }: { data: { user: User | null } }) => {
+      setUser(data.user);
+      setStatus(data.user ? "authenticated" : "unauthenticated");
     });
 
     const {
