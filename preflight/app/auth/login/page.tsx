@@ -66,7 +66,7 @@ export default function LoginPage() {
         }
         return;
       }
-      router.push("/app/onboarding");
+      router.push("/app");
       router.refresh();
     } finally {
       setLoading(false);
@@ -74,20 +74,37 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg">
+    <div className="login-page">
+      <div className="login-left">
+        <div className="login-left-content">
+          <img
+            src="/LOGO PREFLIGHT_Pittogramma.png"
+            alt="Preflight"
+            style={{ height: 48, width: 'auto', filter: 'brightness(0) invert(1)', marginBottom: '2rem' }}
+          />
+          <h2 className="login-left-title">Il sistema che ti dice cosa fare ogni giorno su LinkedIn.</h2>
+          <p className="login-left-subtitle">Trova clienti, analizza profili, scrivi con contesto. Tutto guidato dall&apos;AI.</p>
+          <div className="login-left-points">
+            <div className="login-left-point"><span>🎯</span> Chi contattare e perché</div>
+            <div className="login-left-point"><span>✍️</span> Messaggi e post guidati</div>
+            <div className="login-left-point"><span>🧭</span> Ogni conversazione ha un prossimo passo</div>
+          </div>
+        </div>
+      </div>
+      <div className="login-right">
+        <div className="login-card">
         {/* Logo */}
         <div className="flex justify-center mb-6">
           <img
             src="/LOGO PREFLIGHT_Pittogramma.png"
             alt="Preflight"
-            className="h-14 w-auto"
+            style={{ height: 56, width: 'auto' }}
           />
         </div>
-        <h1 className="text-2xl font-bold text-center mb-2">
+        <h1 className="login-card-title">
           {mode === "login" ? "Accedi a Preflight" : "Crea il tuo account"}
         </h1>
-        <p className="text-sm text-gray-500 text-center mb-6">
+        <p className="login-card-subtitle">
           {mode === "login"
             ? "Bentornato! Accedi per continuare."
             : "Registrati per iniziare."}
@@ -96,7 +113,7 @@ export default function LoginPage() {
         {/* Google Login */}
         <button
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+          className="login-google-btn"
         >
           <svg className="w-5 h-5" viewBox="0 0 24 24">
             <path
@@ -120,36 +137,32 @@ export default function LoginPage() {
         </button>
 
         {/* Separator */}
-        <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-gray-200" />
-          <span className="text-sm text-gray-400">oppure</span>
-          <div className="flex-1 h-px bg-gray-200" />
+        <div className="login-separator">
+          <div className="login-separator-line" />
+          <span className="login-separator-text">oppure</span>
+          <div className="login-separator-line" />
         </div>
 
         {/* Email/Password Form */}
-        <form onSubmit={handleEmailSubmit} className="space-y-4">
+        <form onSubmit={handleEmailSubmit} className="login-form">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
+            <label className="login-label">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              className="login-input"
               placeholder="tuo@email.com"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
+            <label className="login-label">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+              className="login-input"
               placeholder="••••••••"
               required
               minLength={6}
@@ -157,15 +170,13 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="text-sm text-red-600 bg-red-50 p-3 rounded-lg">
-              {error}
-            </div>
+            <div className="login-error">{error}</div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="login-submit-btn"
           >
             {loading
               ? "Caricamento..."
@@ -176,18 +187,18 @@ export default function LoginPage() {
         </form>
 
         {/* Footer */}
-        <p className="text-xs text-center mt-8 text-gray-400">
+        <p className="login-footer-text">
           Il tuo assistente LinkedIn per trovare clienti.
         </p>
 
         {/* Toggle mode */}
-        <p className="text-sm text-center mt-4 text-gray-500">
+        <p className="login-toggle-text">
           {mode === "login" ? (
             <>
               Non hai un account?{" "}
               <button
                 onClick={() => { setMode("signup"); setError(null); }}
-                className="text-blue-600 font-medium hover:underline"
+                className="login-toggle-btn"
               >
                 Registrati
               </button>
@@ -197,13 +208,14 @@ export default function LoginPage() {
               Hai già un account?{" "}
               <button
                 onClick={() => { setMode("login"); setError(null); }}
-                className="text-blue-600 font-medium hover:underline"
+                className="login-toggle-btn"
               >
                 Accedi
               </button>
             </>
           )}
         </p>
+        </div>
       </div>
     </div>
   );
