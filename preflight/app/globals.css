@@ -5084,9 +5084,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 /* ── Top bar — Light, refined, contextual ── */
 .app-topbar{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 2.5rem;height:3.5rem;
-  background:var(--color-surface);
-  border-bottom:1px solid var(--color-border);
+  padding:0 2.5rem;height:3.25rem;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:blur(12px) saturate(1.4);
+  -webkit-backdrop-filter:blur(12px) saturate(1.4);
+  border-bottom:1px solid rgba(224,232,240,0.6);
   position:sticky;top:0;z-index:50;
 }
 .app-topbar-left{display:flex;align-items:center;gap:1rem}
@@ -5137,9 +5139,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
    Fixed 240px, always expanded, brand-coherent
 ═══════════════════════════════════════════════════════════ */
 .sb{
-  width:240px;flex-shrink:0;
+  width:260px;flex-shrink:0;
   display:flex;flex-direction:column;
-  background:linear-gradient(180deg,#071020 0%,#0B1628 100%);
+  background:linear-gradient(180deg,#060e1e 0%,#0a1428 50%,#071020 100%);
   border-right:1px solid rgba(255,255,255,0.04);
   position:sticky;top:0;height:100vh;
   overflow:hidden;
@@ -5153,10 +5155,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 
 /* Brand */
 .sb-brand{
-  padding:1.5rem 1.25rem 1.25rem;
+  padding:1.75rem 1.25rem 1.5rem;
   display:flex;align-items:center;
   border-bottom:1px solid rgba(255,255,255,0.06);
-  min-height:64px;
+  min-height:68px;
 }
 .sb-brand-link{
   display:flex;align-items:center;gap:0.65rem;
@@ -5233,11 +5235,48 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--color-primary);
 }
 .sb-footer-badge-text{white-space:nowrap}
 
+/* ── PRIMARY LINK — "Cosa fare oggi" dominant style ── */
+.sb-link.sb-link-primary{
+  padding:0.75rem 0.85rem;
+  font-size:0.9rem;font-weight:600;
+  color:rgba(255,255,255,0.85);
+  background:linear-gradient(135deg,rgba(10,102,194,0.15) 0%,rgba(10,102,194,0.08) 100%);
+  border:1px solid rgba(10,102,194,0.2);
+  border-radius:12px;
+  margin-bottom:0.25rem;
+  transition:all 0.2s ease;
+}
+.sb-link.sb-link-primary:hover{
+  color:#fff;
+  background:linear-gradient(135deg,rgba(10,102,194,0.25) 0%,rgba(10,102,194,0.15) 100%);
+  border-color:rgba(10,102,194,0.35);
+  transform:translateX(2px);
+}
+.sb-link.sb-link-primary.sb-link-active{
+  color:#fff;font-weight:700;
+  background:linear-gradient(135deg,rgba(10,102,194,0.3) 0%,rgba(10,102,194,0.18) 100%);
+  border-color:rgba(10,102,194,0.45);
+  box-shadow:0 0 20px rgba(10,102,194,0.15);
+}
+.sb-link.sb-link-primary .sb-link-icon{
+  color:#60a5fa;
+}
+.sb-link.sb-link-primary.sb-link-active .sb-link-icon{
+  color:#93c5fd;
+}
+
+/* ── System group — push to bottom ── */
+.sb-group-system{
+  margin-top:auto;
+  padding-top:1rem;
+  border-top:1px solid rgba(255,255,255,0.04);
+}
+
 /* Responsive: collapsible sidebar on small screens */
 @media(max-width:768px){
   .sb{
-    position:fixed;left:-240px;top:0;
-    width:240px;
+    position:fixed;left:-260px;top:0;
+    width:260px;
     transition:left 0.3s cubic-bezier(.4,0,.2,1);
     box-shadow:16px 0 48px rgba(0,0,0,0.5);
   }
@@ -9643,25 +9682,33 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 }
 .sys-quick-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
 }
 .sys-quick-card {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 1.25rem 1.35rem;
-  border-radius: 12px;
+  padding: 1.35rem 1.5rem;
+  border-radius: 14px;
   background: #ffffff;
   border: 1px solid var(--color-border);
   text-decoration: none;
   transition: all 0.25s ease;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
 }
+.sys-quick-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--color-primary),#1a7fd4);
+  opacity:0;transition:opacity 0.25s ease;
+}
+.sys-quick-card:hover::before{opacity:1}
 .sys-quick-card:hover {
-  border-color: var(--color-primary);
-  box-shadow: 0 4px 16px rgba(10,102,194,0.08);
-  transform: translateY(-2px);
+  border-color: rgba(10,102,194,0.3);
+  box-shadow: 0 8px 24px rgba(10,102,194,0.1);
+  transform: translateY(-3px);
 }
 .sys-quick-card-icon {
   font-size: 1.35rem;

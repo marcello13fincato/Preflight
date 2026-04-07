@@ -77,7 +77,7 @@ export default function FollowupPage() {
           </button>
           <div className="pr-topbar-url">🔄 Follow-up</div>
           <div className="pr-topbar-actions">
-            <Link href="/app/dm" className="pr-topbar-link">Conversazioni</Link>
+            <Link href="/app/articolo" className="pr-topbar-link">Scrivi un articolo</Link>
             <Link href="/app/consiglio" className="pr-topbar-link">Chiedi consiglio</Link>
           </div>
         </div>
@@ -258,7 +258,7 @@ export default function FollowupPage() {
             </div>
           </div>
           <div className="sys-quick-nav">
-            <Link href="/app/dm" className="sys-quick-nav-link">💬 Conversazioni</Link>
+            <Link href="/app/articolo" className="sys-quick-nav-link">📄 Scrivi un articolo</Link>
             <Link href="/app/consiglio" className="sys-quick-nav-link">💡 Chiedi un consiglio</Link>
             <Link href="/app" className="sys-quick-nav-link">📋 Piano di oggi</Link>
           </div>

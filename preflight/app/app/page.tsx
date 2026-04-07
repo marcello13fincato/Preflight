@@ -90,7 +90,7 @@ const QUICK_ACTIONS = [
     href: "/app/articolo",
     icon: "📄",
     title: "Scrivi un articolo",
-    desc: "Articolo lungo e autorevole per la tua newsletter.",
+    desc: "Crea un articolo LinkedIn autorevole con sezioni, SEO e CTA.",
   },
 ];
 

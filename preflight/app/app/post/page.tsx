@@ -30,6 +30,11 @@ export default function PostPage() {
   const [imgUrl, setImgUrl] = useState<string | null>(null);
   const [imgError, setImgError] = useState<string | null>(null);
 
+  /* Article suggestions state */
+  const [artLoading, setArtLoading] = useState(false);
+  const [artSuggestions, setArtSuggestions] = useState<Array<{ titolo: string; tipo: string; descrizione: string; search_query: string }> | null>(null);
+  const [artError, setArtError] = useState<string | null>(null);
+
   async function generate() {
     setLoading(true);
     setError(null);
@@ -84,6 +89,29 @@ export default function PostPage() {
       setImgError(err instanceof Error ? err.message : "Errore sconosciuto.");
     } finally {
       setImgLoading(false);
+    }
+  }
+
+  async function suggestArticles() {
+    if (!output) return;
+    setArtLoading(true);
+    setArtError(null);
+    try {
+      const postText = output.post_versions[activeVersion] + "\n\n" + output.cta;
+      const res = await fetch("/api/ai/suggest-articles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: postText, content_type: "post" }),
+      });
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof json.error === "string" ? json.error : `Errore (${res.status})`);
+      const articles = json.articles as Array<{ titolo: string; tipo: string; descrizione: string; search_query: string }>;
+      if (!Array.isArray(articles)) throw new Error("Nessun suggerimento restituito.");
+      setArtSuggestions(articles);
+    } catch (err) {
+      setArtError(err instanceof Error ? err.message : "Errore sconosciuto.");
+    } finally {
+      setArtLoading(false);
     }
   }
 
@@ -258,6 +286,49 @@ export default function PostPage() {
                   <>
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
                     {imgUrl ? "Genera nuova immagine" : "Genera immagine"}
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          {/* Suggerisci articoli online */}
+          <div className="fc-section">
+            <div className="fc-section-inner">
+              <div className="fc-input-header">
+                <div className="fc-input-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                </div>
+                <div>
+                  <h3 className="fc-section-title">Articoli online pertinenti</h3>
+                  <p className="fc-section-desc">Trova blog, comunicati stampa e articoli di settore da condividere o citare.</p>
+                </div>
+              </div>
+
+              {artSuggestions && (
+                <div className="post-hooks-grid" style={{ marginBottom: "1rem" }}>
+                  {artSuggestions.map((art, i) => (
+                    <a key={i} href={`https://www.google.com/search?q=${encodeURIComponent(art.search_query)}`} target="_blank" rel="noopener noreferrer" className="post-hook-card" style={{ textDecoration: "none" }}>
+                      <span className="post-hook-num">{i + 1}</span>
+                      <span className="post-hook-text">
+                        <strong>{art.titolo}</strong>
+                        <br /><small style={{ opacity: 0.7 }}>{art.tipo} — {art.descrizione}</small>
+                      </span>
+                      <span className="post-hook-copy">Cerca →</span>
+                    </a>
+                  ))}
+                </div>
+              )}
+
+              {artError && <p className="post-img-error"><IconAlertTriangle size={14} /> {artError}</p>}
+
+              <button onClick={suggestArticles} disabled={artLoading} className="fc-generate-btn fc-generate-btn--spaced">
+                {artLoading ? (
+                  <><span className="qa-spinner" aria-hidden="true" />Cerco articoli pertinenti…</>
+                ) : (
+                  <>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                    {artSuggestions ? "Suggerisci altri articoli" : "Suggerisci articoli online"}
                   </>
                 )}
               </button>

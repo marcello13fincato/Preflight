@@ -178,8 +178,8 @@ export default function FindClientsPage() {
           </div>
           <div className="pr-topbar-actions">
             <Link href="/app/prospect" className="pr-topbar-link">Analizza profilo</Link>
-            <Link href="/app/dm" className="pr-topbar-link">Scrivi DM</Link>
-            <Link href="/app/oggi" className="pr-topbar-link">Piano oggi</Link>
+            <Link href="/app/articolo" className="pr-topbar-link">Scrivi un articolo</Link>
+            <Link href="/app" className="pr-topbar-link">Cosa fare oggi</Link>
           </div>
         </div>
 
@@ -370,17 +370,13 @@ export default function FindClientsPage() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Analizza un profilo
               </Link>
-              <Link href="/app/dm" className="fc-action-btn fc-action-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Scrivi un DM
+              <Link href="/app/articolo" className="fc-action-btn fc-action-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Scrivi un articolo
               </Link>
-              <Link href="/app/oggi" className="fc-action-btn fc-action-secondary">
+              <Link href="/app" className="fc-action-btn fc-action-secondary">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                Piano di oggi
-              </Link>
-              <Link href="/app/pipeline" className="fc-action-btn fc-action-secondary">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                Pipeline
+                Cosa fare oggi
               </Link>
             </div>
           </div>
@@ -568,8 +564,8 @@ export default function FindClientsPage() {
             <div className="fc-quick-links">
               <span className="fc-quick-links-label">Dopo la ricerca:</span>
               <Link href="/app/prospect" className="fc-quick-link">Analizza un profilo</Link>
-              <Link href="/app/dm" className="fc-quick-link">Scrivi un DM</Link>
-              <Link href="/app/oggi" className="fc-quick-link">Piano di oggi</Link>
+              <Link href="/app/articolo" className="fc-quick-link">Scrivi un articolo</Link>
+              <Link href="/app" className="fc-quick-link">Cosa fare oggi</Link>
             </div>
           </div>
 

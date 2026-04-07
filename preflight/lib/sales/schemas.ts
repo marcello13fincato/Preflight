@@ -329,6 +329,15 @@ export const articoloSchema = z.object({
   }),
 });
 
+export const suggestArticlesSchema = z.object({
+  articles: z.array(z.object({
+    titolo: z.string(),
+    tipo: z.string(),
+    descrizione: z.string(),
+    search_query: z.string(),
+  })),
+});
+
 export type PlanJson = z.infer<typeof planSchema>;
 export type PostBuilderJson = z.infer<typeof postBuilderSchema>;
 export type ArticoloJson = z.infer<typeof articoloSchema>;
@@ -342,6 +351,7 @@ export type SimulatorJson = z.infer<typeof simulatorSchema>;
 export type FindClientsJson = z.infer<typeof findClientsSchema>;
 export type DailyPlanJson = z.infer<typeof dailyPlanSchema>;
 export type FollowupJson = z.infer<typeof followupSchema>;
+export type SuggestArticlesJson = z.infer<typeof suggestArticlesSchema>;
 export type OnboardingInput = z.infer<typeof onboardingInputSchema>;
 export type ConversationGoal = z.infer<typeof conversationGoalSchema>;
 

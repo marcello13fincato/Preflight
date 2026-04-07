@@ -237,8 +237,8 @@ export default function CommentsPage() {
                 <Link href="/app/pipeline" className="btn-primary">
                   + Aggiungi in Pipeline
                 </Link>
-                <Link href="/app/dm" className="btn-secondary">
-                  Vai ai messaggi DM →
+                <Link href="/app/articolo" className="btn-secondary">
+                  Scrivi un articolo →
                 </Link>
               </div>
             </div>

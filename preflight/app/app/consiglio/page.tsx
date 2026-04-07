@@ -93,7 +93,7 @@ export default function ConsiglioPage() {
           <div className="pr-topbar-actions">
             <Link href="/app/prospect" className="pr-topbar-link">Analizza profilo</Link>
             <Link href="/app/find-clients" className="pr-topbar-link">Trova clienti</Link>
-            <Link href="/app/oggi" className="pr-topbar-link">Piano oggi</Link>
+            <Link href="/app" className="pr-topbar-link">Cosa fare oggi</Link>
           </div>
         </div>
 

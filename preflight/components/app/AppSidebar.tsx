@@ -3,22 +3,23 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-type NavItem = { href: string; label: string; icon: React.ReactNode };
+type NavItem = { href: string; label: string; icon: React.ReactNode; primary?: boolean };
 
-const mainItems: NavItem[] = [
-  {
-    href: "/app",
-    label: "Cosa fare oggi",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="12" r="10" />
-        <polyline points="12 6 12 12 16 14" />
-      </svg>
-    ),
-  },
-];
+/* ── STRUMENTO PRINCIPALE ── */
+const primaryItem: NavItem = {
+  href: "/app",
+  label: "Cosa fare oggi",
+  primary: true,
+  icon: (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  ),
+};
 
-const actionItems: NavItem[] = [
+/* ── 4 STRUMENTI SECONDARI ── */
+const toolItems: NavItem[] = [
   {
     href: "/app/find-clients",
     label: "Trova clienti",
@@ -40,25 +41,6 @@ const actionItems: NavItem[] = [
     ),
   },
   {
-    href: "/app/consiglio",
-    label: "Chiedi consiglio",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      </svg>
-    ),
-  },
-  {
-    href: "/app/dm",
-    label: "Messaggi",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-    ),
-  },
-  {
     href: "/app/post",
     label: "Scrivi un post",
     icon: (
@@ -73,16 +55,13 @@ const actionItems: NavItem[] = [
     label: "Scrivi un articolo",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
       </svg>
     ),
   },
 ];
 
+/* ── SISTEMA ── */
 const systemItems: NavItem[] = [
   {
     href: "/app/onboarding",
@@ -103,12 +82,6 @@ const systemItems: NavItem[] = [
       </svg>
     ),
   },
-];
-
-const groups = [
-  { label: "", items: mainItems },
-  { label: "Strumenti", items: actionItems },
-  { label: "Sistema", items: systemItems },
 ];
 
 export default function AppSidebar() {
@@ -132,26 +105,58 @@ export default function AppSidebar() {
 
       {/* Navigation */}
       <nav className="sb-nav">
-        {groups.map((group, gi) => (
-          <div key={gi} className="sb-group">
-            {group.label && <span className="sb-group-label">{group.label}</span>}
-            <div className="sb-group-items">
-              {group.items.map((item) => {
-                const active = pathname === item.href;
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`sb-link${active ? " sb-link-active" : ""}`}
-                  >
-                    <span className="sb-link-icon">{item.icon}</span>
-                    <span className="sb-link-label">{item.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
+        {/* PRIMARY — Cosa fare oggi */}
+        <div className="sb-group">
+          <div className="sb-group-items">
+            <Link
+              href={primaryItem.href}
+              className={`sb-link sb-link-primary${pathname === primaryItem.href ? " sb-link-active" : ""}`}
+            >
+              <span className="sb-link-icon">{primaryItem.icon}</span>
+              <span className="sb-link-label">{primaryItem.label}</span>
+            </Link>
           </div>
-        ))}
+        </div>
+
+        {/* STRUMENTI */}
+        <div className="sb-group">
+          <span className="sb-group-label">Strumenti</span>
+          <div className="sb-group-items">
+            {toolItems.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`sb-link${active ? " sb-link-active" : ""}`}
+                >
+                  <span className="sb-link-icon">{item.icon}</span>
+                  <span className="sb-link-label">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* SISTEMA */}
+        <div className="sb-group sb-group-system">
+          <span className="sb-group-label">Sistema</span>
+          <div className="sb-group-items">
+            {systemItems.map((item) => {
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`sb-link${active ? " sb-link-active" : ""}`}
+                >
+                  <span className="sb-link-icon">{item.icon}</span>
+                  <span className="sb-link-label">{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
       </nav>
 
       {/* Footer */}

@@ -255,9 +255,7 @@ export default function PipelinePage() {
                   <button
                     onClick={() =>
                       router.push(
-                        `/app/dm?pasted_chat_thread=${encodeURIComponent(
-                          `Lead: ${lead.name}\nStato: ${lead.status}\nNote: ${lead.notes}`
-                        )}&objective=follow-up`
+                        `/app/followup`
                       )
                     }
                     className="btn-secondary text-sm"

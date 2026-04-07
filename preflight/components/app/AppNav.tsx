@@ -6,14 +6,14 @@ import { usePathname } from "next/navigation";
 type NavItem = { href: string; label: string };
 
 const topItems: NavItem[] = [
-  { href: "/app", label: "Dashboard" },
-  { href: "/app/oggi", label: "Cosa fare oggi" },
+  { href: "/app", label: "Cosa fare oggi" },
 ];
 
 const coreItems: NavItem[] = [
   { href: "/app/find-clients", label: "Trova clienti" },
   { href: "/app/prospect", label: "Analizza profilo" },
-  { href: "/app/dm", label: "Chiedi un consiglio" },
+  { href: "/app/post", label: "Scrivi un post" },
+  { href: "/app/articolo", label: "Scrivi un articolo" },
 ];
 
 const configItems: NavItem[] = [
