@@ -121,8 +121,8 @@ export default function Page() {
                   transform="rotate(-90 60 60)" className="pr-score-progress" />
                 <defs>
                   <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#3b82f6" />
-                    <stop offset="100%" stopColor="#06b6d4" />
+                    <stop offset="0%" stopColor="#0A66C2" />
+                    <stop offset="100%" stopColor="#085BA7" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -244,7 +244,7 @@ export default function Page() {
           </div>
         </div>
 
-        <button onClick={() => { setResult(null); setShowDemo(false); }} className="pr-generate-btn" style={{ marginTop: "2rem" }}>
+        <button onClick={() => { setResult(null); setShowDemo(false); }} className="pr-generate-btn pr-generate-btn--mt2">
           ← Analizza un altro profilo
         </button>
       </div>
@@ -264,8 +264,8 @@ export default function Page() {
                 transform="rotate(-90 60 60)" className="pr-score-progress" />
               <defs>
                 <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#06b6d4" />
+                  <stop offset="0%" stopColor="#0A66C2" />
+                  <stop offset="100%" stopColor="#085BA7" />
                 </linearGradient>
               </defs>
             </svg>

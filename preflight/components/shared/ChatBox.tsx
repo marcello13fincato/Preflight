@@ -76,9 +76,8 @@ export default function ChatBox() {
           className={`chatbox-fab${animating ? " chatbox-fab-anim" : ""}`}
           aria-label="Apri chat Preflight"
           onClick={handleLogoClick}
-          style={{ position: "fixed", bottom: 32, right: 32, zIndex: 1000, background: "#fff", borderRadius: "50%", boxShadow: "0 4px 24px #0002", border: "none", padding: 0, width: 72, height: 72, display: "flex", alignItems: "center", justifyContent: "center", transition: "transform 0.18s cubic-bezier(.4,0,.2,1)" }}
         >
-          <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Chat Preflight" style={{ width: 56, height: 56, objectFit: "contain", display: "block", transition: "transform 0.18s cubic-bezier(.4,0,.2,1)", transform: animating ? "scale(1.12) rotate(-8deg)" : "none" }} />
+          <img src="/LOGO PREFLIGHT_Pittogramma.png" alt="Chat Preflight" className="chatbox-fab-img" />
         </button>
       )}
 

@@ -123,7 +123,7 @@ export default function AppSidebar() {
             <img
               src="/LOGO PREFLIGHT_Pittogramma.png"
               alt="Preflight"
-              style={{ height: 22, width: "auto", filter: "brightness(0) invert(1)" }}
+              className="sb-logo-img"
             />
           </div>
           <span className="sb-brand-text">Preflight</span>
@@ -157,7 +157,7 @@ export default function AppSidebar() {
       {/* Footer */}
       <div className="sb-footer">
         <div className="sb-footer-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.8 }}>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sb-footer-icon">
             <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
           </svg>
           <span className="sb-footer-badge-text">AI-powered Sales OS</span>

@@ -9816,8 +9816,8 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 .fc-mode-btn:hover { color: var(--v7-text-primary, #fff); background: rgba(255,255,255,0.04); }
 .fc-mode-active {
   color: var(--v7-text-primary, #fff) !important;
-  background: var(--v7-accent, #6C5CE7) !important;
-  box-shadow: 0 2px 8px rgba(108,92,231,0.25);
+  background: var(--v7-accent, #0A66C2) !important;
+  box-shadow: 0 2px 8px rgba(10,102,194,0.25);
 }
 .qa-file-upload {
   display: flex;
@@ -9838,7 +9838,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   transition: all 0.2s ease;
   width: 100%;
 }
-.qa-file-label:hover { border-color: var(--v7-accent, #6C5CE7); color: var(--v7-text-primary, #fff); }
+.qa-file-label:hover { border-color: var(--v7-accent, #0A66C2); color: var(--v7-text-primary, #fff); }
 .qa-field-hint {
   margin-top: 0.375rem;
   font-size: 0.75rem;
@@ -9874,7 +9874,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   font-size: 0.8125rem;
   line-height: 1.5;
 }
-.post-hook-card:hover { border-color: var(--v7-accent, #6C5CE7); background: rgba(108,92,231,0.06); }
+.post-hook-card:hover { border-color: var(--v7-accent, #0A66C2); background: rgba(10,102,194,0.06); }
 .post-hook-num {
   flex-shrink: 0;
   width: 24px;
@@ -9884,7 +9884,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   justify-content: center;
   font-size: 0.6875rem;
   font-weight: 700;
-  background: var(--v7-accent, #6C5CE7);
+  background: var(--v7-accent, #0A66C2);
   color: #fff;
   border-radius: 7px;
 }
@@ -9923,7 +9923,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   font-size: 0.75rem;
   font-weight: 600;
   color: #fff;
-  background: var(--v7-accent, #6C5CE7);
+  background: var(--v7-accent, #0A66C2);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -9948,7 +9948,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--v7-accent, #6C5CE7);
+  color: var(--v7-accent, #0A66C2);
   margin-bottom: 0.5rem;
 }
 .post-engage-text {
@@ -9971,7 +9971,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   cursor: pointer;
   transition: all 0.2s;
 }
-.post-copy-btn-sm:hover { color: #fff; border-color: var(--v7-accent, #6C5CE7); }
+.post-copy-btn-sm:hover { color: #fff; border-color: var(--v7-accent, #0A66C2); }
 .post-img-preview {
   margin-top: 1rem;
   border-radius: 12px;
@@ -10025,10 +10025,10 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 .art-section-title {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--v7-accent, #6C5CE7);
+  color: var(--v7-accent, #0A66C2);
   margin-bottom: 0.75rem;
   padding-left: 0.75rem;
-  border-left: 3px solid var(--v7-accent, #6C5CE7);
+  border-left: 3px solid var(--v7-accent, #0A66C2);
 }
 .art-section-content {
   font-size: 0.8125rem;
@@ -10039,8 +10039,8 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 .art-cta-box {
   margin-top: 1.25rem;
   padding: 1rem 1.25rem;
-  background: linear-gradient(135deg, rgba(108,92,231,0.1), rgba(0,206,209,0.06));
-  border: 1px solid rgba(108,92,231,0.2);
+  background: linear-gradient(135deg, rgba(10,102,194,0.1), rgba(10,102,194,0.04));
+  border: 1px solid rgba(10,102,194,0.15);
   border-radius: 12px;
 }
 .art-cta-text {
@@ -14279,3 +14279,138 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
    colors. No action required — documented for reference. */
 
 /* ── end PREMIUM REFINEMENT v3 ── */
+
+/* ═══════════════════════════════════════════════════════════
+   PREMIUM REFINEMENT v4 — Tool pages, guide icons, chatbox
+   Inline-style extraction for pipeline, inbound, comments,
+   ChatBox, AppSidebar, OpportunityCard.
+═══════════════════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────────────
+   64. GUIDE ICON INLINE — Shared utility for guide icons
+──────────────────────────────────────────────────────── */
+.guide-icon-inline.guide-icon-inline{
+  display:inline;vertical-align:middle;margin-right:0.2rem;
+}
+
+/* ────────────────────────────────────────────────────────
+   65. TOOL PAGE — Default fade-in animation
+──────────────────────────────────────────────────────── */
+.tool-page.tool-page{animation:premiumFadeIn 0.4s ease both}
+
+/* ────────────────────────────────────────────────────────
+   66. PIPE — Pipeline page component classes
+──────────────────────────────────────────────────────── */
+.pipe-kpi-card.pipe-kpi-card{
+  background:var(--color-surface);border:1px solid var(--color-border);
+  box-shadow:var(--shadow-sm);border-radius:0.5rem;padding:0.75rem;
+  font-size:0.875rem;
+}
+.pipe-kpi-count.pipe-kpi-count{
+  font-size:1.5rem;font-weight:700;margin-top:0.25rem;
+  color:var(--color-primary);
+}
+.pipe-card.pipe-card{
+  background:var(--color-surface);border:1px solid var(--color-border);
+  box-shadow:var(--shadow-sm);border-radius:0.75rem;padding:1rem;
+}
+.pipe-form-wrap.pipe-form-wrap{
+  border:1px solid var(--color-border);box-shadow:var(--shadow-sm);
+  border-radius:0.75rem;overflow:hidden;
+}
+.pipe-form-header.pipe-form-header{
+  background:var(--color-surface);
+}
+.pipe-form-body.pipe-form-body{
+  background:var(--color-soft-2);
+}
+.pipe-empty.pipe-empty{
+  background:var(--color-soft-2);border:1.5px dashed var(--color-border);
+  border-radius:0.75rem;padding:2.5rem;text-align:center;
+}
+.pipe-empty-title.pipe-empty-title{color:var(--color-primary);font-weight:600}
+.pipe-empty-text.pipe-empty-text{color:var(--color-muted);font-size:0.875rem;margin-top:0.25rem}
+.pipe-avatar.pipe-avatar{
+  background:var(--color-soft);color:var(--color-primary);
+  margin-top:0.125rem;display:flex;height:2.25rem;width:2.25rem;
+  flex-shrink:0;align-items:center;justify-content:center;
+  border-radius:0.5rem;font-size:0.875rem;font-weight:700;
+}
+.pipe-lead-meta.pipe-lead-meta{color:var(--color-muted)}
+.pipe-label-muted.pipe-label-muted{color:var(--color-muted)}
+.pipe-select-auto.pipe-select-auto{width:auto}
+.pipe-delete-btn.pipe-delete-btn{color:var(--color-danger)}
+.pipe-status-toggle.pipe-status-toggle{color:var(--color-muted);font-size:1.2rem}
+
+/* ────────────────────────────────────────────────────────
+   67. INBOUND — Content cards
+──────────────────────────────────────────────────────── */
+.inbound-card.inbound-card{
+  background:var(--color-surface);border:1px solid var(--color-border);
+  box-shadow:var(--shadow-sm);border-radius:0.75rem;padding:1.25rem;
+}
+.inbound-label-muted.inbound-label-muted{color:var(--color-muted)}
+.inbound-section-label.inbound-section-label{
+  color:var(--color-muted);font-weight:600;font-size:0.875rem;
+  text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;
+}
+.inbound-badge-type.inbound-badge-type{
+  background:var(--color-soft-2);color:var(--color-muted);
+}
+.inbound-day-num.inbound-day-num{
+  display:inline-flex;height:1.75rem;width:1.75rem;
+  align-items:center;justify-content:center;border-radius:9999px;
+  font-size:0.75rem;font-weight:700;
+  background:var(--color-primary);color:white;
+}
+.inbound-meta-label.inbound-meta-label{
+  color:var(--color-text);font-weight:500;
+}
+
+/* ────────────────────────────────────────────────────────
+   68. LABEL OPTIONAL — "(opzionale)" hint style
+──────────────────────────────────────────────────────── */
+.label-optional.label-optional{
+  color:var(--color-muted);font-weight:400;
+}
+
+/* ────────────────────────────────────────────────────────
+   69. CHATBOX FAB — Floating action button
+──────────────────────────────────────────────────────── */
+.chatbox-fab.chatbox-fab{
+  position:fixed;bottom:32px;right:32px;z-index:1000;
+  background:#fff;border-radius:50%;
+  box-shadow:0 4px 24px rgba(0,0,0,0.08);
+  border:none;padding:0;width:72px;height:72px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform 0.18s cubic-bezier(.4,0,.2,1);
+  cursor:pointer;
+}
+.chatbox-fab.chatbox-fab:hover{
+  transform:scale(1.05);
+}
+.chatbox-fab-img.chatbox-fab-img{
+  width:56px;height:56px;object-fit:contain;display:block;
+  transition:transform 0.18s cubic-bezier(.4,0,.2,1);
+}
+.chatbox-fab-anim .chatbox-fab-img{
+  transform:scale(1.12) rotate(-8deg);
+}
+
+/* ────────────────────────────────────────────────────────
+   70. SIDEBAR LOGO — Replace inline filter/sizing
+──────────────────────────────────────────────────────── */
+.sb-logo-img.sb-logo-img{
+  height:22px;width:auto;filter:brightness(0) invert(1);
+}
+.sb-footer-icon.sb-footer-icon{opacity:0.8}
+
+/* ────────────────────────────────────────────────────────
+   71. OPPORTUNITY CARD HEADER — Flex layout
+──────────────────────────────────────────────────────── */
+.opp-card-header.opp-card-header{
+  display:flex;align-items:center;gap:0.5rem;
+}
+.pr-generate-btn--mt2.pr-generate-btn--mt2{margin-top:2rem}
+
+/* ── end PREMIUM REFINEMENT v4 ── */

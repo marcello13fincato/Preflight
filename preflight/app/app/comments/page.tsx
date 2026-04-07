@@ -75,10 +75,10 @@ export default function CommentsPage() {
       {/* Guide box */}
       <div className="tool-page-guide fade-in-delay">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> rispondi ai commenti in modo strategico</div>
-          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> post originale e commento ricevuto</div>
-          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> 3 risposte, DM suggerito, prossima azione</div>
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> sposta la conversazione in DM</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> rispondi ai commenti in modo strategico</div>
+          <div><span className="font-semibold"><IconClipboard size={13} className="guide-icon-inline" />Cosa inserire:</span> post originale e commento ricevuto</div>
+          <div><span className="font-semibold"><IconTarget size={13} className="guide-icon-inline" />Cosa ottieni:</span> 3 risposte, DM suggerito, prossima azione</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> sposta la conversazione in DM</div>
         </div>
       </div>
 
@@ -113,7 +113,7 @@ export default function CommentsPage() {
           <label className="block text-sm">
             <span className="mb-1 block font-medium">
               Profilo autore commento{" "}
-              <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
+              <span className="label-optional">(opzionale)</span>
             </span>
             <textarea
               rows={3}
@@ -167,7 +167,7 @@ export default function CommentsPage() {
           <label className="block text-sm">
             <span className="mb-1 block font-medium">
               Profilo autore commento{" "}
-              <span style={{ color: "var(--color-muted)", fontWeight: 400 }}>(opzionale)</span>
+              <span className="label-optional">(opzionale)</span>
             </span>
             <textarea
               rows={3}
@@ -220,7 +220,7 @@ export default function CommentsPage() {
 
               <div className="insight-reply-grid">
                 <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta soft" text={output.replies.soft} variant="message" copyable />
-                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta autorevole" text={output.replies.authority} variant="message" copyable />
+                <InsightCard icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0A66C2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/></svg>} label="Risposta autorevole" text={output.replies.authority} variant="message" copyable />
                 <InsightCard icon={<IconMail size={16} />} label="Pivot DM" text={output.replies.dm_pivot} variant="message" copyable />
               </div>
 

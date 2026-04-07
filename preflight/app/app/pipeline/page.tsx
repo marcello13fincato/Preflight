@@ -100,10 +100,10 @@ export default function PipelinePage() {
       {/* Guide box */}
       <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> gestisci lead e conversazioni commerciali</div>
-          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> nome, stato, note e data prossima azione</div>
-          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> visione chiara di chi ricontattare e quando</div>
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> genera follow-up per i lead caldi</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> gestisci lead e conversazioni commerciali</div>
+          <div><span className="font-semibold"><IconClipboard size={13} className="guide-icon-inline" />Cosa inserire:</span> nome, stato, note e data prossima azione</div>
+          <div><span className="font-semibold"><IconTarget size={13} className="guide-icon-inline" />Cosa ottieni:</span> visione chiara di chi ricontattare e quando</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> genera follow-up per i lead caldi</div>
         </div>
       </div>
 
@@ -111,7 +111,7 @@ export default function PipelinePage() {
       {recontactToday.length > 0 && (
         <div className="callout-warning rounded-lg">
           <p className="text-sm font-semibold mb-2">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.25rem'}}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             Da ricontattare oggi ({recontactToday.length})
           </p>
           <div className="flex flex-wrap gap-2">
@@ -129,17 +129,16 @@ export default function PipelinePage() {
         {statuses.map((s) => (
           <div
             key={s}
-            className="rounded-lg p-3 text-sm"
-            style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", boxShadow: "var(--shadow-sm)" }}
+            className="pipe-kpi-card"
           >
             <div className="flex items-center gap-1.5">
               <span
                 className="inline-block h-2 w-2 rounded-full"
                 style={{ background: statusDotColor(s) }}
               />
-              <span style={{ color: "var(--color-muted)" }}>{s}</span>
+              <span className="pipe-label-muted">{s}</span>
             </div>
-            <div className="text-2xl font-bold mt-1" style={{ color: "var(--color-primary)" }}>
+            <div className="pipe-kpi-count">
               {grouped[s]?.length || 0}
             </div>
           </div>
@@ -148,21 +147,18 @@ export default function PipelinePage() {
 
       {/* Add lead form (collapsible) */}
       <div
-        className="rounded-xl overflow-hidden"
-        style={{ border: "1px solid var(--color-border)", boxShadow: "var(--shadow-sm)" }}
+        className="pipe-form-wrap"
       >
         <button
           onClick={() => setAddOpen((v) => !v)}
-          className="w-full flex items-center justify-between p-4 text-left font-semibold"
-          style={{ background: "var(--color-surface)" }}
+          className="w-full flex items-center justify-between p-4 text-left font-semibold pipe-form-header"
         >
           <span>+ Aggiungi nuovo contatto</span>
-          <span style={{ color: "var(--color-muted)", fontSize: "1.2rem" }}>{addOpen ? "−" : "+"}</span>
+          <span className="pipe-status-toggle">{addOpen ? "−" : "+"}</span>
         </button>
         {addOpen && (
           <div
-            className="p-5 space-y-3 border-t border-app"
-            style={{ background: "var(--color-soft-2)" }}
+            className="p-5 space-y-3 border-t border-app pipe-form-body"
           >
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block text-sm">
@@ -207,12 +203,11 @@ export default function PipelinePage() {
       {/* Lead list */}
       {leads.length === 0 ? (
         <div
-          className="rounded-xl p-10 text-center"
-          style={{ background: "var(--color-soft-2)", border: "1.5px dashed var(--color-border)" }}
+          className="pipe-empty"
         >
           <p className="text-3xl mb-3"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></p>
-          <p className="font-semibold" style={{ color: "var(--color-primary)" }}>Nessun lead ancora</p>
-          <p className="text-sm mt-1" style={{ color: "var(--color-muted)" }}>
+          <p className="pipe-empty-title">Nessun lead ancora</p>
+          <p className="pipe-empty-text">
             Aggiungi il primo contatto con il pulsante qui sopra.
           </p>
         </div>
@@ -221,21 +216,19 @@ export default function PipelinePage() {
           {leads.map((lead) => (
             <div
               key={lead.id}
-              className="rounded-xl p-4"
-              style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", boxShadow: "var(--shadow-sm)" }}
+              className="pipe-card"
             >
               {/* Lead header */}
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex items-start gap-3">
                   <div
-                    className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold"
-                    style={{ background: "var(--color-soft)", color: "var(--color-primary)" }}
+                    className="pipe-avatar"
                   >
                     {lead.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
                     <div className="font-semibold">{lead.name}</div>
-                    <div className="text-xs mt-0.5" style={{ color: "var(--color-muted)" }}>
+                    <div className="text-xs mt-0.5 pipe-lead-meta">
                       {lead.company || "Azienda non indicata"}
                       {lead.linkedin_url ? (
                         <> · <a href={lead.linkedin_url} target="_blank" rel="noopener noreferrer" className="link-primary">LinkedIn</a></>
@@ -246,15 +239,14 @@ export default function PipelinePage() {
                         {heatLabel(lead.status)}
                       </span>
                       {lead.next_action_at && lead.next_action_at <= today && (
-                        <span className="badge badge-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ricontatta oggi</span>
+                        <span className="badge badge-amber"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Ricontatta oggi</span>
                       )}
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <select
-                    className="input text-sm"
-                    style={{ width: "auto" }}
+                    className="input text-sm pipe-select-auto"
                     value={lead.status}
                     onChange={(e) => updateLead(lead.id, { status: e.target.value as LeadStatus })}
                   >
@@ -274,8 +266,7 @@ export default function PipelinePage() {
                   </button>
                   <button
                     onClick={() => removeLead(lead.id)}
-                    className="btn-ghost text-sm"
-                    style={{ color: "var(--color-danger)" }}
+                    className="btn-ghost text-sm pipe-delete-btn"
                   >
                     Elimina
                   </button>
@@ -285,7 +276,7 @@ export default function PipelinePage() {
               {/* Notes + last conversation */}
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--color-muted)" }}>Note</label>
+                  <label className="mb-1 block text-xs font-medium pipe-label-muted">Note</label>
                   <textarea
                     className="input w-full text-sm"
                     rows={3}
@@ -294,7 +285,7 @@ export default function PipelinePage() {
                   />
                 </div>
                 <div>
-                  <label className="mb-1 block text-xs font-medium" style={{ color: "var(--color-muted)" }}>Ultima conversazione</label>
+                  <label className="mb-1 block text-xs font-medium pipe-label-muted">Ultima conversazione</label>
                   <textarea
                     className="input w-full text-sm"
                     rows={3}

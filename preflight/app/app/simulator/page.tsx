@@ -57,10 +57,10 @@ export default function SimulatorPage() {
       {/* Guide box */}
       <div className="tool-page-guide">
         <div className="grid gap-1 sm:grid-cols-2 md:grid-cols-4 text-sm">
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> ti alleni a gestire conversazioni commerciali</div>
-          <div><span className="font-semibold"><IconClipboard size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa inserire:</span> tipo prospect, scenario e la tua risposta</div>
-          <div><span className="font-semibold"><IconTarget size={13} style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}} />Cosa ottieni:</span> risposta del prospect, feedback e prossima mossa</div>
-          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline',verticalAlign:'middle',marginRight:'0.2rem'}}><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> applica i feedback nelle conversazioni reali</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--color-success,#22c55e)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><polyline points="20 6 9 17 4 12"/></svg>Cosa fai:</span> ti alleni a gestire conversazioni commerciali</div>
+          <div><span className="font-semibold"><IconClipboard size={13} className="guide-icon-inline" />Cosa inserire:</span> tipo prospect, scenario e la tua risposta</div>
+          <div><span className="font-semibold"><IconTarget size={13} className="guide-icon-inline" />Cosa ottieni:</span> risposta del prospect, feedback e prossima mossa</div>
+          <div><span className="font-semibold"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="guide-icon-inline"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Prossima mossa:</span> applica i feedback nelle conversazioni reali</div>
         </div>
       </div>
 

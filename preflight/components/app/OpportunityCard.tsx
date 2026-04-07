@@ -13,7 +13,7 @@ export interface OpportunityCardProps {
 export default function OpportunityCard({ icon, title, reason, action, variant }: OpportunityCardProps) {
   return (
     <div className={`opp-card opp-card-${variant}`}>
-      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+      <div className="opp-card-header">
         <span className="opp-card-icon">{icon}</span>
         <span className={`conv-status conv-status-${variant === "urgent" ? "hot" : variant === "call" ? "warm" : variant === "warm" ? "warm" : "cold"}`}>
           {variant === "urgent" ? "Urgente" : variant === "warm" ? "Caldo" : variant === "unlock" ? "Da sbloccare" : "Alta probabilità"}
