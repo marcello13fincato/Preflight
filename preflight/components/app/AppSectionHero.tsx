@@ -22,9 +22,9 @@ export default function AppSectionHero({
   return (
     <div className={`app-section-hero app-section-hero--${variant}`}>
       <div className="app-section-hero-copy">
-        {eyebrow && <p className="app-section-hero-eyebrow">{eyebrow}</p>}
-        <h2 className="app-section-hero-title">{title}</h2>
-        {subtitle && <p className="app-section-hero-subtitle">{subtitle}</p>}
+        {eyebrow && <p className="section-hero-eyebrow">{eyebrow}</p>}
+        <h2 className="section-hero-title">{title}</h2>
+        {subtitle && <p className="section-hero-subtitle">{subtitle}</p>}
       </div>
       {actions && <div className="app-section-hero-actions">{actions}</div>}
     </div>
