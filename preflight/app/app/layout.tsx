@@ -13,6 +13,15 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     redirect("/auth/login");
   }
 
+  const initials = (session?.user?.name || session?.user?.email || "U")
+    .split(/[\s@]/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((s: string) => s[0]?.toUpperCase())
+    .join("");
+
+  const displayName = session?.user?.name || session?.user?.email || "Utente";
+
   return (
     <div className="app-shell">
       <AppSidebar />
@@ -25,9 +34,10 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             </div>
           </div>
           <div className="app-topbar-right">
-            <span className="app-topbar-user">
-              {session?.user?.email || session?.user?.name || "Guest"}
-            </span>
+            <span className="app-topbar-user">{displayName}</span>
+            <div className="app-topbar-avatar" title={session?.user?.email || ""}>
+              {initials}
+            </div>
             <SignOutButton />
           </div>
         </header>
