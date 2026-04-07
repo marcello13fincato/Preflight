@@ -82,7 +82,7 @@ export default function ArticoloPage() {
   return (
     <div className="pr-fullscreen">
       {/* Hero */}
-      <div className="pr-score-hero" style={{ background: "linear-gradient(135deg, rgba(0,206,209,0.15), rgba(108,92,231,0.08))" }}>
+      <div className="pr-score-hero pr-score-hero--articolo">
         <div className="pr-hero-content">
           <div className="pr-hero-badge">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -120,12 +120,12 @@ export default function ArticoloPage() {
             </div>
 
             <div className="find-section-row">
-              <div className="qa-field" style={{ flex: 1 }}>
+              <div className="qa-field qa-field-flex">
                 <label className="qa-label">Target audience <span className="qa-label-opt">(facoltativo)</span></label>
                 <input value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} className="qa-input"
                   placeholder="CEO SaaS B2B, founder, VP Sales" />
               </div>
-              <div className="qa-field" style={{ flex: 1 }}>
+              <div className="qa-field qa-field-flex">
                 <label className="qa-label">Tono</label>
                 <select value={tone} onChange={(e) => setTone(e.target.value)} className="qa-input">
                   <option value="professionale">Professionale</option>
@@ -154,7 +154,7 @@ export default function ArticoloPage() {
       {error && (
         <div className="fc-section">
           <div className="fc-section-inner">
-            <div className="fc-empty-state" style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.06)" }}>
+            <div className="fc-empty-state fc-empty-state--error">
               <IconAlertTriangle size={20} />
               <p>{error}</p>
             </div>
@@ -210,7 +210,7 @@ export default function ArticoloPage() {
                 <button onClick={copyFullArticle} className="fc-generate-btn">
                   {copied ? "✓ Articolo copiato!" : "Copia articolo completo"}
                 </button>
-                <button onClick={generateImage} disabled={imgLoading} className="fc-generate-btn" style={{ background: "linear-gradient(135deg, rgba(0,206,209,0.8), rgba(108,92,231,0.8))" }}>
+                <button onClick={generateImage} disabled={imgLoading} className="fc-generate-btn fc-generate-btn--image">
                   {imgLoading ? (
                     <><span className="qa-spinner" aria-hidden="true" />Generazione immagine…</>
                   ) : (

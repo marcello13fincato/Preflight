@@ -185,7 +185,7 @@ export default function FindClientsPage() {
 
         <div className="fc-results">
           {/* RIEPILOGO STRATEGIA */}
-          <div className="fc-summary-card" style={{ marginBottom: '2.5rem' }}>
+          <div className="fc-summary-card">
             <div className="fc-summary-icon">
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
             </div>
@@ -502,11 +502,11 @@ export default function FindClientsPage() {
                 </div>
 
                 <div className="find-section-row">
-                  <div className="qa-field" style={{ flex: 1 }}>
+                  <div className="qa-field qa-field-flex">
                     <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
                     <input type="text" value={area} onChange={(e) => setArea(e.target.value)} className="qa-input" placeholder="Italia, Europa, DACH" />
                   </div>
-                  <div className="qa-field" style={{ flex: 1 }}>
+                  <div className="qa-field qa-field-flex">
                     <label className="qa-label">Città <span className="qa-label-opt">(facoltativo)</span></label>
                     <input type="text" value={citta} onChange={(e) => setCitta(e.target.value)} className="qa-input" placeholder="Milano, Roma, Berlino" />
                   </div>

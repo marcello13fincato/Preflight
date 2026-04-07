@@ -98,7 +98,7 @@ export default function PostPage() {
   return (
     <div className="pr-fullscreen">
       {/* Hero */}
-      <div className="pr-score-hero" style={{ background: "linear-gradient(135deg, rgba(108,92,231,0.15), rgba(0,206,209,0.08))" }}>
+      <div className="pr-score-hero pr-score-hero--post">
         <div className="pr-hero-content">
           <div className="pr-hero-badge">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -130,7 +130,7 @@ export default function PostPage() {
             </div>
 
             <div className="find-section-row">
-              <div className="qa-field" style={{ flex: 1 }}>
+              <div className="qa-field qa-field-flex">
                 <label className="qa-label">Obiettivo</label>
                 <select value={objective} onChange={(e) => setObjective(e.target.value)} className="qa-input">
                   <option value="lead">Aprire conversazioni</option>
@@ -138,7 +138,7 @@ export default function PostPage() {
                   <option value="inbound">Ricevere richieste</option>
                 </select>
               </div>
-              <div className="qa-field" style={{ flex: 1 }}>
+              <div className="qa-field qa-field-flex">
                 <label className="qa-label">Parola chiave per DM</label>
                 <input value={dmKeyword} onChange={(e) => setDmKeyword(e.target.value)} className="qa-input" placeholder="audit, consulenza, demo" />
               </div>
@@ -162,7 +162,7 @@ export default function PostPage() {
       {error && (
         <div className="fc-section">
           <div className="fc-section-inner">
-            <div className="fc-empty-state" style={{ borderColor: "rgba(239,68,68,0.3)", background: "rgba(239,68,68,0.06)" }}>
+            <div className="fc-empty-state fc-empty-state--error">
               <IconAlertTriangle size={20} />
               <p>{error}</p>
             </div>
@@ -193,7 +193,7 @@ export default function PostPage() {
           <div className="fc-section">
             <div className="fc-section-inner">
               <h3 className="post-section-label">Versioni del post</h3>
-              <div className="fc-mode-toggle" style={{ marginBottom: "1rem" }}>
+              <div className="fc-mode-toggle">
                 {(["clean", "direct", "authority"] as const).map((v) => (
                   <button key={v} type="button" className={`fc-mode-btn${activeVersion === v ? " fc-mode-active" : ""}`} onClick={() => setActiveVersion(v)}>
                     {VERSION_LABELS[v]}
@@ -233,7 +233,7 @@ export default function PostPage() {
           <div className="fc-section">
             <div className="fc-section-inner">
               <div className="fc-input-header">
-                <div className="fc-input-icon" style={{ background: "linear-gradient(135deg, rgba(0,206,209,0.15), rgba(108,92,231,0.15))" }}>
+                <div className="fc-input-icon fc-input-icon--image">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
                 </div>
                 <div>
@@ -251,7 +251,7 @@ export default function PostPage() {
 
               {imgError && <p className="post-img-error"><IconAlertTriangle size={14} /> {imgError}</p>}
 
-              <button onClick={generateImage} disabled={imgLoading} className="fc-generate-btn" style={{ marginTop: "1rem" }}>
+              <button onClick={generateImage} disabled={imgLoading} className="fc-generate-btn fc-generate-btn--spaced">
                 {imgLoading ? (
                   <><span className="qa-spinner" aria-hidden="true" />Generazione immagine…</>
                 ) : (
@@ -267,7 +267,7 @@ export default function PostPage() {
           {/* Next action */}
           <div className="fc-section">
             <div className="fc-section-inner">
-              <div className="fc-callout" style={{ borderLeft: "3px solid var(--v7-accent, #6C5CE7)" }}>
+              <div className="fc-callout fc-callout--next">
                 <div className="fc-callout-icon">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                 </div>

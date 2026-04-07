@@ -50,21 +50,13 @@ export default function SystemBanner() {
 
   return (
     <div className="setup-card fade-in" role="region" aria-label="Configurazione sistema commerciale">
-      <div className="setup-card-inner fade-in-delay" style={{ position: "relative" }}>
+      <div className="setup-card-inner fade-in-delay">
 
         <button
           type="button"
           onClick={dismiss}
           aria-label="Chiudi banner"
-          style={{
-            position: "absolute", top: "0.85rem", right: "0.85rem",
-            background: "none", border: "none", cursor: "pointer",
-            color: "var(--v7-text-tertiary, #8494A7)", padding: "0.25rem",
-            borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "center",
-            transition: "background 150ms ease, color 150ms ease",
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(0,0,0,0.06)"; e.currentTarget.style.color = "var(--v7-text, #0C1527)"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "var(--v7-text-tertiary, #8494A7)"; }}
+          className="setup-card-dismiss"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
         </button>

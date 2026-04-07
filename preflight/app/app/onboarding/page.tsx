@@ -175,7 +175,7 @@ export default function OnboardingPage() {
             <Link href="/app" className="onb-nav-next onb-nav-submit">
               Vai alla dashboard &rarr;
             </Link>
-            <Link href="/app/find-clients" className="onb-nav-next" style={{ background: "transparent", border: "1px solid rgba(0,0,0,0.1)", color: "var(--color-text)" }}>
+            <Link href="/app/find-clients" className="onb-nav-next onb-nav-secondary">
               Trova clienti
             </Link>
           </div>

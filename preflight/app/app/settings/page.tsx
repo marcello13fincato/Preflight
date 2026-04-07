@@ -62,7 +62,7 @@ export default function SettingsPage() {
         <p className="settings-card-text">
           Crea la tua identità visiva personalizzata. Queste impostazioni influenzano la generazione dei caroselli, i contenuti visivi e i layout dei post.
         </p>
-        <div style={{ marginTop: "1.5rem" }}>
+        <div className="settings-section-gap">
           <VisualProfileSetup compact={true} />
         </div>
       </div>

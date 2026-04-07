@@ -14105,4 +14105,177 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
   border-color:rgba(22,163,74,0.3);
 }
 
-/* ── end PREMIUM REFINEMENT v2 ── */
+/* ═══════════════════════════════════════════════════════════
+   PREMIUM REFINEMENT v3 — Inline-style cleanup + polish
+   Replaces remaining inline styles with proper CSS classes.
+═══════════════════════════════════════════════════════════ */
+
+/* ────────────────────────────────────────────────────────
+   49. FLEX UTILITY — For side-by-side form fields
+──────────────────────────────────────────────────────── */
+.qa-field-flex.qa-field-flex{flex:1;min-width:0}
+
+/* ────────────────────────────────────────────────────────
+   50. FC-SUMMARY SPACING — Bottom margin on summary card
+──────────────────────────────────────────────────────── */
+.fc-summary-card.fc-summary-card{margin-bottom:2.5rem}
+
+/* ────────────────────────────────────────────────────────
+   51. POST/ARTICOLO HERO — Brand-aligned gradient
+   Replaces the old #6C5CE7 / cyan gradient
+──────────────────────────────────────────────────────── */
+.pr-score-hero--post.pr-score-hero--post{
+  background:linear-gradient(135deg,#002D6F 0%,#0A66C2 48%,#1a7fd4 100%) !important;
+}
+.pr-score-hero--post.pr-score-hero--post::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 500px 300px at 80% 20%,rgba(147,197,253,0.12),transparent);
+  pointer-events:none;
+}
+
+.pr-score-hero--articolo.pr-score-hero--articolo{
+  background:linear-gradient(135deg,#001D4A 0%,#003D82 48%,#0A66C2 100%) !important;
+}
+.pr-score-hero--articolo.pr-score-hero--articolo::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 500px 300px at 75% 15%,rgba(147,197,253,0.1),transparent);
+  pointer-events:none;
+}
+
+/* ────────────────────────────────────────────────────────
+   52. ERROR STATE — For fc-empty-state with error
+──────────────────────────────────────────────────────── */
+.fc-empty-state--error.fc-empty-state--error{
+  border-color:rgba(239,68,68,0.3);
+  border-style:solid;
+  background:linear-gradient(135deg,rgba(239,68,68,0.04) 0%,rgba(239,68,68,0.01) 100%);
+}
+.fc-empty-state--error.fc-empty-state--error svg{
+  color:#dc2626;
+}
+.fc-empty-state--error.fc-empty-state--error p{
+  color:#dc2626;
+}
+
+/* ────────────────────────────────────────────────────────
+   53. MODE TOGGLE SPACING — Margin for toggle above content
+──────────────────────────────────────────────────────── */
+.fc-mode-toggle.fc-mode-toggle{margin-bottom:1rem}
+
+/* ────────────────────────────────────────────────────────
+   54. IMAGE BUTTON SPACING — Top margin on image generate
+──────────────────────────────────────────────────────── */
+.fc-generate-btn--spaced.fc-generate-btn--spaced{margin-top:1rem}
+
+/* ────────────────────────────────────────────────────────
+   55. CALLOUT BRAND ACCENT — Replaces --v7-accent
+──────────────────────────────────────────────────────── */
+.fc-callout--next.fc-callout--next{
+  border-left:3px solid var(--color-primary);
+}
+
+/* ────────────────────────────────────────────────────────
+   56. IMAGE GENERATE BUTTON — Brand variant for images
+──────────────────────────────────────────────────────── */
+.fc-generate-btn--image.fc-generate-btn--image{
+  background:linear-gradient(135deg,#085BA7 0%,#004182 100%);
+}
+.fc-generate-btn--image.fc-generate-btn--image:hover:not(:disabled){
+  background:linear-gradient(135deg,#004182 0%,#00264D 100%);
+}
+
+/* ────────────────────────────────────────────────────────
+   57. JSON OUTPUT CARD — Premium code display
+──────────────────────────────────────────────────────── */
+.json-output-card.json-output-card{
+  border-radius:14px;
+  border:1px solid rgba(10,102,194,0.08);
+  background:#fff;
+  padding:1.25rem;
+  box-shadow:0 1px 4px rgba(10,102,194,0.03);
+  transition:box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.json-output-card.json-output-card:hover{
+  box-shadow:0 6px 18px rgba(10,102,194,0.05);
+  border-color:rgba(10,102,194,0.12);
+}
+.json-output-header.json-output-header{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:0.5rem;margin-bottom:0.75rem;
+}
+.json-output-title.json-output-title{
+  font-size:0.88rem;font-weight:700;
+  color:var(--color-text);letter-spacing:-0.01em;
+  margin:0;
+}
+.json-output-pre.json-output-pre{
+  overflow:auto;border-radius:10px;
+  background:var(--color-bg);
+  border:1px solid rgba(10,102,194,0.05);
+  padding:0.875rem;margin:0;
+  font-size:0.75rem;line-height:1.6;
+  font-family:"SF Mono","Fira Code","JetBrains Mono",monospace;
+  color:var(--color-text);
+}
+
+/* ────────────────────────────────────────────────────────
+   58. SYSTEM BANNER — Dismiss button (replaces inline)
+──────────────────────────────────────────────────────── */
+.setup-card-dismiss.setup-card-dismiss{
+  position:absolute;top:0.85rem;right:0.85rem;
+  background:none;border:none;cursor:pointer;
+  color:var(--color-muted);padding:0.25rem;
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  transition:background 150ms ease, color 150ms ease;
+}
+.setup-card-dismiss.setup-card-dismiss:hover{
+  background:rgba(10,102,194,0.06);
+  color:var(--color-text);
+}
+
+/* ────────────────────────────────────────────────────────
+   59. SETTINGS PAGE — Consistent with app
+──────────────────────────────────────────────────────── */
+.settings-page.settings-page{
+  animation:premiumFadeIn 0.4s ease both;
+}
+.settings-section-gap.settings-section-gap{margin-top:1.5rem}
+
+/* ────────────────────────────────────────────────────────
+   60. ONBOARDING ANIMATION — Fade-in on engine
+──────────────────────────────────────────────────────── */
+.onb-engine.onb-engine{animation:premiumFadeIn 0.4s ease both}
+.onb-nav-secondary.onb-nav-secondary{
+  background:transparent !important;
+  border:1px solid rgba(10,102,194,0.15);
+  color:var(--color-text);
+}
+.onb-nav-secondary.onb-nav-secondary:hover{
+  background:rgba(10,102,194,0.04) !important;
+  border-color:rgba(10,102,194,0.25);
+}
+
+/* ────────────────────────────────────────────────────────
+   61. FULLSCREEN FADE-IN — All tool pages
+──────────────────────────────────────────────────────── */
+.pr-fullscreen.pr-fullscreen{animation:prFsIn 0.4s ease both}
+.fc-fullscreen.fc-fullscreen{animation:prFsIn 0.4s ease both}
+
+/* ────────────────────────────────────────────────────────
+   62. FC INPUT ICON BRAND — Replace inline gradient
+──────────────────────────────────────────────────────── */
+.fc-input-icon--image.fc-input-icon--image{
+  background:linear-gradient(135deg,rgba(10,102,194,0.1),rgba(10,102,194,0.04));
+  border-color:rgba(10,102,194,0.12);
+}
+
+/* ────────────────────────────────────────────────────────
+   63. SCORE RING SVG — Brand blue gradient
+   Replaces hardcoded #3b82f6 / #06b6d4 in SVG stops
+──────────────────────────────────────────────────────── */
+/* These are SVG inline stops — CSS can't override them
+   directly. We handle via filter or accept SVG hardcoded
+   colors. No action required — documented for reference. */
+
+/* ── end PREMIUM REFINEMENT v3 ── */
