@@ -36,11 +36,14 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // If logged in and visiting login, redirect to app
-  if (user && request.nextUrl.pathname === "/auth/login") {
-    const url = request.nextUrl.clone();
-    url.pathname = "/app/onboarding";
-    return NextResponse.redirect(url);
+  // If logged in: redirect marketing root and login page straight to /app
+  if (user) {
+    const path = request.nextUrl.pathname;
+    if (path === "/" || path === "/auth/login" || path === "/login" || path === "/signup") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/app";
+      return NextResponse.redirect(url);
+    }
   }
 
   return supabaseResponse;
