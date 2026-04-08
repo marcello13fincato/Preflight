@@ -54,6 +54,7 @@ export default function ArticoloPage() {
   const [artLoading, setArtLoading] = useState(false);
   const [artSuggestions, setArtSuggestions] = useState<Array<{ titolo: string; tipo: string; descrizione: string; search_query: string }> | null>(null);
   const [artError, setArtError] = useState<string | null>(null);
+  const [loadingStep, setLoadingStep] = useState(0);
 
   if (status === "loading" || !userId) {
     return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
@@ -62,6 +63,8 @@ export default function ArticoloPage() {
   async function generate() {
     setLoading(true);
     setError(null);
+    setLoadingStep(0);
+    const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 2)), 3500);
     try {
       const res = await fetch("/api/ai/articolo", {
         method: "POST",
@@ -77,6 +80,7 @@ export default function ArticoloPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto.");
     } finally {
+      clearInterval(stepTimer);
       setLoading(false);
     }
   }
@@ -483,9 +487,9 @@ export default function ArticoloPage() {
                 </div>
               </div>
               <div className="ap-loading-steps">
-                <span className="ap-loading-step ap-loading-step--active">Struttura articolo</span>
-                <span className="ap-loading-step">Scrivo sezioni</span>
-                <span className="ap-loading-step">SEO + CTA</span>
+                <span className={`ap-loading-step ${loadingStep >= 0 ? "ap-loading-step--active" : ""}`}>Struttura articolo</span>
+                <span className={`ap-loading-step ${loadingStep >= 1 ? "ap-loading-step--active" : ""}`}>Scrivo sezioni</span>
+                <span className={`ap-loading-step ${loadingStep >= 2 ? "ap-loading-step--active" : ""}`}>SEO + CTA</span>
               </div>
             </div>
           )}

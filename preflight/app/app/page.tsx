@@ -136,6 +136,8 @@ export default function CosaFareOggiPage() {
   const [checkedActions, setCheckedActions] = useState<Set<string>>(new Set());
   const [activeMsg, setActiveMsg] = useState<number>(0);
   const [showDemo, setShowDemo] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setTrialCount(getTrialCount());
@@ -155,6 +157,9 @@ export default function CosaFareOggiPage() {
     setLoading(true);
     setPlan(null);
     setCheckedActions(new Set());
+    setLoadingStep(0);
+    const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 3)), 2500);
+    setError(null);
     try {
       const lastTargeting = loadLastTargeting(userId!);
       const res = await fetch("/api/ai/daily-plan", {
@@ -173,9 +178,11 @@ export default function CosaFareOggiPage() {
         const newCount = incrementTrialCount();
         setTrialCount(newCount);
       }
-    } catch {
+    } catch (err) {
       setPlan(null);
+      setError(err instanceof Error ? err.message : "Errore nella generazione del piano. Riprova.");
     } finally {
+      clearInterval(stepTimer);
       setLoading(false);
     }
   }, [loading, isReady, profile.onboarding, userId, hasTrialsLeft, isPremium]);
@@ -553,6 +560,12 @@ export default function CosaFareOggiPage() {
       {/* ── PRE-PLAN: waiting to generate ── */}
       {!plan && !loading && (
         <section className="oggi-ready-card fade-in-delay">
+          {error && (
+            <div className="ap-error-box" style={{ marginBottom: '1rem' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              {error}
+            </div>
+          )}
           <div className="oggi-ready-icon">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
@@ -595,10 +608,9 @@ export default function CosaFareOggiPage() {
           </div>
           <h3 className="oggi-loading-title-v2">Preparo il tuo piano</h3>
           <div className="oggi-loading-steps">
-            <span className="oggi-loading-step oggi-loading-step--active">Analizzo profilo</span>
-            <span className="oggi-loading-step">Valuto contatti</span>
-            <span className="oggi-loading-step">Creo azioni</span>
-            <span className="oggi-loading-step">Scrivo messaggi</span>
+            {["Analizzo profilo", "Valuto contatti", "Creo azioni", "Scrivo messaggi"].map((label, i) => (
+              <span key={label} className={`oggi-loading-step ${loadingStep >= i ? "oggi-loading-step--active" : ""}`}>{label}</span>
+            ))}
           </div>
         </section>
       )}

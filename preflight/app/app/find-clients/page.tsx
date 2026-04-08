@@ -95,6 +95,7 @@ export default function FindClientsPage() {
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
   const [activeSection, setActiveSection] = useState(0);
   const [activeMsg, setActiveMsg] = useState(0);
+  const [loadingStep, setLoadingStep] = useState(0);
 
   const DEMO_CATEGORIES: ProspectCategory[] = [
     {
@@ -152,6 +153,8 @@ export default function FindClientsPage() {
     setError(null);
     setCheckedItems([false, false, false, false, false]);
     setActiveSection(0);
+    setLoadingStep(0);
+    const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 3)), 2500);
     try {
       let pdfText = "";
       if (pdfFile) {
@@ -189,6 +192,7 @@ export default function FindClientsPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
+      clearInterval(stepTimer);
       setLoading(false);
     }
   }
@@ -726,10 +730,9 @@ export default function FindClientsPage() {
           </div>
           <h3 className="fcp-loading-title">Analizzo il tuo mercato</h3>
           <div className="oggi-loading-steps">
-            <span className="oggi-loading-step oggi-loading-step--active">Analizzo target</span>
-            <span className="oggi-loading-step">Creo categorie</span>
-            <span className="oggi-loading-step">Genero messaggi</span>
-            <span className="oggi-loading-step">Preparo strategia</span>
+            {["Analizzo target", "Creo categorie", "Genero messaggi", "Preparo strategia"].map((label, i) => (
+              <span key={label} className={`oggi-loading-step ${loadingStep >= i ? "oggi-loading-step--active" : ""}`}>{label}</span>
+            ))}
           </div>
         </section>
       )}

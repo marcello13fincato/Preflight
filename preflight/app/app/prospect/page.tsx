@@ -93,6 +93,7 @@ export default function ProspectPage() {
   const [result, setResult] = useState<ProspectAnalyzerJson | null>(null);
   const [showDemo, setShowDemo] = useState(false);
   const [activeMsg, setActiveMsg] = useState(0);
+  const [loadingStep, setLoadingStep] = useState(0);
 
   const data = result || (showDemo ? DEMO_RESULT : null);
 
@@ -104,6 +105,8 @@ export default function ProspectPage() {
     if (!linkedinUrl.trim()) return;
     setLoading(true);
     setError(null);
+    setLoadingStep(0);
+    const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 2)), 3000);
     try {
       let pdfText = "";
       if (pdfFile) {
@@ -132,6 +135,7 @@ export default function ProspectPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
+      clearInterval(stepTimer);
       setLoading(false);
     }
   };
@@ -596,9 +600,9 @@ export default function ProspectPage() {
                 </div>
               </div>
               <div className="ap-loading-steps">
-                <span className="ap-loading-step ap-loading-step--active">Analizzo profilo</span>
-                <span className="ap-loading-step">Valuto segnali</span>
-                <span className="ap-loading-step">Genero messaggi</span>
+                <span className={`ap-loading-step ${loadingStep >= 0 ? "ap-loading-step--active" : ""}`}>Analizzo profilo</span>
+                <span className={`ap-loading-step ${loadingStep >= 1 ? "ap-loading-step--active" : ""}`}>Valuto segnali</span>
+                <span className={`ap-loading-step ${loadingStep >= 2 ? "ap-loading-step--active" : ""}`}>Genero messaggi</span>
               </div>
             </div>
           )}

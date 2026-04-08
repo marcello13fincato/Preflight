@@ -54,6 +54,7 @@ export default function PostPage() {
   const [artLoading, setArtLoading] = useState(false);
   const [artSuggestions, setArtSuggestions] = useState<Array<{ titolo: string; tipo: string; descrizione: string; search_query: string }> | null>(null);
   const [artError, setArtError] = useState<string | null>(null);
+  const [loadingStep, setLoadingStep] = useState(0);
 
   if (status === "loading" || !userId) {
     return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
@@ -62,6 +63,8 @@ export default function PostPage() {
   async function generate() {
     setLoading(true);
     setError(null);
+    setLoadingStep(0);
+    const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 2)), 3000);
     try {
       const res = await fetch("/api/ai/post", {
         method: "POST",
@@ -82,6 +85,7 @@ export default function PostPage() {
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
+      clearInterval(stepTimer);
       setLoading(false);
     }
   }
@@ -500,9 +504,9 @@ export default function PostPage() {
                 </div>
               </div>
               <div className="ap-loading-steps">
-                <span className="ap-loading-step ap-loading-step--active">Genero hook</span>
-                <span className="ap-loading-step">Scrivo versioni</span>
-                <span className="ap-loading-step">Compongo CTA</span>
+                <span className={`ap-loading-step ${loadingStep >= 0 ? "ap-loading-step--active" : ""}`}>Genero hook</span>
+                <span className={`ap-loading-step ${loadingStep >= 1 ? "ap-loading-step--active" : ""}`}>Scrivo versioni</span>
+                <span className={`ap-loading-step ${loadingStep >= 2 ? "ap-loading-step--active" : ""}`}>Compongo CTA</span>
               </div>
             </div>
           )}
