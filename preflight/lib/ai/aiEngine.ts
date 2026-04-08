@@ -345,7 +345,7 @@ export async function callAI<T extends Record<string, unknown>>(
   if (!session?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
-  const userId = session.user.email || session.user.name || "anonymous";
+  const userId = session.user.id;
 
   try {
     // 2. Load context

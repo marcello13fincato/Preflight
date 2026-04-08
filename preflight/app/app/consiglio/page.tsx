@@ -10,7 +10,7 @@ import { adviceSchema, type AdviceJson } from "@/lib/sales/schemas";
 
 export default function ConsiglioPage() {
   const { data: session } = useSession();
-  const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
+  const userId = (session?.user?.id || "local-user").toString();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = repo.profile.getProfile(userId);
 

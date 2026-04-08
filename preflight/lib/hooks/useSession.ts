@@ -6,6 +6,7 @@ import type { User, AuthChangeEvent, Session } from "@supabase/supabase-js";
 
 type SessionData = {
   user?: {
+    id?: string | null;
     name?: string | null;
     email?: string | null;
     image?: string | null;
@@ -40,6 +41,7 @@ export function useSession() {
   const session: SessionData = user
     ? {
         user: {
+          id: user.id || null,
           name: user.user_metadata?.full_name || user.user_metadata?.name || null,
           email: user.email || null,
           image: user.user_metadata?.avatar_url || null,

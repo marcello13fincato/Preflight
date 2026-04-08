@@ -21,7 +21,10 @@ export async function POST(req: Request) {
 
     // Persist to SystemProfile (the central AI context)
     const session = await getServerAuthSession();
-    const userId = session?.user?.email || session?.user?.name || "anonymous";
+    if (!session?.user) {
+      return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
+    }
+    const userId = session.user.id;
 
     await prisma.systemProfile.upsert({
       where: { userId },

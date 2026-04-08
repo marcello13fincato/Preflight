@@ -49,7 +49,7 @@ export async function orchestrate<T extends Record<string, unknown>>(
     );
   }
 
-  const userId = session.user.email || session.user.name || "anonymous";
+  const userId = session.user.id;
 
   try {
     // 2. Build context

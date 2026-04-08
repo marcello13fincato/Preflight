@@ -40,7 +40,7 @@ export async function GET() {
   if (!session?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
-  const userId = session.user.email || session.user.name || "anonymous";
+  const userId = session.user.id;
 
   const ctx = await loadUserAIContext(userId);
   const completeness = checkContextCompleteness(ctx);
@@ -53,7 +53,7 @@ export async function POST(req: Request) {
   if (!session?.user) {
     return NextResponse.json({ error: "Non autenticato" }, { status: 401 });
   }
-  const userId = session.user.email || session.user.name || "anonymous";
+  const userId = session.user.id;
 
   const body = await req.json();
   const parsed = saveSchema.safeParse(body);
