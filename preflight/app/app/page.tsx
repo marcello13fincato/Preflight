@@ -8,10 +8,26 @@ import DailyActionCard from "@/components/app/DailyActionCard";
 import type { DailyAction } from "@/components/app/DailyActionCard";
 import type { DailyPlanJson } from "@/lib/sales/schemas";
 import { demoDailyActions } from "@/lib/mock/dailyActions";
+import { demoDailyPlan } from "@/lib/mock/demoDailyPlan";
 
 const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan";
 const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-date";
 const TARGETING_STORAGE_KEY = "preflight:last-targeting";
+const FREE_TRIAL_KEY = "preflight:daily-plan-trial-count";
+const MAX_FREE_TRIALS = 3;
+
+function getTrialCount(): number {
+  if (typeof window === "undefined") return 0;
+  const raw = localStorage.getItem(FREE_TRIAL_KEY);
+  return raw ? parseInt(raw, 10) : 0;
+}
+
+function incrementTrialCount(): number {
+  const current = getTrialCount();
+  const next = current + 1;
+  localStorage.setItem(FREE_TRIAL_KEY, String(next));
+  return next;
+}
 
 function loadLastTargeting(userId: string): Record<string, unknown> | null {
   if (typeof window === "undefined") return null;
@@ -77,28 +93,28 @@ const QUICK_TOOLS = [
 /* ── Gate steps ── */
 const GATE_STEPS = [
   {
-    key: "premium",
-    num: "1",
-    icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" /></svg>
-    ),
-    title: "Attiva il Piano Premium",
-    desc: "Il piano quotidiano AI è disponibile solo per gli utenti Premium.",
-    ctaLabel: "Vedi i piani →",
-    ctaHref: "/pricing",
-    checkField: "plan" as const,
-  },
-  {
     key: "onboarding",
-    num: "2",
+    num: "1",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
     ),
     title: "Configura il tuo sistema",
-    desc: "Inserisci cosa vendi, a chi e come — l'AI userà queste info in ogni risposta.",
+    desc: "Inserisci cosa vendi, a chi e come — l'AI userà queste info in ogni risposta. Include 3 prove gratuite!",
     ctaLabel: "Configura ora →",
     ctaHref: "/app/onboarding",
     checkField: "onboarding" as const,
+  },
+  {
+    key: "premium",
+    num: "2",
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" /></svg>
+    ),
+    title: "Attiva il Piano Premium",
+    desc: "Per un piano quotidiano illimitato, attiva il piano Premium.",
+    ctaLabel: "Vedi i piani →",
+    ctaHref: "/pricing",
+    checkField: "plan" as const,
   },
 ];
 
@@ -111,13 +127,20 @@ export default function CosaFareOggiPage() {
 
   const isPremium = profile.plan !== null;
   const isConfigured = profile.onboarding_complete;
-  const isReady = isPremium && isConfigured;
+  const [trialCount, setTrialCount] = useState(0);
+  const hasTrialsLeft = isConfigured && !isPremium && trialCount < MAX_FREE_TRIALS;
+  const isReady = (isPremium && isConfigured) || hasTrialsLeft;
 
   const [plan, setPlan] = useState<DailyPlanJson | null>(null);
   const [loading, setLoading] = useState(false);
   const [autoLoaded, setAutoLoaded] = useState(false);
   const [checkedActions, setCheckedActions] = useState<Set<string>>(new Set());
   const [activeMsg, setActiveMsg] = useState<number>(0);
+  const [showDemo, setShowDemo] = useState(false);
+
+  useEffect(() => {
+    setTrialCount(getTrialCount());
+  }, []);
 
   useEffect(() => {
     if (!isReady) return;
@@ -147,12 +170,16 @@ export default function CosaFareOggiPage() {
       const data = (await res.json()) as DailyPlanJson;
       setPlan(data);
       cachePlan(data);
+      if (hasTrialsLeft && !isPremium) {
+        const newCount = incrementTrialCount();
+        setTrialCount(newCount);
+      }
     } catch {
       setPlan(null);
     } finally {
       setLoading(false);
     }
-  }, [loading, isReady, profile.onboarding, userId]);
+  }, [loading, isReady, profile.onboarding, userId, hasTrialsLeft, isPremium]);
 
   useEffect(() => {
     if (isReady && !autoLoaded && !plan && !loading) {
@@ -198,9 +225,138 @@ export default function CosaFareOggiPage() {
   const firstName = session?.user?.name?.split(" ")[0] || "";
 
   /* ═══════════════════════════════════════════
-     GATE — Premium + Setup required
+     DEMO VIEW — visible to everyone
+     ═══════════════════════════════════════════ */
+  if (showDemo && !isReady) {
+    const demoActions: DailyAction[] = (() => {
+      const azioniObj = demoDailyPlan.azioni;
+      const keys = ["azione_1", "azione_2", "azione_3", "azione_4", "azione_5"] as const;
+      return keys.map((k) => azioniObj[k]).filter(Boolean) as unknown as DailyAction[];
+    })();
+
+    return (
+      <div className="oggi-page fade-in">
+        {/* Demo banner */}
+        <div className="oggi-demo-banner fade-in">
+          <div className="oggi-demo-banner-content">
+            <span className="oggi-demo-badge">👁️ Esempio</span>
+            <p className="oggi-demo-banner-text">
+              Stai vedendo un esempio di piano quotidiano. <strong>Configura il tuo sistema</strong> per ricevere un piano personalizzato con 3 prove gratuite.
+            </p>
+          </div>
+          <button type="button" onClick={() => setShowDemo(false)} className="oggi-demo-close-btn">
+            ← Torna indietro
+          </button>
+        </div>
+
+        {/* Hero */}
+        <div className="oggi-hero fade-in">
+          <div className="oggi-hero-top">
+            <span className="oggi-date">{today}</span>
+          </div>
+          <h1 className="oggi-hero-title">Cosa fare oggi</h1>
+          <div className="oggi-focus-card">
+            <span className="oggi-focus-label">Focus del giorno</span>
+            <p className="oggi-focus-text">{demoDailyPlan.focus_giornata}</p>
+          </div>
+        </div>
+
+        {/* Azioni demo */}
+        <section className="oggi-section-card fade-in-delay">
+          <div className="oggi-section-head">
+            <span className="oggi-section-num">1</span>
+            <div>
+              <h2 className="oggi-section-title">Le tue 5 azioni di oggi</h2>
+              <p className="oggi-section-sub">Ecco un esempio di azioni personalizzate che riceverai ogni giorno.</p>
+            </div>
+          </div>
+          <div className="oggi-actions-list">
+            {demoActions.map((action, i) => (
+              <DailyActionCard key={`demo_${i}`} action={action} index={i} done={false} onToggle={() => {}} />
+            ))}
+          </div>
+        </section>
+
+        {/* Messaggi demo */}
+        <section className="oggi-section-card fade-in-delay">
+          <div className="oggi-section-head">
+            <span className="oggi-section-num">2</span>
+            <div>
+              <h2 className="oggi-section-title">Messaggi pronti</h2>
+              <p className="oggi-section-sub">Copia e incolla direttamente su LinkedIn.</p>
+            </div>
+          </div>
+          <div className="oggi-msg-tabs">
+            {["Primo contatto", "Follow-up", "Commento"].map((label, i) => (
+              <button key={label} type="button" className={`oggi-msg-tab ${activeMsg === i ? "oggi-msg-tab--active" : ""}`}
+                onClick={() => setActiveMsg(i)}>
+                {label}
+              </button>
+            ))}
+          </div>
+          <div className="oggi-msg-active-card">
+            {activeMsg === 0 && (
+              <MsgCard label="Primo contatto" text={demoDailyPlan.messaggi_pronti.primo_contatto} variant={demoDailyPlan.messaggi_pronti.primo_contatto_variante} />
+            )}
+            {activeMsg === 1 && (
+              <MsgCard label="Follow-up" text={demoDailyPlan.messaggi_pronti.followup} variant={demoDailyPlan.messaggi_pronti.followup_variante} />
+            )}
+            {activeMsg === 2 && (
+              <MsgCard label="Commento post" text={demoDailyPlan.messaggi_pronti.commento_post} />
+            )}
+          </div>
+        </section>
+
+        {/* Post demo */}
+        <section className="oggi-section-card fade-in-delay">
+          <div className="oggi-section-head">
+            <span className="oggi-section-num">3</span>
+            <div>
+              <h2 className="oggi-section-title">Post del giorno</h2>
+              <p className="oggi-section-sub">Pronto da pubblicare su LinkedIn.</p>
+            </div>
+          </div>
+          <div className="oggi-post-card">
+            <div className="oggi-post-header">
+              <span className="oggi-post-badge">✍️ Post pronto</span>
+            </div>
+            <div className="oggi-post-preview">
+              <p className="oggi-post-hook">{demoDailyPlan.post_del_giorno.hook}</p>
+              <p className="oggi-post-body">{demoDailyPlan.post_del_giorno.corpo}</p>
+              <p className="oggi-post-cta">{demoDailyPlan.post_del_giorno.chiusura}</p>
+            </div>
+            {demoDailyPlan.post_del_giorno.tipo_immagine && (
+              <p className="oggi-post-img-tip">📷 {demoDailyPlan.post_del_giorno.tipo_immagine}</p>
+            )}
+          </div>
+        </section>
+
+        {/* CTA finale */}
+        <section className="oggi-demo-cta-section fade-in-delay">
+          <div className="oggi-demo-cta-card">
+            <h3 className="oggi-demo-cta-title">Vuoi il tuo piano personalizzato?</h3>
+            <p className="oggi-demo-cta-desc">
+              Configura il tuo sistema in 3 minuti e ricevi <strong>3 piani giornalieri gratuiti</strong>, creati su misura per il tuo business.
+            </p>
+            <div className="oggi-demo-cta-actions">
+              <Link href="/app/onboarding" className="oggi-launch-btn">
+                Configura il sistema →
+              </Link>
+              <button type="button" onClick={() => setShowDemo(false)} className="btn-ghost">
+                ← Torna indietro
+              </button>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  /* ═══════════════════════════════════════════
+     GATE — Setup required (with demo + trial info)
      ═══════════════════════════════════════════ */
   if (!isReady) {
+    const trialsExhausted = isConfigured && !isPremium && trialCount >= MAX_FREE_TRIALS;
     const completedSteps = [isPremium, isConfigured].filter(Boolean).length;
     return (
       <div className="oggi-page fade-in">
@@ -217,9 +373,30 @@ export default function CosaFareOggiPage() {
             {greeting}{firstName ? `, ${firstName}` : ""}
           </h1>
           <p className="oggi-hero-sub">
-            Per attivare il tuo piano quotidiano AI servono due cose. Completa i passaggi qui sotto.
+            {trialsExhausted
+              ? "Hai usato le 3 prove gratuite. Attiva il Piano Premium per continuare con piani quotidiani illimitati."
+              : "Per attivare il tuo piano quotidiano AI servono due cose. Completa i passaggi qui sotto."}
           </p>
         </div>
+
+        {/* Trial info banner */}
+        {trialsExhausted ? (
+          <div className="oggi-trial-banner fade-in-delay" style={{ borderColor: 'rgba(251,191,36,0.25)', background: 'linear-gradient(135deg,rgba(251,191,36,0.1) 0%,rgba(245,158,11,0.05) 100%)' }}>
+            <div className="oggi-trial-banner-icon">⚡</div>
+            <div className="oggi-trial-banner-content">
+              <strong>Prove gratuite esaurite</strong>
+              <p>Hai usato tutte e 3 le prove. Passa al Premium per avere piani illimitati, storico e molto altro.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="oggi-trial-banner fade-in-delay">
+            <div className="oggi-trial-banner-icon">🎁</div>
+            <div className="oggi-trial-banner-content">
+              <strong>3 prove gratuite incluse</strong>
+              <p>Configura il tuo sistema e ricevi 3 piani giornalieri AI gratuiti — personalizzati sul tuo business.</p>
+            </div>
+          </div>
+        )}
 
         {/* Gate progress bar */}
         <div className="oggi-gate-progress fade-in-delay">
@@ -278,6 +455,18 @@ export default function CosaFareOggiPage() {
             ))}
           </div>
         </section>
+
+        {/* Demo CTA */}
+        <section className="oggi-demo-preview-section fade-in-delay">
+          <button type="button" onClick={() => setShowDemo(true)} className="oggi-demo-preview-btn">
+            <span className="oggi-demo-preview-icon">👁️</span>
+            <div className="oggi-demo-preview-text">
+              <strong>Vedi un esempio</strong>
+              <span>Scopri cosa include il piano quotidiano AI prima di configurare</span>
+            </div>
+            <span className="oggi-demo-preview-arrow">→</span>
+          </button>
+        </section>
       </div>
     );
   }
@@ -287,6 +476,19 @@ export default function CosaFareOggiPage() {
      ═══════════════════════════════════════════ */
   return (
     <div className="oggi-page fade-in">
+      {/* Trial remaining banner */}
+      {!isPremium && isConfigured && (
+        <div className="oggi-trial-remaining-banner fade-in">
+          <span className="oggi-trial-remaining-icon">🎁</span>
+          <span className="oggi-trial-remaining-text">
+            {trialCount < MAX_FREE_TRIALS ? (
+              <>Prova gratuita: <strong>{MAX_FREE_TRIALS - trialCount} di {MAX_FREE_TRIALS}</strong> piani rimasti</>
+            ) : (
+              <>Prove gratuite esaurite — <Link href="/pricing" className="oggi-trial-upgrade-link">passa al Premium</Link> per piani illimitati</>
+            )}
+          </span>
+        </div>
+      )}
       {/* ── HERO ── */}
       <div className="oggi-hero fade-in">
         <div className="oggi-hero-top">

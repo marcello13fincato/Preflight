@@ -3,10 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSession } from "@/lib/hooks/useSession";
-import CopyButton from "@/components/shared/CopyButton";
 import HistoryList from "@/components/app/HistoryList";
-import InsightCard, { SectionDivider, MetricRow, MetricBadge } from "@/components/app/InsightCard";
-import { IconLightbulb } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
 
@@ -55,238 +52,441 @@ const DEMO_RESULT: ProspectAnalyzerJson = {
   priority_signal: "high",
 };
 
-export default function Page() {
-    const [linkedinUrl, setLinkedinUrl] = useState("");
-    const [websiteUrl, setWebsiteUrl] = useState("");
-    const [context, setContext] = useState("");
-    const [pdfFile, setPdfFile] = useState<File | null>(null);
-    const [showPdfGuide, setShowPdfGuide] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<ProspectAnalyzerJson | null>(null);
-    const [showDemo, setShowDemo] = useState(false);
+/* ── Copy button inline (same pattern as oggi/find-clients) ── */
+function CopyBtn({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  return (
+    <button type="button" onClick={copy} className={`oggi-copy-btn ${copied ? "oggi-copy-done" : ""}`}>
+      {copied ? (
+        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copiato</>
+      ) : (
+        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copia</>
+      )}
+    </button>
+  );
+}
 
-    const data = result || (showDemo ? DEMO_RESULT : null);
+/* ── Quick tool links ── */
+const QUICK_TOOLS = [
+  { href: "/app", icon: "📋", title: "Cosa fare oggi", desc: "Piano quotidiano AI personalizzato." },
+  { href: "/app/find-clients", icon: "🔍", title: "Trova clienti", desc: "Targeting e messaggi pronti." },
+  { href: "/app/post", icon: "✍️", title: "Scrivi un post", desc: "Post con hook, CTA e immagine." },
+  { href: "/app/articolo", icon: "📄", title: "Scrivi un articolo", desc: "Articolo autorevole con SEO." },
+];
 
-    const generate = async () => {
-      if (!linkedinUrl.trim()) return;
-      setLoading(true);
-      setError(null);
-      try {
-        let pdfText = "";
-        if (pdfFile) {
-          pdfText = await pdfFile.text();
-        }
-        const res = await fetch("/api/ai/prospect", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            linkedin_url: linkedinUrl.trim(),
-            website_url: websiteUrl.trim() || undefined,
-            context: context.trim() || undefined,
-            pdf_text: pdfText || undefined,
-          }),
-        });
-        const json: Record<string, unknown> = await res.json().catch(() => ({}));
-        if (!res.ok) {
-          throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
-        }
-        const parsed = prospectAnalyzerSchema.safeParse(json);
-        if (!parsed.success) {
-          throw new Error("Risposta AI non valida. Riprova.");
-        }
-        setResult(parsed.data);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
-      } finally {
-        setLoading(false);
+export default function ProspectPage() {
+  const { data: session } = useSession();
+  const userId = (session?.user?.email || session?.user?.name || "local-user").toString();
+  const repo = useMemo(() => getRepositoryBundle(), []);
+
+  const [linkedinUrl, setLinkedinUrl] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [context, setContext] = useState("");
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [showPdfGuide, setShowPdfGuide] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<ProspectAnalyzerJson | null>(null);
+  const [showDemo, setShowDemo] = useState(false);
+  const [activeMsg, setActiveMsg] = useState(0);
+
+  const data = result || (showDemo ? DEMO_RESULT : null);
+
+  const generate = async () => {
+    if (!linkedinUrl.trim()) return;
+    setLoading(true);
+    setError(null);
+    try {
+      let pdfText = "";
+      if (pdfFile) {
+        pdfText = await pdfFile.text();
       }
-    };
+      const res = await fetch("/api/ai/prospect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          linkedin_url: linkedinUrl.trim(),
+          website_url: websiteUrl.trim() || undefined,
+          context: context.trim() || undefined,
+          pdf_text: pdfText || undefined,
+        }),
+      });
+      const json: Record<string, unknown> = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
+      }
+      const parsed = prospectAnalyzerSchema.safeParse(json);
+      if (!parsed.success) {
+        throw new Error("Risposta AI non valida. Riprova.");
+      }
+      setResult(parsed.data);
+      repo.interaction.addInteraction(userId, "prospect", `Analisi: ${linkedinUrl}`, parsed.data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  /* ── Output panel ── */
+  function resetAnalysis() {
+    setResult(null);
+    setShowDemo(false);
+    setActiveMsg(0);
+  }
+
+  /* ═══════════════════════════════════════════
+     RESULTS VIEW — Premium numbered sections
+     ═══════════════════════════════════════════ */
   if (data) {
-    const heatColor = data.client_heat_level === "Hot" ? "red" : data.client_heat_level === "Warm" ? "amber" : "blue";
-    const priorityColor = data.verdetto.priorita === "Alta" ? "red" : data.verdetto.priorita === "Media" ? "amber" : "blue";
-    const verdettoColor = data.verdetto.vale_la_pena === "Sì" ? "green" : data.verdetto.vale_la_pena === "No" ? "red" : "amber";
+    const scoreColor = data.score >= 70 ? "#22c55e" : data.score >= 40 ? "#f59e0b" : "#ef4444";
+    const heatLabel = data.client_heat_level === "Hot" ? "🔥 Hot" : data.client_heat_level === "Warm" ? "🟠 Warm" : "🔵 Cold";
+    const priorityLabel = data.verdetto.priorita === "Alta" ? "⚡ Alta" : data.verdetto.priorita === "Media" ? "🟡 Media" : "🔵 Bassa";
 
     return (
-      <div className="pr-fullscreen fade-in">
-        <div className="pr-score-hero fade-in">
-          <div className="pr-score-ring-wrap">
-            <div className="pr-score-ring">
-              <svg viewBox="0 0 120 120" className="pr-score-svg">
-                <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-                <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
-                  strokeDasharray={`${(data.score / 100) * 327} 327`}
-                  transform="rotate(-90 60 60)" className="pr-score-progress" />
-                <defs>
-                  <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#0A66C2" />
-                    <stop offset="100%" stopColor="#085BA7" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div className="pr-score-value">{data.score}</div>
+      <div className="ap-page fade-in">
+        {/* Demo banner */}
+        {showDemo && (
+          <div className="ap-demo-banner fade-in">
+            <span className="ap-demo-badge">👁️ Esempio</span>
+            <p className="ap-demo-text">Stai vedendo un esempio. Inserisci un profilo reale per un&apos;analisi personalizzata.</p>
+            <button type="button" onClick={resetAnalysis} className="ap-demo-close">← Torna al form</button>
+          </div>
+        )}
+
+        {/* ── HERO — Score + Identity ── */}
+        <div className="ap-hero fade-in">
+          <div className="ap-hero-top">
+            <button type="button" onClick={resetAnalysis} className="ap-back-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              Nuova analisi
+            </button>
+            <span className="ap-hero-eyebrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              Diagnosi profilo AI
+            </span>
+          </div>
+
+          <div className="ap-hero-content">
+            <div className="ap-score-ring-wrap">
+              <div className="ap-score-ring">
+                <svg viewBox="0 0 100 100" className="ap-score-svg">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="7" />
+                  <circle cx="50" cy="50" r="42" fill="none" stroke={scoreColor} strokeWidth="7" strokeLinecap="round"
+                    strokeDasharray={`${(data.score / 100) * 264} 264`}
+                    transform="rotate(-90 50 50)" className="ap-score-progress" />
+                </svg>
+                <div className="ap-score-value">{data.score}</div>
+              </div>
+              <span className="ap-score-label">Compatibilità</span>
             </div>
-            <span className="pr-score-label">Compatibilità</span>
+            <div className="ap-hero-info">
+              <h1 className="ap-hero-title">{data.chi_e}</h1>
+              <p className="ap-hero-context">{data.ruolo_contesto}</p>
+              <div className="ap-hero-badges">
+                <span className="ap-badge ap-badge--verdict">{data.verdetto.vale_la_pena === "Sì" ? "✅ Vale la pena" : data.verdetto.vale_la_pena === "No" ? "❌ Non prioritario" : "⚠️ Da valutare"}</span>
+                <span className="ap-badge ap-badge--priority">{priorityLabel}</span>
+                <span className="ap-badge ap-badge--heat">{heatLabel}</span>
+                <span className="ap-badge ap-badge--confidence">📊 Confidenza: {data.verdetto.confidenza}</span>
+              </div>
+            </div>
           </div>
-          <div className="pr-score-info fade-in-delay">
-            <h1 className="pr-score-title">Diagnosi Profilo</h1>
-            <p className="pr-score-subtitle">{data.chi_e}</p>
-          </div>
-        </div>
 
-        {/* Metrics bar */}
-        <MetricRow>
-          <MetricBadge icon="🎯" label="Verdetto" value={data.verdetto.vale_la_pena} color={verdettoColor} />
-          <MetricBadge icon="⚡" label="Priorità" value={data.verdetto.priorita} color={priorityColor} />
-          <MetricBadge icon="🔥" label="Temperatura" value={data.client_heat_level} color={heatColor} />
-          <MetricBadge icon="📊" label="Confidenza" value={data.verdetto.confidenza} color="blue" />
-        </MetricRow>
-
-        {/* Verdetto */}
-        <div className="pr-diagnosis-section pr-diagnosis-highlight fade-in">
-          <div className="pr-diagnosis-icon">🎯</div>
-          <div className="pr-diagnosis-content">
-            <h3 className="pr-diagnosis-title">Verdetto</h3>
-            <p className="pr-diagnosis-text">{data.verdetto.sintesi}</p>
+          {/* Focus card — verdict */}
+          <div className="ap-focus-card">
+            <span className="ap-focus-label">Verdetto AI</span>
+            <p className="ap-focus-text">{data.verdetto.sintesi}</p>
           </div>
         </div>
 
-        <div className="pr-result-grid">
-          {/* Segnali */}
-          <SectionDivider label="📡 Segnali rilevati" />
-          <div className="pr-signals-list">
+        {/* ── SEZIONE 1: Segnali rilevati ── */}
+        <section className="ap-section fade-in-delay">
+          <div className="ap-section-head">
+            <span className="ap-section-num">1</span>
+            <div>
+              <h2 className="ap-section-title">Segnali rilevati</h2>
+              <p className="ap-section-sub">{data.segnali.length} segnali commerciali identificati dall&apos;AI nel profilo.</p>
+            </div>
+          </div>
+
+          <div className="ap-signals-grid">
             {data.segnali.map((s, i) => (
-              <div key={i} className="pr-signal-card fade-in">
-                <span className="pr-signal-badge">{s.tipo}</span>
-                <p className="pr-signal-meaning">{s.significato}</p>
-                <p className="pr-signal-implication">→ {s.implicazione_commerciale}</p>
+              <div key={i} className="ap-signal-card">
+                <div className="ap-signal-header">
+                  <span className="ap-signal-num">{i + 1}</span>
+                  <span className="ap-signal-type">{s.tipo}</span>
+                </div>
+                <p className="ap-signal-meaning">{s.significato}</p>
+                <div className="ap-signal-implication">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  <span>{s.implicazione_commerciale}</span>
+                </div>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* Perché contattarlo */}
-          <SectionDivider label="🧠 Perché contattarlo" />
-          <div className="pr-why-grid">
-            <div className="pr-why-card fade-in">
-              <span className="pr-why-label">Fit con target</span>
-              <p>{data.perche.fit_con_target}</p>
-            </div>
-            <div className="pr-why-card fade-in">
-              <span className="pr-why-label">Timing</span>
-              <p>{data.perche.timing}</p>
-            </div>
-            <div className="pr-why-card fade-in">
-              <span className="pr-why-label">Potenziale</span>
-              <p>{data.perche.potenziale}</p>
+        {/* ── SEZIONE 2: Perché contattarlo ── */}
+        <section className="ap-section fade-in-delay">
+          <div className="ap-section-head">
+            <span className="ap-section-num">2</span>
+            <div>
+              <h2 className="ap-section-title">Perché contattarlo</h2>
+              <p className="ap-section-sub">Tre dimensioni che confermano il potenziale di questo prospect.</p>
             </div>
           </div>
 
-          {/* Angolo di attacco */}
-          <SectionDivider label="⚔️ Angolo di attacco" />
-          <div className="pr-diagnosis-section pr-diagnosis-highlight fade-in">
-            <div className="pr-diagnosis-content">
-              <div className="pr-attack-grid">
-                <div className="pr-attack-item">
-                  <span className="pr-attack-label">Tema</span>
-                  <p>{data.angolo_attacco.tema}</p>
-                </div>
-                <div className="pr-attack-item">
-                  <span className="pr-attack-label">Leva</span>
-                  <p>{data.angolo_attacco.leva}</p>
-                </div>
-                <div className="pr-attack-item pr-attack-avoid">
-                  <span className="pr-attack-label">⚠️ Evita</span>
-                  <p>{data.angolo_attacco.cosa_evitare}</p>
-                </div>
+          <div className="ap-why-grid">
+            <div className="ap-why-card ap-why--fit">
+              <div className="ap-why-icon">🎯</div>
+              <span className="ap-why-label">Fit con target</span>
+              <p className="ap-why-text">{data.perche.fit_con_target}</p>
+            </div>
+            <div className="ap-why-card ap-why--timing">
+              <div className="ap-why-icon">⏰</div>
+              <span className="ap-why-label">Timing</span>
+              <p className="ap-why-text">{data.perche.timing}</p>
+            </div>
+            <div className="ap-why-card ap-why--potential">
+              <div className="ap-why-icon">📈</div>
+              <span className="ap-why-label">Potenziale</span>
+              <p className="ap-why-text">{data.perche.potenziale}</p>
+            </div>
+          </div>
+        </section>
+
+        {/* ── SEZIONE 3: Angolo di attacco ── */}
+        <section className="ap-section fade-in-delay">
+          <div className="ap-section-head">
+            <span className="ap-section-num">3</span>
+            <div>
+              <h2 className="ap-section-title">Angolo di attacco</h2>
+              <p className="ap-section-sub">La strategia consigliata per aprire la conversazione.</p>
+            </div>
+          </div>
+
+          <div className="ap-attack-card">
+            <div className="ap-attack-grid">
+              <div className="ap-attack-item ap-attack--tema">
+                <span className="ap-attack-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z"/></svg>
+                  Tema
+                </span>
+                <p className="ap-attack-text">{data.angolo_attacco.tema}</p>
+              </div>
+              <div className="ap-attack-item ap-attack--leva">
+                <span className="ap-attack-label">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                  Leva
+                </span>
+                <p className="ap-attack-text">{data.angolo_attacco.leva}</p>
               </div>
             </div>
-          </div>
-
-          {/* Messaggi */}
-          <SectionDivider label="💬 Messaggi" />
-          <InsightCard icon="🤝" label="Nota di connessione" text={data.nota_connessione} variant="message" copyable />
-          <InsightCard icon="✉️" label="Primo messaggio" text={data.primo_messaggio} variant="message" copyable />
-
-          {/* Follow-up */}
-          <SectionDivider label="🔄 Follow-up" />
-          <div className="pr-followup-card fade-in">
-            <div className="pr-followup-meta">
-              <span className="pr-followup-tag">📅 {data.followup.quando}</span>
-              <span className="pr-followup-tag">💡 Cita: {data.followup.cosa_citare}</span>
-              <span className="pr-followup-tag">🎯 Obiettivo: {data.followup.obiettivo}</span>
+            <div className="ap-attack-warning">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>{data.angolo_attacco.cosa_evitare}</span>
             </div>
-            <div className="pr-followup-message">
-              <p>{data.followup.messaggio}</p>
-              <CopyButton text={data.followup.messaggio} />
+          </div>
+        </section>
+
+        {/* ── SEZIONE 4: Messaggi pronti (tab-based) ── */}
+        <section className="ap-section fade-in-delay">
+          <div className="ap-section-head">
+            <span className="ap-section-num">4</span>
+            <div>
+              <h2 className="ap-section-title">Messaggi pronti</h2>
+              <p className="ap-section-sub">Copia e incolla su LinkedIn. Personalizzati per questo profilo.</p>
             </div>
           </div>
 
-          {/* Errori da evitare */}
-          <SectionDivider label="🚫 Errori da evitare" />
-          <div className="pr-errors-list">
+          <div className="oggi-msg-tabs">
+            {["Nota connessione", "Primo messaggio", "Follow-up"].map((label, i) => (
+              <button key={label} type="button" className={`oggi-msg-tab ${activeMsg === i ? "oggi-msg-tab--active" : ""}`}
+                onClick={() => setActiveMsg(i)}>
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <div className="oggi-msg-active-card">
+            {activeMsg === 0 && (
+              <div className="ap-msg-card">
+                <div className="ap-msg-head">
+                  <div className="ap-msg-meta">
+                    <span className="ap-msg-step-badge">1</span>
+                    <span className="ap-msg-label">Nota di connessione</span>
+                  </div>
+                  <CopyBtn text={data.nota_connessione} />
+                </div>
+                <p className="ap-msg-text">{data.nota_connessione}</p>
+                <span className="ap-msg-chars">{data.nota_connessione.length} caratteri</span>
+              </div>
+            )}
+            {activeMsg === 1 && (
+              <div className="ap-msg-card">
+                <div className="ap-msg-head">
+                  <div className="ap-msg-meta">
+                    <span className="ap-msg-step-badge ap-msg-step--purple">2</span>
+                    <span className="ap-msg-label">Primo messaggio dopo accettazione</span>
+                  </div>
+                  <CopyBtn text={data.primo_messaggio} />
+                </div>
+                <p className="ap-msg-text">{data.primo_messaggio}</p>
+                <span className="ap-msg-chars">{data.primo_messaggio.length} caratteri</span>
+              </div>
+            )}
+            {activeMsg === 2 && (
+              <div className="ap-msg-card">
+                <div className="ap-msg-head">
+                  <div className="ap-msg-meta">
+                    <span className="ap-msg-step-badge ap-msg-step--green">3</span>
+                    <span className="ap-msg-label">Follow-up — {data.followup.quando}</span>
+                  </div>
+                  <CopyBtn text={data.followup.messaggio} />
+                </div>
+                <p className="ap-msg-text">{data.followup.messaggio}</p>
+                <div className="ap-followup-meta">
+                  <span className="ap-followup-tag">💡 Cita: {data.followup.cosa_citare}</span>
+                  <span className="ap-followup-tag">🎯 {data.followup.obiettivo}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── SEZIONE 5: Errori da evitare ── */}
+        <section className="ap-section fade-in-delay">
+          <div className="ap-section-head">
+            <span className="ap-section-num ap-section-num--warn">!</span>
+            <div>
+              <h2 className="ap-section-title">Errori da evitare</h2>
+              <p className="ap-section-sub">Cosa NON fare con questo tipo di profilo.</p>
+            </div>
+          </div>
+
+          <div className="ap-errors-list">
             {data.errori_da_evitare.map((err, i) => (
-              <div key={i} className="pr-error-item fade-in">
-                <span className="pr-error-icon">✕</span>
+              <div key={i} className="ap-error-item">
+                <span className="ap-error-icon">✕</span>
                 <p>{err}</p>
               </div>
             ))}
           </div>
+        </section>
 
-          {/* Prossimo step */}
-          <div className="pr-diagnosis-section pr-next-step fade-in">
-            <div className="pr-diagnosis-icon">→</div>
-            <div className="pr-diagnosis-content">
-              <h3 className="pr-diagnosis-title">Prossimo step</h3>
-              <p className="pr-diagnosis-text">{data.prossimo_step}</p>
+        {/* ── SEZIONE 6: Prossimo step + Nav ── */}
+        <section className="ap-section ap-section--next fade-in-delay">
+          <div className="ap-section-head">
+            <span className="ap-section-num ap-section-num--next">→</span>
+            <div>
+              <h2 className="ap-section-title">Prossimo step</h2>
+              <p className="ap-section-sub">{data.prossimo_step}</p>
             </div>
           </div>
+          <div className="ap-next-grid">
+            <Link href="/app/find-clients" className="ap-next-card ap-next-card--primary">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Trova clienti</span>
+            </Link>
+            <Link href="/app/post" className="ap-next-card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span>Scrivi un post</span>
+            </Link>
+            <Link href="/app" className="ap-next-card">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Cosa fare oggi</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* ── Stats strip ── */}
+        <section className="ap-section ap-stats-section fade-in-delay">
+          <div className="ap-stats-grid">
+            <div className="ap-stat">
+              <span className="ap-stat-value">{data.score}/100</span>
+              <span className="ap-stat-label">Score</span>
+            </div>
+            <div className="ap-stat">
+              <span className="ap-stat-value">{data.segnali.length}</span>
+              <span className="ap-stat-label">Segnali</span>
+            </div>
+            <div className="ap-stat">
+              <span className="ap-stat-value">3</span>
+              <span className="ap-stat-label">Messaggi pronti</span>
+            </div>
+            <div className="ap-stat">
+              <span className="ap-stat-value">{data.verdetto.priorita}</span>
+              <span className="ap-stat-label">Priorità</span>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Bottom actions ── */}
+        <div className="ap-bottom-actions">
+          <button type="button" onClick={resetAnalysis} className="btn-ghost">
+            🔄 Nuova analisi
+          </button>
         </div>
 
-        <button onClick={() => { setResult(null); setShowDemo(false); }} className="pr-generate-btn pr-generate-btn--mt2">
-          ← Analizza un altro profilo
-        </button>
+        <HistoryList userId={userId} type="prospect" />
       </div>
     );
   }
 
-  // ── STATIC PAGE (INPUT) FULLSCREEN WOW ──
+  /* ═══════════════════════════════════════════
+     INPUT VIEW — Premium form experience
+     ═══════════════════════════════════════════ */
   return (
-    <div className="pr-fullscreen pr-fullscreen-empty fade-in">
-      <div className="pr-score-hero fade-in">
-        <div className="pr-score-ring-wrap">
-          <div className="pr-score-ring">
-            <svg viewBox="0 0 120 120" className="pr-score-svg">
-              <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="8" />
-              <circle cx="60" cy="60" r="52" fill="none" stroke="url(#scoreGrad)" strokeWidth="8" strokeLinecap="round"
-                strokeDasharray={`327 327`}
-                transform="rotate(-90 60 60)" className="pr-score-progress" />
-              <defs>
-                <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#0A66C2" />
-                  <stop offset="100%" stopColor="#085BA7" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <div className="pr-score-value">AI</div>
-          </div>
-          <span className="pr-score-label">Analisi</span>
+    <div className="ap-page fade-in">
+      {/* ── Hero ── */}
+      <div className="ap-hero ap-hero--input fade-in">
+        <div className="ap-hero-top">
+          <span className="ap-hero-eyebrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Diagnosi profilo AI
+          </span>
         </div>
-        <div className="pr-score-info fade-in-delay">
-          <h1 className="pr-score-title">Analizza un profilo</h1>
-          <p className="pr-score-subtitle">Scopri se vale la pena contattare una persona e ricevi messaggi pronti da copiare per ogni fase.</p>
+        <h1 className="ap-input-title">Analizza un profilo</h1>
+        <p className="ap-input-sub">
+          Incolla un link LinkedIn. L&apos;AI analizza il profilo, valuta il fit commerciale e genera messaggi personalizzati pronti da copiare.
+        </p>
+        <div className="ap-hero-features">
+          <span className="ap-hero-feature">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Score 0-100
+          </span>
+          <span className="ap-hero-sep" />
+          <span className="ap-hero-feature">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Segnali commerciali
+          </span>
+          <span className="ap-hero-sep" />
+          <span className="ap-hero-feature">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            3 messaggi pronti
+          </span>
+          <span className="ap-hero-sep" />
+          <span className="ap-hero-feature">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+            Errori da evitare
+          </span>
         </div>
       </div>
-      <div className="pr-input-layout fade-in">
-        <div className="pr-form-card fade-in-delay">
+
+      {/* ── Form + Sidebar ── */}
+      <div className="ap-input-layout">
+        <div className="ap-form-card fade-in-delay">
           <div className="qa-field">
             <label className="qa-label">Link profilo LinkedIn</label>
             <input type="url" value={linkedinUrl} onChange={(e) => setLinkedinUrl(e.target.value)} className="qa-input" placeholder="https://linkedin.com/in/nome-cognome" />
           </div>
           <div className="qa-field">
             <label className="qa-label">Carica il PDF del profilo <span className="qa-label-opt">(facoltativo)</span></label>
-            <p className="qa-microcopy">Se vuoi un'analisi più precisa, puoi caricare anche il PDF del profilo.</p>
+            <p className="qa-microcopy">Per un&apos;analisi più precisa, carica anche il PDF del profilo.</p>
             <label className="qa-file-upload">
               <input type="file" accept=".pdf" className="qa-file-input" onChange={(e) => setPdfFile(e.target.files?.[0] || null)} />
               <span className="qa-file-label">
@@ -303,7 +503,7 @@ export default function Page() {
                 <ol className="qa-guide-steps">
                   <li>Vai sul profilo LinkedIn della persona</li>
                   <li>Clicca sui tre puntini accanto alla foto</li>
-                  <li>Seleziona "Salva come PDF"</li>
+                  <li>Seleziona &quot;Salva come PDF&quot;</li>
                   <li>Carica il file qui</li>
                 </ol>
               </div>
@@ -318,38 +518,105 @@ export default function Page() {
             <textarea value={context} onChange={(e) => setContext(e.target.value)} className="qa-input qa-input-lg" rows={3} placeholder="Founder SaaS che pubblica su crescita aziendale." />
           </div>
           {error && (
-            <div className="pr-error">
+            <div className="ap-error-box">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               {error}
             </div>
           )}
-          <button onClick={generate} disabled={loading || !linkedinUrl.trim()} className="pr-generate-btn">
+          <button type="button" onClick={generate} disabled={loading || !linkedinUrl.trim()} className="ap-generate-btn">
             {loading ? (
               <><span className="qa-spinner" aria-hidden="true" />Sto analizzando il profilo…</>
             ) : (
               <>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 1-4-4H8a4 4 0 0 1-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                 Analizza profilo
               </>
             )}
           </button>
-          <button onClick={() => setShowDemo(true)} className="pr-demo-btn">
-            Vedi esempio di diagnosi →
+          <button type="button" onClick={() => setShowDemo(true)} className="ap-demo-btn">
+            <span className="ap-demo-btn-icon">👁️</span>
+            Vedi un esempio di diagnosi →
           </button>
         </div>
-        <div className="pr-info-side">
-          <div className="pr-info-card">
-            <h3 className="pr-info-title">Cosa otterrai</h3>
-            <div className="pr-info-features">
-              <div className="pr-info-feature">🎯 Verdetto chiaro: vale la pena contattarlo?</div>
-              <div className="pr-info-feature">📡 Segnali con implicazione commerciale</div>
-              <div className="pr-info-feature">⚔️ Angolo di attacco specifico</div>
-              <div className="pr-info-feature">💬 Messaggi pronti da copiare</div>
-              <div className="pr-info-feature">🚫 Errori da evitare</div>
+
+        <div className="ap-info-side">
+          {/* What you get card */}
+          <div className="ap-info-card">
+            <h3 className="ap-info-title">Cosa otterrai</h3>
+            <div className="ap-info-features">
+              <div className="ap-info-feature">
+                <span className="ap-info-num">1</span>
+                <div>
+                  <strong>Score e verdetto</strong>
+                  <p>Compatibilità 0-100 e analisi fit/timing/potenziale</p>
+                </div>
+              </div>
+              <div className="ap-info-feature">
+                <span className="ap-info-num">2</span>
+                <div>
+                  <strong>Segnali commerciali</strong>
+                  <p>Cosa dice il profilo e cosa implica per te</p>
+                </div>
+              </div>
+              <div className="ap-info-feature">
+                <span className="ap-info-num">3</span>
+                <div>
+                  <strong>Angolo di attacco</strong>
+                  <p>Tema, leva e cosa evitare</p>
+                </div>
+              </div>
+              <div className="ap-info-feature">
+                <span className="ap-info-num">4</span>
+                <div>
+                  <strong>3 messaggi pronti</strong>
+                  <p>Connessione, primo DM e follow-up</p>
+                </div>
+              </div>
+              <div className="ap-info-feature">
+                <span className="ap-info-num">5</span>
+                <div>
+                  <strong>Errori da evitare</strong>
+                  <p>Per non bruciare il contatto</p>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Loading state */}
+          {loading && (
+            <div className="ap-loading-card">
+              <div className="ap-loading-orb">
+                <div className="ap-orb-ring ap-orb-ring-1" />
+                <div className="ap-orb-ring ap-orb-ring-2" />
+                <div className="ap-orb-core">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+              </div>
+              <div className="ap-loading-steps">
+                <span className="ap-loading-step ap-loading-step--active">Analizzo profilo</span>
+                <span className="ap-loading-step">Valuto segnali</span>
+                <span className="ap-loading-step">Genero messaggi</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* ── Other tools ── */}
+      <section className="ap-tools-section fade-in-delay">
+        <h2 className="ap-tools-title">Altri strumenti</h2>
+        <div className="sys-quick-grid">
+          {QUICK_TOOLS.map((t) => (
+            <Link key={t.href} href={t.href} className="sys-quick-card">
+              <span className="sys-quick-card-icon">{t.icon}</span>
+              <h3 className="sys-quick-card-title">{t.title}</h3>
+              <p className="sys-quick-card-desc">{t.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <HistoryList userId={userId} type="prospect" />
     </div>
   );
 }
