@@ -22,24 +22,32 @@ export default async function getServerAuthSession(): Promise<Session> {
   const name = user.user_metadata?.full_name || user.user_metadata?.name || null;
   const image = user.user_metadata?.avatar_url || null;
 
-  // Upsert Prisma User so that userId (cuid) is always available
-  const dbUser = await prisma.user.upsert({
-    where: { email: user.email },
-    create: {
-      email: user.email,
-      name,
-      image,
-    },
-    update: {
-      name,
-      image,
-    },
-    select: { id: true },
-  });
+  // Try to resolve the Prisma User.id (cuid) from the email.
+  // If the database is unreachable (e.g. SQLite on serverless), fall back to
+  // the Supabase UID which is still unique and stable per user.
+  let id: string = user.id; // Supabase UID fallback
+  try {
+    const dbUser = await prisma.user.upsert({
+      where: { email: user.email },
+      create: {
+        email: user.email,
+        name,
+        image,
+      },
+      update: {
+        name,
+        image,
+      },
+      select: { id: true },
+    });
+    id = dbUser.id;
+  } catch {
+    // Database unavailable — use Supabase UID as userId
+  }
 
   return {
     user: {
-      id: dbUser.id,
+      id,
       name,
       email: user.email,
       image,
