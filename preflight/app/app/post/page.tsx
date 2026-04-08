@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import Link from "next/link";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
@@ -33,10 +33,9 @@ const QUICK_TOOLS = [
 
 export default function PostPage() {
   const params = useSearchParams();
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
 
   const [draftPost, setDraftPost] = useState(params.get("draft_post") || "");
   const [objective, setObjective] = useState(params.get("objective") || "lead");
@@ -55,6 +54,10 @@ export default function PostPage() {
   const [artLoading, setArtLoading] = useState(false);
   const [artSuggestions, setArtSuggestions] = useState<Array<{ titolo: string; tipo: string; descrizione: string; search_query: string }> | null>(null);
   const [artError, setArtError] = useState<string | null>(null);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   async function generate() {
     setLoading(true);
@@ -75,7 +78,7 @@ export default function PostPage() {
       const parsed = postBuilderSchema.safeParse(json);
       if (!parsed.success) throw new Error("Risposta AI non valida. Riprova.");
       setOutput(parsed.data);
-      repo.interaction.addInteraction(userId, "post", draftPost, parsed.data);
+      repo.interaction.addInteraction(userId!, "post", draftPost, parsed.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {

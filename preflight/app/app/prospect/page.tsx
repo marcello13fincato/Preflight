@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import HistoryList from "@/components/app/HistoryList";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { prospectAnalyzerSchema, type ProspectAnalyzerJson } from "@/lib/sales/schemas";
@@ -80,8 +80,7 @@ const QUICK_TOOLS = [
 ];
 
 export default function ProspectPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
 
   const [linkedinUrl, setLinkedinUrl] = useState("");
@@ -96,6 +95,10 @@ export default function ProspectPage() {
   const [activeMsg, setActiveMsg] = useState(0);
 
   const data = result || (showDemo ? DEMO_RESULT : null);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   const generate = async () => {
     if (!linkedinUrl.trim()) return;

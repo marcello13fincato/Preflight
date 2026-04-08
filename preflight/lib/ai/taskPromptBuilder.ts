@@ -92,21 +92,27 @@ Rispondi con un JSON con ESATTAMENTE questi campi:
   ask_advice: `COMPITO: L'utente chiede un consiglio strategico su una situazione commerciale.
 
 Analizza la situazione e fornisci:
-1. Lettura della situazione
-2. Strategia consigliata
-3. Risposta suggerita (se applicabile)
-4. Follow-up consigliato
-5. Prossimi passi
-6. Errori da evitare
+1. Lettura della situazione — cosa sta succedendo DAVVERO (leggi tra le righe)
+2. Strategia consigliata — specifica per il servizio e target dell'utente
+3. Risposta suggerita — pronta da copiare, che rifletta il posizionamento dell'utente
+4. Follow-up consigliato — con tempistica e logica
+5. Prossimi passi — concreti e azionabili subito
+6. Errori da evitare — specifici a questa situazione, non generici
+
+REGOLE:
+- Ogni consiglio deve essere filtrato attraverso il CONTESTO COMMERCIALE dell'utente
+- Se la strategia funzionerebbe per chiunque, è sbagliata
+- La risposta suggerita deve riflettere il tono e il posizionamento dell'utente
+- Spiega sempre il PERCHÉ — non basta dire "fai X", spiega la logica commerciale
 
 Rispondi con un JSON con ESATTAMENTE questi campi:
 {
-  "lettura_situazione": "<analisi della situazione>",
-  "strategia_consigliata": "<strategia dettagliata>",
-  "risposta_suggerita": "<risposta pronta da usare se applicabile>",
-  "followup_consigliato": "<follow-up con tempistica>",
-  "step_successivi": "<passi concreti>",
-  "errori_da_evitare": "<errori comuni>",
+  "lettura_situazione": "<analisi della situazione — cosa sta succedendo tra le righe>",
+  "strategia_consigliata": "<strategia specifica per il servizio e target dell'utente>",
+  "risposta_suggerita": "<risposta pronta da usare, coerente con il posizionamento dell'utente>",
+  "followup_consigliato": "<follow-up con tempistica e logica commerciale>",
+  "step_successivi": "<passi concreti e azionabili>",
+  "errori_da_evitare": "<errori specifici a questa situazione>",
   "client_heat_level": "<Cold | Warm | Hot>"
 }`,
 };

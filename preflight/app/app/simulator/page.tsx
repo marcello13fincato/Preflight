@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconLogoPreflight } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
@@ -9,16 +9,19 @@ import type { SimulatorJson } from "@/lib/sales/schemas";
 import { simulatorSchema } from "@/lib/sales/schemas";
 
 export default function SimulatorPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
   const [prospectType, setProspectType] = useState<"Founder" | "HR" | "CEO" | "Marketing">("Founder");
   const [scenario, setScenario] = useState<"Prima risposta dopo connessione" | "Prospect interessato" | "Prospect scettico" | "Nessuna risposta" | "Obiezione">("Prima risposta dopo connessione");
   const [userAnswer, setUserAnswer] = useState("");
   const [output, setOutput] = useState<SimulatorJson | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   async function simulate() {
     setLoading(true);

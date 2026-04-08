@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { onboardingInputSchema, type OnboardingInput } from "@/lib/sales/schemas";
@@ -67,8 +67,7 @@ const initial: OnboardingInput = {
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status: authStatus } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -122,7 +121,7 @@ export default function OnboardingPage() {
 
     setLoading(true);
     try {
-      repo.profile.saveOnboarding(userId, parsed.data);
+      repo.profile.saveOnboarding(userId!, parsed.data);
       const res = await fetch("/api/ai/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -130,15 +129,20 @@ export default function OnboardingPage() {
       });
       if (!res.ok) throw new Error("Errore generazione piano");
       const plan = await res.json();
-      repo.profile.savePlan(userId, plan);
-      repo.profile.setOnboardingComplete(userId);
-      repo.interaction.addInteraction(userId, "onboarding", JSON.stringify(parsed.data), plan);
+      repo.profile.savePlan(userId!, plan);
+      repo.profile.setOnboardingComplete(userId!);
+      repo.interaction.addInteraction(userId!, "onboarding", JSON.stringify(parsed.data), plan);
       setComplete(true);
     } catch {
       setError("Non sono riuscito a generare il piano. Riprova.");
     } finally {
       setLoading(false);
     }
+  }
+
+  /* Auth loading guard */
+  if (authStatus === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
   }
 
   /* Completion screen */

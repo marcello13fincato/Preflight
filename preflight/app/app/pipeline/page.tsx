@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { IconClipboard, IconTarget } from "@/components/shared/icons";
 import type { Lead, LeadStatus } from "@/lib/sales/schemas";
@@ -30,8 +30,7 @@ function statusDotColor(status: LeadStatus): string {
 export default function PipelinePage() {
   const router = useRouter();
   const params = useSearchParams();
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status: authStatus } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
 
   const [name, setName] = useState(params.get("name") || "");
@@ -44,8 +43,8 @@ export default function PipelinePage() {
   const [version, setVersion] = useState(0);
   const [addOpen, setAddOpen] = useState(!!(params.get("name")));
 
-  const leads = repo.lead.listLeads(userId);
-  const grouped = repo.lead.listByStatus(userId);
+  const leads = userId ? repo.lead.listLeads(userId) : [];
+  const grouped = userId ? repo.lead.listByStatus(userId) : {} as Record<string, Lead[]>;
 
   const today = new Date().toISOString().slice(0, 10);
   const recontactToday = leads.filter(
@@ -57,7 +56,7 @@ export default function PipelinePage() {
   }
 
   function addLead() {
-    if (!name.trim()) return;
+    if (!name.trim() || !userId) return;
     repo.lead.createLead(userId, {
       name: name.trim(),
       company: company.trim() || undefined,
@@ -79,13 +78,19 @@ export default function PipelinePage() {
   }
 
   function removeLead(id: string) {
+    if (!userId) return;
     repo.lead.deleteLead(userId, id);
     refresh();
   }
 
   function updateLead(id: string, updates: Partial<Lead>) {
+    if (!userId) return;
     repo.lead.updateLead(userId, id, updates);
     refresh();
+  }
+
+  if (authStatus === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
   }
 
   return (

@@ -2,17 +2,16 @@
 
 
 import { useMemo, useState } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { adviceSchema, type AdviceJson } from "@/lib/sales/schemas";
 
 
 export default function ConsiglioPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
 
   const [situation, setSituation] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
@@ -23,6 +22,9 @@ export default function ConsiglioPage() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState<string | null>(null);
 
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   async function generate() {
     if (!situation.trim() || loading) return;
@@ -53,7 +55,7 @@ export default function ConsiglioPage() {
         throw new Error("Risposta AI non valida. Riprova.");
       }
       setOutput(parsed.data);
-      repo.interaction.addInteraction(userId, "dm", situation, parsed.data);
+      repo.interaction.addInteraction(userId!, "dm", situation, parsed.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {

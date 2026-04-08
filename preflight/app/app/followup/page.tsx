@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import Link from "next/link";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import CopyButton from "@/components/shared/CopyButton";
@@ -24,16 +24,19 @@ const TEMPO_OPTIONS = [
 ] as const;
 
 export default function FollowupPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
 
   const [context, setContext] = useState("");
   const [tempoPassato, setTempoPassato] = useState("");
   const [output, setOutput] = useState<FollowupResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   async function generate() {
     if (!context.trim() || loading) return;
@@ -53,7 +56,7 @@ export default function FollowupPage() {
         throw new Error(typeof json.error === "string" ? json.error : `Errore API (${res.status})`);
       }
       setOutput(json as FollowupResult);
-      repo.interaction.addInteraction(userId, "dm", `Follow-up: ${context.slice(0, 50)}`, json);
+      repo.interaction.addInteraction(userId!, "dm", `Follow-up: ${context.slice(0, 50)}`, json);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto.");
     } finally {

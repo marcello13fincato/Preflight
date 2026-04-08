@@ -27,16 +27,21 @@ Suggerisci articoli reali e pertinenti che l'utente potrebbe:
 - Usare come fonte o ispirazione
 - Citare per rafforzare la propria autorevolezza
 
+USA il contesto commerciale dell'utente per filtrare la rilevanza:
+- Gli articoli devono essere pertinenti al SETTORE e al SERVIZIO dell'utente
+- Le query di ricerca devono includere termini specifici del settore dell'utente
+- Gli articoli suggeriti devono rafforzare il POSIZIONAMENTO dell'utente, non essere generici
+
 Per ogni articolo suggerito, fornisci una query di ricerca Google che l'utente può usare per trovarlo.
 
 Restituisci JSON:
 {
   "articles": [
     {
-      "titolo": "<titolo descrittivo dell'articolo suggerito>",
+      "titolo": "<titolo descrittivo dell'articolo suggerito — rilevante per il settore dell'utente>",
       "tipo": "<blog | comunicato stampa | report | case study | articolo di settore>",
-      "descrizione": "<perché è rilevante, 1 frase>",
-      "search_query": "<query Google per trovare questo tipo di articolo>"
+      "descrizione": "<perché è rilevante per il posizionamento dell'utente, 1 frase>",
+      "search_query": "<query Google specifica con termini del settore dell'utente>"
     }
   ]
 }

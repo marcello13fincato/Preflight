@@ -2,14 +2,18 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { IconClipboard, IconTarget, IconLogoPreflight, IconRefresh } from "@/components/shared/icons";
 
 export default function InboundPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
+
   const profile = repo.profile.getProfile(userId);
 
   return (

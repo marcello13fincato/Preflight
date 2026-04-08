@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useCallback } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 
 const BANNER_DISMISSED_KEY = "preflight-setup-banner-dismissed";
@@ -27,10 +27,9 @@ export function computeSystemProgress(onboarding: Record<string, unknown> | null
 type SetupState = "not-started" | "partial";
 
 export default function SystemBanner() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
 
   const pct = computeSystemProgress(profile.onboarding as Record<string, unknown> | null);
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState, useCallback, useEffect } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import DailyActionCard from "@/components/app/DailyActionCard";
 import type { DailyAction } from "@/components/app/DailyActionCard";
@@ -119,11 +119,10 @@ const GATE_STEPS = [
 ];
 
 export default function CosaFareOggiPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status, session } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
-  const contacts = useMemo(() => repo.contact.listContacts(userId), [userId, repo]);
+  const profile = userId ? repo.profile.getProfile(userId) : { plan: null, onboarding_complete: false, onboarding: null };
+  const contacts = useMemo(() => userId ? repo.contact.listContacts(userId) : [], [userId, repo]);
 
   const isPremium = profile.plan !== null;
   const isConfigured = profile.onboarding_complete;
@@ -157,7 +156,7 @@ export default function CosaFareOggiPage() {
     setPlan(null);
     setCheckedActions(new Set());
     try {
-      const lastTargeting = loadLastTargeting(userId);
+      const lastTargeting = loadLastTargeting(userId!);
       const res = await fetch("/api/ai/daily-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -223,6 +222,13 @@ export default function CosaFareOggiPage() {
     return "Buonasera";
   })();
   const firstName = session?.user?.name?.split(" ")[0] || "";
+
+  /* ═══════════════════════════════════════════
+     LOADING — wait for auth
+     ═══════════════════════════════════════════ */
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   /* ═══════════════════════════════════════════
      DEMO VIEW — visible to everyone

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import Link from "next/link";
 import HistoryList from "@/components/app/HistoryList";
 import InsightCard, { ResultHeader, MetricRow, MetricBadge, SectionDivider } from "@/components/app/InsightCard";
@@ -12,10 +12,9 @@ import { commentAssistantSchema, type CommentAssistantJson } from "@/lib/sales/s
 
 export default function CommentsPage() {
   const params = useSearchParams();
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
 
   const [originalPost, setOriginalPost] = useState(params.get("original_post") || "");
   const [receivedComment, setReceivedComment] = useState(params.get("received_comment") || "");
@@ -24,6 +23,10 @@ export default function CommentsPage() {
   const [output, setOutput] = useState<CommentAssistantJson | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   async function generate() {
     setLoading(true);
@@ -49,7 +52,7 @@ export default function CommentsPage() {
         throw new Error("Risposta AI non valida. Riprova.");
       }
       setOutput(parsed.data);
-      repo.interaction.addInteraction(userId, "comments", `${originalPost}\n${receivedComment}`, parsed.data);
+      repo.interaction.addInteraction(userId!, "comments", `${originalPost}\n${receivedComment}`, parsed.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {

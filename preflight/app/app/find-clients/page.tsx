@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import CopyButton from "@/components/shared/CopyButton";
 import { IconLightbulb } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
@@ -72,10 +72,10 @@ const RESULT_SECTIONS = [
 ] as const;
 
 export default function FindClientsPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
   const onboarding = profile.onboarding as Record<string, unknown> | null;
 
   const [ruoloTarget, setRuoloTarget] = useState("");
@@ -184,8 +184,8 @@ export default function FindClientsPage() {
         throw new Error("Risposta AI non valida. Riprova.");
       }
       setOutput(parsed.data);
-      saveTargetingResult(userId, parsed.data);
-      repo.interaction.addInteraction(userId, "prospect", `Targeting: ${ruoloTarget}`, parsed.data);
+      saveTargetingResult(userId!, parsed.data);
+      repo.interaction.addInteraction(userId!, "prospect", `Targeting: ${ruoloTarget}`, parsed.data);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore sconosciuto. Riprova.");
     } finally {
@@ -201,6 +201,13 @@ export default function FindClientsPage() {
     setError(null);
     setCheckedItems([false, false, false, false, false]);
     setActiveSection(0);
+  }
+
+  /* ═══════════════════════════════════════════
+     AUTH LOADING GUARD
+     ═══════════════════════════════════════════ */
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
   }
 
   /* ═══════════════════════════════════════════

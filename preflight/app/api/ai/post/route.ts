@@ -22,19 +22,27 @@ export async function POST(req: Request) {
 
   const taskPrompt = `COMPITO: Scrivi un post LinkedIn ottimizzato.
 
-USA il contesto commerciale dell'utente per:
-- Allineare il post al suo posizionamento e differenziatore
-- Parlare al suo cliente ideale
-- Usare il tono coerente con il suo modello di vendita
+PERSONALIZZAZIONE OBBLIGATORIA:
+- Il post deve parlare AL CLIENTE IDEALE dell'utente, non a un pubblico generico
+- L'hook deve catturare l'attenzione del TARGET SPECIFICO dell'utente
+- Il contenuto deve dimostrare l'expertise dell'utente nel suo SERVIZIO specifico
+- La CTA deve essere coerente con il MODELLO DI VENDITA dell'utente
+- Il tono deve corrispondere ai tone samples dell'utente (se disponibili)
+- Se la bozza dell'utente è generica, rendila specifica per il suo contesto
+
+ANTI-GENERICITÀ:
+- Se il post potesse essere firmato da chiunque nel settore, è sbagliato
+- Almeno un hook deve contenere un riferimento al settore/target dell'utente
+- Il "comment_starter" deve stimolare una reazione dal TIPO di persona che l'utente vuole come cliente
 
 Restituisci JSON:
 {
-  "hooks": ["<hook 1>", "<hook 2>", "<hook 3>", "<hook 4>", "<hook 5>"],
-  "post_versions": { "clean": "<versione pulita>", "direct": "<versione diretta>", "authority": "<versione autorevole>" },
-  "cta": "<call to action>",
-  "comment_starter": "<commento per stimolare engagement>",
+  "hooks": ["<hook specifico per il target>", "<hook con dato/caso>", "<hook provocatorio>", "<hook domanda>", "<hook storytelling>"],
+  "post_versions": { "clean": "<versione scorrevole, coerente con il posizionamento>", "direct": "<versione diretta, tono da esperto>", "authority": "<versione autorevole, con case/dati>" },
+  "cta": "<call to action coerente con il modello di vendita dell'utente>",
+  "comment_starter": "<commento per stimolare engagement dal target specifico>",
   "next_step": "<prossima azione dopo pubblicazione>",
-  "suggerimento_immagine": { "tipo": "<foto reale o grafica semplice>", "perche_funziona": "<perché funziona>" }
+  "suggerimento_immagine": { "tipo": "<foto reale o grafica semplice>", "perche_funziona": "<perché funziona per questo target>" }
 }`;
 
   return callAI({

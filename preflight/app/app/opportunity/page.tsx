@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useSession } from "@/lib/hooks/useSession";
+import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import InsightCard, { ResultHeader, SectionDivider } from "@/components/app/InsightCard";
 import { IconClipboard, IconTarget, IconEdit3, IconAlertTriangle, IconSearch, IconUser, IconLogoPreflight } from "@/components/shared/icons";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
@@ -9,14 +9,17 @@ import type { OpportunityFinderJson } from "@/lib/sales/schemas";
 import { opportunityFinderSchema } from "@/lib/sales/schemas";
 
 export default function OpportunityPage() {
-  const { data: session } = useSession();
-  const userId = (session?.user?.id || "local-user").toString();
+  const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = repo.profile.getProfile(userId);
+  const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
   const [idealClientDescription, setIdealClientDescription] = useState("");
   const [output, setOutput] = useState<OpportunityFinderJson | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  if (status === "loading" || !userId) {
+    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
+  }
 
   async function generate() {
     setLoading(true);

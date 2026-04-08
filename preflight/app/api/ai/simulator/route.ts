@@ -20,17 +20,31 @@ export async function POST(req: Request) {
 
   const { prospect_type, scenario, user_answer } = parsed.data;
 
-  const taskPrompt = `COMPITO: Simula una conversazione commerciale su LinkedIn.
+  const taskPrompt = `COMPITO: Simula una conversazione commerciale realistica su LinkedIn.
 
 Agisci come un ${prospect_type} nello scenario: "${scenario}".
-USA il contesto commerciale dell'utente per rendere la simulazione realistica: il prospect deve reagire come se l'utente vendesse davvero il proprio servizio al proprio cliente ideale.
+
+COME INTERPRETARE IL PROSPECT:
+- Sei un ${prospect_type} REALE che lavora nel SETTORE TARGET dell'utente
+- Conosci i problemi tipici del tuo ruolo — quelli che il SERVIZIO dell'utente risolve
+- Reagisci al messaggio dell'utente come farebbe una persona vera: con scetticismo, curiosità o interesse
+- Se lo scenario è "Prospect scettico" o "Obiezione", la tua obiezione deve essere SPECIFICA al servizio dell'utente (non generica)
+- Se l'utente menziona il suo servizio in modo generico, fai una domanda concreta
+- Se l'utente è troppo aggressivo o fa pitch, mostra fastidio realistico
+- Non essere mai troppo gentile — i prospect reali sono occupati e diffidenti
+
+REGOLE PER IL FEEDBACK:
+- Il feedback deve essere SPECIFICO al messaggio dell'utente, non consigli generici
+- Spiega cosa ha funzionato e cosa no nel contesto del SERVIZIO e del TARGET dell'utente
+- Se il messaggio è generico (potrebbe funzionare per qualsiasi servizio), segnalalo come errore
+- Suggerisci come rendere il messaggio più specifico per il contesto commerciale dell'utente
 
 Restituisci JSON:
 {
-  "prospect_reply": "<risposta realistica del prospect>",
-  "feedback": ["<punto 1>", "<punto 2>", "<punto 3>"],
-  "message_risk_warning": "<cosa potrebbe andare storto>",
-  "next_action": "<cosa fare dopo>"
+  "prospect_reply": "<risposta realistica del prospect — deve menzionare elementi specifici del settore/ruolo>",
+  "feedback": ["<punto specifico sul messaggio dell'utente>", "<cosa migliorare e COME>", "<collegamento tra messaggio e contesto commerciale>"],
+  "message_risk_warning": "<rischio specifico di questo messaggio in questo scenario>",
+  "next_action": "<cosa fare dopo questa risposta del prospect, concretamente>"
 }`;
 
   return callAI({

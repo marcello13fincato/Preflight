@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { generateWithLLM, salesRules, formatProfileContext } from "@/lib/ai/structured";
+import { generateWithLLM } from "@/lib/ai/structured";
+import { loadUserAIContext, buildSystemPrompt } from "@/lib/ai/aiEngine";
+import getServerAuthSession from "@/lib/getServerAuthSession";
 
 export const runtime = "nodejs";
 
@@ -31,7 +33,7 @@ const requestSchema = z.object({
 function buildStructuredPrompt(
   message: string,
   ctx: z.infer<typeof contextSchema>,
-  profile: unknown,
+  systemPrompt: string,
 ): string {
   const originLabel = ctx.origin === "scritto" ? "scritto dall'utente" : "ricevuto dall'utente";
 
@@ -51,26 +53,25 @@ Dato che il testo è stato ricevuto, concentra la risposta su:
 NON includere il campo "analisi" nel JSON.`;
   }
 
-  return `${salesRules}
+  return `${systemPrompt}
 
-Sei l'Assistente Preflight, un assistente AI integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
+---
 
 CONTESTO della richiesta:
 - Tipo di contenuto: ${ctx.contentType}
 - Il testo è stato: ${originLabel}
-${ctx.personProfile ? `- Profilo della persona coinvolta: ${ctx.personProfile}` : "- Profilo persona: non specificato"}
-${formatProfileContext(profile)}
+${ctx.personProfile ? `- Profilo della persona coinvolta: ${ctx.personProfile}` : ""}
 
 Il tuo compito:
 Analizza il ${ctx.contentType} ${originLabel} e fornisci una risposta strutturata.
+USA il contesto commerciale dell'utente per personalizzare ogni suggerimento: il messaggio deve riflettere il servizio, il target e il posizionamento dell'utente.
 ${analysisInstruction}
 
-Rispondi SEMPRE in italiano. Sii breve, concreto e utile. Non fare pitch.
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
-  "risposta": "<risposta consigliata o suggerimento principale>",
-  "perche": "<perché questa risposta può funzionare>",
-  "prossima_mossa": "<cosa fare dopo>"${ctx.origin === "scritto" ? ',\n  "analisi": "<micro-analisi del testo scritto>"' : ""}
+  "risposta": "<risposta consigliata o suggerimento principale — specifica per il contesto dell'utente>",
+  "perche": "<perché questa risposta funziona per QUESTO utente con QUESTO servizio>",
+  "prossima_mossa": "<cosa fare dopo, concretamente>"${ctx.origin === "scritto" ? ',\n  "analisi": "<micro-analisi del testo scritto>"' : ""}
 }
 
 Testo da analizzare:
@@ -79,7 +80,7 @@ ${message}`;
 
 function buildProfileAnalysisPrompt(
   message: string,
-  profile: unknown,
+  systemPrompt: string,
   demo: boolean,
   extra: { linkedinUrl?: string; profileInfo?: string },
 ): string {
@@ -94,31 +95,18 @@ function buildProfileAnalysisPrompt(
     .filter(Boolean)
     .join("\n");
 
-  return `${salesRules}
+  return `${systemPrompt}
 
-Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
+---
 
-Il tuo approccio:
-- Ragiona come un venditore esperto ma riflessivo
-- Spiega il perché delle tue scelte
-- Suggerisci approcci naturali, mai aggressivi
-- L'obiettivo NON è vendere subito, ma portare la conversazione un passo più avanti
-- Il contesto è SEMPRE LinkedIn: conversazioni brevi, tono naturale, niente pitch aggressivi
-
-NON fare:
-- Non sembrare aggressivo o da marketer
-- Non sembrare un guru
-- Non usare frasi cringe o motivazionali
-- Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
-
-Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
+COMPITO: Analizza questo profilo LinkedIn per l'utente.
 
 ${depth}
 
 ${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
-${formatProfileContext(profile)}
 
-Rispondi SEMPRE in italiano.
+IMPORTANTE: Ogni suggerimento deve essere specifico per il servizio e il target dell'utente. Il primo messaggio deve riflettere il suo posizionamento. La strategia di contatto deve considerare il suo modello di vendita.
+
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
   "nome_contatto": "<nome della persona analizzata, se desumibile>",
@@ -126,13 +114,13 @@ Rispondi SOLO con un oggetto JSON con questa struttura:
   "azienda_contatto": "<azienda della persona, se desumibile>",
   "chi_e": "<chi è questa persona: breve lettura del profilo, cosa fa, che tipo di figura è>",
   "ruolo_e_contesto": "<ruolo nella sua azienda, dimensione azienda, settore, fase in cui si trova>",
-  "perche_buon_contatto": "<motivi concreti basati su profilo e contesto per cui potrebbe essere un buon contatto per te>",
-  "strategia_contatto": "<strategia di contatto consigliata: commentare un suo post, scrivere in DM, interagire prima in modo leggero, aspettare una sua pubblicazione>",
-  "primo_messaggio": "<primo messaggio consigliato, naturale e non aggressivo>",
+  "perche_buon_contatto": "<motivi concreti basati su profilo e sul SERVIZIO SPECIFICO dell'utente per cui è un buon contatto>",
+  "strategia_contatto": "<strategia di contatto consigliata, coerente con il modello di vendita dell'utente>",
+  "primo_messaggio": "<primo messaggio consigliato, che rifletta il posizionamento e il tono dell'utente>",
   "followup_consigliato": "<messaggio follow-up naturale da inviare se non risponde entro 3-5 giorni>",
   "step_successivi": "<sequenza chiara di passi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
-  "segnali_da_osservare": "<segnali concreti nel profilo o nel comportamento da osservare: segnali positivi, segnali deboli, cosa monitorare>",
-  "errori_da_evitare": "<cosa NON fare con questa persona e perché, errori comuni da evitare nel primo contatto>"
+  "segnali_da_osservare": "<segnali concreti nel profilo o nel comportamento da osservare>",
+  "errori_da_evitare": "<cosa NON fare con questa persona e perché>"
 }
 
 Richiesta dell'utente:
@@ -141,7 +129,7 @@ ${message}`;
 
 function buildAdviceOnlyPrompt(
   message: string,
-  profile: unknown,
+  systemPrompt: string,
   demo: boolean,
   extra?: { interactionType?: string; personProfile?: string },
 ): string {
@@ -156,41 +144,26 @@ function buildAdviceOnlyPrompt(
     .filter(Boolean)
     .join("\n");
 
-  return `${salesRules}
+  return `${systemPrompt}
 
-Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
+---
 
-L'utente ti descrive una situazione reale su LinkedIn e vuole capire come muoversi.
-
-Il tuo approccio:
-- Ragiona come un venditore esperto ma riflessivo
-- Spiega il perché delle tue scelte
-- Suggerisci approcci naturali, mai aggressivi
-- L'obiettivo NON è vendere subito, ma portare la conversazione un passo più avanti
-- Il contesto è SEMPRE LinkedIn: conversazioni brevi, tono naturale, niente pitch aggressivi
-
-NON fare:
-- Non sembrare aggressivo o da marketer
-- Non sembrare un guru
-- Non usare frasi cringe o motivazionali
-- Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
-
-Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
+COMPITO: L'utente ti descrive una situazione reale su LinkedIn e vuole capire come muoversi.
 
 ${depth}
 
 ${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
-${formatProfileContext(profile)}
 
-Rispondi SEMPRE in italiano.
+IMPORTANTE: La strategia deve essere coerente con il servizio, il target e il modello di vendita dell'utente. Non dare consigli generici che funzionerebbero per chiunque.
+
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
-  "lettura_situazione": "<spiegazione breve di ciò che sta succedendo>",
-  "strategia": "<direzione strategica chiara su cosa conviene fare adesso>",
-  "risposta_consigliata": "<testo pronto da usare se serve, oppure indicazione concreta>",
-  "followup_consigliato": "<messaggio o azione di follow-up da fare tra qualche giorno se non c'è risposta>",
+  "lettura_situazione": "<cosa sta succedendo — collegato al contesto commerciale dell'utente>",
+  "strategia": "<direzione strategica chiara, specifica per il servizio e target dell'utente>",
+  "risposta_consigliata": "<testo pronto da usare, che rifletta il posizionamento dell'utente>",
+  "followup_consigliato": "<messaggio o azione di follow-up coerente con il modello di vendita>",
   "step_successivi": "<sequenza di passi precisi: Step 1, Step 2, Step 3, Step 4 — fino alla proposta di call>",
-  "errori_da_evitare": "<cosa NON fare in questa situazione e perché, errori comuni>"
+  "errori_da_evitare": "<cosa NON fare in questa situazione specifica e perché>"
 }
 
 Situazione descritta dall'utente:
@@ -199,7 +172,7 @@ ${message}`;
 
 function buildAdvicePrompt(
   message: string,
-  profile: unknown,
+  systemPrompt: string,
   demo: boolean,
   extra: { linkedinUrl?: string; profileInfo?: string; interactionType?: string; whoWrote?: string },
 ): string {
@@ -216,48 +189,33 @@ function buildAdvicePrompt(
     .filter(Boolean)
     .join("\n");
 
-  return `${salesRules}
+  return `${systemPrompt}
 
-Sei un consulente commerciale esperto di LinkedIn, integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
+---
 
-L'utente ti descrive una situazione reale su LinkedIn e/o ti chiede di analizzare un profilo LinkedIn per capire come iniziare o continuare una conversazione.
-
-Il tuo approccio:
-- Ragiona come un venditore esperto e riflessivo
-- Spiega il perché delle tue scelte
-- Suggerisci approcci naturali, mai aggressivi
-- L'obiettivo NON è vendere subito, ma portare la conversazione un passo più avanti
-- Il contesto è SEMPRE LinkedIn: conversazioni brevi, tono naturale, niente pitch aggressivi
-
-NON fare:
-- Non sembrare aggressivo o da marketer
-- Non sembrare un guru
-- Non usare frasi cringe o motivazionali
-- Evita "devi assolutamente", "strategia definitiva", "chiudi subito la call"
-
-Il tono deve essere: professionale, calmo, realistico, concreto, naturale.
+COMPITO: L'utente ti descrive una situazione reale su LinkedIn e/o ti chiede di analizzare un profilo per capire come iniziare o continuare una conversazione.
 
 ${depth}
 
 ${extraContext ? `CONTESTO aggiuntivo:\n${extraContext}` : ""}
-${formatProfileContext(profile)}
 
-Rispondi SEMPRE in italiano.
+IMPORTANTE: Ogni valutazione deve essere fatta attraverso la lente del servizio specifico dell'utente. "Perché parlargli" deve spiegare il collegamento tra il prospect e l'offerta dell'utente. Il primo messaggio deve riflettere il posizionamento dell'utente, non essere generico.
+
 Rispondi SOLO con un oggetto JSON con questa struttura:
 {
   "valutazione": {
-    "qualita": <numero da 1 a 10 che indica la qualità della conversazione>,
-    "probabilita": "<percentuale indicativa di arrivare a una call, es. '35%'>"
+    "qualita": <numero da 1 a 10>,
+    "probabilita": "<percentuale indicativa di arrivare a una call>"
   },
   "temperatura": {
-    "stato": "<uno tra: Fredda, Neutra, Calda, Troppo presto per proporre una call>",
-    "spiegazione": "<breve spiegazione della temperatura>"
+    "stato": "<Fredda | Neutra | Calda | Troppo presto per proporre una call>",
+    "spiegazione": "<spiegazione collegata al contesto commerciale dell'utente>"
   },
-  "chi_e": "<analisi breve del profilo della persona: chi è, cosa fa, che ruolo ha>",
-  "interessi": "<temi e problemi che potrebbero essere rilevanti per questa persona>",
-  "perche_parlargli": "<spiegazione basata sul profilo e sul contesto del perché ha senso avviare una conversazione>",
-  "strategia_contatto": "<metodo migliore per contattarlo: commentare un post, scrivere in DM, interagire prima con contenuti, aspettare un contenuto>",
-  "primo_messaggio": "<primo messaggio consigliato, naturale e non aggressivo>",
+  "chi_e": "<analisi del profilo della persona>",
+  "interessi": "<temi e problemi rilevanti PER IL SERVIZIO DELL'UTENTE>",
+  "perche_parlargli": "<collegamento esplicito tra il prospect e il servizio/problema che l'utente risolve>",
+  "strategia_contatto": "<metodo coerente con il modello di vendita dell'utente>",
+  "primo_messaggio": "<messaggio che rifletta il tono e il posizionamento dell'utente>",
   "prossima_mossa": "<come portare la conversazione verso una call>"
 }
 
@@ -276,18 +234,31 @@ export async function POST(req: Request) {
   }
 
   try {
-    const { message, history, profile, context, advice, demo, linkedinUrl, profileInfo, interactionType, whoWrote } = parsed.data;
+    const { message, history, context, advice, demo, linkedinUrl, profileInfo, interactionType, whoWrote } = parsed.data;
+
+    // Load full user context from DB (not from client-sent profile)
+    let systemPrompt = "";
+    const session = await getServerAuthSession();
+    if (session?.user?.id) {
+      const ctx = await loadUserAIContext(session.user.id);
+      systemPrompt = buildSystemPrompt(ctx);
+    } else {
+      // Fallback for unauthenticated/demo: minimal system prompt
+      systemPrompt = `Sei l'assistente AI strategico di Preflight — una piattaforma di vendita B2B su LinkedIn.
+Rispondi ESCLUSIVAMENTE in italiano. Output sempre in JSON valido.
+Scrivi come un consulente commerciale esperto. Mai tono da AI. Mai cliché. Mai frasi generiche.`;
+    }
 
     /* ── Advice mode ("Chiedi un consiglio" / "Analizza profilo") ── */
     if (advice) {
       const assistantMode = parsed.data.assistantMode;
       let prompt: string;
       if (assistantMode === "profile") {
-        prompt = buildProfileAnalysisPrompt(message, profile, !!demo, { linkedinUrl, profileInfo });
+        prompt = buildProfileAnalysisPrompt(message, systemPrompt, !!demo, { linkedinUrl, profileInfo });
       } else if (assistantMode === "advice") {
-        prompt = buildAdviceOnlyPrompt(message, profile, !!demo, { interactionType, personProfile: profileInfo });
+        prompt = buildAdviceOnlyPrompt(message, systemPrompt, !!demo, { interactionType, personProfile: profileInfo });
       } else {
-        prompt = buildAdvicePrompt(message, profile, !!demo, {
+        prompt = buildAdvicePrompt(message, systemPrompt, !!demo, {
           linkedinUrl, profileInfo, interactionType, whoWrote,
         });
       }
@@ -302,7 +273,7 @@ export async function POST(req: Request) {
 
     /* ── Structured assistant mode (with context) ── */
     if (context) {
-      const prompt = buildStructuredPrompt(message, context, profile);
+      const prompt = buildStructuredPrompt(message, context, systemPrompt);
       const raw = await generateWithLLM(prompt);
       try {
         const structured = JSON.parse(raw);
@@ -317,21 +288,21 @@ export async function POST(req: Request) {
       .map((m) => `${m.role === "user" ? "Utente" : "Assistente"}: ${m.content}`)
       .join("\n");
 
-    const prompt = `${salesRules}
+    const prompt = `${systemPrompt}
 
-Sei l'Assistente Preflight, un assistente AI integrato nella piattaforma Preflight — un assistente che aiuta a capire chi contattare su LinkedIn, come iniziare una conversazione e come portarla avanti fino a una call.
+---
 
-Il tuo compito è:
-- Rispondere a domande sul prodotto Preflight
-- Spiegare come usare Preflight per trovare clienti su LinkedIn
+COMPITO: Rispondi alla domanda dell'utente come assistente Preflight.
+
+Puoi:
+- Rispondere a domande sulla strategia LinkedIn
+- Spiegare come usare Preflight per trovare clienti
 - Suggerire come usare LinkedIn in modo più commerciale
-- Aiutare l'utente a usare gli strumenti del sito (post, commenti, DM, prospect, pipeline, opportunità, simulatore)
-- Se l'utente incolla un commento o messaggio LinkedIn, suggerisci una risposta naturale e orientata alla conversazione
+- Se l'utente incolla un commento o messaggio LinkedIn, suggerisci una risposta contestuale
 
-Rispondi SEMPRE in italiano. Sii breve, concreto e utile. Non fare pitch.
-Rispondi SOLO con un oggetto JSON: { "reply": "<la tua risposta>" }
+USA SEMPRE il contesto commerciale dell'utente per personalizzare ogni risposta.
 
-${formatProfileContext(profile) || "Profilo utente: non configurato"}
+Rispondi SOLO con un oggetto JSON: { "reply": "<la tua risposta — specifica per questo utente>" }
 
 ${historyBlock ? `Storico conversazione:\n${historyBlock}\n` : ""}
 Utente: ${message}`;
