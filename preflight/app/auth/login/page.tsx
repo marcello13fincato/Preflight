@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"login" | "signup">("login");
@@ -38,6 +39,10 @@ export default function LoginPage() {
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/auth/callback`,
+            data: {
+              full_name: fullName.trim() || undefined,
+              name: fullName.trim() || undefined,
+            },
           },
         });
         if (error) {
@@ -145,6 +150,19 @@ export default function LoginPage() {
 
         {/* Email/Password Form */}
         <form onSubmit={handleEmailSubmit} className="login-form">
+          {mode === "signup" && (
+            <div>
+              <label className="login-label">Nome e Cognome</label>
+              <input
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className="login-input"
+                placeholder="Mario Rossi"
+                required
+              />
+            </div>
+          )}
           <div>
             <label className="login-label">Email</label>
             <input

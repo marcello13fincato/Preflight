@@ -6,7 +6,7 @@ import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { VisualProfileSetup } from "@/components/visual-profile";
 
 export default function SettingsPage() {
-  const { userId, status } = useRequireAuth();
+  const { userId, status, session } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
 
   if (status === "loading" || !userId) {
@@ -38,10 +38,21 @@ export default function SettingsPage() {
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             </div>
             <div>
-              <span className="settings-item-label">Utente</span>
-              <span className="settings-item-value">{userId}</span>
+              <span className="settings-item-label">Email</span>
+              <span className="settings-item-value">{session?.user?.email || "—"}</span>
             </div>
           </div>
+          {session?.user?.name && (
+            <div className="settings-item">
+              <div className="settings-item-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <span className="settings-item-label">Nome</span>
+                <span className="settings-item-value">{session.user.name}</span>
+              </div>
+            </div>
+          )}
           <div className="settings-item">
             <div className="settings-item-icon">
               {profile.onboarding_complete ? (

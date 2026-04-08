@@ -14,13 +14,14 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   }
 
   const initials = (session?.user?.name || session?.user?.email || "U")
-    .split(/[\s@]/)
+    .split(/[\s@.]/)
     .filter(Boolean)
     .slice(0, 2)
     .map((s: string) => s[0]?.toUpperCase())
     .join("");
 
-  const displayName = session?.user?.name || session?.user?.email || "Utente";
+  // Prefer email for display — name from OAuth can be unreliable (e.g. project name)
+  const displayName = session?.user?.email || session?.user?.name || "Utente";
 
   return (
     <div className="app-shell">
