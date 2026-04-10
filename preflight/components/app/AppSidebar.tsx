@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useMemo } from "react";
+import { getRepositoryBundle } from "@/lib/sales/repositories";
+import { useSession } from "@/lib/hooks/useSession";
 
 type NavItem = { href: string; label: string; icon: React.ReactNode; primary?: boolean };
 
@@ -84,8 +87,24 @@ const systemItems: NavItem[] = [
   },
 ];
 
+const FREE_TRIAL_KEY = "preflight:daily-plan-trial-count";
+const MAX_FREE_TRIALS = 3;
+
+function getTrialCount(): number {
+  if (typeof window === "undefined") return 0;
+  const raw = localStorage.getItem(FREE_TRIAL_KEY);
+  return raw ? parseInt(raw, 10) : 0;
+}
+
 export default function AppSidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userId = session?.user?.id;
+  const repo = useMemo(() => getRepositoryBundle(), []);
+  const profile = userId ? repo.profile.getProfile(userId) : { plan: null, onboarding_complete: false, onboarding: null };
+  const planLabel = typeof profile.plan === "string" ? profile.plan : profile.plan ? "Premium" : "Free";
+  const trialCount = typeof window !== "undefined" ? getTrialCount() : 0;
+  const trialText = profile.plan ? planLabel : `Free · ${trialCount}/${MAX_FREE_TRIALS} prove usate`;
 
   return (
     <aside className="sb" role="navigation" aria-label="Navigazione principale">
@@ -159,13 +178,13 @@ export default function AppSidebar() {
         </div>
       </nav>
 
-      {/* Footer */}
+      {/* Footer — plan badge */}
       <div className="sb-footer">
         <div className="sb-footer-badge">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sb-footer-icon">
             <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
           </svg>
-          <span className="sb-footer-badge-text">AI-powered Sales OS</span>
+          <span className="sb-footer-badge-text">{trialText}</span>
         </div>
       </div>
     </aside>

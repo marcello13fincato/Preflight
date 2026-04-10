@@ -84,10 +84,50 @@ function CopyBtn({ text }: { text: string }) {
 
 /* ── Quick tool links ── */
 const QUICK_TOOLS = [
-  { href: "/app/find-clients", icon: "🔍", title: "Trova clienti", desc: "Scopri profili da attivare oggi." },
-  { href: "/app/prospect", icon: "👤", title: "Analizza profilo", desc: "Valuta fit e angolo di attacco." },
-  { href: "/app/post", icon: "✍️", title: "Scrivi un post", desc: "Post con hook, CTA e immagine." },
-  { href: "/app/articolo", icon: "📄", title: "Scrivi un articolo", desc: "Articolo autorevole con SEO." },
+  {
+    href: "/app/find-clients",
+    title: "Trova clienti",
+    desc: "Scopri profili da attivare oggi.",
+    color: "blue" as const,
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+    ),
+  },
+  {
+    href: "/app/prospect",
+    title: "Analizza profilo",
+    desc: "Valuta fit e angolo di attacco.",
+    color: "green" as const,
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+  },
+  {
+    href: "/app/post",
+    title: "Scrivi un post",
+    desc: "Post con hook, CTA e immagine.",
+    color: "amber" as const,
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+      </svg>
+    ),
+  },
+  {
+    href: "/app/articolo",
+    title: "Scrivi un articolo",
+    desc: "Articolo autorevole con SEO.",
+    color: "purple" as const,
+    icon: (
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" />
+      </svg>
+    ),
+  },
 ];
 
 /* ── Gate steps ── */
@@ -373,58 +413,34 @@ export default function CosaFareOggiPage() {
     const completedSteps = [isPremium, isConfigured].filter(Boolean).length;
     return (
       <div className="oggi-page fade-in">
-        {/* Hero — gate version */}
-        <div className="oggi-hero oggi-hero--gate fade-in">
-          <div className="oggi-hero-top">
-            <span className="oggi-date">{today}</span>
-            <span className="oggi-gate-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              {completedSteps}/2 requisiti
-            </span>
+        {/* Header — elegant, light bg */}
+        <div className="oggi-header fade-in">
+          <div className="oggi-header-left">
+            <span className="oggi-date-muted">{today}</span>
+            <h1 className="oggi-header-title">
+              {greeting}{firstName ? `, ${firstName}` : ""}
+            </h1>
+            <p className="oggi-header-sub">
+              {trialsExhausted
+                ? "Hai usato le 3 prove gratuite. Attiva il Piano Premium per continuare."
+                : "Completa i passaggi per attivare il piano quotidiano AI."}
+            </p>
           </div>
-          <h1 className="oggi-hero-title">
-            {greeting}{firstName ? `, ${firstName}` : ""}
-          </h1>
-          <p className="oggi-hero-sub">
-            {trialsExhausted
-              ? "Hai usato le 3 prove gratuite. Attiva il Piano Premium per continuare con piani quotidiani illimitati."
-              : "Per attivare il tuo piano quotidiano AI servono due cose. Completa i passaggi qui sotto."}
-          </p>
-        </div>
-
-        {/* Trial info banner */}
-        {trialsExhausted ? (
-          <div className="oggi-trial-banner fade-in-delay" style={{ borderColor: 'rgba(251,191,36,0.25)', background: 'linear-gradient(135deg,rgba(251,191,36,0.1) 0%,rgba(245,158,11,0.05) 100%)' }}>
-            <div className="oggi-trial-banner-icon">⚡</div>
-            <div className="oggi-trial-banner-content">
-              <strong>Prove gratuite esaurite</strong>
-              <p>Hai usato tutte e 3 le prove. Passa al Premium per avere piani illimitati, storico e molto altro.</p>
+          <div className="oggi-header-right">
+            <span className="oggi-header-status">Setup {completedSteps}/2 completati</span>
+            <div className="oggi-header-progress-track">
+              <div className="oggi-header-progress-fill" style={{ width: `${completedSteps * 50}%` }} />
             </div>
           </div>
-        ) : (
-          <div className="oggi-trial-banner fade-in-delay">
-            <div className="oggi-trial-banner-icon">🎁</div>
-            <div className="oggi-trial-banner-content">
-              <strong>3 prove gratuite incluse</strong>
-              <p>Configura il tuo sistema e ricevi 3 piani giornalieri AI gratuiti — personalizzati sul tuo business.</p>
-            </div>
-          </div>
-        )}
-
-        {/* Gate progress bar */}
-        <div className="oggi-gate-progress fade-in-delay">
-          <div className="oggi-gate-progress-track">
-            <div className="oggi-gate-progress-fill" style={{ width: `${completedSteps * 50}%` }} />
-          </div>
-          <span className="oggi-gate-progress-label">{completedSteps}/2 completati</span>
         </div>
 
         {/* Gate steps */}
         <div className="oggi-gate-steps fade-in-delay">
-          {GATE_STEPS.map((step) => {
+          {GATE_STEPS.map((step, idx) => {
             const done = step.checkField === "plan" ? isPremium : isConfigured;
+            const isPrimary = idx === 0 && !done;
             return (
-              <div key={step.key} className={`oggi-gate-step ${done ? "oggi-gate-step--done" : ""}`}>
+              <div key={step.key} className={`oggi-gate-step${done ? " oggi-gate-step--done" : ""}${isPrimary ? " oggi-gate-step--primary" : ""}`}>
                 <div className="oggi-gate-step-indicator">
                   {done ? (
                     <div className="oggi-gate-check-done">
@@ -437,7 +453,6 @@ export default function CosaFareOggiPage() {
                   )}
                 </div>
                 <div className="oggi-gate-step-content">
-                  <div className="oggi-gate-step-icon">{step.icon}</div>
                   <h3 className="oggi-gate-step-title">{step.title}</h3>
                   <p className="oggi-gate-step-desc">{step.desc}</p>
                   {!done && (
@@ -454,16 +469,14 @@ export default function CosaFareOggiPage() {
 
         {/* Tools — always available */}
         <section className="oggi-gate-tools fade-in-delay">
-          <div className="oggi-gate-tools-header">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            <span>Nel frattempo, gli strumenti sono già attivi</span>
-          </div>
+          <span className="oggi-section-label">Strumenti</span>
           <div className="sys-quick-grid">
             {QUICK_TOOLS.map((t) => (
-              <Link key={t.href} href={t.href} className="sys-quick-card">
-                <span className="sys-quick-card-icon">{t.icon}</span>
+              <Link key={t.href} href={t.href} className={`sys-quick-card sys-quick-card--${t.color}`}>
+                <span className={`sys-quick-card-icon sys-quick-card-icon--${t.color}`}>{t.icon}</span>
                 <h3 className="sys-quick-card-title">{t.title}</h3>
                 <p className="sys-quick-card-desc">{t.desc}</p>
+                <span className="sys-quick-card-arrow">→</span>
               </Link>
             ))}
           </div>
@@ -502,57 +515,33 @@ export default function CosaFareOggiPage() {
           </span>
         </div>
       )}
-      {/* ── HERO ── */}
-      <div className="oggi-hero fade-in">
-        <div className="oggi-hero-top">
-          <span className="oggi-date">{today}</span>
-          {plan && (
-            <div className="oggi-hero-stats-row">
-              <span className="oggi-progress-pill">
-                <span className="oggi-progress-fill" style={{ width: `${progressPct}%` }} />
-                <span className="oggi-progress-label">{completedCount}/{actions.length}</span>
-              </span>
-              <span className="oggi-hero-stat-mini">{contacts.length} contatti</span>
-            </div>
+      {/* ── HEADER ── */}
+      <div className="oggi-header fade-in">
+        <div className="oggi-header-left">
+          <span className="oggi-date-muted">{today}</span>
+          <h1 className="oggi-header-title">
+            {plan ? (
+              <>
+                {greeting}{firstName ? `, ${firstName}` : ""}
+                {progressPct === 100 && <span className="oggi-hero-confetti"> 🎉</span>}
+              </>
+            ) : (
+              "Cosa fare oggi"
+            )}
+          </h1>
+          {plan?.focus_giornata ? (
+            <p className="oggi-header-focus">{plan.focus_giornata}</p>
+          ) : (
+            <p className="oggi-header-sub">Il piano quotidiano personalizzato con azioni, messaggi e contenuti — pronti da usare.</p>
           )}
         </div>
 
-        <h1 className="oggi-hero-title">
-          {plan ? (
-            <>
-              {greeting}{firstName ? `, ${firstName}` : ""}
-              {progressPct === 100 && <span className="oggi-hero-confetti"> 🎉</span>}
-            </>
-          ) : (
-            "Cosa fare oggi"
-          )}
-        </h1>
-
-        {plan?.focus_giornata ? (
-          <div className="oggi-focus-card">
-            <span className="oggi-focus-label">Focus del giorno</span>
-            <p className="oggi-focus-text">{plan.focus_giornata}</p>
-          </div>
-        ) : (
-          <p className="oggi-hero-sub">Il piano quotidiano personalizzato con azioni, messaggi e contenuti — pronti da usare.</p>
-        )}
-
-        {/* Circular progress ring in hero */}
         {plan && (
-          <div className="oggi-hero-ring">
-            <svg viewBox="0 0 80 80" className="oggi-ring-svg">
-              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5" />
-              <circle cx="40" cy="40" r="34" fill="none" stroke="url(#ringGrad)" strokeWidth="5" strokeLinecap="round"
-                strokeDasharray={`${progressPct * 2.136} 213.6`} transform="rotate(-90 40 40)"
-                style={{ transition: "stroke-dasharray 0.6s ease" }} />
-              <defs>
-                <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#22c55e" />
-                  <stop offset="100%" stopColor="#4ade80" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <span className="oggi-ring-pct">{progressPct}%</span>
+          <div className="oggi-header-right">
+            <span className="oggi-header-status">{completedCount}/{actions.length} azioni completate</span>
+            <div className="oggi-header-progress-track">
+              <div className="oggi-header-progress-fill" style={{ width: `${progressPct}%` }} />
+            </div>
           </div>
         )}
       </div>
@@ -751,13 +740,14 @@ export default function CosaFareOggiPage() {
 
           {/* ── TOOLS NAV ── */}
           <section className="sys-quick-actions fade-in-delay">
-            <h2 className="sys-quick-title">Prossimo passo</h2>
+            <span className="oggi-section-label">Strumenti</span>
             <div className="sys-quick-grid">
               {QUICK_TOOLS.map((t) => (
-                <Link key={t.href} href={t.href} className="sys-quick-card">
-                  <span className="sys-quick-card-icon">{t.icon}</span>
+                <Link key={t.href} href={t.href} className={`sys-quick-card sys-quick-card--${t.color}`}>
+                  <span className={`sys-quick-card-icon sys-quick-card-icon--${t.color}`}>{t.icon}</span>
                   <h3 className="sys-quick-card-title">{t.title}</h3>
                   <p className="sys-quick-card-desc">{t.desc}</p>
+                  <span className="sys-quick-card-arrow">→</span>
                 </Link>
               ))}
             </div>
