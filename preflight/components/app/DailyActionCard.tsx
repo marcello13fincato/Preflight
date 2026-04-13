@@ -92,23 +92,23 @@ export default function DailyActionCard({ action, index, done, onToggle }: Props
       {/* Context: who + situation */}
       <div className="oggi-action-context">
         <p className="oggi-action-chi">
-          <span className="oggi-label-dim">Chi →</span> {action.contesto.chi}
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Chi →</span> <span className="text-blue-700 font-semibold">{action.contesto.chi}</span>
         </p>
         <p className="oggi-action-situazione">
-          <span className="oggi-label-dim">Situazione →</span> {action.contesto.situazione}
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Situazione →</span> {action.contesto.situazione}
         </p>
       </div>
 
       {/* Why now */}
       <div className="oggi-action-perche">
-        <span className="oggi-label-accent">⚡ Perché ora</span>
-        <p>{action.perche_ora}</p>
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1 block">⚡ Perché ora</span>
+        <p className="text-[13.5px] text-slate-700 leading-[1.7]">{action.perche_ora}</p>
       </div>
 
       {/* Concrete action */}
       <div className="oggi-action-cosa">
-        <span className="oggi-label-accent">🎯 Cosa fare</span>
-        <p>{action.azione_concreta}</p>
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1 block">🎯 Cosa fare</span>
+        <p className="text-[13.5px] text-emerald-600 font-semibold leading-relaxed">{action.azione_concreta}</p>
       </div>
 
       {/* Expandable: message, outcome, next step */}
@@ -124,25 +124,26 @@ export default function DailyActionCard({ action, index, done, onToggle }: Props
         <div className="oggi-action-details fade-in">
           {/* Suggested message */}
           {action.messaggio_suggerito && (
-            <div className="oggi-msg-box">
-              <div className="oggi-msg-header">
-                <span className="oggi-msg-label">💬 Messaggio suggerito</span>
-                <CopyBtn text={action.messaggio_suggerito} />
+            <div className="bg-white border border-slate-100 rounded-[14px] p-5">
+              <div className="flex items-center gap-2 mb-3.5">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">💬 Messaggio suggerito</span>
+                <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">AI</span>
+                <div className="ml-auto"><CopyBtn text={action.messaggio_suggerito} /></div>
               </div>
-              <p className="oggi-msg-text">{action.messaggio_suggerito}</p>
+              <p className="text-[13.5px] text-slate-700 leading-[1.7]">{action.messaggio_suggerito}</p>
             </div>
           )}
 
           {/* Expected outcome */}
-          <div className="oggi-action-outcome">
-            <span className="oggi-label-dim">📈 Outcome atteso</span>
-            <p>{action.outcome_atteso}</p>
+          <div className="border-t border-slate-50 pt-3 mt-3">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1 block">📈 Outcome atteso</span>
+            <p className="text-[13.5px] text-slate-800 leading-relaxed">{action.outcome_atteso}</p>
           </div>
 
           {/* Next step */}
-          <div className="oggi-action-nextstep">
-            <span className="oggi-label-dim">→ Prossimo step</span>
-            <p>{action.prossimo_step}</p>
+          <div className="bg-slate-50 rounded-[10px] px-4 py-3 mt-4">
+            <span className="text-[13px] text-slate-600">Prossimo step → </span>
+            <span className="text-emerald-600 font-bold text-[13px]">{action.prossimo_step}</span>
           </div>
         </div>
       )}

@@ -76,15 +76,16 @@ export default function InsightCard({
   copyable?: boolean;
 }) {
   return (
-    <div className={`insight-card insight-${variant} fade-in`}>
-      <div className="insight-header fade-in-delay">
-        <div className="insight-label">
+    <div className={`bg-white border border-slate-100 rounded-[14px] p-5 insight-${variant} fade-in`}>
+      <div className="flex items-center gap-2 mb-3.5 fade-in-delay">
+        <div className="flex items-center gap-2">
           {icon && <span className="insight-icon">{icon}</span>}
-          <span>{label}</span>
+          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{label}</span>
+          <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">AI</span>
         </div>
         {copyable && <CopyButton text={text} />}
       </div>
-      <div className="insight-body fade-in">
+      <div className="text-[13.5px] text-slate-700 leading-[1.7] fade-in">
         <SmartText text={text} />
       </div>
     </div>
@@ -94,8 +95,10 @@ export default function InsightCard({
 /* ── Section divider between card groups ── */
 export function SectionDivider({ label }: { label: string }) {
   return (
-    <div className="insight-divider fade-in">
-      <span>{label}</span>
+    <div className="flex items-center gap-3 my-4 fade-in">
+      <div className="flex-1 h-px bg-slate-100" />
+      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">{label}</span>
+      <div className="flex-1 h-px bg-slate-100" />
     </div>
   );
 }
@@ -135,9 +138,9 @@ export function ResultHeader({
   copyText?: string;
 }) {
   return (
-    <div className="result-header">
-      <div className="result-header-bar" />
-      <h3 className="result-header-title">{title}</h3>
+    <div className="flex items-center gap-2 mb-3.5">
+      <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-widest flex-1">{title}</h3>
+      <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full">AI</span>
       {copyText && <CopyButton text={copyText} />}
     </div>
   );

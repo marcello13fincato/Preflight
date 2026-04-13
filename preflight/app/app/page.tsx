@@ -411,21 +411,21 @@ export default function CosaFareOggiPage() {
   if (!isReady) {
     const trialsExhausted = isConfigured && !isPremium && trialCount >= MAX_FREE_TRIALS;
     const completedSteps = [isPremium, isConfigured].filter(Boolean).length;
-    const toolColors: Record<string, { iconBg: string; stroke: string; badgeBg: string; badgeText: string; badgeLabel: string }> = {
-      blue: { iconBg: "bg-blue-50", stroke: "#2563EB", badgeBg: "bg-blue-50", badgeText: "text-blue-600", badgeLabel: "Prospecting" },
-      green: { iconBg: "bg-green-50", stroke: "#16A34A", badgeBg: "bg-green-50", badgeText: "text-green-700", badgeLabel: "Analisi" },
-      amber: { iconBg: "bg-amber-50", stroke: "#D97706", badgeBg: "bg-amber-50", badgeText: "text-amber-600", badgeLabel: "Contenuto" },
-      purple: { iconBg: "bg-purple-50", stroke: "#7C3AED", badgeBg: "bg-purple-50", badgeText: "text-purple-600", badgeLabel: "Editoriale" },
+    const toolColors: Record<string, { iconBg: string; stroke: string; badgeBg: string; badgeText: string; badgeLabel: string; glow: string }> = {
+      blue: { iconBg: "bg-blue-50", stroke: "#2563EB", badgeBg: "bg-blue-50", badgeText: "text-blue-600", badgeLabel: "Prospecting", glow: "bg-[radial-gradient(circle,rgba(37,99,235,0.04),transparent_70%)]" },
+      green: { iconBg: "bg-green-50", stroke: "#16A34A", badgeBg: "bg-green-50", badgeText: "text-green-700", badgeLabel: "Analisi", glow: "bg-[radial-gradient(circle,rgba(22,163,74,0.04),transparent_70%)]" },
+      amber: { iconBg: "bg-amber-50", stroke: "#D97706", badgeBg: "bg-amber-50", badgeText: "text-amber-600", badgeLabel: "Contenuto", glow: "bg-[radial-gradient(circle,rgba(217,119,6,0.04),transparent_70%)]" },
+      purple: { iconBg: "bg-purple-50", stroke: "#7C3AED", badgeBg: "bg-purple-50", badgeText: "text-purple-600", badgeLabel: "Editoriale", glow: "bg-[radial-gradient(circle,rgba(124,58,237,0.04),transparent_70%)]" },
     };
     return (
       <div className="pt-6 fade-in">
         {/* ── HERO CARD SCURO ── */}
-        <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800">
+        <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-[#1E3A6E] via-[#1E4A8A] to-[#162F5C]">
           {/* Glow decorativi */}
           <div className="pointer-events-none">
-            <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.10),transparent_65%)]" />
-            <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.22),transparent_65%)]" />
-            <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.20),transparent_70%)]" />
+            <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
+            <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
+            <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
           </div>
           {/* Contenuto */}
           <div className="relative z-10">
@@ -496,16 +496,18 @@ export default function CosaFareOggiPage() {
               );
             }
             return (
-              <div key={step.key} className="bg-slate-50 rounded-[14px] p-5 border border-slate-100">
-                <div className={`w-[26px] h-[26px] rounded-full ${done ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-300"} text-[12px] font-extrabold flex items-center justify-center mb-3.5`}>
+              <div key={step.key} className="relative overflow-hidden bg-white rounded-[14px] p-5 border border-emerald-200 border-l-[3px] border-l-emerald-500 rounded-l-none">
+                {/* Glow angolo */}
+                <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.07),transparent_70%)] pointer-events-none" />
+                <div className={`w-[26px] h-[26px] rounded-full ${done ? "bg-green-100 text-green-600" : "bg-emerald-500 text-white"} text-[12px] font-extrabold flex items-center justify-center mb-3.5`}>
                   {done ? (
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
                   ) : step.num}
                 </div>
-                <h3 className={`text-[15px] font-extrabold tracking-tight ${done ? "text-slate-900" : "text-slate-300"}`}>{step.title}</h3>
-                <p className={`text-[13px] leading-relaxed ${done ? "text-slate-500" : "text-slate-200"}`}>{step.desc}</p>
+                <h3 className="text-[15px] font-extrabold text-slate-900 tracking-tight">{step.title}</h3>
+                <p className="text-[13px] text-slate-500 leading-relaxed">{step.desc}</p>
                 {!done && (
-                  <Link href={step.ctaHref} className="inline-flex items-center gap-1.5 bg-transparent border border-slate-200 text-slate-300 text-[13px] px-5 py-2.5 rounded-[9px] mt-4">
+                  <Link href={step.ctaHref} className="inline-flex items-center gap-1.5 bg-emerald-500 text-white text-[13px] font-bold px-5 py-2.5 rounded-[9px] hover:bg-emerald-600 transition mt-4">
                     {step.ctaLabel}
                   </Link>
                 )}
@@ -518,22 +520,24 @@ export default function CosaFareOggiPage() {
         {/* ── TOOL CARDS ── */}
         <section className="mb-6 fade-in-delay">
           <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-1 mb-3 block">Strumenti</span>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-4">
             {QUICK_TOOLS.map((t, i) => {
               const c = toolColors[t.color] || toolColors.blue;
               return (
                 <Link
                   key={t.href}
                   href={t.href}
-                  className="bg-white border border-slate-200 rounded-[14px] p-[18px] cursor-pointer flex flex-col transition-all duration-200 hover:-translate-y-[3px] hover:border-blue-300 hover:shadow-[0_8px_24px_rgba(37,99,235,0.10)] animate-fadeup no-underline"
+                  className="relative overflow-hidden bg-white border border-slate-200 rounded-[14px] p-6 cursor-pointer flex flex-col transition-all duration-200 hover:-translate-y-[4px] hover:border-blue-200 hover:shadow-[0_12px_32px_rgba(37,99,235,0.12)] animate-fadeup no-underline"
                   style={{ animationDelay: `${280 + i * 80}ms` }}
                 >
-                  <span className={`w-[42px] h-[42px] rounded-[12px] flex items-center justify-center mb-3 ${c.iconBg}`} style={{ color: c.stroke }}>
+                  {/* Micro-glow */}
+                  <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full ${c.glow} pointer-events-none`} />
+                  <span className={`w-[48px] h-[48px] rounded-[14px] flex items-center justify-center mb-3 ${c.iconBg}`} style={{ color: c.stroke }}>
                     {t.icon}
                   </span>
-                  <span className="text-[13px] font-extrabold text-slate-900 tracking-tight mb-1">{t.title}</span>
-                  <span className="text-[12px] text-slate-400 leading-snug flex-1">{t.desc}</span>
-                  <span className={`inline-block mt-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide ${c.badgeBg} ${c.badgeText}`}>
+                  <span className="text-[14px] font-extrabold text-slate-900 tracking-tight mb-1">{t.title}</span>
+                  <span className="text-[13px] text-slate-500 leading-relaxed flex-1">{t.desc}</span>
+                  <span className={`inline-block mt-3 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide ${c.badgeBg} ${c.badgeText}`}>
                     {c.badgeLabel}
                   </span>
                 </Link>
@@ -576,12 +580,12 @@ export default function CosaFareOggiPage() {
         </div>
       )}
       {/* ── HERO CARD SCURO ── */}
-      <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800">
+      <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-[#1E3A6E] via-[#1E4A8A] to-[#162F5C]">
         {/* Glow decorativi */}
         <div className="pointer-events-none">
-          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.10),transparent_65%)]" />
-          <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.22),transparent_65%)]" />
-          <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.20),transparent_70%)]" />
+          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
+          <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
+          <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
         </div>
         {/* Contenuto */}
         <div className="relative z-10">
