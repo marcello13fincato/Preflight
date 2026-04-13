@@ -5,9 +5,10 @@ import { useMemo } from "react";
 import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { IconClipboard, IconTarget, IconLogoPreflight, IconRefresh } from "@/components/shared/icons";
+import { isAdminEmail } from "@/lib/admin";
 
 export default function InboundPage() {
-  const { userId, status } = useRequireAuth();
+  const { userId, status, session } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
 
   if (status === "loading" || !userId) {
@@ -15,6 +16,7 @@ export default function InboundPage() {
   }
 
   const profile = repo.profile.getProfile(userId);
+  const isAdmin = isAdminEmail(session?.user?.email);
 
   return (
     <div className="tool-page">
@@ -35,7 +37,7 @@ export default function InboundPage() {
         </div>
       </div>
 
-      {!profile.plan && (
+      {!profile.plan && !isAdmin && (
         <div
           className="pipe-empty"
         >

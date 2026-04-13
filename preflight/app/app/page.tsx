@@ -9,6 +9,7 @@ import type { DailyAction } from "@/components/app/DailyActionCard";
 import type { DailyPlanJson } from "@/lib/sales/schemas";
 import { demoDailyActions } from "@/lib/mock/dailyActions";
 import { demoDailyPlan } from "@/lib/mock/demoDailyPlan";
+import { isAdminEmail } from "@/lib/admin";
 
 const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan";
 const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-date";
@@ -164,8 +165,9 @@ export default function CosaFareOggiPage() {
   const profile = userId ? repo.profile.getProfile(userId) : { plan: null, onboarding_complete: false, onboarding: null };
   const contacts = useMemo(() => userId ? repo.contact.listContacts(userId) : [], [userId, repo]);
 
-  const isPremium = profile.plan !== null;
-  const isConfigured = profile.onboarding_complete;
+  const isAdmin = isAdminEmail(session?.user?.email);
+  const isPremium = profile.plan !== null || isAdmin;
+  const isConfigured = profile.onboarding_complete || isAdmin;
   const [trialCount, setTrialCount] = useState(0);
   const hasTrialsLeft = isConfigured && !isPremium && trialCount < MAX_FREE_TRIALS;
   const isReady = (isPremium && isConfigured) || hasTrialsLeft;

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { useSession } from "@/lib/hooks/useSession";
+import { isAdminEmail } from "@/lib/admin";
 
 type NavItem = { href: string; label: string; icon: React.ReactNode; primary?: boolean };
 
@@ -102,10 +103,12 @@ export default function AppSidebar() {
   const userId = session?.user?.id;
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = userId ? repo.profile.getProfile(userId) : { plan: null, onboarding_complete: false, onboarding: null };
-  const planLabel = typeof profile.plan === "string" ? profile.plan : profile.plan ? "Premium" : "Free";
+  const isAdmin = isAdminEmail(session?.user?.email);
+  const effectivePlan = profile.plan || isAdmin;
+  const planLabel = isAdmin && !profile.plan ? "Admin" : typeof profile.plan === "string" ? profile.plan : profile.plan ? "Premium" : "Free";
   const trialCount = typeof window !== "undefined" ? getTrialCount() : 0;
-  const trialText = profile.plan ? planLabel : `${trialCount} di ${MAX_FREE_TRIALS} prove usate`;
-  const trialPct = Math.round((trialCount / MAX_FREE_TRIALS) * 100);
+  const trialText = effectivePlan ? planLabel : `${trialCount} di ${MAX_FREE_TRIALS} prove usate`;
+  const trialPct = effectivePlan ? 100 : Math.round((trialCount / MAX_FREE_TRIALS) * 100);
 
   const linkBase = "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-slate-500 hover:bg-blue-50 hover:text-blue-800 transition-all";
   const linkActive = "bg-gradient-to-r from-blue-50 to-blue-50/60 text-blue-700 font-bold border-l-[3px] border-blue-600 rounded-l-none rounded-r-lg pl-[7px]";
@@ -189,7 +192,7 @@ export default function AppSidebar() {
           <div className="h-1 bg-blue-100 rounded-full overflow-hidden mt-2">
             <div className="h-1 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style={{ width: `${trialPct}%` }} />
           </div>
-          {!profile.plan && (
+          {!effectivePlan && (
             <Link href="/pricing" className="block w-full mt-2.5 bg-blue-700 text-white text-[12px] font-semibold rounded-lg py-1.5 hover:bg-blue-800 transition text-center">
               Upgrade
             </Link>
