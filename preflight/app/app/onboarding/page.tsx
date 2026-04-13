@@ -127,14 +127,17 @@ export default function OnboardingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ onboarding: parsed.data }),
       });
-      if (!res.ok) throw new Error("Errore generazione piano");
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error || `Errore generazione piano (${res.status})`);
+      }
       const plan = await res.json();
       repo.profile.savePlan(userId!, plan);
       repo.profile.setOnboardingComplete(userId!);
       repo.interaction.addInteraction(userId!, "onboarding", JSON.stringify(parsed.data), plan);
       setComplete(true);
-    } catch {
-      setError("Non sono riuscito a generare il piano. Riprova.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Non sono riuscito a generare il piano. Riprova.");
     } finally {
       setLoading(false);
     }

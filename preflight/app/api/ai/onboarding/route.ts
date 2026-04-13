@@ -7,7 +7,12 @@ import getServerAuthSession from "@/lib/getServerAuthSession";
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Corpo della richiesta non valido" }, { status: 400 });
+  }
   if (process.env.NODE_ENV !== "production") {
     console.log("[onboarding] Received payload:", JSON.stringify(body));
   }

@@ -380,6 +380,14 @@ export type AIEngineResult<T> = {
 export async function callAI<T extends Record<string, unknown>>(
   params: AIEngineParams<T>,
 ): Promise<NextResponse> {
+  // 0. Check AI availability
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json(
+      { error: "AI non disponibile: OPENAI_API_KEY non configurata sul server." },
+      { status: 503 },
+    );
+  }
+
   // 1. Auth
   const session = await getServerAuthSession();
   if (!session?.user) {

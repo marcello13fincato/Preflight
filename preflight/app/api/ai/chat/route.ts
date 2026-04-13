@@ -224,7 +224,19 @@ ${message}`;
 }
 
 export async function POST(req: Request) {
-  const body = await req.json();
+  if (!process.env.OPENAI_API_KEY) {
+    return NextResponse.json(
+      { error: "AI non disponibile: OPENAI_API_KEY non configurata sul server." },
+      { status: 503 },
+    );
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Corpo della richiesta non valido" }, { status: 400 });
+  }
   const parsed = requestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(

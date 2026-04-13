@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { callAI } from "@/lib/ai/aiEngine";
 import { dailyPlanSchema } from "@/lib/sales/schemas";
-import { demoDailyPlan } from "@/lib/mock/demoDailyPlan";
 
 export const runtime = "nodejs";
 
@@ -90,14 +89,6 @@ Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
   },
   "link_ricerca_linkedin": "<URL LinkedIn>"
 }`;
-
-  // If no OPENAI_API_KEY, return demo plan instead of crashing
-  if (!process.env.OPENAI_API_KEY) {
-    return NextResponse.json({
-      ...demoDailyPlan,
-      _meta: { demo: true, contextComplete: false, contextScore: 0, missingFields: [] },
-    });
-  }
 
   return callAI({
     taskType: "daily_plan",
