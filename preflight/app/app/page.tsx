@@ -411,74 +411,134 @@ export default function CosaFareOggiPage() {
   if (!isReady) {
     const trialsExhausted = isConfigured && !isPremium && trialCount >= MAX_FREE_TRIALS;
     const completedSteps = [isPremium, isConfigured].filter(Boolean).length;
+    const toolColors: Record<string, { iconBg: string; stroke: string; badgeBg: string; badgeText: string; badgeLabel: string }> = {
+      blue: { iconBg: "bg-blue-50", stroke: "#2563EB", badgeBg: "bg-blue-50", badgeText: "text-blue-600", badgeLabel: "Prospecting" },
+      green: { iconBg: "bg-green-50", stroke: "#16A34A", badgeBg: "bg-green-50", badgeText: "text-green-700", badgeLabel: "Analisi" },
+      amber: { iconBg: "bg-amber-50", stroke: "#D97706", badgeBg: "bg-amber-50", badgeText: "text-amber-600", badgeLabel: "Contenuto" },
+      purple: { iconBg: "bg-purple-50", stroke: "#7C3AED", badgeBg: "bg-purple-50", badgeText: "text-purple-600", badgeLabel: "Editoriale" },
+    };
     return (
-      <div className="oggi-page fade-in">
-        {/* Header — elegant, light bg */}
-        <div className="oggi-header fade-in">
-          <div className="oggi-header-left">
-            <span className="oggi-date-muted">{today}</span>
-            <h1 className="oggi-header-title">
-              {greeting}{firstName ? `, ${firstName}` : ""}
+      <div className="pt-6 fade-in">
+        {/* ── HERO CARD SCURO ── */}
+        <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800">
+          {/* Glow decorativi */}
+          <div className="pointer-events-none">
+            <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.10),transparent_65%)]" />
+            <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.22),transparent_65%)]" />
+            <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.20),transparent_70%)]" />
+          </div>
+          {/* Contenuto */}
+          <div className="relative z-10">
+            <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">{today}</div>
+            <h1 className="text-[27px] font-extrabold text-white tracking-tight leading-tight mb-1">
+              {greeting}{firstName ? ", " : ""}{firstName ? <span className="text-blue-200">{firstName}</span> : ""}
             </h1>
-            <p className="oggi-header-sub">
+            <p className="text-[13.5px] text-white/50 mb-5">
               {trialsExhausted
                 ? "Hai usato le 3 prove gratuite. Attiva il Piano Premium per continuare."
                 : "Completa i passaggi per attivare il piano quotidiano AI."}
             </p>
-          </div>
-          <div className="oggi-header-right">
-            <span className="oggi-header-status">Setup {completedSteps}/2 completati</span>
-            <div className="oggi-header-progress-track">
-              <div className="oggi-header-progress-fill" style={{ width: `${completedSteps * 50}%` }} />
+            {/* Progress bar row */}
+            <div className="flex items-center gap-4">
+              <div className="flex-1 h-[5px] bg-white/10 rounded-full overflow-hidden">
+                <div className="h-[5px] bg-gradient-to-r from-green-400 to-green-300 rounded-full transition-all" style={{ width: `${completedSteps * 50}%` }} />
+              </div>
+              <span className="text-[12px] font-semibold text-white/40 whitespace-nowrap">Setup {completedSteps}/2</span>
+            </div>
+            {/* Stats row */}
+            <div className="flex items-center border-t border-white/10 mt-5 pt-5">
+              <div className="flex-1">
+                <div className="text-[22px] font-extrabold text-white">{completedSteps}</div>
+                <div className="text-[11px] text-white/35 font-medium">Step completati</div>
+              </div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-green-400">{MAX_FREE_TRIALS}</div>
+                <div className="text-[11px] text-white/35 font-medium">Prove gratuite</div>
+              </div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-white">{trialCount}</div>
+                <div className="text-[11px] text-white/35 font-medium">Prove usate</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Gate steps */}
-        <div className="oggi-gate-steps fade-in-delay">
+        {/* ── BANNER SETUP ── */}
+        <div className="flex items-center gap-2.5 bg-white border border-amber-300 border-l-[3px] border-l-amber-400 rounded-[10px] px-4 py-2.5 mb-5">
+          <span className="w-[7px] h-[7px] bg-amber-400 rounded-full flex-shrink-0" />
+          <span className="text-[13px] text-amber-900 flex-1">
+            Inizia dalla configurazione — ci vogliono meno di 5 minuti.
+          </span>
+          <Link href="/app/onboarding" className="text-[13px] font-bold text-amber-600 whitespace-nowrap cursor-pointer hover:text-amber-700">
+            Inizia ora →
+          </Link>
+        </div>
+
+        {/* ── GATE STEPS — Card setup ── */}
+        <div className="grid grid-cols-2 gap-3.5 mb-6">
           {GATE_STEPS.map((step, idx) => {
             const done = step.checkField === "plan" ? isPremium : isConfigured;
-            const isPrimary = idx === 0 && !done;
+            const isPrimaryStep = idx === 0 && !done;
+            if (isPrimaryStep) {
+              return (
+                <div key={step.key} className="relative overflow-hidden bg-white rounded-[14px] p-5 border border-blue-200 border-l-[3px] border-l-blue-600 rounded-l-none">
+                  {/* Glow angolo */}
+                  <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.07),transparent_70%)] pointer-events-none" />
+                  {/* Shimmer */}
+                  <div className="absolute top-0 left-0 w-10 h-full bg-gradient-to-r from-transparent via-blue-100/40 to-transparent animate-shimmer pointer-events-none" />
+                  <div className="w-[26px] h-[26px] rounded-full bg-blue-700 text-white text-[12px] font-extrabold flex items-center justify-center mb-3.5">{step.num}</div>
+                  <h3 className="text-[15px] font-extrabold text-slate-900 tracking-tight mb-1.5">{step.title}</h3>
+                  <p className="text-[13px] text-slate-500 leading-relaxed mb-4">{step.desc}</p>
+                  <Link href={step.ctaHref} className="inline-flex items-center gap-1.5 bg-blue-700 text-white text-[13px] font-bold px-5 py-2.5 rounded-[9px] hover:bg-blue-800 transition animate-pulse-glow">
+                    {step.ctaLabel}
+                  </Link>
+                </div>
+              );
+            }
             return (
-              <div key={step.key} className={`oggi-gate-step${done ? " oggi-gate-step--done" : ""}${isPrimary ? " oggi-gate-step--primary" : ""}`}>
-                <div className="oggi-gate-step-indicator">
+              <div key={step.key} className="bg-slate-50 rounded-[14px] p-5 border border-slate-100">
+                <div className={`w-[26px] h-[26px] rounded-full ${done ? "bg-green-100 text-green-600" : "bg-slate-100 text-slate-300"} text-[12px] font-extrabold flex items-center justify-center mb-3.5`}>
                   {done ? (
-                    <div className="oggi-gate-check-done">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                  ) : (
-                    <div className="oggi-gate-check-pending">
-                      <span>{step.num}</span>
-                    </div>
-                  )}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  ) : step.num}
                 </div>
-                <div className="oggi-gate-step-content">
-                  <h3 className="oggi-gate-step-title">{step.title}</h3>
-                  <p className="oggi-gate-step-desc">{step.desc}</p>
-                  {!done && (
-                    <Link href={step.ctaHref} className="oggi-gate-step-cta">
-                      {step.ctaLabel}
-                    </Link>
-                  )}
-                  {done && <span className="oggi-gate-step-badge-done">Completato</span>}
-                </div>
+                <h3 className={`text-[15px] font-extrabold tracking-tight ${done ? "text-slate-900" : "text-slate-300"}`}>{step.title}</h3>
+                <p className={`text-[13px] leading-relaxed ${done ? "text-slate-500" : "text-slate-200"}`}>{step.desc}</p>
+                {!done && (
+                  <Link href={step.ctaHref} className="inline-flex items-center gap-1.5 bg-transparent border border-slate-200 text-slate-300 text-[13px] px-5 py-2.5 rounded-[9px] mt-4">
+                    {step.ctaLabel}
+                  </Link>
+                )}
+                {done && <span className="inline-block mt-3 text-[11px] font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full">Completato</span>}
               </div>
             );
           })}
         </div>
 
-        {/* Tools — always available */}
-        <section className="oggi-gate-tools fade-in-delay">
-          <span className="oggi-section-label">Strumenti</span>
-          <div className="sys-quick-grid">
-            {QUICK_TOOLS.map((t) => (
-              <Link key={t.href} href={t.href} className={`sys-quick-card sys-quick-card--${t.color}`}>
-                <span className={`sys-quick-card-icon sys-quick-card-icon--${t.color}`}>{t.icon}</span>
-                <h3 className="sys-quick-card-title">{t.title}</h3>
-                <p className="sys-quick-card-desc">{t.desc}</p>
-                <span className="sys-quick-card-arrow">→</span>
-              </Link>
-            ))}
+        {/* ── TOOL CARDS ── */}
+        <section className="mb-6 fade-in-delay">
+          <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-1 mb-3 block">Strumenti</span>
+          <div className="grid grid-cols-4 gap-3">
+            {QUICK_TOOLS.map((t, i) => {
+              const c = toolColors[t.color] || toolColors.blue;
+              return (
+                <Link
+                  key={t.href}
+                  href={t.href}
+                  className="bg-white border border-slate-200 rounded-[14px] p-[18px] cursor-pointer flex flex-col transition-all duration-200 hover:-translate-y-[3px] hover:border-blue-300 hover:shadow-[0_8px_24px_rgba(37,99,235,0.10)] animate-fadeup no-underline"
+                  style={{ animationDelay: `${280 + i * 80}ms` }}
+                >
+                  <span className={`w-[42px] h-[42px] rounded-[12px] flex items-center justify-center mb-3 ${c.iconBg}`} style={{ color: c.stroke }}>
+                    {t.icon}
+                  </span>
+                  <span className="text-[13px] font-extrabold text-slate-900 tracking-tight mb-1">{t.title}</span>
+                  <span className="text-[12px] text-slate-400 leading-snug flex-1">{t.desc}</span>
+                  <span className={`inline-block mt-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide ${c.badgeBg} ${c.badgeText}`}>
+                    {c.badgeLabel}
+                  </span>
+                </Link>
+              );
+            })}
           </div>
         </section>
 
@@ -501,7 +561,7 @@ export default function CosaFareOggiPage() {
      MAIN — Plan ready state
      ═══════════════════════════════════════════ */
   return (
-    <div className="oggi-page fade-in">
+    <div className="pt-6 fade-in">
       {/* Trial remaining banner */}
       {!isPremium && isConfigured && (
         <div className="oggi-trial-remaining-banner fade-in">
@@ -515,35 +575,60 @@ export default function CosaFareOggiPage() {
           </span>
         </div>
       )}
-      {/* ── HEADER ── */}
-      <div className="oggi-header fade-in">
-        <div className="oggi-header-left">
-          <span className="oggi-date-muted">{today}</span>
-          <h1 className="oggi-header-title">
+      {/* ── HERO CARD SCURO ── */}
+      <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-blue-700 via-blue-600 to-blue-800">
+        {/* Glow decorativi */}
+        <div className="pointer-events-none">
+          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.10),transparent_65%)]" />
+          <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.22),transparent_65%)]" />
+          <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.20),transparent_70%)]" />
+        </div>
+        {/* Contenuto */}
+        <div className="relative z-10">
+          <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">{today}</div>
+          <h1 className="text-[27px] font-extrabold text-white tracking-tight leading-tight mb-1">
             {plan ? (
               <>
-                {greeting}{firstName ? `, ${firstName}` : ""}
-                {progressPct === 100 && <span className="oggi-hero-confetti"> 🎉</span>}
+                {greeting}{firstName ? ", " : ""}{firstName ? <span className="text-blue-200">{firstName}</span> : ""}
+                {progressPct === 100 && <span> 🎉</span>}
               </>
             ) : (
               "Cosa fare oggi"
             )}
           </h1>
           {plan?.focus_giornata ? (
-            <p className="oggi-header-focus">{plan.focus_giornata}</p>
+            <p className="text-[13.5px] text-white/50 mb-5">{plan.focus_giornata}</p>
           ) : (
-            <p className="oggi-header-sub">Il piano quotidiano personalizzato con azioni, messaggi e contenuti — pronti da usare.</p>
+            <p className="text-[13.5px] text-white/50 mb-5">Il piano quotidiano personalizzato con azioni, messaggi e contenuti — pronti da usare.</p>
+          )}
+
+          {plan && (
+            <>
+              {/* Progress bar row */}
+              <div className="flex items-center gap-4">
+                <div className="flex-1 h-[5px] bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-[5px] bg-gradient-to-r from-green-400 to-green-300 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
+                </div>
+                <span className="text-[12px] font-semibold text-white/40 whitespace-nowrap">{completedCount}/{actions.length} completate</span>
+              </div>
+              {/* Stats row */}
+              <div className="flex items-center border-t border-white/10 mt-5 pt-5">
+                <div className="flex-1">
+                  <div className="text-[22px] font-extrabold text-white">{actions.length}</div>
+                  <div className="text-[11px] text-white/35 font-medium">Azioni oggi</div>
+                </div>
+                <div className="flex-1 border-l border-white/10 pl-5">
+                  <div className="text-[22px] font-extrabold text-green-400">{completedCount}</div>
+                  <div className="text-[11px] text-white/35 font-medium">Completate</div>
+                </div>
+                <div className="flex-1 border-l border-white/10 pl-5">
+                  <div className="text-[22px] font-extrabold text-white">{contacts.length}</div>
+                  <div className="text-[11px] text-white/35 font-medium">Contatti</div>
+                </div>
+              </div>
+            </>
           )}
         </div>
-
-        {plan && (
-          <div className="oggi-header-right">
-            <span className="oggi-header-status">{completedCount}/{actions.length} azioni completate</span>
-            <div className="oggi-header-progress-track">
-              <div className="oggi-header-progress-fill" style={{ width: `${progressPct}%` }} />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* ── PRE-PLAN: waiting to generate ── */}

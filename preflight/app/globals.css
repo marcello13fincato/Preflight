@@ -17856,3 +17856,23 @@ textarea.v2-input{resize:vertical;min-height:60px}
 @media(max-width:768px){
   .ap-info-side{position:static}
 }
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM KEYFRAMES — Dashboard Redesign v8
+═══════════════════════════════════════════════════════════ */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%) }
+  100% { transform: translateX(500%) }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(29,78,216,0.25) }
+  50%       { box-shadow: 0 0 0 8px rgba(29,78,216,0) }
+}
+@keyframes fadeup {
+  from { opacity: 0; transform: translateY(12px) }
+  to   { opacity: 1; transform: translateY(0) }
+}
+@keyframes ping-dot {
+  0%   { transform: scale(1); opacity: 0.6 }
+  100% { transform: scale(2.6); opacity: 0 }
+}

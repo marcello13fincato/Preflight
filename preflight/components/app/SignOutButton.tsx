@@ -14,7 +14,7 @@ export default function SignOutButton() {
   }
 
   return (
-    <button onClick={handleSignOut} className="app-topbar-btn">
+    <button onClick={handleSignOut} className="text-[12px] text-slate-400 border border-slate-200 rounded-md px-2.5 py-1 hover:text-slate-600 transition">
       Esci
     </button>
   );

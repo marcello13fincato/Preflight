@@ -104,53 +104,55 @@ export default function AppSidebar() {
   const profile = userId ? repo.profile.getProfile(userId) : { plan: null, onboarding_complete: false, onboarding: null };
   const planLabel = typeof profile.plan === "string" ? profile.plan : profile.plan ? "Premium" : "Free";
   const trialCount = typeof window !== "undefined" ? getTrialCount() : 0;
-  const trialText = profile.plan ? planLabel : `Free · ${trialCount}/${MAX_FREE_TRIALS} prove usate`;
+  const trialText = profile.plan ? planLabel : `${trialCount} di ${MAX_FREE_TRIALS} prove usate`;
+  const trialPct = Math.round((trialCount / MAX_FREE_TRIALS) * 100);
+
+  const linkBase = "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-slate-500 hover:bg-blue-50 hover:text-blue-800 transition-all";
+  const linkActive = "bg-gradient-to-r from-blue-50 to-blue-50/60 text-blue-700 font-bold border-l-[3px] border-blue-600 rounded-l-none rounded-r-lg pl-[7px]";
 
   return (
-    <aside className="sb" role="navigation" aria-label="Navigazione principale">
+    <aside className="w-[232px] flex-shrink-0 flex flex-col bg-white border-r border-[#D9E4F5] sticky top-0 h-screen overflow-hidden z-[70]" role="navigation" aria-label="Navigazione principale">
       {/* Brand */}
-      <div className="sb-brand">
-        <Link href="/app" className="sb-brand-link">
-          <div className="sb-logo-icon">
-            <img
-              src="/LOGO PREFLIGHT_Pittogramma.png"
-              alt="Preflight"
-              className="sb-logo-img"
-            />
+      <div className="px-4 pt-5 pb-4 flex items-center">
+        <Link href="/app" className="flex items-center gap-2.5 no-underline">
+          <div className="w-[34px] h-[34px] bg-gradient-to-br from-blue-600 to-blue-700 rounded-[10px] flex items-center justify-center flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
           </div>
-          <span className="sb-brand-text">Preflight</span>
+          <span className="font-extrabold text-slate-900 tracking-tight text-[15px]">Preflight</span>
+          <span className="bg-blue-50 text-blue-600 text-[10px] font-bold px-2 py-0.5 rounded-full ml-auto">AI</span>
         </Link>
       </div>
 
       {/* Navigation */}
-      <nav className="sb-nav">
-        {/* PRIMARY — Cosa fare oggi */}
-        <div className="sb-group">
-          <div className="sb-group-items">
-            <Link
-              href={primaryItem.href}
-              className={`sb-link sb-link-primary${pathname === primaryItem.href ? " sb-link-active" : ""}`}
-            >
-              <span className="sb-link-icon">{primaryItem.icon}</span>
-              <span className="sb-link-label">{primaryItem.label}</span>
-            </Link>
-          </div>
+      <nav className="flex-1 flex flex-col gap-0.5 px-3 pt-3 overflow-y-auto overflow-x-hidden">
+        {/* OGGI */}
+        <div className="mb-3">
+          <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-2 mt-4 mb-1 block">Oggi</span>
+          <Link
+            href={primaryItem.href}
+            className={`${linkBase} ${pathname === primaryItem.href ? linkActive : ""}`}
+          >
+            <span className="w-5 h-5 flex items-center justify-center">{primaryItem.icon}</span>
+            <span>{primaryItem.label}</span>
+          </Link>
         </div>
 
         {/* STRUMENTI */}
-        <div className="sb-group">
-          <span className="sb-group-label">Strumenti</span>
-          <div className="sb-group-items">
+        <div className="mb-3">
+          <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-2 mt-4 mb-1 block">Strumenti</span>
+          <div className="flex flex-col gap-px">
             {toolItems.map((item) => {
               const active = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`sb-link${active ? " sb-link-active" : ""}`}
+                  className={`${linkBase} ${active ? linkActive : ""}`}
                 >
-                  <span className="sb-link-icon">{item.icon}</span>
-                  <span className="sb-link-label">{item.label}</span>
+                  <span className="w-5 h-5 flex items-center justify-center">{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -158,19 +160,19 @@ export default function AppSidebar() {
         </div>
 
         {/* SISTEMA */}
-        <div className="sb-group sb-group-system">
-          <span className="sb-group-label">Sistema</span>
-          <div className="sb-group-items">
+        <div className="mt-auto pt-3 border-t border-[#D9E4F5]">
+          <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-2 mt-4 mb-1 block">Sistema</span>
+          <div className="flex flex-col gap-px">
             {systemItems.map((item) => {
               const active = pathname === item.href;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`sb-link${active ? " sb-link-active" : ""}`}
+                  className={`${linkBase} ${active ? linkActive : ""}`}
                 >
-                  <span className="sb-link-icon">{item.icon}</span>
-                  <span className="sb-link-label">{item.label}</span>
+                  <span className="w-5 h-5 flex items-center justify-center">{item.icon}</span>
+                  <span>{item.label}</span>
                 </Link>
               );
             })}
@@ -178,13 +180,20 @@ export default function AppSidebar() {
         </div>
       </nav>
 
-      {/* Footer — plan badge */}
-      <div className="sb-footer">
-        <div className="sb-footer-badge">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="sb-footer-icon">
-            <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
-          </svg>
-          <span className="sb-footer-badge-text">{trialText}</span>
+      {/* Footer — PlanBadge */}
+      <div className="p-3">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-[11px] p-3">
+          <div className="text-[10px] font-bold text-blue-600 uppercase tracking-wide">Piano attivo</div>
+          <div className="text-sm font-extrabold text-blue-700 mt-0.5">{planLabel}</div>
+          <div className="text-[11px] text-slate-500 mt-0.5">{trialText}</div>
+          <div className="h-1 bg-blue-100 rounded-full overflow-hidden mt-2">
+            <div className="h-1 bg-gradient-to-r from-blue-500 to-blue-400 rounded-full" style={{ width: `${trialPct}%` }} />
+          </div>
+          {!profile.plan && (
+            <Link href="/pricing" className="block w-full mt-2.5 bg-blue-700 text-white text-[12px] font-semibold rounded-lg py-1.5 hover:bg-blue-800 transition text-center">
+              Upgrade
+            </Link>
+          )}
         </div>
       </div>
     </aside>
