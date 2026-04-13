@@ -168,6 +168,7 @@ export default function CosaFareOggiPage() {
   const isAdmin = isAdminEmail(session?.user?.email);
   const isPremium = profile.plan !== null || isAdmin;
   const isConfigured = profile.onboarding_complete || isAdmin;
+
   const [trialCount, setTrialCount] = useState(0);
   const hasTrialsLeft = isConfigured && !isPremium && trialCount < MAX_FREE_TRIALS;
   const isReady = (isPremium && isConfigured) || hasTrialsLeft;
