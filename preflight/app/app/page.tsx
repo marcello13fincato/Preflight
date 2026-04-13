@@ -212,7 +212,10 @@ export default function CosaFareOggiPage() {
           targeting: lastTargeting || undefined,
         }),
       });
-      if (!res.ok) throw new Error("Errore");
+      if (!res.ok) {
+        const body = await res.json().catch(() => null);
+        throw new Error(body?.error || `Errore ${res.status}`);
+      }
       const data = (await res.json()) as DailyPlanJson;
       setPlan(data);
       cachePlan(data);
