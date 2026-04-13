@@ -238,6 +238,7 @@ export const dailyActionSchema = z.object({
   messaggio_suggerito: z.string(),
   outcome_atteso: z.string(),
   prossimo_step: z.string(),
+  link_ricerca_linkedin: z.string().optional(),
 });
 
 export const dailyPlanSchema = z.object({

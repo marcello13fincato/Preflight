@@ -40,15 +40,22 @@ export async function POST(req: Request) {
     }
   }
 
-  const taskPrompt = `COMPITO: Genera il piano operativo di oggi per LinkedIn.
+  const today = new Date().toLocaleDateString("it-IT", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-NON generare azioni generiche tipo "commenta 3 post" — ogni azione deve sembrare pensata da un consulente strategico per QUESTA persona, usando il suo contesto commerciale specifico.
+  const taskPrompt = `COMPITO: Genera il piano operativo di OGGI (${today}) per LinkedIn.
+
+LA DATA DI OGGI È: ${today}. Il piano DEVE cambiare ogni giorno — mai ripetere le stesse azioni.
 ${targetingCtx}
 
 REGOLE FONDAMENTALI:
-- Ogni azione deve contenere: tipo, priorità, contesto (chi + situazione specifica), perché agire ora, azione concreta, messaggio suggerito, outcome atteso, prossimo step
+- Ogni azione deve contenere: tipo, priorità, contesto (chi + situazione specifica), perché agire ORA, azione concreta, messaggio suggerito, outcome atteso, prossimo step
+- OGNI AZIONE deve avere un link_ricerca_linkedin: un URL reale di LinkedIn Search funzionante
+  Formato: https://www.linkedin.com/search/results/people/?keywords=PAROLE%20CHIAVE&origin=GLOBAL_SEARCH_HEADER
+  Esempio: https://www.linkedin.com/search/results/people/?keywords=CEO%20SaaS%20B2B%20Italia&origin=GLOBAL_SEARCH_HEADER
+  Le keywords devono essere specifiche per il SETTORE e TARGET dell'utente, non generiche
 - Non usare placeholder come [nome], [azienda] — inventa nomi e situazioni realistiche e credibili basati sul SETTORE e TARGET dell'utente
 - Il valore NON è il messaggio → è il RAGIONAMENTO dietro l'azione
+- Il campo "perche_ora" è il cuore di ogni azione — deve spiegare una ragione commerciale CONCRETA e legata al timing
 - Ogni azione deve sembrare pensata da un consulente, non da un tool
 - Il tipo di ogni azione deve essere UNO tra: outreach, contenuto, followup, ricerca, commento, connessione
 - Per il post: testo COMPLETO e pubblicabile, coerente con l'offerta e il cliente ideale dell'utente
@@ -56,17 +63,18 @@ REGOLE FONDAMENTALI:
 
 Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
 {
-  "focus_giornata": "<una frase di max 15 parole>",
+  "focus_giornata": "<una frase di max 15 parole che cattura il tema di oggi>",
   "azioni": {
     "azione_1": {
       "tipo": "outreach|contenuto|followup|ricerca|commento|connessione",
       "priorita": "alta|media|bassa",
-      "contesto": { "chi": "<persona specifica>", "situazione": "<cosa rende strategica>" },
-      "perche_ora": "<perché agire oggi>",
-      "azione_concreta": "<cosa fare esattamente>",
-      "messaggio_suggerito": "<testo da copiare su LinkedIn>",
-      "outcome_atteso": "<cosa aspettarsi>",
-      "prossimo_step": "<cosa fare dopo>"
+      "contesto": { "chi": "<persona specifica con nome, ruolo, azienda>", "situazione": "<cosa rende questa persona strategica oggi>" },
+      "perche_ora": "<ragione commerciale concreta per agire oggi — NON frasi generiche>",
+      "azione_concreta": "<cosa fare esattamente, step by step>",
+      "messaggio_suggerito": "<testo da copiare su LinkedIn, max 500 caratteri>",
+      "outcome_atteso": "<reazione specifica che ti aspetti>",
+      "prossimo_step": "<cosa fare dopo questa azione>",
+      "link_ricerca_linkedin": "<URL LinkedIn Search reale e funzionante con keywords specifiche per questa azione>"
     },
     "azione_2": { "...stessa struttura..." },
     "azione_3": { "...stessa struttura..." },
@@ -74,26 +82,28 @@ Rispondi SOLO con un oggetto JSON con ESATTAMENTE questa struttura:
     "azione_5": { "...stessa struttura..." }
   },
   "messaggi_pronti": {
-    "primo_contatto": "<max 300 caratteri>",
-    "primo_contatto_variante": "<variante diversa>",
+    "primo_contatto": "<max 300 caratteri, personalizzato sul target dell'utente>",
+    "primo_contatto_variante": "<variante con angolo diverso>",
     "followup": "<max 200 caratteri>",
     "followup_variante": "<variante>",
-    "commento_post": "<commento intelligente>"
+    "commento_post": "<commento intelligente e specifico>"
   },
   "post_del_giorno": {
-    "hook": "<prima riga>",
-    "corpo": "<4-6 frasi>",
-    "chiusura": "<CTA morbida>",
-    "testo_completo": "<post COMPLETO>",
-    "tipo_immagine": "<foto specifica>"
+    "hook": "<prima riga che cattura l'attenzione del TARGET specifico>",
+    "corpo": "<4-6 frasi che dimostrano competenza nel SERVIZIO dell'utente>",
+    "chiusura": "<CTA morbida coerente con il modello di vendita>",
+    "testo_completo": "<post COMPLETO pronto da pubblicare, inclusi hook+corpo+chiusura>",
+    "tipo_immagine": "<suggerimento specifico per immagine>"
   },
-  "link_ricerca_linkedin": "<URL LinkedIn>"
+  "link_ricerca_linkedin": "<URL LinkedIn Search principale per il piano di oggi>"
 }`;
 
   return callAI({
     taskType: "daily_plan",
     schema: dailyPlanSchema,
     taskPrompt,
-    userInput: targetingCtx ? "Genera piano basato sul targeting recente." : "Genera il piano di oggi.",
+    userInput: targetingCtx
+      ? `Genera piano di oggi ${today} basato sul targeting recente.`
+      : `Genera il piano operativo per oggi ${today}. Deve essere diverso da qualsiasi piano precedente.`,
   });
 }

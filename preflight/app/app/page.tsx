@@ -700,7 +700,7 @@ export default function CosaFareOggiPage() {
       )}
 
       {/* ═══════════════════════════════════════════
-           PLAN OUTPUT — 3 sections + stats + tools
+           PLAN OUTPUT — Premium command center
          ═══════════════════════════════════════════ */}
       {plan && (
         <>
@@ -710,7 +710,7 @@ export default function CosaFareOggiPage() {
               <span className="oggi-section-num">1</span>
               <div>
                 <h2 className="oggi-section-title">Le tue 5 azioni di oggi</h2>
-                <p className="oggi-section-sub">Personalizzate sulla tua situazione. Espandi per contesto, ragionamento e messaggio pronto.</p>
+                <p className="oggi-section-sub">Ogni azione ha un ragionamento strategico, messaggio pronto e ricerca LinkedIn. Espandi per i dettagli.</p>
               </div>
             </div>
 
@@ -749,10 +749,70 @@ export default function CosaFareOggiPage() {
             )}
           </section>
 
-          {/* ── SEZIONE 2: MESSAGGI PRONTI ── */}
+          {/* ── SEZIONE 2: RICERCA LINKEDIN ── */}
+          {plan.link_ricerca_linkedin && (
+            <section className="oggi-section-card fade-in-delay">
+              <div className="oggi-section-head">
+                <span className="oggi-section-num" style={{ background: '#0a66c2' }}>2</span>
+                <div>
+                  <h2 className="oggi-section-title">Ricerca LinkedIn</h2>
+                  <p className="oggi-section-sub">Usa questi link per trovare i profili giusti — ogni link è calibrato sul tuo target.</p>
+                </div>
+              </div>
+
+              {/* Main LinkedIn search */}
+              <div className="relative overflow-hidden bg-gradient-to-br from-[#0a66c2] to-[#004182] rounded-[14px] p-5 mb-4">
+                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_65%)] pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="flex items-center gap-2 mb-2">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <span className="text-[11px] font-bold text-white/60 uppercase tracking-widest">Ricerca principale</span>
+                  </div>
+                  <p className="text-[13.5px] text-white/80 mb-3">La ricerca più rilevante per il piano di oggi, basata sul tuo posizionamento e target.</p>
+                  <a
+                    href={plan.link_ricerca_linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 bg-white text-[#0a66c2] text-[13px] font-bold px-5 py-2.5 rounded-[10px] hover:bg-blue-50 transition-colors no-underline"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    Apri ricerca su LinkedIn ↗
+                  </a>
+                </div>
+              </div>
+
+              {/* Per-action LinkedIn links */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {actions.map((action, i) => {
+                  if (!action.link_ricerca_linkedin) return null;
+                  const tipo = action.tipo || 'ricerca';
+                  return (
+                    <a
+                      key={`link_${i}`}
+                      href={action.link_ricerca_linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-start gap-3 bg-white border border-slate-200 rounded-[12px] p-4 hover:border-[#0a66c2] hover:shadow-[0_4px_16px_rgba(10,102,194,0.1)] transition-all no-underline group"
+                    >
+                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 text-[#0a66c2] flex items-center justify-center text-[12px] font-bold">
+                        {i + 1}
+                      </span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">{tipo}</span>
+                        <p className="text-[13px] font-semibold text-slate-800 leading-tight mt-0.5 truncate">{action.contesto.chi}</p>
+                        <span className="text-[11px] text-[#0a66c2] font-medium group-hover:underline mt-1 inline-block">Cerca su LinkedIn →</span>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+            </section>
+          )}
+
+          {/* ── SEZIONE 3: MESSAGGI PRONTI ── */}
           <section className="oggi-section-card fade-in-delay">
             <div className="oggi-section-head">
-              <span className="oggi-section-num">2</span>
+              <span className="oggi-section-num">3</span>
               <div>
                 <h2 className="oggi-section-title">Messaggi pronti</h2>
                 <p className="oggi-section-sub">Copia e incolla direttamente su LinkedIn.</p>
@@ -780,19 +840,12 @@ export default function CosaFareOggiPage() {
                 <MsgCard label="Commento post" text={plan.messaggi_pronti.commento_post} />
               )}
             </div>
-
-            {plan.link_ricerca_linkedin && (
-              <a href={plan.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="oggi-linkedin-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                Apri ricerca su LinkedIn ↗
-              </a>
-            )}
           </section>
 
-          {/* ── SEZIONE 3: POST DEL GIORNO ── */}
+          {/* ── SEZIONE 4: POST DEL GIORNO ── */}
           <section className="oggi-section-card fade-in-delay">
             <div className="oggi-section-head">
-              <span className="oggi-section-num">3</span>
+              <span className="oggi-section-num">4</span>
               <div>
                 <h2 className="oggi-section-title">Post del giorno</h2>
                 <p className="oggi-section-sub">Pronto da pubblicare su LinkedIn.</p>
