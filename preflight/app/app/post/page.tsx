@@ -146,6 +146,12 @@ export default function PostPage() {
       <div className="sp-page fade-in">
         {/* ── HERO ── */}
         <div className="sp-hero fade-in">
+          {/* Decorative orbs — oggi design */}
+          <div className="pointer-events-none">
+            <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
+            <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
+            <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
+          </div>
           <div className="sp-hero-top">
             <button type="button" onClick={() => setOutput(null)} className="ap-back-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -401,6 +407,12 @@ export default function PostPage() {
     <div className="sp-page fade-in">
       {/* Hero */}
       <div className="sp-hero sp-hero--input fade-in">
+        {/* Decorative orbs — oggi design */}
+        <div className="pointer-events-none">
+          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
+          <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
+          <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
+        </div>
         <div className="sp-hero-top">
           <span className="ap-hero-eyebrow">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
@@ -513,15 +525,28 @@ export default function PostPage() {
         </div>
       </div>
 
-      {/* Other tools */}
-      <section className="ap-tools-section fade-in-delay">
-        <h2 className="ap-tools-title">Altri strumenti</h2>
-        <div className="sys-quick-grid">
-          {QUICK_TOOLS.map((t) => (
-            <Link key={t.href} href={t.href} className="sys-quick-card">
-              <span className="sys-quick-card-icon">{t.icon}</span>
-              <h3 className="sys-quick-card-title">{t.title}</h3>
-              <p className="sys-quick-card-desc">{t.desc}</p>
+      {/* Other tools (oggi-style) */}
+      <section className="border-t border-slate-100 pt-4 mt-4 fade-in-delay">
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
+          Altri strumenti
+        </span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {QUICK_TOOLS.map((t, i) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              className="bg-white border border-slate-100 rounded-[14px] p-4 flex flex-col gap-2 no-underline hover:border-blue-200 hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)] transition-all duration-200 animate-fadeup"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <span className="text-[13px] font-extrabold text-slate-900 tracking-tight">
+                {t.title}
+              </span>
+              <span className="text-[12px] text-slate-500 leading-relaxed">
+                {t.desc}
+              </span>
+              <span className="text-[12px] font-semibold text-blue-700 mt-auto">
+                Apri →
+              </span>
             </Link>
           ))}
         </div>

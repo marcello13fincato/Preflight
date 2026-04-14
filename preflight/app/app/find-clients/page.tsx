@@ -222,6 +222,12 @@ export default function FindClientsPage() {
       <div className="fcp-page fade-in">
         {/* ── Hero risultati ── */}
         <div className="fcp-hero fade-in">
+          {/* Decorative orbs — oggi design */}
+          <div className="pointer-events-none">
+            <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
+            <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
+            <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
+          </div>
           <div className="fcp-hero-top">
             <button onClick={resetSearch} className="fcp-back-btn">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
@@ -555,6 +561,12 @@ export default function FindClientsPage() {
     <div className="fcp-page fade-in">
       {/* ── Hero ── */}
       <div className="fcp-hero fcp-hero--input fade-in">
+        {/* Decorative orbs — oggi design */}
+        <div className="pointer-events-none">
+          <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
+          <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
+          <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
+        </div>
         <div className="fcp-hero-top">
           <span className="fcp-hero-eyebrow">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -770,15 +782,28 @@ export default function FindClientsPage() {
         </section>
       )}
 
-      {/* ── Tools nav (same pattern as oggi) ── */}
-      <section className="sys-quick-actions fade-in-delay">
-        <h2 className="sys-quick-title">Altri strumenti</h2>
-        <div className="sys-quick-grid">
-          {QUICK_TOOLS.map((t) => (
-            <Link key={t.href} href={t.href} className="sys-quick-card">
-              <span className="sys-quick-card-icon">{t.icon}</span>
-              <h3 className="sys-quick-card-title">{t.title}</h3>
-              <p className="sys-quick-card-desc">{t.desc}</p>
+      {/* ── Tools nav (oggi-style) ── */}
+      <section className="border-t border-slate-100 pt-4 mt-4 fade-in-delay">
+        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
+          Altri strumenti
+        </span>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {QUICK_TOOLS.map((t, i) => (
+            <Link
+              key={t.href}
+              href={t.href}
+              className="bg-white border border-slate-100 rounded-[14px] p-4 flex flex-col gap-2 no-underline hover:border-blue-200 hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)] transition-all duration-200 animate-fadeup"
+              style={{ animationDelay: `${i * 60}ms` }}
+            >
+              <span className="text-[13px] font-extrabold text-slate-900 tracking-tight">
+                {t.title}
+              </span>
+              <span className="text-[12px] text-slate-500 leading-relaxed">
+                {t.desc}
+              </span>
+              <span className="text-[12px] font-semibold text-blue-700 mt-auto">
+                Apri →
+              </span>
             </Link>
           ))}
         </div>

@@ -15066,8 +15066,9 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
    ════════════════════════════════════════════════════════════ */
 .fcp-page{
   display:flex;flex-direction:column;gap:0;
-  padding-bottom:3rem;max-width:none;margin:0;
+  padding:1.5rem 1rem 3rem;max-width:940px;margin:0 auto;
   animation:fcpPageIn 0.5s ease both;
+  background:#EBF0FA;min-height:100vh;
 }
 @keyframes fcpPageIn{
   from{opacity:0;transform:translateY(12px)}
@@ -15076,25 +15077,26 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 
 /* ── Hero — full-bleed blue gradient ── */
 .fcp-hero{
-  background:linear-gradient(135deg,#003062 0%,#0A66C2 45%,#1a7fd4 100%);
-  margin:-0px -2.5rem 0;
-  padding:3rem 2.5rem 2.75rem;
+  background:linear-gradient(to bottom right,#1E3A6E,#1E4A8A,#162F5C);
+  margin:0 0 1.5rem;
+  padding:2rem 2.5rem 2rem;
   color:#fff;position:relative;overflow:hidden;
+  border-radius:1rem;
   box-shadow:0 4px 24px rgba(10,102,194,0.15);
 }
 .fcp-hero::before{
   content:"";position:absolute;inset:0;
-  background:radial-gradient(ellipse 700px 400px at 75% 30%,rgba(147,197,253,0.15),transparent);
+  background:radial-gradient(ellipse 700px 400px at 75% 30%,rgba(255,255,255,0.04),transparent);
   pointer-events:none;
 }
 .fcp-hero--input{
-  background:linear-gradient(135deg,#003F99 0%,#0A66C2 50%,#1a7fd4 100%);
+  background:linear-gradient(to bottom right,#1E3A6E,#1E4A8A,#162F5C);
 }
 @media(min-width:1440px){
-  .fcp-hero{margin-left:-3rem;margin-right:-3rem;padding:3.5rem 3rem 3rem}
+  .fcp-hero{padding:2.5rem 3rem 2.5rem}
 }
 @media(min-width:1920px){
-  .fcp-hero{margin-left:-4rem;margin-right:-4rem;padding:4rem 4rem 3.5rem}
+  .fcp-hero{padding:3rem 3.5rem 3rem}
 }
 .fcp-hero-top{
   display:flex;align-items:center;justify-content:space-between;
@@ -15742,7 +15744,8 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
    ANALIZZA PROFILO (ap-*) — Premium redesign
    ══════════════════════════════════════════════════════════ */
 .ap-page{
-  max-width:940px; margin:0 auto; padding:0 1rem 4rem;
+  max-width:940px; margin:0 auto; padding:1.5rem 1rem 4rem;
+  background:#EBF0FA; min-height:100vh;
 }
 
 /* ── Demo banner ── */
@@ -15765,13 +15768,13 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 
 /* ── Hero (results) ── */
 .ap-hero{
-  background:linear-gradient(135deg,#0a3d7c 0%,#0A66C2 60%,#0e7fd6 100%);
-  border-radius:20px; padding:2rem 2.5rem 2rem; color:#fff; position:relative; overflow:hidden;
-  margin-bottom:2rem;
+  background:linear-gradient(to bottom right,#1E3A6E,#1E4A8A,#162F5C);
+  border-radius:1rem; padding:2rem 2.5rem 2rem; color:#fff; position:relative; overflow:hidden;
+  margin-bottom:1.5rem;
 }
 .ap-hero::before{
   content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.08),transparent 60%);
+  background:radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.04),transparent 60%);
   pointer-events:none;
 }
 .ap-hero--input{
@@ -16189,18 +16192,19 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
    SCRIVI POST (sp-*) + SCRIVI ARTICOLO (sa-*) — Premium
    ══════════════════════════════════════════════════════════ */
 .sp-page{
-  max-width:940px; margin:0 auto; padding:0 1rem 4rem;
+  max-width:940px; margin:0 auto; padding:1.5rem 1rem 4rem;
+  background:#EBF0FA; min-height:100vh;
 }
 
 /* ── Hero ── */
 .sp-hero{
-  background:linear-gradient(135deg,#0a3d7c 0%,#0A66C2 60%,#0e7fd6 100%);
-  border-radius:20px; padding:2rem 2.5rem; color:#fff; position:relative; overflow:hidden;
-  margin-bottom:2rem;
+  background:linear-gradient(to bottom right,#1E3A6E,#1E4A8A,#162F5C);
+  border-radius:1rem; padding:2rem 2.5rem; color:#fff; position:relative; overflow:hidden;
+  margin-bottom:1.5rem;
 }
 .sp-hero::before{
   content:''; position:absolute; inset:0;
-  background:radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.08),transparent 60%);
+  background:radial-gradient(ellipse at 80% 20%,rgba(255,255,255,.04),transparent 60%);
   pointer-events:none;
 }
 .sp-hero--input{ text-align:center; padding:2.5rem 2rem 2rem; }
@@ -16226,7 +16230,7 @@ details[open] .dash-perf-chevron{transform:rotate(180deg)}
 
 /* ── Articolo hero variant ── */
 .sa-hero{
-  background:linear-gradient(135deg,#1e3a5f 0%,#0A66C2 50%,#3b82f6 100%);
+  background:linear-gradient(to bottom right,#1E3A6E,#1E4A8A,#162F5C);
 }
 .sa-hero-title{
   font-size:1.35rem; font-weight:800; margin:0 0 .5rem; line-height:1.35;
@@ -17208,7 +17212,7 @@ textarea.v2-input{resize:vertical;min-height:60px}
 .sp-hero::after{
   content:"";position:absolute;top:-100px;right:-60px;
   width:280px;height:280px;border-radius:50%;
-  background:radial-gradient(circle,rgba(10,102,194,0.06) 0%,transparent 70%);
+  background:radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%);
   pointer-events:none;z-index:0;
   animation:v2Float 6s ease-in-out infinite;
 }
@@ -17217,18 +17221,15 @@ textarea.v2-input{resize:vertical;min-height:60px}
 .ap-hero>*,
 .sp-hero>*{position:relative;z-index:1}
 
-/* ── Enhanced hero titles → animated gradient text ── */
+/* ── Enhanced hero titles → white on dark hero backgrounds ── */
 .oggi-hero-title,
 .fcp-hero-title,
 .ap-hero-title,
 .sp-hero-title,
 .ap-input-title,
 .sa-hero-title{
-  background:linear-gradient(135deg,var(--color-text) 0%,#1d4f86 50%,#0a66c2 100%) !important;
-  background-size:200% 200%;
-  -webkit-background-clip:text !important;
-  -webkit-text-fill-color:transparent !important;
-  background-clip:text !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
   animation:v2FadeUp 0.5s var(--ease-out) 0.1s both;
 }
 
