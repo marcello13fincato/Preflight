@@ -17858,6 +17858,16 @@ textarea.v2-input{resize:vertical;min-height:60px}
 }
 
 /* ═══════════════════════════════════════════════════════════
+   COSA FARE OGGI V2 — Premium 5-Block Layout
+═══════════════════════════════════════════════════════════ */
+.oggi-v2-page{
+  background:#EBF0FA !important;
+  padding-left:1.5rem;
+  padding-right:1.5rem;
+  padding-bottom:3rem;
+}
+
+/* ═══════════════════════════════════════════════════════════
    CUSTOM KEYFRAMES — Dashboard Redesign v8
 ═══════════════════════════════════════════════════════════ */
 @keyframes shimmer {

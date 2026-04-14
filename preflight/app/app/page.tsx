@@ -4,18 +4,24 @@ import Link from "next/link";
 import { useMemo, useState, useCallback, useEffect } from "react";
 import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
-import DailyActionCard from "@/components/app/DailyActionCard";
-import type { DailyAction } from "@/components/app/DailyActionCard";
-import type { DailyPlanJson } from "@/lib/sales/schemas";
-import { demoDailyActions } from "@/lib/mock/dailyActions";
-import { demoDailyPlan } from "@/lib/mock/demoDailyPlan";
+import type { DailyPlanV2Json, FollowUpItem } from "@/lib/sales/schemas";
 import { isAdminEmail } from "@/lib/admin";
 
-const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan";
-const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-date";
+/* ── Block components ── */
+import LinkedInSearchCard from "@/components/app/oggi/LinkedInSearchCard";
+import ProfileTypeCard from "@/components/app/oggi/ProfileTypeCard";
+import FollowUpCard from "@/components/app/oggi/FollowUpCard";
+import DailyContentCard from "@/components/app/oggi/DailyContentCard";
+import WebInsightCard from "@/components/app/oggi/WebInsightCard";
+
+/* ── Constants ── */
+const DAILY_PLAN_STORAGE_KEY = "preflight:daily-plan-v2";
+const DAILY_PLAN_DATE_KEY = "preflight:daily-plan-v2-date";
 const TARGETING_STORAGE_KEY = "preflight:last-targeting";
 const FREE_TRIAL_KEY = "preflight:daily-plan-trial-count";
 const MAX_FREE_TRIALS = 3;
+
+/* ── Helpers ── */
 
 function getTrialCount(): number {
   if (typeof window === "undefined") return 0;
@@ -46,41 +52,23 @@ function todayKey() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function loadCachedPlan(): DailyPlanJson | null {
+function loadCachedPlan(): DailyPlanV2Json | null {
   if (typeof window === "undefined") return null;
   const date = localStorage.getItem(DAILY_PLAN_DATE_KEY);
   if (date !== todayKey()) return null;
   const raw = localStorage.getItem(DAILY_PLAN_STORAGE_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as DailyPlanJson;
+    return JSON.parse(raw) as DailyPlanV2Json;
   } catch {
     return null;
   }
 }
 
-function cachePlan(plan: DailyPlanJson) {
+function cachePlan(plan: DailyPlanV2Json) {
   if (typeof window === "undefined") return;
   localStorage.setItem(DAILY_PLAN_STORAGE_KEY, JSON.stringify(plan));
   localStorage.setItem(DAILY_PLAN_DATE_KEY, todayKey());
-}
-
-function CopyBtn({ text }: { text: string }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-  return (
-    <button type="button" onClick={copy} className={`oggi-copy-btn ${copied ? "oggi-copy-done" : ""}`}>
-      {copied ? (
-        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Copiato</>
-      ) : (
-        <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copia</>
-      )}
-    </button>
-  );
 }
 
 /* ── Quick tool links ── */
@@ -159,11 +147,20 @@ const GATE_STEPS = [
   },
 ];
 
+/* ══════════════════════════════════════════════════════════════════
+   MAIN COMPONENT — "Cosa fare oggi" (V2 redesign)
+   ══════════════════════════════════════════════════════════════════ */
+
 export default function CosaFareOggiPage() {
   const { userId, status, session } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
-  const profile = userId ? repo.profile.getProfile(userId) : { plan: null, onboarding_complete: false, onboarding: null };
-  const contacts = useMemo(() => userId ? repo.contact.listContacts(userId) : [], [userId, repo]);
+  const profile = userId
+    ? repo.profile.getProfile(userId)
+    : { plan: null, onboarding_complete: false, onboarding: null };
+  const contacts = useMemo(
+    () => (userId ? repo.contact.listContacts(userId) : []),
+    [userId, repo],
+  );
 
   const isAdmin = isAdminEmail(session?.user?.email);
   const isPremium = profile.plan !== null || isAdmin;
@@ -173,12 +170,12 @@ export default function CosaFareOggiPage() {
   const hasTrialsLeft = isConfigured && !isPremium && trialCount < MAX_FREE_TRIALS;
   const isReady = (isPremium && isConfigured) || hasTrialsLeft;
 
-  const [plan, setPlan] = useState<DailyPlanJson | null>(null);
+  /* ── V2 Plan state ── */
+  const [plan, setPlan] = useState<DailyPlanV2Json | null>(null);
+  const [followUps, setFollowUps] = useState<FollowUpItem[]>([]);
+  const [hasProspects, setHasProspects] = useState(false);
   const [loading, setLoading] = useState(false);
   const [autoLoaded, setAutoLoaded] = useState(false);
-  const [checkedActions, setCheckedActions] = useState<Set<string>>(new Set());
-  const [activeMsg, setActiveMsg] = useState<number>(0);
-  const [showDemo, setShowDemo] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -186,6 +183,7 @@ export default function CosaFareOggiPage() {
     setTrialCount(getTrialCount());
   }, []);
 
+  /* ── Load cached plan ── */
   useEffect(() => {
     if (!isReady) return;
     const cached = loadCachedPlan();
@@ -195,29 +193,75 @@ export default function CosaFareOggiPage() {
     }
   }, [isReady]);
 
+  /* ── Fetch prospect history for follow-up block ── */
+  useEffect(() => {
+    if (!isReady) return;
+    fetch("/api/ai/prospects")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (!data?.prospects?.length) return;
+        setHasProspects(true);
+        // Build follow-up items from prospects analyzed > 1 day ago
+        const items: FollowUpItem[] = data.prospects
+          .filter((p: { giorni_fa: number }) => p.giorni_fa >= 1)
+          .slice(0, 5)
+          .map((p: { nome_ruolo: string; giorni_fa: number; contesto: string }) => ({
+            nome_ruolo: p.nome_ruolo,
+            giorni_fa: p.giorni_fa,
+            azione_consigliata: generateFollowUpAction(p.giorni_fa),
+            testo_suggerito: generateFollowUpText(p.nome_ruolo, p.giorni_fa),
+          }));
+        setFollowUps(items);
+      })
+      .catch(() => {});
+  }, [isReady]);
+
+  /* ── Generate plan ── */
   const generatePlan = useCallback(async () => {
     if (loading || !isReady) return;
     setLoading(true);
     setPlan(null);
-    setCheckedActions(new Set());
     setLoadingStep(0);
-    const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 3)), 2500);
+    const stepTimer = setInterval(
+      () => setLoadingStep((s) => Math.min(s + 1, 4)),
+      2500,
+    );
     setError(null);
     try {
+      // AI hook: loads user's targeting config from "Trova Clienti" (localStorage)
+      // This data personalizes LinkedIn search, profile types, and content generation
       const lastTargeting = loadLastTargeting(userId!);
-      const res = await fetch("/api/ai/daily-plan", {
+
+      // AI hook: fetches analyzed prospect history for follow-up block
+      let analyzedProspects: Array<{ nome_ruolo: string; giorni_fa: number; contesto?: string }> = [];
+      try {
+        const prospectRes = await fetch("/api/ai/prospects");
+        if (prospectRes.ok) {
+          const prospectData = await prospectRes.json();
+          if (prospectData?.prospects) {
+            analyzedProspects = prospectData.prospects.slice(0, 10);
+          }
+        }
+      } catch {
+        /* ignore — prospects are optional */
+      }
+
+      const res = await fetch("/api/ai/daily-plan-v2", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // AI hook: sends user config (onboarding profile), targeting data,
+        // and prospect history — the API uses all three for personalization
         body: JSON.stringify({
           profile: profile.onboarding || undefined,
           targeting: lastTargeting || undefined,
+          analyzedProspects: analyzedProspects.length > 0 ? analyzedProspects : undefined,
         }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
         throw new Error(body?.error || `Errore ${res.status}`);
       }
-      const data = (await res.json()) as DailyPlanJson;
+      const data = (await res.json()) as DailyPlanV2Json;
       setPlan(data);
       cachePlan(data);
       if (hasTrialsLeft && !isPremium) {
@@ -226,13 +270,18 @@ export default function CosaFareOggiPage() {
       }
     } catch (err) {
       setPlan(null);
-      setError(err instanceof Error ? err.message : "Errore nella generazione del piano. Riprova.");
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Errore nella generazione del piano. Riprova.",
+      );
     } finally {
       clearInterval(stepTimer);
       setLoading(false);
     }
   }, [loading, isReady, profile.onboarding, userId, hasTrialsLeft, isPremium]);
 
+  /* ── Auto-generate on first load ── */
   useEffect(() => {
     if (isReady && !autoLoaded && !plan && !loading) {
       generatePlan();
@@ -240,34 +289,20 @@ export default function CosaFareOggiPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, autoLoaded]);
 
-  const toggleAction = (key: string) => {
-    setCheckedActions((prev) => {
-      const next = new Set(prev);
-      if (next.has(key)) next.delete(key);
-      else next.add(key);
-      return next;
-    });
-  };
-
-  const actions: DailyAction[] = useMemo(() => {
-    if (!plan) return [];
-    const azioniObj = plan.azioni;
-    const keys = ["azione_1", "azione_2", "azione_3", "azione_4", "azione_5"] as const;
-    const extracted = keys.map((k) => azioniObj[k]).filter(Boolean);
-    const firstAction = extracted[0] as Record<string, unknown> | undefined;
-    if (firstAction && typeof firstAction.contesto === "object" && firstAction.contesto !== null) {
-      return extracted as unknown as DailyAction[];
-    }
-    return demoDailyActions;
-  }, [plan]);
-
-  const completedCount = checkedActions.size;
-  const progressPct = actions.length > 0 ? Math.round((completedCount / actions.length) * 100) : 0;
+  /* ── Date / greeting ── */
   const today = new Date().toLocaleDateString("it-IT", {
     weekday: "long",
     day: "numeric",
     month: "long",
   });
+  const todayFull = new Date().toLocaleDateString("it-IT", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const dateLabel =
+    today.charAt(0).toUpperCase() + today.slice(1); // capitalize first letter
   const greeting = (() => {
     const h = new Date().getHours();
     if (h < 12) return "Buongiorno";
@@ -280,133 +315,11 @@ export default function CosaFareOggiPage() {
      LOADING — wait for auth
      ═══════════════════════════════════════════ */
   if (status === "loading" || !userId) {
-    return <div className="tool-page"><div className="tool-page-hero"><p>Caricamento...</p></div></div>;
-  }
-
-  /* ═══════════════════════════════════════════
-     DEMO VIEW — visible to everyone
-     ═══════════════════════════════════════════ */
-  if (showDemo && !isReady) {
-    const demoActions: DailyAction[] = (() => {
-      const azioniObj = demoDailyPlan.azioni;
-      const keys = ["azione_1", "azione_2", "azione_3", "azione_4", "azione_5"] as const;
-      return keys.map((k) => azioniObj[k]).filter(Boolean) as unknown as DailyAction[];
-    })();
-
     return (
-      <div className="oggi-page fade-in">
-        {/* Demo banner */}
-        <div className="oggi-demo-banner fade-in">
-          <div className="oggi-demo-banner-content">
-            <span className="oggi-demo-badge">👁️ Esempio</span>
-            <p className="oggi-demo-banner-text">
-              Stai vedendo un esempio di piano quotidiano. <strong>Configura il tuo sistema</strong> per ricevere un piano personalizzato con 3 prove gratuite.
-            </p>
-          </div>
-          <button type="button" onClick={() => setShowDemo(false)} className="oggi-demo-close-btn">
-            ← Torna indietro
-          </button>
+      <div className="tool-page">
+        <div className="tool-page-hero">
+          <p>Caricamento...</p>
         </div>
-
-        {/* Hero */}
-        <div className="oggi-hero fade-in">
-          <div className="oggi-hero-top">
-            <span className="oggi-date">{today}</span>
-          </div>
-          <h1 className="oggi-hero-title">Cosa fare oggi</h1>
-          <div className="oggi-focus-card">
-            <span className="oggi-focus-label">Focus del giorno</span>
-            <p className="oggi-focus-text">{demoDailyPlan.focus_giornata}</p>
-          </div>
-        </div>
-
-        {/* Azioni demo */}
-        <section className="oggi-section-card fade-in-delay">
-          <div className="oggi-section-head">
-            <span className="oggi-section-num">1</span>
-            <div>
-              <h2 className="oggi-section-title">Le tue 5 azioni di oggi</h2>
-              <p className="oggi-section-sub">Ecco un esempio di azioni personalizzate che riceverai ogni giorno.</p>
-            </div>
-          </div>
-          <div className="oggi-actions-list">
-            {demoActions.map((action, i) => (
-              <DailyActionCard key={`demo_${i}`} action={action} index={i} done={false} onToggle={() => {}} />
-            ))}
-          </div>
-        </section>
-
-        {/* Messaggi demo */}
-        <section className="oggi-section-card fade-in-delay">
-          <div className="oggi-section-head">
-            <span className="oggi-section-num">2</span>
-            <div>
-              <h2 className="oggi-section-title">Messaggi pronti</h2>
-              <p className="oggi-section-sub">Copia e incolla direttamente su LinkedIn.</p>
-            </div>
-          </div>
-          <div className="oggi-msg-tabs">
-            {["Primo contatto", "Follow-up", "Commento"].map((label, i) => (
-              <button key={label} type="button" className={`oggi-msg-tab ${activeMsg === i ? "oggi-msg-tab--active" : ""}`}
-                onClick={() => setActiveMsg(i)}>
-                {label}
-              </button>
-            ))}
-          </div>
-          <div className="oggi-msg-active-card">
-            {activeMsg === 0 && (
-              <MsgCard label="Primo contatto" text={demoDailyPlan.messaggi_pronti.primo_contatto} variant={demoDailyPlan.messaggi_pronti.primo_contatto_variante} />
-            )}
-            {activeMsg === 1 && (
-              <MsgCard label="Follow-up" text={demoDailyPlan.messaggi_pronti.followup} variant={demoDailyPlan.messaggi_pronti.followup_variante} />
-            )}
-            {activeMsg === 2 && (
-              <MsgCard label="Commento post" text={demoDailyPlan.messaggi_pronti.commento_post} />
-            )}
-          </div>
-        </section>
-
-        {/* Post demo */}
-        <section className="oggi-section-card fade-in-delay">
-          <div className="oggi-section-head">
-            <span className="oggi-section-num">3</span>
-            <div>
-              <h2 className="oggi-section-title">Post del giorno</h2>
-              <p className="oggi-section-sub">Pronto da pubblicare su LinkedIn.</p>
-            </div>
-          </div>
-          <div className="oggi-post-card">
-            <div className="oggi-post-header">
-              <span className="oggi-post-badge">✍️ Post pronto</span>
-            </div>
-            <div className="oggi-post-preview">
-              <p className="oggi-post-hook">{demoDailyPlan.post_del_giorno.hook}</p>
-              <p className="oggi-post-body">{demoDailyPlan.post_del_giorno.corpo}</p>
-              <p className="oggi-post-cta">{demoDailyPlan.post_del_giorno.chiusura}</p>
-            </div>
-            {demoDailyPlan.post_del_giorno.tipo_immagine && (
-              <p className="oggi-post-img-tip">📷 {demoDailyPlan.post_del_giorno.tipo_immagine}</p>
-            )}
-          </div>
-        </section>
-
-        {/* CTA finale */}
-        <section className="oggi-demo-cta-section fade-in-delay">
-          <div className="oggi-demo-cta-card">
-            <h3 className="oggi-demo-cta-title">Vuoi il tuo piano personalizzato?</h3>
-            <p className="oggi-demo-cta-desc">
-              Configura il tuo sistema in 3 minuti e ricevi <strong>3 piani giornalieri gratuiti</strong>, creati su misura per il tuo business.
-            </p>
-            <div className="oggi-demo-cta-actions">
-              <Link href="/app/onboarding" className="oggi-launch-btn">
-                Configura il sistema →
-              </Link>
-              <button type="button" onClick={() => setShowDemo(false)} className="btn-ghost">
-                ← Torna indietro
-              </button>
-            </div>
-          </div>
-        </section>
       </div>
     );
   }
@@ -417,41 +330,78 @@ export default function CosaFareOggiPage() {
   if (!isReady) {
     const trialsExhausted = isConfigured && !isPremium && trialCount >= MAX_FREE_TRIALS;
     const completedSteps = [isPremium, isConfigured].filter(Boolean).length;
-    const toolColors: Record<string, { iconBg: string; stroke: string; badgeBg: string; badgeText: string; badgeLabel: string; glow: string }> = {
-      blue: { iconBg: "bg-blue-50", stroke: "#2563EB", badgeBg: "bg-blue-50", badgeText: "text-blue-600", badgeLabel: "Prospecting", glow: "bg-[radial-gradient(circle,rgba(37,99,235,0.04),transparent_70%)]" },
-      green: { iconBg: "bg-green-50", stroke: "#16A34A", badgeBg: "bg-green-50", badgeText: "text-green-700", badgeLabel: "Analisi", glow: "bg-[radial-gradient(circle,rgba(22,163,74,0.04),transparent_70%)]" },
-      amber: { iconBg: "bg-amber-50", stroke: "#D97706", badgeBg: "bg-amber-50", badgeText: "text-amber-600", badgeLabel: "Contenuto", glow: "bg-[radial-gradient(circle,rgba(217,119,6,0.04),transparent_70%)]" },
-      purple: { iconBg: "bg-purple-50", stroke: "#7C3AED", badgeBg: "bg-purple-50", badgeText: "text-purple-600", badgeLabel: "Editoriale", glow: "bg-[radial-gradient(circle,rgba(124,58,237,0.04),transparent_70%)]" },
+    const toolColors: Record<
+      string,
+      { iconBg: string; stroke: string; badgeBg: string; badgeText: string; badgeLabel: string; glow: string }
+    > = {
+      blue: {
+        iconBg: "bg-blue-50",
+        stroke: "#2563EB",
+        badgeBg: "bg-blue-50",
+        badgeText: "text-blue-600",
+        badgeLabel: "Prospecting",
+        glow: "bg-[radial-gradient(circle,rgba(37,99,235,0.04),transparent_70%)]",
+      },
+      green: {
+        iconBg: "bg-green-50",
+        stroke: "#16A34A",
+        badgeBg: "bg-green-50",
+        badgeText: "text-green-700",
+        badgeLabel: "Analisi",
+        glow: "bg-[radial-gradient(circle,rgba(22,163,74,0.04),transparent_70%)]",
+      },
+      amber: {
+        iconBg: "bg-amber-50",
+        stroke: "#D97706",
+        badgeBg: "bg-amber-50",
+        badgeText: "text-amber-600",
+        badgeLabel: "Contenuto",
+        glow: "bg-[radial-gradient(circle,rgba(217,119,6,0.04),transparent_70%)]",
+      },
+      purple: {
+        iconBg: "bg-purple-50",
+        stroke: "#7C3AED",
+        badgeBg: "bg-purple-50",
+        badgeText: "text-purple-600",
+        badgeLabel: "Editoriale",
+        glow: "bg-[radial-gradient(circle,rgba(124,58,237,0.04),transparent_70%)]",
+      },
     };
+
     return (
       <div className="pt-6 fade-in">
         {/* ── HERO CARD SCURO ── */}
         <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-[#1E3A6E] via-[#1E4A8A] to-[#162F5C]">
-          {/* Glow decorativi */}
           <div className="pointer-events-none">
             <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
             <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
             <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
           </div>
-          {/* Contenuto */}
           <div className="relative z-10">
-            <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">{today}</div>
+            <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">
+              {today}
+            </div>
             <h1 className="text-[27px] font-extrabold text-white tracking-tight leading-tight mb-1">
-              {greeting}{firstName ? ", " : ""}{firstName ? <span className="text-blue-200">{firstName}</span> : ""}
+              {greeting}
+              {firstName ? ", " : ""}
+              {firstName ? <span className="text-blue-200">{firstName}</span> : ""}
             </h1>
             <p className="text-[13.5px] text-white/50 mb-5">
               {trialsExhausted
                 ? "Hai usato le 3 prove gratuite. Attiva il Piano Premium per continuare."
                 : "Completa i passaggi per attivare il piano quotidiano AI."}
             </p>
-            {/* Progress bar row */}
             <div className="flex items-center gap-4">
               <div className="flex-1 h-[5px] bg-white/10 rounded-full overflow-hidden">
-                <div className="h-[5px] bg-gradient-to-r from-green-400 to-green-300 rounded-full transition-all" style={{ width: `${completedSteps * 50}%` }} />
+                <div
+                  className="h-[5px] bg-gradient-to-r from-green-400 to-green-300 rounded-full transition-all"
+                  style={{ width: `${completedSteps * 50}%` }}
+                />
               </div>
-              <span className="text-[12px] font-semibold text-white/40 whitespace-nowrap">Setup {completedSteps}/2</span>
+              <span className="text-[12px] font-semibold text-white/40 whitespace-nowrap">
+                Setup {completedSteps}/2
+              </span>
             </div>
-            {/* Stats row */}
             <div className="flex items-center border-t border-white/10 mt-5 pt-5">
               <div className="flex-1">
                 <div className="text-[22px] font-extrabold text-white">{completedSteps}</div>
@@ -475,49 +425,86 @@ export default function CosaFareOggiPage() {
           <span className="text-[13px] text-amber-900 flex-1">
             Inizia dalla configurazione — ci vogliono meno di 5 minuti.
           </span>
-          <Link href="/app/onboarding" className="text-[13px] font-bold text-amber-600 whitespace-nowrap cursor-pointer hover:text-amber-700">
+          <Link
+            href="/app/onboarding"
+            className="text-[13px] font-bold text-amber-600 whitespace-nowrap cursor-pointer hover:text-amber-700"
+          >
             Inizia ora →
           </Link>
         </div>
 
-        {/* ── GATE STEPS — Card setup ── */}
+        {/* ── GATE STEPS ── */}
         <div className="grid grid-cols-2 gap-3.5 mb-6">
           {GATE_STEPS.map((step, idx) => {
             const done = step.checkField === "plan" ? isPremium : isConfigured;
             const isPrimaryStep = idx === 0 && !done;
             if (isPrimaryStep) {
               return (
-                <div key={step.key} className="relative overflow-hidden bg-white rounded-[14px] p-5 border border-blue-200 border-l-[3px] border-l-blue-600 rounded-l-none">
-                  {/* Glow angolo */}
+                <div
+                  key={step.key}
+                  className="relative overflow-hidden bg-white rounded-[14px] p-5 border border-blue-200 border-l-[3px] border-l-blue-600 rounded-l-none"
+                >
                   <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.07),transparent_70%)] pointer-events-none" />
-                  {/* Shimmer */}
                   <div className="absolute top-0 left-0 w-10 h-full bg-gradient-to-r from-transparent via-blue-100/40 to-transparent animate-shimmer pointer-events-none" />
-                  <div className="w-[26px] h-[26px] rounded-full bg-blue-700 text-white text-[12px] font-extrabold flex items-center justify-center mb-3.5">{step.num}</div>
-                  <h3 className="text-[15px] font-extrabold text-slate-900 tracking-tight mb-1.5">{step.title}</h3>
+                  <div className="w-[26px] h-[26px] rounded-full bg-blue-700 text-white text-[12px] font-extrabold flex items-center justify-center mb-3.5">
+                    {step.num}
+                  </div>
+                  <h3 className="text-[15px] font-extrabold text-slate-900 tracking-tight mb-1.5">
+                    {step.title}
+                  </h3>
                   <p className="text-[13px] text-slate-500 leading-relaxed mb-4">{step.desc}</p>
-                  <Link href={step.ctaHref} className="inline-flex items-center gap-1.5 bg-blue-700 text-white text-[13px] font-bold px-5 py-2.5 rounded-[9px] hover:bg-blue-800 transition animate-pulse-glow">
+                  <Link
+                    href={step.ctaHref}
+                    className="inline-flex items-center gap-1.5 bg-blue-700 text-white text-[13px] font-bold px-5 py-2.5 rounded-[9px] hover:bg-blue-800 transition animate-pulse-glow"
+                  >
                     {step.ctaLabel}
                   </Link>
                 </div>
               );
             }
             return (
-              <div key={step.key} className="relative overflow-hidden bg-white rounded-[14px] p-5 border border-emerald-200 border-l-[3px] border-l-emerald-500 rounded-l-none">
-                {/* Glow angolo */}
+              <div
+                key={step.key}
+                className="relative overflow-hidden bg-white rounded-[14px] p-5 border border-emerald-200 border-l-[3px] border-l-emerald-500 rounded-l-none"
+              >
                 <div className="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-[radial-gradient(circle,rgba(16,185,129,0.07),transparent_70%)] pointer-events-none" />
-                <div className={`w-[26px] h-[26px] rounded-full ${done ? "bg-green-100 text-green-600" : "bg-emerald-500 text-white"} text-[12px] font-extrabold flex items-center justify-center mb-3.5`}>
+                <div
+                  className={`w-[26px] h-[26px] rounded-full ${done ? "bg-green-100 text-green-600" : "bg-emerald-500 text-white"} text-[12px] font-extrabold flex items-center justify-center mb-3.5`}
+                >
                   {done ? (
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  ) : step.num}
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                  ) : (
+                    step.num
+                  )}
                 </div>
-                <h3 className="text-[15px] font-extrabold text-slate-900 tracking-tight">{step.title}</h3>
+                <h3 className="text-[15px] font-extrabold text-slate-900 tracking-tight">
+                  {step.title}
+                </h3>
                 <p className="text-[13px] text-slate-500 leading-relaxed">{step.desc}</p>
                 {!done && (
-                  <Link href={step.ctaHref} className="inline-flex items-center gap-1.5 bg-emerald-500 text-white text-[13px] font-bold px-5 py-2.5 rounded-[9px] hover:bg-emerald-600 transition mt-4">
+                  <Link
+                    href={step.ctaHref}
+                    className="inline-flex items-center gap-1.5 bg-emerald-500 text-white text-[13px] font-bold px-5 py-2.5 rounded-[9px] hover:bg-emerald-600 transition mt-4"
+                  >
                     {step.ctaLabel}
                   </Link>
                 )}
-                {done && <span className="inline-block mt-3 text-[11px] font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full">Completato</span>}
+                {done && (
+                  <span className="inline-block mt-3 text-[11px] font-bold text-green-600 bg-green-50 px-2.5 py-0.5 rounded-full">
+                    Completato
+                  </span>
+                )}
               </div>
             );
           })}
@@ -525,7 +512,9 @@ export default function CosaFareOggiPage() {
 
         {/* ── TOOL CARDS ── */}
         <section className="mb-6 fade-in-delay">
-          <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-1 mb-3 block">Strumenti</span>
+          <span className="text-[10px] font-bold text-slate-300 tracking-[0.1em] uppercase px-1 mb-3 block">
+            Strumenti
+          </span>
           <div className="grid grid-cols-4 gap-4">
             {QUICK_TOOLS.map((t, i) => {
               const c = toolColors[t.color] || toolColors.blue;
@@ -536,14 +525,24 @@ export default function CosaFareOggiPage() {
                   className="relative overflow-hidden bg-white border border-slate-200 rounded-[14px] p-6 cursor-pointer flex flex-col transition-all duration-200 hover:-translate-y-[4px] hover:border-blue-200 hover:shadow-[0_12px_32px_rgba(37,99,235,0.12)] animate-fadeup no-underline"
                   style={{ animationDelay: `${280 + i * 80}ms` }}
                 >
-                  {/* Micro-glow */}
-                  <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full ${c.glow} pointer-events-none`} />
-                  <span className={`w-[48px] h-[48px] rounded-[14px] flex items-center justify-center mb-3 ${c.iconBg}`} style={{ color: c.stroke }}>
+                  <div
+                    className={`absolute -top-6 -right-6 w-20 h-20 rounded-full ${c.glow} pointer-events-none`}
+                  />
+                  <span
+                    className={`w-[48px] h-[48px] rounded-[14px] flex items-center justify-center mb-3 ${c.iconBg}`}
+                    style={{ color: c.stroke }}
+                  >
                     {t.icon}
                   </span>
-                  <span className="text-[14px] font-extrabold text-slate-900 tracking-tight mb-1">{t.title}</span>
-                  <span className="text-[13px] text-slate-500 leading-relaxed flex-1">{t.desc}</span>
-                  <span className={`inline-block mt-3 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide ${c.badgeBg} ${c.badgeText}`}>
+                  <span className="text-[14px] font-extrabold text-slate-900 tracking-tight mb-1">
+                    {t.title}
+                  </span>
+                  <span className="text-[13px] text-slate-500 leading-relaxed flex-1">
+                    {t.desc}
+                  </span>
+                  <span
+                    className={`inline-block mt-3 text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wide ${c.badgeBg} ${c.badgeText}`}
+                  >
                     {c.badgeLabel}
                   </span>
                 </Link>
@@ -551,92 +550,86 @@ export default function CosaFareOggiPage() {
             })}
           </div>
         </section>
-
-        {/* Demo CTA */}
-        <section className="oggi-demo-preview-section fade-in-delay">
-          <button type="button" onClick={() => setShowDemo(true)} className="oggi-demo-preview-btn">
-            <span className="oggi-demo-preview-icon">👁️</span>
-            <div className="oggi-demo-preview-text">
-              <strong>Vedi un esempio</strong>
-              <span>Scopri cosa include il piano quotidiano AI prima di configurare</span>
-            </div>
-            <span className="oggi-demo-preview-arrow">→</span>
-          </button>
-        </section>
       </div>
     );
   }
 
   /* ═══════════════════════════════════════════
-     MAIN — Plan ready state
+     MAIN — Plan ready state (V2 — 5 blocks)
      ═══════════════════════════════════════════ */
   return (
-    <div className="pt-6 fade-in">
+    <div className="oggi-v2-page pt-6 fade-in" style={{ background: "#EBF0FA", minHeight: "100vh" }}>
       {/* Trial remaining banner */}
       {!isPremium && isConfigured && (
         <div className="oggi-trial-remaining-banner fade-in">
           <span className="oggi-trial-remaining-icon">🎁</span>
           <span className="oggi-trial-remaining-text">
             {trialCount < MAX_FREE_TRIALS ? (
-              <>Prova gratuita: <strong>{MAX_FREE_TRIALS - trialCount} di {MAX_FREE_TRIALS}</strong> piani rimasti</>
+              <>
+                Prova gratuita:{" "}
+                <strong>
+                  {MAX_FREE_TRIALS - trialCount} di {MAX_FREE_TRIALS}
+                </strong>{" "}
+                piani rimasti
+              </>
             ) : (
-              <>Prove gratuite esaurite — <Link href="/pricing" className="oggi-trial-upgrade-link">passa al Premium</Link> per piani illimitati</>
+              <>
+                Prove gratuite esaurite —{" "}
+                <Link href="/pricing" className="oggi-trial-upgrade-link">
+                  passa al Premium
+                </Link>{" "}
+                per piani illimitati
+              </>
             )}
           </span>
         </div>
       )}
-      {/* ── HERO CARD SCURO ── */}
+
+      {/* ── HERO CARD ── */}
       <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-[#1E3A6E] via-[#1E4A8A] to-[#162F5C]">
-        {/* Glow decorativi */}
         <div className="pointer-events-none">
           <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
           <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
           <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
         </div>
-        {/* Contenuto */}
         <div className="relative z-10">
-          <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">{today}</div>
+          <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">
+            {today}
+          </div>
           <h1 className="text-[27px] font-extrabold text-white tracking-tight leading-tight mb-1">
-            {plan ? (
-              <>
-                {greeting}{firstName ? ", " : ""}{firstName ? <span className="text-blue-200">{firstName}</span> : ""}
-                {progressPct === 100 && <span> 🎉</span>}
-              </>
-            ) : (
-              "Cosa fare oggi"
-            )}
+            {greeting}
+            {firstName ? ", " : ""}
+            {firstName ? <span className="text-blue-200">{firstName}</span> : ""}
           </h1>
-          {plan?.focus_giornata ? (
-            <p className="text-[13.5px] text-white/50 mb-5">{plan.focus_giornata}</p>
-          ) : (
-            <p className="text-[13.5px] text-white/50 mb-5">Il piano quotidiano personalizzato con azioni, messaggi e contenuti — pronti da usare.</p>
-          )}
+          <p className="text-[13.5px] text-white/50 mb-5">
+            {plan
+              ? "Il tuo piano operativo di oggi è pronto. Ogni blocco ti guida passo dopo passo."
+              : "Il piano quotidiano personalizzato con azioni, messaggi e contenuti — pronti da usare."}
+          </p>
 
           {plan && (
-            <>
-              {/* Progress bar row */}
-              <div className="flex items-center gap-4">
-                <div className="flex-1 h-[5px] bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-[5px] bg-gradient-to-r from-green-400 to-green-300 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
-                </div>
-                <span className="text-[12px] font-semibold text-white/40 whitespace-nowrap">{completedCount}/{actions.length} completate</span>
+            <div className="flex items-center border-t border-white/10 mt-5 pt-5">
+              <div className="flex-1">
+                <div className="text-[22px] font-extrabold text-white">5</div>
+                <div className="text-[11px] text-white/35 font-medium">Profili target</div>
               </div>
-              {/* Stats row */}
-              <div className="flex items-center border-t border-white/10 mt-5 pt-5">
-                <div className="flex-1">
-                  <div className="text-[22px] font-extrabold text-white">{actions.length}</div>
-                  <div className="text-[11px] text-white/35 font-medium">Azioni oggi</div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-green-400">
+                  {followUps.length}
                 </div>
-                <div className="flex-1 border-l border-white/10 pl-5">
-                  <div className="text-[22px] font-extrabold text-green-400">{completedCount}</div>
-                  <div className="text-[11px] text-white/35 font-medium">Completate</div>
-                </div>
-                <div className="flex-1 border-l border-white/10 pl-5">
-                  <div className="text-[22px] font-extrabold text-white">{contacts.length}</div>
-                  <div className="text-[11px] text-white/35 font-medium">Contatti</div>
-                </div>
+                <div className="text-[11px] text-white/35 font-medium">Follow-up</div>
               </div>
-            </>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-white">
+                  {plan.spunti_web?.length || 0}
+                </div>
+                <div className="text-[11px] text-white/35 font-medium">Spunti web</div>
+              </div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-white">{contacts.length}</div>
+                <div className="text-[11px] text-white/35 font-medium">Contatti</div>
+              </div>
+            </div>
           )}
         </div>
       </div>
@@ -645,34 +638,66 @@ export default function CosaFareOggiPage() {
       {!plan && !loading && (
         <section className="oggi-ready-card fade-in-delay">
           {error && (
-            <div className="ap-error-box" style={{ marginBottom: '1rem' }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div className="ap-error-box" style={{ marginBottom: "1rem" }}>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                <line x1="12" y1="9" x2="12" y2="13" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+              </svg>
               {error}
             </div>
           )}
           <div className="oggi-ready-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
             </svg>
           </div>
           <h3 className="oggi-ready-title">Il tuo sistema è pronto</h3>
           <p className="oggi-ready-desc">
-            L&apos;AI analizzerà il tuo profilo, i contatti recenti e lo storico per creare un piano su misura con 5 azioni, messaggi pronti e un post da pubblicare.
+            L&apos;AI analizzerà la tua configurazione per creare un piano su misura: ricerca LinkedIn,
+            profili target, contenuti e spunti dal web.
           </p>
           <button type="button" onClick={generatePlan} className="oggi-launch-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
               <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
             </svg>
             Genera il piano di oggi
           </button>
           <div className="oggi-ready-features">
-            <span>5 azioni mirate</span>
-            <span className="oggi-ready-dot" />
-            <span>Messaggi pronti</span>
-            <span className="oggi-ready-dot" />
-            <span>Post del giorno</span>
-            <span className="oggi-ready-dot" />
             <span>Ricerca LinkedIn</span>
+            <span className="oggi-ready-dot" />
+            <span>5 profili target</span>
+            <span className="oggi-ready-dot" />
+            <span>Contenuto del giorno</span>
+            <span className="oggi-ready-dot" />
+            <span>Spunti dal web</span>
           </div>
         </section>
       )}
@@ -685,214 +710,189 @@ export default function CosaFareOggiPage() {
             <div className="oggi-orb-ring oggi-orb-ring-2" />
             <div className="oggi-orb-ring oggi-orb-ring-3" />
             <div className="oggi-orb-core">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 2l1.2 4.3L17.5 8 13.2 9.2 12 13.5 10.8 9.2 6.5 8l4.3-1.7L12 2Z" />
               </svg>
             </div>
           </div>
           <h3 className="oggi-loading-title-v2">Preparo il tuo piano</h3>
           <div className="oggi-loading-steps">
-            {["Analizzo profilo", "Valuto contatti", "Creo azioni", "Scrivo messaggi"].map((label, i) => (
-              <span key={label} className={`oggi-loading-step ${loadingStep >= i ? "oggi-loading-step--active" : ""}`}>{label}</span>
+            {[
+              "Analizzo configurazione",
+              "Creo ricerca LinkedIn",
+              "Seleziono profili",
+              "Genero contenuti",
+              "Cerco spunti web",
+            ].map((label, i) => (
+              <span
+                key={label}
+                className={`oggi-loading-step ${loadingStep >= i ? "oggi-loading-step--active" : ""}`}
+              >
+                {label}
+              </span>
             ))}
           </div>
         </section>
       )}
 
       {/* ═══════════════════════════════════════════
-           PLAN OUTPUT — Premium command center
+           PLAN OUTPUT — V2 — 5 Blocks
          ═══════════════════════════════════════════ */}
       {plan && (
-        <>
-          {/* ── SEZIONE 1: AZIONI ── */}
-          <section className="oggi-section-card fade-in-delay">
-            <div className="oggi-section-head">
-              <span className="oggi-section-num">1</span>
-              <div>
-                <h2 className="oggi-section-title">Le tue 5 azioni di oggi</h2>
-                <p className="oggi-section-sub">Ogni azione ha un ragionamento strategico, messaggio pronto e ricerca LinkedIn. Espandi per i dettagli.</p>
-              </div>
+        <div className="space-y-6">
+          {/* ══════════════════════════════════════
+             BLOCK 1 — RICERCA LINKEDIN DEL GIORNO
+             ══════════════════════════════════════ */}
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Ricerca LinkedIn del giorno
+              </span>
+              <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {dateLabel}
+              </span>
             </div>
-
-            <div className="oggi-actions-list">
-              {actions.map((action, i) => {
-                const key = `azione_${i}`;
-                return (
-                  <DailyActionCard
-                    key={key}
-                    action={action}
-                    index={i}
-                    done={checkedActions.has(key)}
-                    onToggle={() => toggleAction(key)}
-                  />
-                );
-              })}
-            </div>
-
-            {/* Inline progress */}
-            {completedCount > 0 && completedCount < actions.length && (
-              <div className="oggi-inline-progress">
-                <div className="oggi-inline-bar">
-                  <div className="oggi-inline-fill" style={{ width: `${progressPct}%` }} />
-                </div>
-                <span className="oggi-inline-label">{completedCount}/{actions.length} completate — continua così!</span>
-              </div>
-            )}
-            {completedCount === actions.length && actions.length > 0 && (
-              <div className="oggi-done-banner">
-                <span className="oggi-done-emoji">🏆</span>
-                <div>
-                  <strong>Tutte le azioni completate!</strong>
-                  <p>Ottimo lavoro. Hai completato il piano di oggi.</p>
-                </div>
-              </div>
-            )}
+            <LinkedInSearchCard data={plan.ricerca_linkedin} dateLabel={dateLabel} />
           </section>
 
-          {/* ── SEZIONE 2: RICERCA LINKEDIN ── */}
-          {plan.link_ricerca_linkedin && (
-            <section className="oggi-section-card fade-in-delay">
-              <div className="oggi-section-head">
-                <span className="oggi-section-num" style={{ background: '#0a66c2' }}>2</span>
-                <div>
-                  <h2 className="oggi-section-title">Ricerca LinkedIn</h2>
-                  <p className="oggi-section-sub">Usa questi link per trovare i profili giusti — ogni link è calibrato sul tuo target.</p>
+          {/* ══════════════════════════════════════
+             BLOCK 2 — 5 PROFILI DA ANALIZZARE
+             ══════════════════════════════════════ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                5 profili da analizzare oggi
+              </span>
+              <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {dateLabel}
+              </span>
+            </div>
+
+            {/* Nudge if no prospects analyzed yet */}
+            {!hasProspects && (
+              <div className="flex items-center gap-3 bg-white border border-blue-200 border-l-[3px] border-l-blue-600 rounded-[10px] px-4 py-3 mb-4">
+                <span className="text-[18px]">🔍</span>
+                <div className="flex-1">
+                  <p className="text-[13px] font-semibold text-slate-800">
+                    Analizza almeno un profilo per sbloccare i follow-up personalizzati.
+                  </p>
+                  <p className="text-[12px] text-slate-500">
+                    Usa lo strumento &ldquo;Analizza profilo&rdquo; per iniziare.
+                  </p>
+                </div>
+                <Link
+                  href="/app/prospect"
+                  className="bg-blue-700 text-white font-bold rounded-[9px] px-4 py-2 text-[12px] hover:bg-blue-800 transition-colors no-underline"
+                >
+                  Analizza profilo →
+                </Link>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 gap-4">
+              {plan.profili_da_analizzare.map((profile, i) => (
+                <ProfileTypeCard key={i} profile={profile} index={i} />
+              ))}
+            </div>
+          </section>
+
+          {/* ══════════════════════════════════════
+             BLOCK 3 — FOLLOW-UP SULLO STORICO
+             ══════════════════════════════════════ */}
+          {followUps.length > 0 && (
+            <section className="border-t border-slate-100 pt-4 mt-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  Follow-up sullo storico
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {followUps.length} azioni
+                  </span>
+                  <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {dateLabel}
+                  </span>
                 </div>
               </div>
-
-              {/* Main LinkedIn search */}
-              <div className="relative overflow-hidden bg-gradient-to-br from-[#0a66c2] to-[#004182] rounded-[14px] p-5 mb-4">
-                <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.08),transparent_65%)] pointer-events-none" />
-                <div className="relative z-10">
-                  <div className="flex items-center gap-2 mb-2">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <span className="text-[11px] font-bold text-white/60 uppercase tracking-widest">Ricerca principale</span>
-                  </div>
-                  <p className="text-[13.5px] text-white/80 mb-3">La ricerca più rilevante per il piano di oggi, basata sul tuo posizionamento e target.</p>
-                  <a
-                    href={plan.link_ricerca_linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-white text-[#0a66c2] text-[13px] font-bold px-5 py-2.5 rounded-[10px] hover:bg-blue-50 transition-colors no-underline"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    Apri ricerca su LinkedIn ↗
-                  </a>
-                </div>
-              </div>
-
-              {/* Per-action LinkedIn links */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                {actions.map((action, i) => {
-                  if (!action.link_ricerca_linkedin) return null;
-                  const tipo = action.tipo || 'ricerca';
-                  return (
-                    <a
-                      key={`link_${i}`}
-                      href={action.link_ricerca_linkedin}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-start gap-3 bg-white border border-slate-200 rounded-[12px] p-4 hover:border-[#0a66c2] hover:shadow-[0_4px_16px_rgba(10,102,194,0.1)] transition-all no-underline group"
-                    >
-                      <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 text-[#0a66c2] flex items-center justify-center text-[12px] font-bold">
-                        {i + 1}
-                      </span>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">{tipo}</span>
-                        <p className="text-[13px] font-semibold text-slate-800 leading-tight mt-0.5 truncate">{action.contesto.chi}</p>
-                        <span className="text-[11px] text-[#0a66c2] font-medium group-hover:underline mt-1 inline-block">Cerca su LinkedIn →</span>
-                      </div>
-                    </a>
-                  );
-                })}
+              <div className="grid grid-cols-1 gap-4">
+                {followUps.map((item, i) => (
+                  <FollowUpCard key={i} item={item} />
+                ))}
               </div>
             </section>
           )}
 
-          {/* ── SEZIONE 3: MESSAGGI PRONTI ── */}
-          <section className="oggi-section-card fade-in-delay">
-            <div className="oggi-section-head">
-              <span className="oggi-section-num">3</span>
-              <div>
-                <h2 className="oggi-section-title">Messaggi pronti</h2>
-                <p className="oggi-section-sub">Copia e incolla direttamente su LinkedIn.</p>
-              </div>
+          {/* ══════════════════════════════════════
+             BLOCK 4 — CONTENUTO DEL GIORNO
+             ══════════════════════════════════════ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Contenuto del giorno
+              </span>
+              <span
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                  plan.contenuto_del_giorno.tipo === "post"
+                    ? "bg-blue-50 text-blue-700"
+                    : "bg-emerald-50 text-emerald-700"
+                }`}
+              >
+                {plan.contenuto_del_giorno.tipo === "post" ? "Post" : "Articolo"} — {dateLabel}
+              </span>
             </div>
-
-            {/* Tab-style message selector */}
-            <div className="oggi-msg-tabs">
-              {["Primo contatto", "Follow-up", "Commento"].map((label, i) => (
-                <button key={label} type="button" className={`oggi-msg-tab ${activeMsg === i ? "oggi-msg-tab--active" : ""}`}
-                  onClick={() => setActiveMsg(i)}>
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            <div className="oggi-msg-active-card">
-              {activeMsg === 0 && (
-                <MsgCard label="Primo contatto" text={plan.messaggi_pronti.primo_contatto} variant={plan.messaggi_pronti.primo_contatto_variante} />
-              )}
-              {activeMsg === 1 && (
-                <MsgCard label="Follow-up" text={plan.messaggi_pronti.followup} variant={plan.messaggi_pronti.followup_variante} />
-              )}
-              {activeMsg === 2 && (
-                <MsgCard label="Commento post" text={plan.messaggi_pronti.commento_post} />
-              )}
-            </div>
+            <DailyContentCard content={plan.contenuto_del_giorno} />
           </section>
 
-          {/* ── SEZIONE 4: POST DEL GIORNO ── */}
-          <section className="oggi-section-card fade-in-delay">
-            <div className="oggi-section-head">
-              <span className="oggi-section-num">4</span>
-              <div>
-                <h2 className="oggi-section-title">Post del giorno</h2>
-                <p className="oggi-section-sub">Pronto da pubblicare su LinkedIn.</p>
+          {/* ══════════════════════════════════════
+             BLOCK 5 — SPUNTI DAL WEB
+             ══════════════════════════════════════ */}
+          {plan.spunti_web && plan.spunti_web.length > 0 && (
+            <section className="border-t border-slate-100 pt-4 mt-4">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  Spunti dal web
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {plan.spunti_web.length} articoli
+                  </span>
+                  <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    {dateLabel}
+                  </span>
+                </div>
               </div>
-            </div>
-
-            <div className="oggi-post-card">
-              <div className="oggi-post-header">
-                <span className="oggi-post-badge">✍️ Post pronto</span>
-                <CopyBtn text={plan.post_del_giorno.testo_completo} />
+              <div className="grid grid-cols-1 gap-4">
+                {plan.spunti_web.map((insight, i) => (
+                  <WebInsightCard key={i} insight={insight} index={i} />
+                ))}
               </div>
-              <div className="oggi-post-preview">
-                <p className="oggi-post-hook">{plan.post_del_giorno.hook}</p>
-                <p className="oggi-post-body">{plan.post_del_giorno.corpo}</p>
-                <p className="oggi-post-cta">{plan.post_del_giorno.chiusura}</p>
-              </div>
-              {plan.post_del_giorno.tipo_immagine && (
-                <p className="oggi-post-img-tip">📷 {plan.post_del_giorno.tipo_immagine}</p>
-              )}
-            </div>
-          </section>
-
-          {/* ── STATS STRIP ── */}
-          <section className="oggi-section-card oggi-stats-card fade-in-delay">
-            <div className="oggi-stats-grid">
-              <div className="oggi-stat">
-                <span className="oggi-stat-value">{contacts.length}</span>
-                <span className="oggi-stat-label">Contatti analizzati</span>
-              </div>
-              <div className="oggi-stat">
-                <span className="oggi-stat-value">{completedCount}/{actions.length}</span>
-                <span className="oggi-stat-label">Azioni completate</span>
-              </div>
-              <div className="oggi-stat">
-                <span className="oggi-stat-value">{progressPct}%</span>
-                <span className="oggi-stat-label">Progresso di oggi</span>
-              </div>
-            </div>
-          </section>
+            </section>
+          )}
 
           {/* ── TOOLS NAV ── */}
-          <section className="sys-quick-actions fade-in-delay">
-            <span className="oggi-section-label">Strumenti</span>
+          <section className="border-t border-slate-100 pt-4 mt-4 sys-quick-actions fade-in-delay">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
+              Strumenti
+            </span>
             <div className="sys-quick-grid">
               {QUICK_TOOLS.map((t) => (
-                <Link key={t.href} href={t.href} className={`sys-quick-card sys-quick-card--${t.color}`}>
-                  <span className={`sys-quick-card-icon sys-quick-card-icon--${t.color}`}>{t.icon}</span>
+                <Link
+                  key={t.href}
+                  href={t.href}
+                  className={`sys-quick-card sys-quick-card--${t.color}`}
+                >
+                  <span className={`sys-quick-card-icon sys-quick-card-icon--${t.color}`}>
+                    {t.icon}
+                  </span>
                   <h3 className="sys-quick-card-title">{t.title}</h3>
                   <p className="sys-quick-card-desc">{t.desc}</p>
                   <span className="sys-quick-card-arrow">→</span>
@@ -902,32 +902,42 @@ export default function CosaFareOggiPage() {
           </section>
 
           <div className="oggi-bottom-actions">
-            <button type="button" onClick={generatePlan} disabled={loading} className="btn-ghost">
+            <button
+              type="button"
+              onClick={generatePlan}
+              disabled={loading}
+              className="btn-ghost"
+            >
               {loading ? "Rigenero…" : "🔄 Rigenera piano"}
             </button>
           </div>
-        </>
+        </div>
       )}
     </div>
   );
 }
 
-/* ── MsgCard sub-component ── */
-function MsgCard({ label, text, variant }: { label: string; text: string; variant?: string }) {
-  const [showVariant, setShowVariant] = useState(false);
-  const displayed = showVariant && variant ? variant : text;
-  return (
-    <div className="oggi-msg-card">
-      <div className="oggi-msg-card-head">
-        <span className="oggi-msg-card-label">{label}</span>
-        <CopyBtn text={displayed} />
-      </div>
-      <p className="oggi-msg-card-text">{displayed}</p>
-      {variant && (
-        <button type="button" className="oggi-variant-toggle" onClick={() => setShowVariant(!showVariant)}>
-          {showVariant ? "← Versione principale" : "Prova variante →"}
-        </button>
-      )}
-    </div>
-  );
+/* ── Follow-up helpers — generate client-side follow-up suggestions ── */
+// NOTE: These are rule-based suggestions. When the AI has prospect history context,
+// it can generate more targeted follow-ups via the API.
+
+function generateFollowUpAction(daysSince: number): string {
+  if (daysSince <= 2) return "Commenta il suo ultimo post per restare visibile";
+  if (daysSince <= 5) return "Manda un messaggio di follow-up breve e naturale";
+  if (daysSince <= 10) return "Proponi una call conoscitiva di 15 minuti";
+  if (daysSince <= 21) return "Condividi un contenuto rilevante per il suo settore";
+  return "Riattiva il contatto con un messaggio leggero e un pretesto concreto";
+}
+
+function generateFollowUpText(nomeRuolo: string, daysSince: number): string {
+  const nome = nomeRuolo.split("—")[0]?.trim() || "Buongiorno";
+  if (daysSince <= 2)
+    return `Commento costruttivo sul suo ultimo post — aggiungi un dato o un'esperienza diretta, poi chiudi con una domanda aperta.`;
+  if (daysSince <= 5)
+    return `Ciao ${nome}, volevo condividere un pensiero su quello di cui abbiamo parlato — [inserisci micro-insight specifico]. Ti torna come ragionamento?`;
+  if (daysSince <= 10)
+    return `Ciao ${nome}, mi è venuta in mente una cosa che potrebbe esserti utile. Ti va uno scambio di 15 minuti questa settimana? Nessun pitch, solo idee.`;
+  if (daysSince <= 21)
+    return `Ciao ${nome}, ho letto un articolo che mi ha fatto pensare alla nostra conversazione — [link]. Curioso di sapere come procede da voi!`;
+  return `Ciao ${nome}, è passato un po' — mi farebbe piacere capire come state procedendo. Novità interessanti?`;
 }

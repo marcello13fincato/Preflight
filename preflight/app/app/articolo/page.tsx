@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
 import Link from "next/link";
 import HistoryList from "@/components/app/HistoryList";
@@ -31,13 +32,15 @@ const QUICK_TOOLS = [
 ];
 
 export default function ArticoloPage() {
+  const params = useSearchParams();
   const { userId, status } = useRequireAuth();
   const repo = useMemo(() => getRepositoryBundle(), []);
   const profile = userId ? repo.profile.getProfile(userId) : { onboarding: null, plan: null, onboarding_complete: false };
 
-  const [topic, setTopic] = useState("");
-  const [angle, setAngle] = useState("");
-  const [targetAudience, setTargetAudience] = useState("");
+  /* Pre-fill from query params (e.g. from "Spunti dal web" block) */
+  const [topic, setTopic] = useState(params.get("topic") || "");
+  const [angle, setAngle] = useState(params.get("angle") || "");
+  const [targetAudience, setTargetAudience] = useState(params.get("target") || "");
   const [tone, setTone] = useState("professionale");
   const [loading, setLoading] = useState(false);
   const [output, setOutput] = useState<ArticoloJson | null>(null);

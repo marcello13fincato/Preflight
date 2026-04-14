@@ -267,6 +267,79 @@ export const dailyPlanSchema = z.object({
   link_ricerca_linkedin: z.string(),
 });
 
+/* ── Daily Plan V2 — Redesign "Cosa fare oggi" (5 blocks) ── */
+
+export const linkedinSearchBlockSchema = z.object({
+  query: z.string(),
+  spiegazione: z.string(),
+  url: z.string(),
+});
+
+export const profileTypeSchema = z.object({
+  ruolo: z.string(),
+  settore: z.string(),
+  segnali: z.string(),
+  perche_interessante: z.string(),
+  tono_contatto: z.string(),
+  prima_frase: z.string(),
+  priorita: z.enum(["alta", "media"]),
+  motivazione_priorita: z.string(),
+});
+
+export const followUpItemSchema = z.object({
+  nome_ruolo: z.string(),
+  giorni_fa: z.number(),
+  azione_consigliata: z.string(),
+  testo_suggerito: z.string(),
+});
+
+export const dailyContentPostSchema = z.object({
+  tipo: z.literal("post"),
+  hook: z.string(),
+  corpo: z.string(),
+  cta: z.string(),
+  testo_completo: z.string(),
+});
+
+export const dailyContentArticleSchema = z.object({
+  tipo: z.literal("articolo"),
+  titolo: z.string(),
+  angolo_editoriale: z.string(),
+  intro: z.string(),
+  sezione_1: z.object({ titolo: z.string(), contenuto: z.string() }),
+  sezione_2: z.object({ titolo: z.string(), contenuto: z.string() }),
+  sezione_3: z.object({ titolo: z.string(), contenuto: z.string() }),
+  conclusione: z.string(),
+});
+
+export const webInsightSchema = z.object({
+  titolo: z.string(),
+  fonte: z.string(),
+  url: z.string(),
+  rilevanza: z.string(),
+  angolo_post: z.string(),
+  angolo_articolo: z.string(),
+});
+
+export const dailyPlanV2Schema = z.object({
+  /* Block 1 */
+  ricerca_linkedin: linkedinSearchBlockSchema,
+  /* Block 2 */
+  profili_da_analizzare: z.array(profileTypeSchema).min(5).max(5),
+  /* Block 4 — content of the day (post or article, alternating) */
+  contenuto_del_giorno: z.union([dailyContentPostSchema, dailyContentArticleSchema]),
+  /* Block 5 — web insights */
+  spunti_web: z.array(webInsightSchema).min(2).max(3),
+});
+
+export type DailyPlanV2Json = z.infer<typeof dailyPlanV2Schema>;
+export type LinkedInSearchBlock = z.infer<typeof linkedinSearchBlockSchema>;
+export type ProfileType = z.infer<typeof profileTypeSchema>;
+export type FollowUpItem = z.infer<typeof followUpItemSchema>;
+export type DailyContentPost = z.infer<typeof dailyContentPostSchema>;
+export type DailyContentArticle = z.infer<typeof dailyContentArticleSchema>;
+export type WebInsight = z.infer<typeof webInsightSchema>;
+
 export const followupSchema = z.object({
   analisi_situazione: z.string(),
   messaggio_followup: z.string(),
