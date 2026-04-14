@@ -322,10 +322,8 @@ export const webInsightSchema = z.object({
 });
 
 export const dailyPlanV2Schema = z.object({
-  /* Block 1 */
+  /* Block 1 — people to contact today (LinkedIn search) */
   ricerca_linkedin: linkedinSearchBlockSchema,
-  /* Block 2 */
-  profili_da_analizzare: z.array(profileTypeSchema).min(5).max(5),
   /* Block 4 — content of the day (post or article, alternating) */
   contenuto_del_giorno: z.union([dailyContentPostSchema, dailyContentArticleSchema]),
   /* Block 5 — web insights */

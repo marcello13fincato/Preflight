@@ -9,7 +9,6 @@ import { isAdminEmail } from "@/lib/admin";
 
 /* ── Block components ── */
 import LinkedInSearchCard from "@/components/app/oggi/LinkedInSearchCard";
-import ProfileTypeCard from "@/components/app/oggi/ProfileTypeCard";
 import FollowUpCard from "@/components/app/oggi/FollowUpCard";
 import DailyContentCard from "@/components/app/oggi/DailyContentCard";
 import WebInsightCard from "@/components/app/oggi/WebInsightCard";
@@ -610,8 +609,10 @@ export default function CosaFareOggiPage() {
           {plan && (
             <div className="flex items-center border-t border-white/10 mt-5 pt-5">
               <div className="flex-1">
-                <div className="text-[22px] font-extrabold text-white">5</div>
-                <div className="text-[11px] text-white/35 font-medium">Profili target</div>
+                <div className="text-[22px] font-extrabold text-white">
+                  {plan.contenuto_del_giorno.tipo === "post" ? "Post" : "Articolo"}
+                </div>
+                <div className="text-[11px] text-white/35 font-medium">Contenuto pronto</div>
               </div>
               <div className="flex-1 border-l border-white/10 pl-5">
                 <div className="text-[22px] font-extrabold text-green-400">
@@ -691,11 +692,11 @@ export default function CosaFareOggiPage() {
             Genera il piano di oggi
           </button>
           <div className="oggi-ready-features">
-            <span>Ricerca LinkedIn</span>
+            <span>Persone da contattare</span>
             <span className="oggi-ready-dot" />
-            <span>5 profili target</span>
+            <span>Contenuto pronto</span>
             <span className="oggi-ready-dot" />
-            <span>Contenuto del giorno</span>
+            <span>Follow-up</span>
             <span className="oggi-ready-dot" />
             <span>Spunti dal web</span>
           </div>
@@ -728,9 +729,9 @@ export default function CosaFareOggiPage() {
           <div className="oggi-loading-steps">
             {[
               "Analizzo configurazione",
-              "Creo ricerca LinkedIn",
-              "Seleziono profili",
-              "Genero contenuti",
+              "Preparo lista contatti",
+              "Scrivo contenuto",
+              "Genero follow-up",
               "Cerco spunti web",
             ].map((label, i) => (
               <span
@@ -750,59 +751,18 @@ export default function CosaFareOggiPage() {
       {plan && (
         <div className="space-y-6">
           {/* ══════════════════════════════════════
-             BLOCK 1 — RICERCA LINKEDIN DEL GIORNO
+             BLOCK 1 — LISTA PERSONE DA CONTATTARE
              ══════════════════════════════════════ */}
           <section>
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                Ricerca LinkedIn del giorno
+                Lista delle persone da contattare
               </span>
               <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
                 {dateLabel}
               </span>
             </div>
             <LinkedInSearchCard data={plan.ricerca_linkedin} dateLabel={dateLabel} />
-          </section>
-
-          {/* ══════════════════════════════════════
-             BLOCK 2 — 5 PROFILI DA ANALIZZARE
-             ══════════════════════════════════════ */}
-          <section className="border-t border-slate-100 pt-4 mt-4">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                5 profili da analizzare oggi
-              </span>
-              <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
-                {dateLabel}
-              </span>
-            </div>
-
-            {/* Nudge if no prospects analyzed yet */}
-            {!hasProspects && (
-              <div className="flex items-center gap-3 bg-white border border-blue-200 border-l-[3px] border-l-blue-600 rounded-[10px] px-4 py-3 mb-4">
-                <span className="text-[18px]">🔍</span>
-                <div className="flex-1">
-                  <p className="text-[13px] font-semibold text-slate-800">
-                    Analizza almeno un profilo per sbloccare i follow-up personalizzati.
-                  </p>
-                  <p className="text-[12px] text-slate-500">
-                    Usa lo strumento &ldquo;Analizza profilo&rdquo; per iniziare.
-                  </p>
-                </div>
-                <Link
-                  href="/app/prospect"
-                  className="bg-blue-700 text-white font-bold rounded-[9px] px-4 py-2 text-[12px] hover:bg-blue-800 transition-colors no-underline"
-                >
-                  Analizza profilo →
-                </Link>
-              </div>
-            )}
-
-            <div className="grid grid-cols-1 gap-4">
-              {plan.profili_da_analizzare.map((profile, i) => (
-                <ProfileTypeCard key={i} profile={profile} index={i} />
-              ))}
-            </div>
           </section>
 
           {/* ══════════════════════════════════════
@@ -878,24 +838,28 @@ export default function CosaFareOggiPage() {
             </section>
           )}
 
-          {/* ── TOOLS NAV ── */}
-          <section className="border-t border-slate-100 pt-4 mt-4 sys-quick-actions fade-in-delay">
+          {/* ── STRUMENTI ── */}
+          <section className="border-t border-slate-100 pt-4 mt-4 fade-in-delay">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
               Strumenti
             </span>
-            <div className="sys-quick-grid">
-              {QUICK_TOOLS.map((t) => (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {QUICK_TOOLS.map((t, i) => (
                 <Link
                   key={t.href}
                   href={t.href}
-                  className={`sys-quick-card sys-quick-card--${t.color}`}
+                  className="bg-white border border-slate-100 rounded-[14px] p-4 flex flex-col gap-2 no-underline hover:border-blue-200 hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)] transition-all duration-200 animate-fadeup"
+                  style={{ animationDelay: `${i * 60}ms` }}
                 >
-                  <span className={`sys-quick-card-icon sys-quick-card-icon--${t.color}`}>
-                    {t.icon}
+                  <span className="text-[13px] font-extrabold text-slate-900 tracking-tight">
+                    {t.title}
                   </span>
-                  <h3 className="sys-quick-card-title">{t.title}</h3>
-                  <p className="sys-quick-card-desc">{t.desc}</p>
-                  <span className="sys-quick-card-arrow">→</span>
+                  <span className="text-[12px] text-slate-500 leading-relaxed">
+                    {t.desc}
+                  </span>
+                  <span className="text-[12px] font-semibold text-blue-700 mt-auto">
+                    Apri →
+                  </span>
                 </Link>
               ))}
             </div>

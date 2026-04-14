@@ -32,22 +32,26 @@ export default function WebInsightCard({ insight, index }: Props) {
       className="bg-white border border-slate-100 border-l-[3px] border-l-blue-400 rounded-[14px] rounded-l-[4px] p-5 animate-fadeup"
       style={{ animationDelay: `${index * 100}ms`, animationFillMode: "backwards" }}
     >
-      {/* Title & source */}
+      {/* Source badge */}
+      <div className="flex items-center gap-2 mb-2">
+        <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+          {insight.fonte}
+        </span>
+      </div>
+
+      {/* Title & source link */}
       <div className="mb-3">
-        <h4 className="text-[14px] font-extrabold text-slate-900 tracking-tight leading-snug mb-1">
-          {insight.titolo}
-        </h4>
         <a
           href={insight.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[12px] text-blue-700 font-medium hover:underline no-underline"
+          className="text-[14px] font-extrabold text-slate-900 tracking-tight leading-snug hover:text-blue-700 transition-colors no-underline"
         >
-          {insight.fonte} ↗
+          {insight.titolo} ↗
         </a>
       </div>
 
-      {/* Relevance */}
+      {/* Relevance — why it matters for this user */}
       <p className="text-[13.5px] text-slate-700 leading-[1.7] mb-4">
         {insight.rilevanza}
       </p>
