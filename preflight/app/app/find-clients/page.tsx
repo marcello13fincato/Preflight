@@ -3,10 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRequireAuth } from "@/lib/hooks/useRequireAuth";
-import CopyButton from "@/components/shared/CopyButton";
-import { IconLightbulb } from "@/components/shared/icons";
 import HistoryList from "@/components/app/HistoryList";
-import ProspectCategoryCard, { type ProspectCategory } from "@/components/app/ProspectCategoryCard";
 import { getRepositoryBundle } from "@/lib/sales/repositories";
 import { findClientsSchema, type FindClientsJson } from "@/lib/sales/schemas";
 
@@ -56,20 +53,11 @@ function CopyBtn({ text }: { text: string }) {
 
 /* ── Quick tool links (matches oggi page) ── */
 const QUICK_TOOLS = [
-  { href: "/app", icon: "📋", title: "Cosa fare oggi", desc: "Piano quotidiano AI personalizzato." },
-  { href: "/app/prospect", icon: "👤", title: "Analizza profilo", desc: "Valuta fit e angolo di attacco." },
-  { href: "/app/post", icon: "✍️", title: "Scrivi un post", desc: "Post con hook, CTA e immagine." },
-  { href: "/app/articolo", icon: "📄", title: "Scrivi un articolo", desc: "Articolo autorevole con SEO." },
+  { href: "/app", title: "Cosa fare oggi", desc: "Piano quotidiano AI personalizzato." },
+  { href: "/app/prospect", title: "Analizza profilo", desc: "Valuta fit e angolo di attacco." },
+  { href: "/app/post", title: "Scrivi un post", desc: "Post con hook, CTA e immagine." },
+  { href: "/app/articolo", title: "Scrivi un articolo", desc: "Articolo autorevole con SEO." },
 ];
-
-/* ── Active section tab for results ── */
-const RESULT_SECTIONS = [
-  { key: "priority", label: "Target #1", icon: "🎯" },
-  { key: "alternatives", label: "Alternative", icon: "👥" },
-  { key: "strategy", label: "Strategia", icon: "💬" },
-  { key: "criteria", label: "Criteri", icon: "📋" },
-  { key: "checklist", label: "Checklist", icon: "✅" },
-] as const;
 
 export default function FindClientsPage() {
   const { userId, status } = useRequireAuth();
@@ -93,45 +81,8 @@ export default function FindClientsPage() {
   const [error, setError] = useState<string | null>(null);
   const [prefilled, setPrefilled] = useState(false);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([false, false, false, false, false]);
-  const [activeSection, setActiveSection] = useState(0);
   const [activeMsg, setActiveMsg] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
-
-  const DEMO_CATEGORIES: ProspectCategory[] = [
-    {
-      titolo: "Founder SaaS B2B in fase di hiring sales",
-      priorita: "Alta",
-      perche: "Stanno assumendo venditori → budget allocato per crescita commerciale → apertura a metodi e strumenti nuovi per accelerare.",
-      segnali: ["Pubblica offerte lavoro sales", "Post su crescita aziendale", "Series A/B recente", "Team < 30 persone"],
-      angolo_attacco: "Parlare di come scalare l'outbound senza dipendere solo dai nuovi assunti — il processo conta più dell'headcount.",
-      azione_consigliata: "Commenta un loro post su crescita → dopo 2 interazioni, DM con domanda specifica sul loro processo outbound.",
-      link_ricerca_linkedin: "https://www.linkedin.com/search/results/people/?keywords=founder%20SaaS%20B2B&origin=GLOBAL_SEARCH_HEADER",
-      messaggio_connessione: "Ho visto che state espandendo il team sales — lavoro su temi simili. Mi farebbe piacere connetterci.",
-      primo_messaggio: "Curiosità: come state strutturando l'outbound con il team che cresce? Vedo pattern interessanti nelle scale-up in questa fase.",
-      followup: "Ho letto il tuo post su [tema] — punto interessante. Ti capita lo stesso problema con il mid-market?",
-      steps: ["Cerca 5 profili con questi segnali", "Commenta 2-3 post prima di connetterti", "Invia nota di connessione personalizzata"],
-    },
-    {
-      titolo: "Head of Sales con focus pipeline",
-      priorita: "Media",
-      perche: "Chi gestisce la pipeline ha il problema più concreto: convertire contatti in clienti. Se il processo non funziona, lo sente ogni giorno.",
-      segnali: ["Post su pipeline/CRM", "Commenta leader di settore", "Cambiato ruolo negli ultimi 6 mesi"],
-      angolo_attacco: "Partire dal problema specifico della conversione — non dalla generazione di lead, ma da cosa succede dopo il primo contatto.",
-      azione_consigliata: "DM diretto dopo connessione, con domanda su come gestiscono il follow-up oggi.",
-      messaggio_connessione: "Vedo che ti occupi di pipeline — mi occupo dello stesso tema in ambito B2B. Connettiamoci.",
-      primo_messaggio: "Domanda veloce: come gestite il follow-up dopo il primo contatto? È il punto dove vedo più opportunità perse.",
-      steps: ["Cerca profili Head of Sales / VP Sales", "Filtra per aziende 10-100 dipendenti", "Prioritizza chi pubblica contenuti"],
-    },
-    {
-      titolo: "Consulente che pubblica contenuti su LinkedIn",
-      priorita: "Bassa",
-      perche: "Già attivi sulla piattaforma, capiscono il valore del networking. Potenziale più come partner o referral che come cliente diretto.",
-      segnali: ["Pubblica 2+ post a settimana", "Commenta attivamente su altri post", "Ha 1000+ connessioni"],
-      angolo_attacco: "Non vendere — proporre uno scambio di valore o una collaborazione su contenuti.",
-      azione_consigliata: "Interazione organica sui loro contenuti → connessione → proposta di scambio",
-      steps: ["Identifica 3 consulenti nel tuo settore", "Commenta con valore per 2 settimane", "Proponi scambio di insight"],
-    },
-  ];
 
   useEffect(() => {
     if (!onboarding || prefilled) return;
@@ -152,7 +103,6 @@ export default function FindClientsPage() {
     setLoading(true);
     setError(null);
     setCheckedItems([false, false, false, false, false]);
-    setActiveSection(0);
     setLoadingStep(0);
     const stepTimer = setInterval(() => setLoadingStep((s) => Math.min(s + 1, 3)), 2500);
     try {
@@ -204,7 +154,6 @@ export default function FindClientsPage() {
     setOutput(null);
     setError(null);
     setCheckedItems([false, false, false, false, false]);
-    setActiveSection(0);
   }
 
   /* ═══════════════════════════════════════════
@@ -215,338 +164,324 @@ export default function FindClientsPage() {
   }
 
   /* ═══════════════════════════════════════════
-     RESULTS VIEW — Premium Command Center style
+     RESULTS VIEW — Oggi-style flat layout
      ═══════════════════════════════════════════ */
   if (output) {
     return (
-      <div className="fcp-page fade-in">
-        {/* ── Hero risultati ── */}
-        <div className="fcp-hero fade-in">
-          {/* Decorative orbs — oggi design */}
+      <div className="oggi-v2-page pt-6 fade-in" style={{ background: "#EBF0FA", minHeight: "100vh" }}>
+        {/* ── Hero — matching oggi-page hero ── */}
+        <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-[#1E3A6E] via-[#1E4A8A] to-[#162F5C]">
           <div className="pointer-events-none">
             <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
             <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
             <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
           </div>
-          <div className="fcp-hero-top">
-            <button onClick={resetSearch} className="fcp-back-btn">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          <div className="relative z-10">
+            <button type="button" onClick={resetSearch} className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white/50 hover:text-white/80 transition mb-3 bg-transparent border-none cursor-pointer font-[inherit]">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
               Nuova ricerca
             </button>
-            <div className="fcp-hero-stats-row">
-              <span className="fcp-progress-pill">
-                <span className="fcp-progress-fill" style={{ width: `${progressPct}%` }} />
-                <span className="fcp-progress-label">{completedCount}/5 azioni</span>
-              </span>
+            <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">
+              Targeting AI — Risultati
             </div>
-          </div>
-          <h1 className="fcp-hero-title">
-            {output.categoria_prioritaria.titolo}
-          </h1>
-          <div className="fcp-focus-card">
-            <span className="fcp-focus-label">Strategia AI</span>
-            <p className="fcp-focus-text">{output.riepilogo_strategia}</p>
-          </div>
-          {/* Progress ring */}
-          <div className="fcp-hero-ring">
-            <svg viewBox="0 0 80 80" className="fcp-ring-svg">
-              <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5" />
-              <circle cx="40" cy="40" r="34" fill="none" stroke="url(#fcpRingGrad)" strokeWidth="5" strokeLinecap="round"
-                strokeDasharray={`${progressPct * 2.136} 213.6`} transform="rotate(-90 40 40)"
-                style={{ transition: "stroke-dasharray 0.6s ease" }} />
-              <defs>
-                <linearGradient id="fcpRingGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#22c55e" />
-                  <stop offset="100%" stopColor="#4ade80" />
-                </linearGradient>
-              </defs>
-            </svg>
-            <span className="fcp-ring-pct">{progressPct}%</span>
+            <h1 className="text-[27px] font-extrabold text-white tracking-tight leading-tight mb-1">
+              {output.categoria_prioritaria.titolo}
+            </h1>
+            <p className="text-[13.5px] text-white/50 mb-5">
+              {output.riepilogo_strategia}
+            </p>
+            <div className="flex items-center border-t border-white/10 mt-5 pt-5">
+              <div className="flex-1">
+                <div className="text-[22px] font-extrabold text-white">{output.categorie_alternative.length + 1}</div>
+                <div className="text-[11px] text-white/35 font-medium">Categorie target</div>
+              </div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-green-400">4</div>
+                <div className="text-[11px] text-white/35 font-medium">Messaggi pronti</div>
+              </div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-white">{completedCount}/5</div>
+                <div className="text-[11px] text-white/35 font-medium">Azioni completate</div>
+              </div>
+              <div className="flex-1 border-l border-white/10 pl-5">
+                <div className="text-[22px] font-extrabold text-white">{progressPct}%</div>
+                <div className="text-[11px] text-white/35 font-medium">Progresso</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* ── SEZIONE 1: Categoria prioritaria ── */}
-        <section className="fcp-section fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num">1</span>
-            <div>
-              <h2 className="fcp-section-title">Da chi partire oggi</h2>
-              <p className="fcp-section-sub">Il profilo più compatibile con il tuo posizionamento — con messaggi pronti.</p>
+        {/* ── Plan blocks — same structure as oggi ── */}
+        <div className="space-y-6">
+
+          {/* ═══ BLOCK 1 — Target prioritario ═══ */}
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Target prioritario
+              </span>
+              <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                Priorità #1
+              </span>
             </div>
-          </div>
-
-          <div className="fcp-priority-card">
-            <div className="fcp-priority-header">
-              <span className="fcp-priority-badge">Priorità #1</span>
-              <h3 className="fcp-priority-title">{output.categoria_prioritaria.titolo}</h3>
-            </div>
-            <p className="fcp-priority-desc">{output.categoria_prioritaria.descrizione}</p>
-
-            <div className="fcp-priority-grid">
-              <div className="fcp-priority-insight">
-                <span className="fcp-insight-label">Perché ora</span>
-                <p className="fcp-insight-text">{output.categoria_prioritaria.perche_ora}</p>
-              </div>
-              <div className="fcp-priority-insight fcp-insight-signals">
-                <span className="fcp-insight-label">Segnali da cercare</span>
-                <p className="fcp-insight-text">{output.categoria_prioritaria.segnali_profilo}</p>
-              </div>
-            </div>
-
-            <a href={output.categoria_prioritaria.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="fcp-linkedin-btn">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-              Apri ricerca su LinkedIn
-            </a>
-
-            {/* Messages for priority category */}
-            <div className="fcp-msg-group">
-              <div className="fcp-msg-card">
-                <div className="fcp-msg-head">
-                  <span className="fcp-msg-label">Nota di connessione</span>
-                  <CopyBtn text={output.categoria_prioritaria.messaggio_connessione} />
-                </div>
-                <p className="fcp-msg-text">{output.categoria_prioritaria.messaggio_connessione}</p>
-              </div>
-              <div className="fcp-msg-card fcp-msg-card--accent">
-                <div className="fcp-msg-head">
-                  <span className="fcp-msg-label fcp-msg-label--green">Primo DM dopo accettazione</span>
-                  <CopyBtn text={output.categoria_prioritaria.messaggio_dopo_accettazione} />
-                </div>
-                <p className="fcp-msg-text">{output.categoria_prioritaria.messaggio_dopo_accettazione}</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SEZIONE 2: Messaggi pronti (tab-based, like oggi) ── */}
-        <section className="fcp-section fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num">2</span>
-            <div>
-              <h2 className="fcp-section-title">Sequenza messaggi</h2>
-              <p className="fcp-section-sub">Copia e incolla. Personalizza solo il nome.</p>
-            </div>
-          </div>
-
-          <div className="fcp-strategy-box">
-            <span className="fcp-strategy-badge">Sequenza consigliata</span>
-            <p className="fcp-strategy-text">{output.strategia_contatto.approccio_step}</p>
-          </div>
-
-          <div className="oggi-msg-tabs">
-            {["Primo messaggio", "Follow-up 48h", "Follow-up 5 giorni"].map((label, i) => (
-              <button key={label} type="button" className={`oggi-msg-tab ${activeMsg === i ? "oggi-msg-tab--active" : ""}`}
-                onClick={() => setActiveMsg(i)}>
-                {label}
-              </button>
-            ))}
-          </div>
-
-          <div className="oggi-msg-active-card">
-            {activeMsg === 0 && (
-              <div className="fcp-msg-card">
-                <div className="fcp-msg-head">
-                  <span className="fcp-msg-label">Primo messaggio</span>
-                  <CopyBtn text={output.strategia_contatto.primo_messaggio} />
-                </div>
-                <p className="fcp-msg-text">{output.strategia_contatto.primo_messaggio}</p>
-              </div>
-            )}
-            {activeMsg === 1 && (
-              <div className="fcp-msg-card">
-                <div className="fcp-msg-head">
-                  <span className="fcp-msg-label">Follow-up 48h</span>
-                  <CopyBtn text={output.strategia_contatto.followup_48h} />
-                </div>
-                <p className="fcp-msg-text">{output.strategia_contatto.followup_48h}</p>
-              </div>
-            )}
-            {activeMsg === 2 && (
-              <div className="fcp-msg-card">
-                <div className="fcp-msg-head">
-                  <span className="fcp-msg-label">Follow-up 5 giorni</span>
-                  <CopyBtn text={output.strategia_contatto.followup_5g} />
-                </div>
-                <p className="fcp-msg-text">{output.strategia_contatto.followup_5g}</p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* ── SEZIONE 3: Categorie alternative ── */}
-        <section className="fcp-section fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num">3</span>
-            <div>
-              <h2 className="fcp-section-title">Altre categorie target</h2>
-              <p className="fcp-section-sub">Profili alternativi da esplorare per diversificare la pipeline.</p>
-            </div>
-          </div>
-
-          <div className="fcp-alt-grid">
-            {output.categorie_alternative.map((cat, i) => (
-              <div key={i} className="fcp-alt-card">
-                <div className="fcp-alt-card-header">
-                  <span className="fcp-alt-num">{i + 2}</span>
-                  <h4 className="fcp-alt-title">{cat.titolo}</h4>
-                </div>
-                <p className="fcp-alt-desc">{cat.descrizione}</p>
-                <p className="fcp-alt-why">{cat.perche_ora}</p>
-                <div className="fcp-alt-signals">
-                  <span className="fcp-insight-label">Segnali</span>
-                  <p className="fcp-insight-text">{cat.segnali_profilo}</p>
-                </div>
-                <div className="fcp-alt-actions">
-                  <a href={cat.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="fcp-linkedin-btn-sm">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    LinkedIn
-                  </a>
-                  <CopyBtn text={cat.messaggio_connessione} />
-                </div>
-                <div className="fcp-alt-msg-box">
-                  <span className="fcp-alt-msg-label">Nota connessione</span>
-                  <p className="fcp-alt-msg-text">{cat.messaggio_connessione}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ── SEZIONE 4: Criteri di selezione ── */}
-        <section className="fcp-section fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num">4</span>
-            <div>
-              <h2 className="fcp-section-title">Criteri di selezione</h2>
-              <p className="fcp-section-sub">Come distinguere i profili ad alto potenziale da quelli da evitare.</p>
-            </div>
-          </div>
-
-          <div className="fcp-criteria-grid">
-            <div className="fcp-criteria-card fcp-criteria--good">
-              <div className="fcp-criteria-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-              </div>
-              <span className="fcp-criteria-label">Segnali positivi</span>
-              <p className="fcp-criteria-text">{output.criteri_selezione.segnali_positivi}</p>
-            </div>
-            <div className="fcp-criteria-card fcp-criteria--warn">
-              <div className="fcp-criteria-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-              </div>
-              <span className="fcp-criteria-label fcp-criteria-label--warn">Red flags</span>
-              <p className="fcp-criteria-text">{output.criteri_selezione.red_flags}</p>
-            </div>
-            <div className="fcp-criteria-card fcp-criteria--neutral">
-              <div className="fcp-criteria-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0a66c2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              </div>
-              <span className="fcp-criteria-label">Attività recente</span>
-              <p className="fcp-criteria-text">{output.criteri_selezione.attivita_recente}</p>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SEZIONE 5: Checklist azioni ── */}
-        <section className="fcp-section fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num fcp-section-num--action">5</span>
-            <div>
-              <h2 className="fcp-section-title">Le 5 azioni da fare adesso</h2>
-              <p className="fcp-section-sub">Completa ogni step per massimizzare le possibilità di risposta.</p>
-            </div>
-          </div>
-
-          <div className="fcp-check-progress">
-            <div className="fcp-check-bar">
-              <div className="fcp-check-fill" style={{ width: `${progressPct}%` }} />
-            </div>
-            <span className="fcp-check-label">{completedCount}/5 completate</span>
-          </div>
-
-          <div className="fcp-checklist">
-            {output.checklist_azioni.map((azione, i) => (
-              <button key={i} type="button" className={`fcp-check-item ${checkedItems[i] ? "fcp-check-item--done" : ""}`} onClick={() => toggleCheck(i)}>
-                <span className="fcp-check-box">
-                  {checkedItems[i] ? (
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  ) : (
-                    <span className="fcp-check-num">{i + 1}</span>
-                  )}
-                </span>
-                <span className="fcp-check-text">{azione}</span>
-              </button>
-            ))}
-          </div>
-
-          {completedCount === 5 && (
-            <div className="fcp-done-banner">
-              <span className="fcp-done-emoji">🏆</span>
+            <div className="bg-white border border-slate-100 rounded-2xl p-6 space-y-4">
               <div>
-                <strong>Tutte le azioni completate!</strong>
-                <p>Ottimo lavoro. Passa al prossimo step.</p>
+                <h3 className="text-[17px] font-extrabold text-slate-900 tracking-tight m-0 mb-1">{output.categoria_prioritaria.titolo}</h3>
+                <p className="text-[13.5px] text-slate-600 leading-relaxed m-0">{output.categoria_prioritaria.descrizione}</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                  <span className="text-[10px] font-bold text-blue-700 uppercase tracking-widest block mb-1">Perché ora</span>
+                  <p className="text-[13px] text-slate-700 leading-relaxed m-0">{output.categoria_prioritaria.perche_ora}</p>
+                </div>
+                <div className="bg-amber-50/50 border border-amber-100/80 rounded-xl p-4">
+                  <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest block mb-1">Segnali da cercare</span>
+                  <p className="text-[13px] text-slate-700 leading-relaxed m-0">{output.categoria_prioritaria.segnali_profilo}</p>
+                </div>
+              </div>
+              <a href={output.categoria_prioritaria.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="fcp-linkedin-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                Apri ricerca su LinkedIn
+              </a>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Nota di connessione</span>
+                    <CopyBtn text={output.categoria_prioritaria.messaggio_connessione} />
+                  </div>
+                  <p className="text-[13px] text-slate-700 leading-relaxed m-0 italic">{output.categoria_prioritaria.messaggio_connessione}</p>
+                </div>
+                <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Primo DM dopo accettazione</span>
+                    <CopyBtn text={output.categoria_prioritaria.messaggio_dopo_accettazione} />
+                  </div>
+                  <p className="text-[13px] text-slate-700 leading-relaxed m-0 italic">{output.categoria_prioritaria.messaggio_dopo_accettazione}</p>
+                </div>
               </div>
             </div>
-          )}
-          {completedCount > 0 && completedCount < 5 && (
-            <div className="fcp-inline-progress">
-              <span className="fcp-inline-label">{completedCount}/5 completate — continua così!</span>
-            </div>
-          )}
-        </section>
+          </section>
 
-        {/* ── SEZIONE 6: Prossimo step + Stats ── */}
-        <section className="fcp-section fcp-section--next fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num fcp-section-num--next">→</span>
-            <div>
-              <h2 className="fcp-section-title">Prossimo step</h2>
-              <p className="fcp-section-sub">{output.prossimo_step}</p>
+          {/* ═══ BLOCK 2 — Sequenza messaggi ═══ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Sequenza messaggi
+              </span>
+              <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                3 varianti pronte
+              </span>
             </div>
-          </div>
-          <div className="fcp-next-grid">
-            <Link href="/app/prospect" className="fcp-next-card fcp-next-card--primary">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              <span>Analizza un profilo</span>
-            </Link>
-            <Link href="/app/articolo" className="fcp-next-card">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-              <span>Scrivi un articolo</span>
-            </Link>
-            <Link href="/app" className="fcp-next-card">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              <span>Cosa fare oggi</span>
-            </Link>
-          </div>
-        </section>
+            <div className="bg-white border border-slate-100 rounded-2xl p-6">
+              <div className="border-l-[3px] border-l-indigo-400 bg-indigo-50/30 rounded-lg p-3 mb-4">
+                <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest block mb-1">Approccio consigliato</span>
+                <p className="text-[13px] text-slate-700 leading-relaxed m-0">{output.strategia_contatto.approccio_step}</p>
+              </div>
+              <div className="oggi-msg-tabs">
+                {["Primo messaggio", "Follow-up 48h", "Follow-up 5 giorni"].map((label, i) => (
+                  <button key={label} type="button" className={`oggi-msg-tab ${activeMsg === i ? "oggi-msg-tab--active" : ""}`} onClick={() => setActiveMsg(i)}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div className="bg-slate-50 border border-slate-100 rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-bold text-blue-700 uppercase tracking-widest">
+                    {activeMsg === 0 ? "Primo messaggio" : activeMsg === 1 ? "Follow-up 48h" : "Follow-up 5 giorni"}
+                  </span>
+                  <CopyBtn text={
+                    activeMsg === 0 ? output.strategia_contatto.primo_messaggio :
+                    activeMsg === 1 ? output.strategia_contatto.followup_48h :
+                    output.strategia_contatto.followup_5g
+                  } />
+                </div>
+                <p className="text-[13.5px] text-slate-700 leading-relaxed m-0 whitespace-pre-wrap">
+                  {activeMsg === 0 ? output.strategia_contatto.primo_messaggio :
+                   activeMsg === 1 ? output.strategia_contatto.followup_48h :
+                   output.strategia_contatto.followup_5g}
+                </p>
+              </div>
+            </div>
+          </section>
 
-        {/* ── Stats strip ── */}
-        <section className="fcp-section fcp-stats-section fade-in-delay">
-          <div className="fcp-stats-grid">
-            <div className="fcp-stat">
-              <span className="fcp-stat-value">{output.categorie_alternative.length + 1}</span>
-              <span className="fcp-stat-label">Categorie target</span>
+          {/* ═══ BLOCK 3 — Categorie alternative ═══ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Categorie alternative
+              </span>
+              <span className="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {output.categorie_alternative.length} profili
+              </span>
             </div>
-            <div className="fcp-stat">
-              <span className="fcp-stat-value">4</span>
-              <span className="fcp-stat-label">Messaggi pronti</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {output.categorie_alternative.map((cat, i) => (
+                <div key={i} className="bg-white border border-slate-100 rounded-2xl p-5 space-y-3 hover:border-blue-200 hover:shadow-[0_8px_24px_rgba(37,99,235,0.06)] transition-all duration-200 animate-fadeup" style={{ animationDelay: `${i * 80}ms` }}>
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-7 h-7 rounded-lg bg-blue-50 text-blue-700 text-[12px] font-extrabold flex items-center justify-center flex-shrink-0">{i + 2}</span>
+                    <h4 className="text-[15px] font-extrabold text-slate-900 tracking-tight m-0">{cat.titolo}</h4>
+                  </div>
+                  <p className="text-[13px] text-slate-600 leading-relaxed m-0">{cat.descrizione}</p>
+                  <div className="bg-slate-50 rounded-lg p-3">
+                    <span className="text-[10px] font-bold text-amber-600 uppercase tracking-widest block mb-1">Perché ora</span>
+                    <p className="text-[12.5px] text-slate-600 leading-relaxed m-0">{cat.perche_ora}</p>
+                  </div>
+                  <div className="bg-slate-50 rounded-lg p-3">
+                    <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest block mb-1">Segnali</span>
+                    <p className="text-[12.5px] text-slate-600 leading-relaxed m-0">{cat.segnali_profilo}</p>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <a href={cat.link_ricerca_linkedin} target="_blank" rel="noopener noreferrer" className="fcp-linkedin-btn-sm">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                      LinkedIn
+                    </a>
+                    <CopyBtn text={cat.messaggio_connessione} />
+                  </div>
+                  <div className="border-l-[3px] border-l-blue-300 bg-blue-50/40 rounded-lg p-3">
+                    <span className="text-[10px] font-bold text-blue-700 uppercase tracking-widest block mb-1">Nota connessione</span>
+                    <p className="text-[12.5px] text-slate-700 leading-relaxed m-0 italic">{cat.messaggio_connessione}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="fcp-stat">
-              <span className="fcp-stat-value">{completedCount}/5</span>
-              <span className="fcp-stat-label">Azioni completate</span>
-            </div>
-            <div className="fcp-stat">
-              <span className="fcp-stat-value">{progressPct}%</span>
-              <span className="fcp-stat-label">Progresso</span>
-            </div>
-          </div>
-        </section>
+          </section>
 
-        {/* ── Bottom actions ── */}
-        <div className="fcp-bottom-actions">
-          <button type="button" onClick={resetSearch} className="btn-ghost">
-            🔄 Nuova ricerca
-          </button>
+          {/* ═══ BLOCK 4 — Criteri di selezione ═══ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Criteri di selezione
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white border border-emerald-100 rounded-xl p-4 bg-gradient-to-br from-emerald-50/50 to-white">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-widest">Segnali positivi</span>
+                </div>
+                <p className="text-[13px] text-slate-700 leading-relaxed m-0">{output.criteri_selezione.segnali_positivi}</p>
+              </div>
+              <div className="bg-white border border-red-100 rounded-xl p-4 bg-gradient-to-br from-red-50/30 to-white">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  <span className="text-[10px] font-bold text-red-600 uppercase tracking-widest">Red flags</span>
+                </div>
+                <p className="text-[13px] text-slate-700 leading-relaxed m-0">{output.criteri_selezione.red_flags}</p>
+              </div>
+              <div className="bg-white border border-blue-100 rounded-xl p-4 bg-gradient-to-br from-blue-50/30 to-white">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0a66c2" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span className="text-[10px] font-bold text-blue-700 uppercase tracking-widest">Attività recente</span>
+                </div>
+                <p className="text-[13px] text-slate-700 leading-relaxed m-0">{output.criteri_selezione.attivita_recente}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* ═══ BLOCK 5 — Azioni da completare ═══ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Azioni da completare
+              </span>
+              <span className="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                {completedCount}/5 completate
+              </span>
+            </div>
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex-1 h-[5px] bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-[5px] bg-gradient-to-r from-green-500 to-green-400 rounded-full transition-all" style={{ width: `${progressPct}%` }} />
+              </div>
+              <span className="text-[11px] font-semibold text-slate-400">{progressPct}%</span>
+            </div>
+            <div className="space-y-2">
+              {output.checklist_azioni.map((azione, i) => (
+                <button key={i} type="button"
+                  className={`w-full flex items-center gap-3 p-3.5 rounded-xl border transition-all duration-200 text-left font-[inherit] ${
+                    checkedItems[i]
+                      ? "bg-emerald-50 border-emerald-200"
+                      : "bg-white border-slate-100 hover:border-blue-200 hover:shadow-sm"
+                  }`}
+                  onClick={() => toggleCheck(i)}
+                >
+                  <span className={`w-7 h-7 rounded-lg flex-shrink-0 flex items-center justify-center text-[12px] font-bold transition-all ${
+                    checkedItems[i]
+                      ? "bg-emerald-500 text-white"
+                      : "bg-slate-100 text-slate-400 border border-slate-200"
+                  }`}>
+                    {checkedItems[i] ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    ) : (
+                      i + 1
+                    )}
+                  </span>
+                  <span className={`text-[13.5px] leading-relaxed ${checkedItems[i] ? "text-slate-400 line-through" : "text-slate-800"}`}>
+                    {azione}
+                  </span>
+                </button>
+              ))}
+            </div>
+            {completedCount === 5 && (
+              <div className="flex items-center gap-3 mt-4 p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl animate-fadeup">
+                <span className="text-xl">🏆</span>
+                <div>
+                  <strong className="text-[13.5px] text-slate-800 block">Tutte le azioni completate!</strong>
+                  <p className="text-[12px] text-slate-500 m-0">Ottimo lavoro. Passa al prossimo step.</p>
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* ═══ Prossimo step ═══ */}
+          <section className="border-t border-slate-100 pt-4 mt-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                Prossimo step
+              </span>
+            </div>
+            <p className="text-[13.5px] text-slate-600 leading-relaxed mb-4">{output.prossimo_step}</p>
+            <div className="grid grid-cols-3 gap-3">
+              <Link href="/app/prospect" className="flex items-center gap-2 p-3.5 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl text-[13px] font-semibold no-underline hover:shadow-lg transition">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Analizza profilo
+              </Link>
+              <Link href="/app/articolo" className="flex items-center gap-2 p-3.5 bg-white border border-slate-100 rounded-xl text-[13px] font-semibold text-slate-700 no-underline hover:border-blue-200 hover:shadow-sm transition">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Scrivi articolo
+              </Link>
+              <Link href="/app" className="flex items-center gap-2 p-3.5 bg-white border border-slate-100 rounded-xl text-[13px] font-semibold text-slate-700 no-underline hover:border-blue-200 hover:shadow-sm transition">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Cosa fare oggi
+              </Link>
+            </div>
+          </section>
+
+          {/* ── Strumenti — matching oggi ── */}
+          <section className="border-t border-slate-100 pt-4 mt-4 fade-in-delay">
+            <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
+              Strumenti
+            </span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {QUICK_TOOLS.map((t, i) => (
+                <Link
+                  key={t.href}
+                  href={t.href}
+                  className="bg-white border border-slate-100 rounded-[14px] p-4 flex flex-col gap-2 no-underline hover:border-blue-200 hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)] transition-all duration-200 animate-fadeup"
+                  style={{ animationDelay: `${i * 60}ms` }}
+                >
+                  <span className="text-[13px] font-extrabold text-slate-900 tracking-tight">{t.title}</span>
+                  <span className="text-[12px] text-slate-500 leading-relaxed">{t.desc}</span>
+                  <span className="text-[12px] font-semibold text-blue-700 mt-auto">Apri →</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+
+          <div className="flex justify-center pt-2">
+            <button type="button" onClick={resetSearch} className="btn-ghost">
+              🔄 Nuova ricerca
+            </button>
+          </div>
         </div>
 
         <HistoryList userId={userId} type="prospect" />
@@ -555,60 +490,58 @@ export default function FindClientsPage() {
   }
 
   /* ═══════════════════════════════════════════
-     INPUT VIEW — Premium form experience
+     INPUT VIEW — Oggi-style form experience
      ═══════════════════════════════════════════ */
   return (
-    <div className="fcp-page fade-in">
-      {/* ── Hero ── */}
-      <div className="fcp-hero fcp-hero--input fade-in">
-        {/* Decorative orbs — oggi design */}
+    <div className="oggi-v2-page pt-6 fade-in" style={{ background: "#EBF0FA", minHeight: "100vh" }}>
+      {/* ── Hero — matching oggi-page hero ── */}
+      <div className="relative overflow-hidden rounded-2xl p-7 mb-6 bg-gradient-to-br from-[#1E3A6E] via-[#1E4A8A] to-[#162F5C]">
         <div className="pointer-events-none">
           <div className="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.07),transparent_65%)]" />
           <div className="absolute -bottom-16 left-2 w-48 h-48 rounded-full bg-[radial-gradient(circle,rgba(99,102,241,0.14),transparent_65%)]" />
           <div className="absolute top-4 left-44 w-24 h-24 rounded-full bg-[radial-gradient(circle,rgba(34,197,94,0.13),transparent_70%)]" />
         </div>
-        <div className="fcp-hero-top">
-          <span className="fcp-hero-eyebrow">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div className="relative z-10">
+          <div className="text-[11px] font-semibold text-white/40 uppercase tracking-widest mb-2">
             Motore di targeting AI
-          </span>
-        </div>
-        <h1 className="fcp-hero-title">Trova i tuoi clienti</h1>
-        <p className="fcp-hero-sub">
-          Descrivi il tuo target. L&apos;AI genera categorie di prospect, segnali da cercare, messaggi pronti e una strategia di contatto completa.
-        </p>
-        <div className="fcp-hero-features">
-          <span className="fcp-hero-feature">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            3 categorie target
-          </span>
-          <span className="fcp-hero-sep" />
-          <span className="fcp-hero-feature">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            5 messaggi pronti
-          </span>
-          <span className="fcp-hero-sep" />
-          <span className="fcp-hero-feature">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            5 azioni checklist
-          </span>
+          </div>
+          <h1 className="text-[27px] font-extrabold text-white tracking-tight leading-tight mb-1">
+            Trova i tuoi clienti
+          </h1>
+          <p className="text-[13.5px] text-white/50 mb-5">
+            Descrivi il tuo target. L&apos;AI genera categorie, segnali, messaggi e strategia — tutto pronto da usare.
+          </p>
+          <div className="flex items-center gap-4 border-t border-white/10 mt-5 pt-5">
+            <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white/55">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              3 categorie target
+            </span>
+            <span className="w-px h-3.5 bg-white/20" />
+            <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white/55">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              5 messaggi pronti
+            </span>
+            <span className="w-px h-3.5 bg-white/20" />
+            <span className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-white/55">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              5 azioni checklist
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* ── Form card ── */}
-      <section className="fcp-section fade-in-delay">
-        <div className="fcp-section-head">
-          <span className="fcp-section-num">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          </span>
+      {/* ── Form section — hidden during loading (matches oggi pattern) ── */}
+      {!loading && (
+      <div className="bg-white border border-slate-100 rounded-2xl p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="fcp-section-title">Definisci il target</h2>
-            <p className="fcp-section-sub">Più dettagli dai, più precise saranno le categorie e i messaggi generati dall&apos;AI.</p>
+            <h2 className="text-[17px] font-extrabold text-slate-900 tracking-tight m-0">Definisci il target</h2>
+            <p className="text-[13px] text-slate-500 m-0 mt-0.5">Più dettagli dai, più precise saranno le categorie e i messaggi.</p>
           </div>
         </div>
 
         {prefilled && onboarding && (
-          <div className="fcp-prefill">
+          <div className="flex items-center gap-2 text-[12px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-2 mb-4">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             Alcuni campi precompilati dal tuo profilo.
           </div>
@@ -626,7 +559,7 @@ export default function FindClientsPage() {
           </button>
         </div>
 
-        <div className="fcp-form">
+        <div className="flex flex-col gap-3.5">
           {searchMode === "profile" ? (
             <>
               <div className="qa-field">
@@ -663,13 +596,11 @@ export default function FindClientsPage() {
                   placeholder="Founder SaaS B2B che stanno assumendo, CEO agenzia marketing in crescita"
                 />
               </div>
-
               <div className="qa-field">
                 <label className="qa-label">Settore <span className="qa-label-opt">(facoltativo)</span></label>
                 <input type="text" value={settore} onChange={(e) => setSettore(e.target.value)} className="qa-input" placeholder="Software, consulenza, marketing, fintech" />
               </div>
-
-              <div className="fcp-form-row">
+              <div className="flex gap-3">
                 <div className="qa-field" style={{ flex: 1 }}>
                   <label className="qa-label">Area geografica <span className="qa-label-opt">(facoltativo)</span></label>
                   <input type="text" value={area} onChange={(e) => setArea(e.target.value)} className="qa-input" placeholder="Italia, Europa, DACH" />
@@ -679,7 +610,6 @@ export default function FindClientsPage() {
                   <input type="text" value={citta} onChange={(e) => setCitta(e.target.value)} className="qa-input" placeholder="Milano, Roma, Berlino" />
                 </div>
               </div>
-
               <div className="qa-field">
                 <label className="qa-label">Dimensione azienda</label>
                 <div className="fcp-pills">
@@ -690,7 +620,6 @@ export default function FindClientsPage() {
                   ))}
                 </div>
               </div>
-
               <div className="qa-field">
                 <label className="qa-label">Fase azienda</label>
                 <div className="fcp-pills">
@@ -701,7 +630,6 @@ export default function FindClientsPage() {
                   ))}
                 </div>
               </div>
-
               <div className="qa-field">
                 <label className="qa-label">Problema che risolvi per loro <span className="qa-label-opt">(facoltativo)</span></label>
                 <textarea value={problemaCliente} onChange={(e) => setProblemaCliente(e.target.value)} className="qa-input" rows={2} placeholder="Non riescono a generare pipeline su LinkedIn, il team sales non ha un processo outbound" />
@@ -710,7 +638,7 @@ export default function FindClientsPage() {
           )}
 
           {error && (
-            <div className="fcp-error">
+            <div className="flex items-center gap-2 text-[13px] font-semibold text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2.5">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
               {error}
             </div>
@@ -727,11 +655,12 @@ export default function FindClientsPage() {
             )}
           </button>
         </div>
-      </section>
+      </div>
+      )}
 
-      {/* ── Loading state ── */}
+      {/* ── Loading state — dedicated section (matches oggi pattern) ── */}
       {loading && (
-        <section className="fcp-loading fade-in-delay">
+        <section className="oggi-loading-v2 fade-in-delay">
           <div className="oggi-loading-orb">
             <div className="oggi-orb-ring oggi-orb-ring-1" />
             <div className="oggi-orb-ring oggi-orb-ring-2" />
@@ -740,7 +669,7 @@ export default function FindClientsPage() {
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             </div>
           </div>
-          <h3 className="fcp-loading-title">Analizzo il tuo mercato</h3>
+          <h3 className="oggi-loading-title-v2">Analizzo il tuo mercato</h3>
           <div className="oggi-loading-steps">
             {["Analizzo target", "Creo categorie", "Genero messaggi", "Preparo strategia"].map((label, i) => (
               <span key={label} className={`oggi-loading-step ${loadingStep >= i ? "oggi-loading-step--active" : ""}`}>{label}</span>
@@ -750,42 +679,52 @@ export default function FindClientsPage() {
       )}
 
       {/* ── Callout onboarding ── */}
-      {!profile.onboarding_complete && (
-        <section className="fcp-section fcp-callout-section fade-in-delay">
-          <div className="fcp-callout">
-            <div className="fcp-callout-icon"><IconLightbulb size={20} /></div>
-            <div>
-              <p className="fcp-callout-text">Configura il tuo sistema per risultati più precisi e personalizzati.</p>
-              <Link href="/app/onboarding" className="fcp-callout-link">Configura il sistema →</Link>
-            </div>
+      {!loading && !profile.onboarding_complete && (
+        <div className="flex items-center gap-3 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 mb-6">
+          <span className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+          <div className="flex-1">
+            <p className="text-[13px] text-slate-700 m-0">Configura il tuo sistema per risultati più precisi.</p>
+            <Link href="/app/onboarding" className="text-[13px] font-bold text-amber-700 no-underline hover:underline">Configura il sistema →</Link>
           </div>
-        </section>
+        </div>
       )}
 
-      {/* ── Demo preview (what you'll get) ── */}
+      {/* ── What you'll get (replaces demo preview) ── */}
       {!loading && (
-        <section className="fcp-section fade-in-delay">
-          <div className="fcp-section-head">
-            <span className="fcp-section-num fcp-section-num--demo">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        <div className="bg-white border border-slate-100 rounded-2xl p-6 mb-6">
+          <div className="flex items-center gap-2.5 mb-4">
+            <span className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </span>
             <div>
-              <h2 className="fcp-section-title">Anteprima risultato</h2>
-              <p className="fcp-section-sub">Ecco un esempio realistico di cosa genererà l&apos;AI per te.</p>
+              <h3 className="text-[15px] font-extrabold text-slate-900 m-0">Cosa otterrai</h3>
+              <p className="text-[12px] text-slate-500 m-0">L&apos;AI analizza il tuo input e genera un piano di targeting completo.</p>
             </div>
           </div>
-          <div className="fcp-demo-cards">
-            {DEMO_CATEGORIES.map((cat, i) => (
-              <ProspectCategoryCard key={i} category={cat} index={i} demo />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {[
+              { icon: "🎯", label: "1 target prioritario", desc: "Con messaggi e strategia di approccio" },
+              { icon: "👥", label: "2 target alternativi", desc: "Per diversificare la tua pipeline" },
+              { icon: "💬", label: "5 messaggi pronti", desc: "Connessione, DM, follow-up" },
+              { icon: "✅", label: "5 azioni concrete", desc: "Checklist operativa step by step" },
+            ].map((item, i) => (
+              <div key={i} className="bg-slate-50 border border-slate-100 rounded-xl p-3.5 animate-fadeup" style={{ animationDelay: `${i * 60}ms` }}>
+                <span className="text-lg block mb-1.5">{item.icon}</span>
+                <span className="text-[12px] font-bold text-slate-800 block mb-0.5">{item.label}</span>
+                <span className="text-[11px] text-slate-500 leading-relaxed">{item.desc}</span>
+              </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
-      {/* ── Tools nav (oggi-style) ── */}
+      {/* ── Strumenti — matching oggi (hidden during loading) ── */}
+      {!loading && (
       <section className="border-t border-slate-100 pt-4 mt-4 fade-in-delay">
         <span className="text-[11px] font-bold text-slate-400 uppercase tracking-widest block mb-3">
-          Altri strumenti
+          Strumenti
         </span>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {QUICK_TOOLS.map((t, i) => (
@@ -795,21 +734,16 @@ export default function FindClientsPage() {
               className="bg-white border border-slate-100 rounded-[14px] p-4 flex flex-col gap-2 no-underline hover:border-blue-200 hover:shadow-[0_8px_24px_rgba(37,99,235,0.08)] transition-all duration-200 animate-fadeup"
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <span className="text-[13px] font-extrabold text-slate-900 tracking-tight">
-                {t.title}
-              </span>
-              <span className="text-[12px] text-slate-500 leading-relaxed">
-                {t.desc}
-              </span>
-              <span className="text-[12px] font-semibold text-blue-700 mt-auto">
-                Apri →
-              </span>
+              <span className="text-[13px] font-extrabold text-slate-900 tracking-tight">{t.title}</span>
+              <span className="text-[12px] text-slate-500 leading-relaxed">{t.desc}</span>
+              <span className="text-[12px] font-semibold text-blue-700 mt-auto">Apri →</span>
             </Link>
           ))}
         </div>
       </section>
+      )}
 
-      <HistoryList userId={userId} type="prospect" />
+      {!loading && <HistoryList userId={userId} type="prospect" />}
     </div>
   );
 }
